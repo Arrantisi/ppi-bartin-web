@@ -1,7 +1,7 @@
 "use client";
 
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { IconAlertSquareRounded, IconShareplay } from "@tabler/icons-react";
+import { IconAlertSquareRounded } from "@tabler/icons-react";
 import {
   Card,
   CardHeader,
@@ -11,7 +11,12 @@ import {
   CardFooter,
 } from "../ui/card";
 import { Input } from "../ui/input";
-import { ButtonSettings, DeleteAccount, ThemeToggle } from "../buttons";
+import {
+  AdminLink,
+  ButtonSettings,
+  DeleteAccount,
+  ThemeToggle,
+} from "../buttons";
 import { useForm } from "@tanstack/react-form";
 import {
   GantiNamaSiswaSchema,
@@ -105,10 +110,7 @@ export const GantiNamaSiswaCard = () => {
         <div className="flex items-center">
           <p className="font-sm text-sm flex items-center">
             Ada masalah tanya admin &nbsp;
-            <span className="font-sm text-sm flex items-center text-primary hover:underline underline-offset-4">
-              PPI Bartin
-              <IconShareplay className="size-4 mx-1" />
-            </span>
+            <AdminLink />
           </p>{" "}
         </div>
         <ButtonSettings type="submit" form="ganti-nama-field">
@@ -204,10 +206,7 @@ export const GantiNomorSiswaCard = () => {
         <div className="flex items-center">
           <p className="font-sm text-sm flex items-center">
             Ada masalah tanya admin &nbsp;
-            <span className="font-sm text-sm flex items-center text-primary hover:underline underline-offset-4">
-              PPI Bartin
-              <IconShareplay className="size-4 mx-1" />
-            </span>
+            <AdminLink />
           </p>{" "}
         </div>
         <ButtonSettings type="submit" form="ganti-nomor-field">
@@ -233,10 +232,7 @@ export const GantiTema = () => {
         <div className="flex items-center">
           <p className="font-sm text-sm flex items-center">
             Ada masalah tanya admin &nbsp;
-            <span className="font-sm text-sm flex items-center text-primary hover:underline underline-offset-4">
-              PPI Bartin
-              <IconShareplay className="size-4 mx-1" />
-            </span>
+            <AdminLink />
           </p>{" "}
         </div>
       </CardFooter>

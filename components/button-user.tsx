@@ -12,7 +12,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { authClient } from "@/lib/auth-client";
 import { SignOutSessionButton } from "./buttons";
-import { Link, Settings2 } from "lucide-react";
+import { Settings2 } from "lucide-react";
+import Link from "next/link";
 
 const ButtonUser = () => {
   const { data: session } = authClient.useSession();
@@ -56,8 +57,8 @@ const ButtonUser = () => {
               Setting
             </DropdownMenuItem>
           </Link>
-          <SignOutSessionButton />
         </DropdownMenuGroup>
+        <SignOutSessionButton />
       </DropdownMenuContent>
     </DropdownMenu>
   );

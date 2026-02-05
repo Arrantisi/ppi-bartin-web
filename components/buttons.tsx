@@ -7,6 +7,7 @@ import {
   IconArrowLeftDashed,
   IconLogout,
   IconMoonStars,
+  IconShareplay,
   IconSunHighFilled,
   IconTrash,
 } from "@tabler/icons-react";
@@ -16,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { toastManager } from "./ui/toast";
 import { deleteAccount } from "@/lib/action";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 
 export const ButtonSettings = ({
   children,
@@ -40,7 +42,13 @@ export const ButtonField = ({
   loading: boolean;
 }) => {
   return (
-    <Button type="submit" variant={"default"} form={formId} disabled={loading}>
+    <Button
+      type="submit"
+      variant={"default"}
+      form={formId}
+      disabled={loading}
+      className="w-full"
+    >
       {loading && <Spinner />} Submit
     </Button>
   );
@@ -126,23 +134,26 @@ export const DeleteAccount = () => {
         const fetch = await deleteAccount();
         if (fetch.status === "success") {
           resolve(fetch.msg);
+          // Gunakan router.push atau refresh setelah berhasil
           router.refresh();
         } else {
-          reject(fetch.msg);
+          reject(new Error(fetch.msg));
         }
       }),
       {
-        error: () => ({
-          description: "Silahkan coba lagi",
-          title: "Ada yang salah",
-        }),
         loading: {
-          description: "Mencocokkann data ke database",
-          title: "Loading…",
+          title: "Menghapus Akun...",
+          description: "Sedang membersihkan data kamu dari sistem PPI Bartın.",
         },
-        success: (data: string) => ({
-          description: `Berhasil: ${data}`,
-          title: "Data kamu sesuai dengan database",
+        success: () => ({
+          title: "Akun Terhapus",
+          description:
+            "Semua data profil kamu telah berhasil dihapus secara permanen.",
+        }),
+        error: () => ({
+          title: "Gagal Menghapus",
+          description:
+            "Terjadi kendala teknis. Silakan coba lagi atau hubungi admin.",
         }),
       },
     );
@@ -184,5 +195,17 @@ export const ButtonPreviusePage = () => {
     <Button onClick={() => router.back()}>
       <IconArrowLeftDashed /> Kembali
     </Button>
+  );
+};
+
+export const AdminLink = () => {
+  return (
+    <Link
+      href={""}
+      className="font-sm text-sm flex items-center text-primary hover:underline underline-offset-4"
+    >
+      PPI Bartin
+      <IconShareplay className="size-4 mx-1" />
+    </Link>
   );
 };

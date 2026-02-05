@@ -61,6 +61,17 @@ export const completeProfile = async (
       return { status: "error", msg: verification.msg };
     }
 
+    const userExistNoSiswa = await prisma.user.findUnique({
+      where: { nomorSiswa: no_siswa },
+    });
+
+    if (userExistNoSiswa) {
+      return {
+        status: "error",
+        msg: "no siswa sudah ada di database",
+      };
+    }
+
     // Langkah 2: Update akun User Better Auth
     await prisma.user.update({
       where: { id: session.user.id },
