@@ -183,16 +183,16 @@ Buat file `.env.local`:
 ```env
 
 # Connect to Supabase via connection pooling
-DATABASE_URL="postgresql://postgres.ukmongkmzmqydnixoaqc:[YOUR_PASSWORD]@aws-1-ap-south-1.pooler.supabase.com:5432/postgres?pgbouncer=true"
+DATABASE_URL=
 
 # Direct connection to the database. Used for migrations
-SHADOW_DATABASE_URL="postgresql://postgres.ukmongkmzmqydnixoaqc:[YOUR_PASSWORD]@aws-1-ap-south-1.pooler.supabase.com:5432/postgres"
+SHADOW_DATABASE_URL=
 
-BETTER_AUTH_SECRET=liay7cuaG7p4vjMRyixETVPKpkSuvfjo
-BETTER_AUTH_URL=http://localhost:3000 # Base URL of your app
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=
 
-GOOGLE_CLIENT_ID=852644171041-c92jcklrmoo7jmstqehs31586pk7trip.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=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
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
 
 ```
 
