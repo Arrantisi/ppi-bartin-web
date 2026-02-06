@@ -9,6 +9,7 @@ Website Perhimpunan Pelajar Indonesia (PPI) Bartın, Turki
 ## 🎯 Project Overview
 
 Website sederhana untuk mahasiswa Indonesia di Bartın dengan 3 halaman utama:
+
 - **Home** - Landing page
 - **Profile** - Profil mahasiswa
 - **Events** - Kelola & daftar event
@@ -18,19 +19,23 @@ Website sederhana untuk mahasiswa Indonesia di Bartın dengan 3 halaman utama:
 ## 📅 Development Timeline
 
 ### ✅ Phase 1: Login System (2 Minggu) - **SEKARANG**
+
 **Goal:** Buat sistem login yang berfungsi sempurna
 
 **Fitur:**
+
 - Login dengan Google
 - Registrasi user (Nama Lengkap + No Öğrenci)
 - Simpan data user ke database
 - Session management
 
 ### 🔜 Phase 2: Home & Profile (Next)
+
 - Homepage dengan info PPI
 - Profile page user
 
 ### 🔜 Phase 3: Events (Next)
+
 - Buat event
 - Lihat events
 - Daftar ke event
@@ -90,7 +95,7 @@ model User {
   email           String    @unique   // Dari Google
   studentNumber   String    @unique   // No Öğrenci
   image           String?             // Foto dari Google
-  
+
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }
@@ -153,6 +158,7 @@ model User {
 ## 🚀 Setup untuk Phase 1
 
 ### Prerequisites
+
 ```
 ✅ Node.js 18+
 ✅ PostgreSQL database (Supabase gratis) pake apa database??
@@ -175,32 +181,48 @@ npm install
 Buat file `.env.local`:
 
 ```env
-# Database (dari Supabase/Railway)
-DATABASE_URL="postgresql://..."
 
-# NextAuth
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key"
+# Connect to Supabase via connection pooling
+DATABASE_URL="postgresql://postgres.ukmongkmzmqydnixoaqc:[YOUR_PASSWORD]@aws-1-ap-south-1.pooler.supabase.com:5432/postgres?pgbouncer=true"
 
-# Google OAuth
-GOOGLE_CLIENT_ID="your-client-id.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET="your-client-secret"
+# Direct connection to the database. Used for migrations
+SHADOW_DATABASE_URL="postgresql://postgres.ukmongkmzmqydnixoaqc:[YOUR_PASSWORD]@aws-1-ap-south-1.pooler.supabase.com:5432/postgres"
+
+BETTER_AUTH_SECRET=liay7cuaG7p4vjMRyixETVPKpkSuvfjo
+BETTER_AUTH_URL=http://localhost:3000 # Base URL of your app
+
+GOOGLE_CLIENT_ID=852644171041-c92jcklrmoo7jmstqehs31586pk7trip.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+
 ```
 
 ### Database Setup
 
+jika belum ada npm dan pnpm
+
+```bash
+# Check npm di komputer
+npm -v
+
+# Check pnpm di komputer
+pnpm -v
+
+# Jika belum ada pnpm
+npm -g install pnpm
+```
+
 ```bash
 # Generate Prisma Client
-npx prisma generate
+pnpm dlx prisma generate
 
 # Push schema ke database
-npx prisma db push
+pnpm dlx prisma db push
 ```
 
 ### Run Development
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Buka: [http://localhost:3000](http://localhost:3000)
@@ -354,7 +376,7 @@ Buka: [http://localhost:3000](http://localhost:3000)
 ### 3. Test
 
 ```bash
-npm run dev
+pnpm dev
 # Buka http://localhost:3000/login
 # Klik "Sign in with Google"
 # Harus redirect ke Google login
@@ -365,14 +387,17 @@ npm run dev
 ## 🎓 Resources untuk Belajar
 
 ### NextAuth.js
+
 - Docs: https://next-auth.js.org/
 - Google Provider: https://next-auth.js.org/providers/google
 
 ### Prisma
+
 - Docs: https://www.prisma.io/docs
 - Getting Started: https://www.prisma.io/docs/getting-started
 
 ### Supabase (Database)
+
 - https://supabase.com/
 - Free tier cukup untuk project ini
 
@@ -381,12 +406,15 @@ npm run dev
 ## 💡 Tips Development
 
 ### 1. Kerja Step-by-Step
+
 Jangan skip steps, ikuti checklist di atas satu per satu.
 
 ### 2. Test Sering
+
 Setiap selesai 1 fitur, langsung test. Jangan tunggu semuanya selesai.
 
 ### 3. Commit Sering
+
 ```bash
 git add .
 git commit -m "Add Google OAuth login"
@@ -394,15 +422,19 @@ git push
 ```
 
 ### 4. Pakai Prisma Studio pake apa database??
+
 Untuk lihat data di database:
+
 ```bash
-npx prisma studio
+pnpm dlx prisma studio
 ```
 
 ### 5. Debug dengan Console
+
 Tambahkan `console.log()` untuk debug:
+
 ```typescript
-console.log('User data:', user);
+console.log("User data:", user);
 ```
 
 ## 🎯 Success Criteria (2 Minggu)
@@ -415,7 +447,7 @@ Phase 1 dianggap selesai jika:
 ✅ Data tersimpan ke database  
 ✅ User lama langsung masuk (skip registrasi)  
 ✅ Tidak ada error/bug critical  
-✅ UI clean dan user-friendly  
+✅ UI clean dan user-friendly
 
 ---
 
