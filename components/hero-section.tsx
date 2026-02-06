@@ -130,16 +130,16 @@ export default function HeroSection() {
                       </Button>
                     </Link>
                   </div>
-                  <Button
-                    key={2}
-                    size="lg"
-                    variant="ghost"
-                    className="h-10.5 rounded-xl px-5"
-                  >
-                    <Link href="/events">
+                  <Link href="/events">
+                    <Button
+                      key={2}
+                      size="lg"
+                      variant="ghost"
+                      className="h-10.5 rounded-xl px-5"
+                    >
                       <span className="text-nowrap">Demo Event</span>
-                    </Link>
-                  </Button>
+                    </Button>
+                  </Link>
                 </AnimatedGroup>
               </div>
             </div>
