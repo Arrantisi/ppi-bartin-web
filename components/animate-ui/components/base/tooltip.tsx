@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 import {
   TooltipProvider as TooltipProviderPrimitive,
@@ -13,8 +13,8 @@ import {
   type TooltipTriggerProps as TooltipTriggerPrimitiveProps,
   type TooltipPositionerProps as TooltipPositionerPrimitiveProps,
   type TooltipPopupProps as TooltipPopupPrimitiveProps,
-} from '@/components/animate-ui/primitives/base/tooltip';
-import { cn } from '@/lib/utils';
+} from "@/components/animate-ui/primitives/base/tooltip";
+import { cn } from "@/lib/utils";
 
 type TooltipProviderProps = TooltipProviderPrimitiveProps;
 
@@ -23,7 +23,7 @@ function TooltipProvider({ delay = 0, ...props }: TooltipProviderProps) {
 }
 
 type TooltipProps = TooltipPrimitiveProps & {
-  delay?: TooltipPrimitiveProps['delay'];
+  delay?: number;
 };
 
 function Tooltip({ delay = 0, ...props }: TooltipProps) {
@@ -59,7 +59,7 @@ function TooltipPanel({
       >
         <TooltipPopupPrimitive
           className={cn(
-            'bg-primary text-primary-foreground w-fit origin-(--transform-origin) rounded-md px-3 py-1.5 text-xs text-balance',
+            "bg-primary text-primary-foreground w-fit origin-(--transform-origin) rounded-md px-3 py-1.5 text-xs text-balance",
             className,
           )}
           style={style}
