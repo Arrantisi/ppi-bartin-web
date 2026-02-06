@@ -22,6 +22,7 @@
   "registries": {
     "@coss": "https://coss.com/ui/r/{name}.json",
     "@tailark": "https://tailark.com/r/{name}.json",
-    "@reui": "https://reui.io/r/{name}.json"
+    "@reui": "https://reui.io/r/{name}.json",
+    "@animate-ui": "https://animate-ui.com/r/{name}.json"
   }
 }

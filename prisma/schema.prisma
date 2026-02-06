@@ -83,6 +83,7 @@ model Events {
   name        String
   date        DateTime @default(now())
   description String
+  status      Status   @default(PENDING)
 
   userId  String
   creator User   @relation("createdEvent", fields: [userId], references: [id], onDelete: Cascade)
@@ -95,8 +96,7 @@ model Events {
 }
 
 model Participants {
-  id     String @id @default(uuid())
-  status Status @default(PENDING)
+  id String @id @default(uuid())
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
