@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DataSiswa, UserData } from "@/lib/data";
+import { UserData } from "@/lib/data";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
@@ -69,16 +69,5 @@ export const columns: ColumnDef<UserData>[] = [
         </DropdownMenu>
       );
     },
-  },
-];
-
-export const columnsSiswa: ColumnDef<DataSiswa>[] = [
-  {
-    accessorKey: "id_siswa",
-    header: "ID Siswa",
-  },
-  {
-    accessorKey: "nama_siswa",
-    header: "Nama Siswa",
   },
 ];

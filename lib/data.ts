@@ -39,5 +39,3 @@ export const dataSiswa = async () => {
     },
   });
 };
-
-export type DataSiswa = Awaited<ReturnType<typeof dataSiswa>>[0];

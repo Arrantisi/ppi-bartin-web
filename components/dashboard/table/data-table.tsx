@@ -45,7 +45,7 @@ export const DataTable = () => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const { data, isLoading } = useQuery({
-    queryKey: ["data"],
+    queryKey: ["dataUser"],
     queryFn: () => userData(),
     placeholderData: keepPreviousData,
   });
