@@ -1,7 +1,12 @@
-import LayoutEventComponent from "@/components/event/layout";
+import NavMainEvent from "@/components/event/nav-event";
 
 const EventLayout = ({ children }: { children: React.ReactNode }) => {
-  return <LayoutEventComponent>{children}</LayoutEventComponent>;
+  return (
+    <div>
+      <NavMainEvent />
+      {children}
+    </div>
+  );
 };
 
 export default EventLayout;

@@ -15,15 +15,28 @@ export const env = createEnv({
    * The prefix that client-side variables must have. This is enforced both at
    * a type-level and at runtime.
    */
-  clientPrefix: "PUBLIC_",
 
-  client: {},
+  client: {
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+    NEXT_PUBLIC_SUPABASE_URL: z.url(),
+  },
+
+  clientPrefix: "NEXT_PUBLIC_",
 
   /**
    * What object holds the environment variables at runtime. This is usually
    * `process.env` or `import.meta.env`.
    */
-  runtimeEnv: process.env,
+  runtimeEnv: {
+    DATABASE_URL: process.env.DATABASE_URL,
+    SHADOW_DATABASE_URL: process.env.SHADOW_DATABASE_URL,
+    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  },
 
   /**
    * By default, this library will feed the environment variables directly to

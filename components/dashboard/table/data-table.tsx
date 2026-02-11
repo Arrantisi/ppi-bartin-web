@@ -1,5 +1,4 @@
 "use client";
-"use no memo";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -19,7 +18,7 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -35,20 +34,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { userData } from "@/lib/data";
 import { columns } from "./columns";
 import { SkeletonTable } from "./skeleton";
+import { supabase } from "@/lib/supabase";
 
 export const DataTable = () => {
   const [columnFilters, setColumnFilter] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
+  const queryClient = useQueryClient();
+
   const { data, isLoading } = useQuery({
     queryKey: ["dataUser"],
     queryFn: () => userData(),
-    placeholderData: keepPreviousData,
   });
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("channel_user_registered")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "user", // Sesuai screenshot kamu: huruf kecil
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["dataUser"] });
+        },
+      )
+      .subscribe((status) => {
+        console.log("Status Koneksi:", status);
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
