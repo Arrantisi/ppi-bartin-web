@@ -3,6 +3,7 @@ import CardEvent from "../card";
 
 const cardEventProp: CardEventProps[] = [
   {
+    id: "9968d062-741e-5df3-9369-d73f0a8c5af1",
     image: "/nkri-news.jpeg",
     judul: " pelatihan public speaking",
     createdBy: "Josephine Grant",
@@ -27,6 +28,7 @@ const cardEventProp: CardEventProps[] = [
     totalParticipant: "45",
   },
   {
+    id: "4304f3e9-76cf-5167-96e8-b8338d8a3e89",
     image: "/prestasi-news.jpeg",
     judul: "Workshop Beasiwa Erasmus",
     createdBy: "Eunice Wade",
@@ -48,6 +50,7 @@ const cardEventProp: CardEventProps[] = [
     totalParticipant: "45",
   },
   {
+    id: "bed8e2ee-5afc-5cda-bc72-b361eba7b7c6",
     image: "/card-event-01.jpeg",
     judul: "Sharing Siswa Mahasiswa Baru",
     createdBy: "Eva Rose",
@@ -72,6 +75,7 @@ const cardEventProp: CardEventProps[] = [
     totalParticipant: "45",
   },
   {
+    id: "648b2c4b-7d05-5e1f-bf27-3aba95063a7a",
     image: "/passport-news.jpeg",
     judul: "Buka Puasa Bersama",
     createdBy: "Jerry Mills",
@@ -101,7 +105,7 @@ const CardAcaras = () => {
   return (
     <div>
       {cardEventProp.map((e) => (
-        <div key={e.judul} className="my-3">
+        <div key={e.id} className="my-3">
           <CardEvent {...e} />
         </div>
       ))}

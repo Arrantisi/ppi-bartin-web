@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import Link from "next/link";
 
 type BeritaTerbaruProps = {
   id: string;
@@ -64,7 +65,8 @@ const CardBeritaTerbaru = () => {
   return (
     <div className="flex flex-col items-start gap-3 my-3 ">
       {beritaTerbaruProps.map((news) => (
-        <div
+        <Link
+          href={`/detail/berita/${news.id}`}
           key={news.id}
           className="grid grid-cols-5 w-full hover:bg-muted-foreground/5 p-2 rounded-4xl gap-2"
         >
@@ -96,7 +98,7 @@ const CardBeritaTerbaru = () => {
               </div>
             </div>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );

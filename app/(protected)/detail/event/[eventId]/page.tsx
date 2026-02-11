@@ -1,8 +1,4 @@
-import CardEvent from "@/components/event/card";
-import CardBeritaTerbaru from "@/components/event/card-berita-terbaru";
-import AcaraMendatang from "@/components/event/home/acara-mendatang";
-import BeritaTerbaru from "@/components/event/home/berita-terbaru";
-import ProfileHome from "@/components/event/home/profile";
+import EventDetail from "@/components/event/event-detail";
 import { CardEventProps } from "@/types";
 
 const cardEventProp: CardEventProps = {
@@ -24,28 +20,16 @@ const cardEventProp: CardEventProps = {
     {
       image: "/user-profile-03.png",
     },
-    {
-      image: "/user-profile-04.png",
-    },
-    {
-      image: "/user-profile-01.png",
-    },
   ],
   totalParticipant: "45",
 };
 
-const EventPage = () => {
+const DetailEventPage = () => {
   return (
     <div>
-      <ProfileHome />
-      <AcaraMendatang>
-        <CardEvent {...cardEventProp} />
-      </AcaraMendatang>
-      <BeritaTerbaru>
-        <CardBeritaTerbaru />
-      </BeritaTerbaru>
+      <EventDetail {...cardEventProp} />
     </div>
   );
 };
 
-export default EventPage;
+export default DetailEventPage;

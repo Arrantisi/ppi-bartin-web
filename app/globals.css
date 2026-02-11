@@ -236,3 +236,35 @@
     letter-spacing: var(--tracking-normal);
   }
 }
+
+@layer components {
+  .judul-card-event {
+    @apply capitalize text-xl font-semibold;
+  }
+
+  .subtitle-card-event {
+    @apply text-muted-foreground text-sm;
+  }
+
+  .description-card-event {
+    @apply text-xs/5 text-muted-foreground/80;
+  }
+
+  .tanggal-card-event {
+    @apply text-muted-foreground/80 font-semibold text-xs;
+  }
+}
+
+.embla__viewport {
+  overflow: hidden;
+}
+
+.embla__container {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+}
+
+.embla__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}

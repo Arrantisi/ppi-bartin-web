@@ -16,7 +16,7 @@ type EventProps = {
   url: string;
 }[];
 
-const NavMainEvent = () => {
+const NavMainEvent = ({ show = true }: { show?: boolean }) => {
   const eventProps: EventProps = [
     { title: "Home", icon: IconHome, url: "/events" },
     { title: "Acara", icon: IconCalendarWeek, url: "/events/acara" },
@@ -27,7 +27,9 @@ const NavMainEvent = () => {
   const params = usePathname();
 
   return (
-    <div className="fixed w-full bottom-1 left-0 flex items-center justify-center p-3 z-5">
+    <div
+      className={`fixed w-full bottom-1 left-0 flex items-center justify-center p-3 z-5 ${!show && "hidden"}`}
+    >
       <div className=" flex items-center justify-between backdrop-blur-xl bg-black/5 rounded-full p-4 shadow-2xl">
         {eventProps.map((e) => (
           <Link

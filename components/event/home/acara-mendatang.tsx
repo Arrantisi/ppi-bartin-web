@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const AcaraMendatang = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="mt-7 space-y-2">
@@ -5,7 +7,12 @@ const AcaraMendatang = ({ children }: { children: React.ReactNode }) => {
         <h1 className="font-semibold text-lg tracking-tight">
           Acara Mendatang
         </h1>
-        <h3 className="text-primary font-semibold text-sm">selengkapnya</h3>
+        <Link
+          href={"/events/acara"}
+          className="text-primary font-semibold text-sm"
+        >
+          selengkapnya
+        </Link>
       </div>
       <div>{children}</div>
     </div>
