@@ -20,7 +20,7 @@ const NavMainEvent = () => {
   const eventProps: EventProps = [
     { title: "Home", icon: IconHome, url: "/events" },
     { title: "Acara", icon: IconCalendarWeek, url: "/events/acara" },
-    { title: "create", icon: IconPencilPlus, url: "/events/create" },
+    { title: "Berita", icon: IconPencilPlus, url: "/events/berita" },
     { title: "profile", icon: IconUser, url: "/events/profile" },
   ];
 

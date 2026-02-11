@@ -3,13 +3,23 @@ import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { IconCalendarWeek, IconMapPin } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
+import { CardEventProps } from "@/types";
 
-const CardEvent = () => {
+const CardEvent = ({
+  createdBy,
+  description,
+  image,
+  judul,
+  lokasi,
+  participant,
+  tanggal,
+  totalParticipant,
+}: CardEventProps) => {
   return (
     <Card className="py-2 shadow-2xl">
       <CardHeader className="px-2">
         <Image
-          src={"/card-event-01.jpeg"}
+          src={image}
           alt="card-event"
           height={200}
           width={200}
@@ -17,79 +27,46 @@ const CardEvent = () => {
         />
       </CardHeader>
       <CardContent className="px-3">
-        <h1 className="capitalize font-semibold text-xl">
-          pelatihan public speaking
-        </h1>
+        <h1 className="capitalize font-semibold text-xl">{judul}</h1>
         <h4 className="text-muted-foreground text-sm mt-3">
-          created by <span className="capitalize">otong subrono</span>
+          created by <span className="capitalize">{createdBy}</span>
         </h4>
         <div className="flex items-center text-muted-foreground/80 my-3">
           <div className="flex items-center gap-1.5">
             <IconCalendarWeek className="size-4 " />
-            <span className="text-xs font-semibold">Sabtu, 15 Maret 2026</span>
+            <span className="text-xs font-semibold">Sabtu, {tanggal}</span>
           </div>
           <div className="flex items-center gap-1.5 ">
             <IconMapPin className="size-4 " />
-            <span className="text-xs font-semibold">Aula Kampus</span>
+            <span className="text-xs font-semibold">{lokasi}</span>
           </div>
         </div>
         <p className="line-clamp-3 text-xs/5 text-muted-foreground/80">
-          brave dark verb too court memory open excellent morning fought salmon
-          soap birds chain describe story different base pass addition wind
-          visit record runningopposite stood train store action branch winter
-          because merely idea breakfast chief vessels noun pocket start secret
-          everybody phrase tone was rise wire air
+          {description}
         </p>
       </CardContent>
-      <CardFooter className="px-3 pb-3">
+      <CardFooter className="px-3 pb-3 justify-between">
         <div className="flex -space-x-3">
-          <Avatar>
-            <AvatarImage
-              src="/user-profile-02.png"
-              alt="@reui"
-              className="border-2 border-background hover:z-10"
-            />
-            <AvatarFallback className="border-2 border-background hover:z-10">
-              CH
-            </AvatarFallback>
-          </Avatar>
-          <Avatar>
-            <AvatarImage
-              src="/user-profile-03.png"
-              alt="@reui"
-              className="border-2 border-background hover:z-10"
-            />
-            <AvatarFallback className="border-2 border-background hover:z-10">
-              CH
-            </AvatarFallback>
-          </Avatar>
-          <Avatar>
-            <AvatarImage
-              src="/user-profile-04.png"
-              alt="@reui"
-              className="border-2 border-background hover:z-10"
-            />
-            <AvatarFallback className="border-2 border-background hover:z-10">
-              CH
-            </AvatarFallback>
-          </Avatar>
-          <Avatar>
-            <AvatarImage
-              src="/user-profile-05.png"
-              alt="@reui"
-              className="border-2 border-background hover:z-10"
-            />
-            <AvatarFallback className="border-2 border-background hover:z-10">
-              CH
-            </AvatarFallback>
-          </Avatar>
+          {participant.map((user) => (
+            <Avatar key={user.image}>
+              <AvatarImage
+                src={user.image}
+                alt="@reui"
+                className="border-2 border-background hover:z-10"
+              />
+              <AvatarFallback className="border-2 border-background hover:z-10">
+                CH
+              </AvatarFallback>
+            </Avatar>
+          ))}
           <Button
             variant="secondary"
-            className="relative size-10 border-2 border-background hover:z-10 rounded-full"
+            className="relative size-10 border-2 border-background hover:z-10 rounded-full text-xs"
           >
-            +7
+            +{totalParticipant}
           </Button>
         </div>
+        <Button className="rounded-full text-xs">Daftar Sekarang</Button>
       </CardFooter>
     </Card>
   );

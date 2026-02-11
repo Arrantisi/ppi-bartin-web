@@ -81,9 +81,10 @@ model dataSiswa {
 model Events {
   id          String   @id @default(uuid())
   name        String
+  lokasi      String
+  images      String?
   date        DateTime @default(now())
   description String
-  status      Status   @default(PENDING)
 
   userId  String
   creator User   @relation("createdEvent", fields: [userId], references: [id], onDelete: Cascade)
@@ -105,10 +106,4 @@ model Participants {
   event   Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@map("participants")
-}
-
-enum Status {
-  PENDING
-  OPEN
-  EXPIRED
 }

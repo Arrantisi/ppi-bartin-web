@@ -1,6 +1,11 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  AvatarIndicator,
+} from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { IconBell } from "@tabler/icons-react";
-import React from "react";
 
 const ProfileHome = () => {
   return (
@@ -17,9 +22,19 @@ const ProfileHome = () => {
           </h1>
         </div>
       </div>
-      <div className="bg-white rounded-full shadow-xl p-1.5 mx-2">
+      <Avatar className=" bg-white rounded-full shadow-xl p-1.5 mx-2 flex items-center justify-center">
         <IconBell className="size-5" />
-      </div>
+        <AvatarIndicator className="-end-1 -top-1">
+          <Badge
+            variant="primary"
+            size="xs"
+            shape="circle"
+            className="border border-background"
+          >
+            6
+          </Badge>
+        </AvatarIndicator>
+      </Avatar>
     </div>
   );
 };

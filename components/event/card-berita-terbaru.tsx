@@ -64,7 +64,10 @@ const CardBeritaTerbaru = () => {
   return (
     <div className="flex flex-col items-start gap-3 my-3 ">
       {beritaTerbaruProps.map((news) => (
-        <div key={news.id} className="grid grid-cols-5 w-full">
+        <div
+          key={news.id}
+          className="grid grid-cols-5 w-full hover:bg-muted-foreground/5 p-2 rounded-4xl gap-2"
+        >
           <Image
             src={news.image}
             alt="berita"
