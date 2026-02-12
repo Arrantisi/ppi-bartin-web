@@ -44,7 +44,7 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${libre_baskerville.variable} ${ibm_plex_mono.variable} antialiased font-sans`}
       >
-        <ToastProvider position="bottom-center">
+        <ToastProvider position="top-center">
           <AnchoredToastProvider>
             <main>
               <ThemeProvider
