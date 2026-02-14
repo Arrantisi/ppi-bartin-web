@@ -1,0 +1,31 @@
+{
+  "title": "Rancang Momen Berkesan",
+  "subtitle": "Setiap acara besar dimulai dari detail kecil yang apik. Yuk, mulai buat sekarang! 🚀",
+  "textarea": [
+    {
+      "label": "Nama Agenda",
+      "placeholder": "Contoh: Malam Akrab Mahasiswa 2026",
+      "description": "Gunakan judul yang singkat, padat, dan bikin orang penasaran untuk datang."
+    },
+    {
+      "label": "Waktu Pelaksanaan",
+      "placeholder": "Pilih tanggal dan jam terbaik...",
+      "description": "Pastikan waktu tidak bentrok dengan jadwal penting lainnya."
+    },
+    {
+      "label": "Tempat Berkumpul",
+      "placeholder": "Sebutkan nama gedung atau link virtual...",
+      "description": "Berikan detail lokasi yang jelas agar peserta tidak tersesat."
+    },
+    {
+      "label": "Deskripsi Kegiatan",
+      "placeholder": "Ceritakan hal seru apa saja yang akan dilakukan...",
+      "description": "Tuliskan ringkasan kegiatan atau kejutan menarik untuk peserta."
+    },
+    {
+      "label": "Nama Slug",
+      "placeholder": "harus unique",
+      "description": "untuk di gunakan sebagai endpoint di link."
+    }
+  ]
+}

@@ -37,7 +37,6 @@ const RegisterField = () => {
             resolve(matched.msg);
             router.push("/");
           } else {
-            // Kita tetap lempar matched.msg ke reject agar bisa kita log di console jika perlu
             rejects(new Error(matched.msg));
           }
         }),
@@ -48,7 +47,7 @@ const RegisterField = () => {
           },
           success: () => ({
             title: "Verifikasi Berhasil",
-            description: `Mantap! Data kamu sudah sesuai.`, // Tidak menampilkan msg server secara mentah
+            description: `Mantap! Data kamu sudah sesuai.`,
           }),
           error: () => ({
             title: "Data Tidak Cocok",
@@ -64,11 +63,7 @@ const RegisterField = () => {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      {/* Header Section */}
-
       <Card className="p-6 shadow-sm border-zinc-200">
-        {" "}
-        {/* Atau pakai shadcn Card component */}
         <div className="space-y-6">
           <form
             className="space-y-4"
@@ -88,7 +83,6 @@ const RegisterField = () => {
                       Nomor Siswa (NIS)
                     </FieldLabel>
                     <div className="relative">
-                      {/* Contoh nambahin icon (opsional) */}
                       <Input
                         id={field.name}
                         placeholder="Contoh: 12345678"

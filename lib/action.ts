@@ -4,11 +4,79 @@ import { headers } from "next/headers";
 import { auth } from "./auth";
 import prisma from "./prisma";
 import { studentAccount } from "./account";
+import { FormCreateAcara, FormCreateBerita } from "@/schemas";
 
 interface IServerPrompt {
   status: "error" | "success";
   msg: string;
 }
+
+export const createBerita = async ({
+  slug,
+  content,
+  judul,
+  catagory,
+}: FormCreateBerita): Promise<IServerPrompt> => {
+  const user = await studentAccount();
+
+  try {
+    await prisma.news.create({
+      data: {
+        slug,
+        content,
+        judul,
+        catagory,
+        userId: user.session.id,
+      },
+    });
+
+    return {
+      status: "success",
+      msg: "Berita berhasil di buat",
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: "error",
+      msg: "masalah pada server student",
+    };
+  }
+};
+
+export const createAcara = async ({
+  slug,
+  content,
+  date,
+  judul,
+  lokasi,
+}: FormCreateAcara) => {
+  const session = await studentAccount();
+
+  try {
+    await prisma.events.create({
+      data: {
+        content,
+        date,
+        judul,
+        lokasi,
+        slug,
+        userId: session.user.id,
+      },
+    });
+
+    return {
+      status: "success",
+      msg: "Acara berhasil di buat",
+      slug: slug,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: "error",
+      msg: "masalah pada server buat acara",
+    };
+  }
+};
 
 export const student = async (
   no_siswa: string,

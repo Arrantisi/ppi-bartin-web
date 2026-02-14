@@ -1,46 +1,56 @@
 "use client";
 
 import {
-  Dialog,
-  DialogTrigger,
-} from "@/components/animate-ui/components/base/dialog";
-
-import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
-import PhotoUpload from "../photo-upload";
+
 import { useState } from "react";
+import { SheetCreate } from "../sheet-create";
+import { LoadingAnimation } from "@/components/ui/loading-animation";
 
 const HeaderAcara = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <div>
-        <h1 className="text-lg font-semibold">Acara</h1>
-        <p className="text-xs text-muted-foreground capitalize">
-          kegiatan mahasiswa indonesia bartın
-        </p>
-        <div className="flex items-center gap-2 mt-3">
-          <InputGroup className="rounded-full py-5">
-            <InputGroupInput placeholder="Search..." className="text-sm" />
-            <InputGroupAddon>
-              <IconSearch className="size-5" />
-            </InputGroupAddon>
-          </InputGroup>
+    <div>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        {isLoading && (
+          <div className="fixed h-screen w-full z-60 backdrop-blur-md left-0 top-0 flex items-center justify-center">
+            <LoadingAnimation />
+          </div>
+        )}
 
-          <DialogTrigger
-            className={"rounded-full bg-primary p-1.5 text-white/80"}
-          >
-            <IconPlus />
-          </DialogTrigger>
+        <div>
+          <h1 className="text-lg font-semibold">Acara</h1>
+          <p className="text-xs text-muted-foreground capitalize">
+            kegiatan mahasiswa indonesia bartın
+          </p>
+          <div className="flex items-center gap-2 mt-3">
+            <InputGroup className="rounded-full py-5">
+              <InputGroupInput placeholder="Search..." className="text-sm" />
+              <InputGroupAddon>
+                <IconSearch className="size-5" />
+              </InputGroupAddon>
+            </InputGroup>
+
+            <SheetTrigger
+              className={"rounded-full bg-primary p-1.5 text-white/80"}
+            >
+              <IconPlus />
+            </SheetTrigger>
+          </div>
         </div>
-      </div>
-      <PhotoUpload catagory="acara" onClose={() => setIsOpen(false)} />
-    </Dialog>
+        <SheetCreate
+          onClose={() => setIsOpen(false)}
+          onLoading={() => setIsLoading(true)}
+        />
+      </Sheet>
+    </div>
   );
 };
 
