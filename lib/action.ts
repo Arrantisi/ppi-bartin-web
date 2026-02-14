@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { auth } from "./auth";
 import prisma from "./prisma";
 import { studentAccount } from "./account";
-import { FormCreateAcara, FormCreateBerita } from "@/schemas";
+import { FormCreateBerita } from "@/schemas";
 
 interface IServerPrompt {
   status: "error" | "success";
@@ -39,41 +39,6 @@ export const createBerita = async ({
     return {
       status: "error",
       msg: "masalah pada server student",
-    };
-  }
-};
-
-export const createAcara = async ({
-  slug,
-  content,
-  date,
-  judul,
-  lokasi,
-}: FormCreateAcara) => {
-  const session = await studentAccount();
-
-  try {
-    await prisma.events.create({
-      data: {
-        content,
-        date,
-        judul,
-        lokasi,
-        slug,
-        userId: session.user.id,
-      },
-    });
-
-    return {
-      status: "success",
-      msg: "Acara berhasil di buat",
-      slug: slug,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      status: "error",
-      msg: "masalah pada server buat acara",
     };
   }
 };

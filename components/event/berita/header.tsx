@@ -40,7 +40,7 @@ const HeaderBerita = () => {
           </DialogTrigger>
         </div>
       </div>
-      <PhotoUpload catagory="berita" onClose={() => setIsOpen(false)} />
+      <PhotoUpload catagory="berita" onClose={() => setIsOpen(false)} slug="" />
     </Dialog>
   );
 };

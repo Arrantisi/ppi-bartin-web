@@ -6,13 +6,13 @@ export const ourFileRouter = {
   acaraUploud: f({
     image: { maxFileSize: "4MB", maxFileCount: 1 },
   }).onUploadComplete(async ({ file }) => {
-    console.log(file);
+    return { key: file.key, url: file.ufsUrl, name: file.name };
   }),
 
   beritaUpload: f({
     image: { maxFileSize: "4MB", maxFileCount: 1 },
   }).onUploadComplete(async ({ file }) => {
-    console.log(file);
+    return { key: file.key, url: file.ufsUrl, name: file.name };
   }),
 } satisfies FileRouter;
 

@@ -6,21 +6,19 @@ import { IconCalendarWeek, IconMapPin } from "@tabler/icons-react";
 import { Button } from "../ui/button";
 import { CardEventProps } from "@/types";
 import Link from "next/link";
-import AvatarParticipant from "./avatar-participant";
 import { Drawer, DrawerTrigger } from "../ui/drawer";
 import DrawerAcara from "./drawer-acara";
 import { useState } from "react";
 
 const CardEvent = ({
   id,
+  slug,
   createdBy,
   description,
   image,
   judul,
   lokasi,
-  participant,
   tanggal,
-  totalParticipant,
 }: CardEventProps) => {
   const [isOpen, setisOpen] = useState(false);
 
@@ -43,7 +41,7 @@ const CardEvent = ({
               created by <span className="capitalize">{createdBy}</span>
             </h4>
             <Link
-              href={`/detail/event/${id}`}
+              href={`/detail/event/${slug}`}
               className="text-xs text-primary mr-3"
             >
               Lebih Detail
@@ -62,16 +60,21 @@ const CardEvent = ({
           <p className="line-clamp-3 description-card-event">{description}</p>
         </CardContent>
         <CardFooter className="px-3 pb-3 justify-between">
-          <AvatarParticipant
+          {/* <AvatarParticipant
             participant={participant}
             totalParticipant={totalParticipant}
-          />
+          /> */}
           <DrawerTrigger asChild>
             <Button className="rounded-full text-xs">Daftar Sekarang</Button>
           </DrawerTrigger>
         </CardFooter>
       </Card>
-      <DrawerAcara onClose={() => setisOpen(false)} />
+      <DrawerAcara
+        onClose={() => setisOpen(false)}
+        eventId={id}
+        tanggal={""}
+        lokasi={""}
+      />
     </Drawer>
   );
 };

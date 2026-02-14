@@ -9,7 +9,7 @@ import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 
 import { useState } from "react";
-import { SheetCreate } from "../sheet-create";
+import { SheetForm } from "../sheet-form";
 import { LoadingAnimation } from "@/components/ui/loading-animation";
 
 const HeaderAcara = () => {
@@ -45,9 +45,15 @@ const HeaderAcara = () => {
             </SheetTrigger>
           </div>
         </div>
-        <SheetCreate
+        <SheetForm
+          catagory="create"
           onClose={() => setIsOpen(false)}
           onLoading={() => setIsLoading(true)}
+          judul={""}
+          slug={""}
+          date={new Date()}
+          lokasi={""}
+          content={""}
         />
       </Sheet>
     </div>

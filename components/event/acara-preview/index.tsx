@@ -1,113 +1,212 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { IconArrowLeft, IconShare, IconBookmark } from "@tabler/icons-react";
+import {
+  IconArrowLeft,
+  IconCalendarWeek,
+  IconCloud,
+  IconMapPin,
+} from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import { useQuery } from "@tanstack/react-query";
-import { getAcaraPreview } from "@/data/get-preview-acara";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAcaraPreview } from "@/data/acara";
 import { formattedDate } from "@/utils/date-format";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { useEffect, useState } from "react";
+import { SheetForm } from "../sheet-form";
+import { supabase } from "@/lib/supabase";
+import PhotoUpload from "../dialog-upload";
+import {
+  Dialog,
+  DialogTrigger,
+} from "@/components/animate-ui/components/base/dialog";
+import { toastManager } from "@/components/ui/toast";
+import { publishAcara } from "@/actions/acara";
+import { Spinner } from "@/components/ui/spinner";
 
 export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
-  const { data } = useQuery({
-    queryKey: ["getPreviewAcara"],
-    queryFn: () => getAcaraPreview(slug),
-  });
-
   const router = useRouter();
 
-  return (
-    <div className="max-w-2xl mx-auto bg-background min-h-screen pb-10">
-      {/* Sticky Top Navigation */}
-      <nav className="sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full bg-background shadow-2xl"
-          onClick={() => router.back()}
-        >
-          <IconArrowLeft size={24} />
-        </Button>
-        <span className="font-bold text-lg bg-background shadow-2xl rounded-4xl p-2 px-3 capitalize">
-          preview acara
-        </span>
-        <div className="flex gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full  bg-background shadow-2xl"
-          >
-            <IconShare size={24} />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full  bg-background shadow-2xl"
-          >
-            <IconBookmark size={24} />
-          </Button>
-        </div>
-      </nav>
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [onLoading, setOnLoading] = useState(false);
 
-      <div className="px-5">
-        <div>
-          <div className="flex items-center gap-3 mt-6">
-            <Avatar className="size-10">
-              <AvatarImage
-                src={data?.creator.image || "/user-profile-02.png"}
+  const queryClient = useQueryClient();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["getPreviewAcara", slug],
+    queryFn: () => getAcaraPreview(slug),
+    enabled: !!slug && slug !== "undefined",
+  });
+
+  useEffect(() => {
+    const channel = supabase.channel("preview_acara").on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "events",
+      },
+      () => {
+        queryClient.invalidateQueries({ queryKey: ["getPreviewAcara"] });
+      },
+    );
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
+  const handlePusblish = async () => {
+    setOnLoading(true);
+    const fetc = await publishAcara(slug);
+    if (fetc.status === "success") {
+      toastManager.add({ type: "success", title: "Acara berhasil di publish" });
+      router.push("/events/acara");
+    } else {
+      toastManager.add({ type: "error", title: fetc.msg });
+    }
+    setOnLoading(false);
+  };
+
+  if (isLoading)
+    return <div className="p-10 text-center">Loading data acara...</div>;
+
+  if (!data)
+    return <div className="p-10 text-center">Data tidak ditemukan.</div>;
+
+  return (
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <div className="relative flex flex-col h-screen bg-background overflow-hidden">
+          {/* Gambar & Header Sticky */}
+          <div className="relative h-[40vh] w-full">
+            {data.images ? (
+              <Image
+                src={data.images[0].url}
+                alt={""}
+                fill
+                className="object-cover"
+                priority
               />
-              <AvatarFallback>DP</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <p className="text-sm font-semibold capitalize">
-                {data?.creator.name}
-              </p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span>{formattedDate(data?.date || new Date())}</span>
-                <div className="size-1 rounded-full bg-muted-foreground" />
-                <Badge
-                  variant="secondary"
-                  className="text-[10px] h-4 leading-none"
+            ) : (
+              <div className="flex justify-center items-center h-full">
+                <DialogTrigger
+                  className={
+                    "rounded-full py-3 px-4 text-sm shadow flex items-center gap-2"
+                  }
                 >
-                  Beasiswa
-                </Badge>
+                  Upload Photo <IconCloud />
+                </DialogTrigger>
+              </div>
+            )}
+
+            <div className="absolute top-4 left-0 right-0 px-4 flex items-center justify-between z-10">
+              <Button
+                variant="secondary"
+                size="icon"
+                className="rounded-full shadow-md bg-white/80 backdrop-blur-sm"
+                onClick={() => router.back()}
+              >
+                <IconArrowLeft size={20} />
+              </Button>
+
+              <div className="font-bold text-lg drop-shadow-md bg-white/80 p-2 rounded-full backdrop-blur-md">
+                Preview Acara
+              </div>
+
+              <div className="flex gap-2">
+                <SheetTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    className="rounded-full shadow-md bg-white/80 backdrop-blur-sm w-full text-sm px-3"
+                  >
+                    Update
+                  </Button>
+                </SheetTrigger>
               </div>
             </div>
           </div>
-          <div></div>
-        </div>
 
-        {/* Title */}
-        <h1 className="text-2xl md:text-3xl font-bold mt-4 leading-tight">
-          {data?.judul}
-        </h1>
+          {/* Konten Detail */}
+          <div className="flex-1 bg-background -mt-8 relative z-20 rounded-t-[2.5rem] px-6 pt-8 flex flex-col justify-between overflow-y-auto">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground mb-2">
+                {data.judul}
+              </h1>
+              <div className="flex items-center justify-between mb-6">
+                <p className="text-sm text-muted-foreground">
+                  Oleh{" "}
+                  <span className="font-medium text-foreground capitalize">
+                    {data.creator.name}
+                  </span>
+                </p>
+                {/* <AvatarParticipant
+              participant={participant}
+              totalParticipant={totalParticipant}
+            /> */}
+              </div>
 
-        {/* Hero Image */}
-        <div className="relative aspect-video w-full mt-6 overflow-hidden rounded-3xl shadow-lg">
-          <Image
-            src={"/prestasi-news.jpeg"}
-            alt="Beasiswa Turki"
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
+              <div className="prose prose-sm text-muted-foreground mb-8">
+                <p>{data.content}</p>
+              </div>
 
-        {/* Bagian Article - Khusus Teks Beasiswa */}
-        <article className="mt-8 px-5 max-w-2xl mx-auto">
-          <div className="text-foreground/90 leading-relaxed whitespace-pre-line text-base md:text-lg tracking-wide">
-            {data?.content}
+              {/* Info Waktu & Tempat */}
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                    <IconCalendarWeek size={20} />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-sm font-semibold">Tanggal</span>
+                    <span className="text-xs text-muted-foregroun">
+                      Sabtu, {formattedDate(data.date)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                    <IconMapPin size={20} />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-sm font-semibold">Lokasi</span>
+                    <span className="text-xs text-muted-foreground">
+                      {data.lokasi}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <div className="pb-8 mt-auto">
+              <Button
+                onClick={handlePusblish}
+                disabled={onLoading}
+                className="w-full rounded-full py-7 text-base font-semibold shadow-lg shadow-primary/20 transition-transform active:scale-[0.98]"
+              >
+                {onLoading && <Spinner className="size-6" />} Publish Sekarang
+              </Button>
+            </div>
           </div>
-
-          <div className="mt-10 pt-6 border-t border-muted text-xs text-muted-foreground text-center">
-            <p>
-              Informasi lebih lanjut dapat diakses melalui website resmi YTB.
-            </p>
-          </div>
-        </article>
-      </div>
-    </div>
+        </div>
+        <PhotoUpload
+          catagory="acara"
+          onClose={() => setIsDialogOpen(false)}
+          slug={slug}
+        />
+        <SheetForm
+          onClose={() => setIsSheetOpen(false)}
+          catagory="update"
+          content={data.content}
+          slug={data.slug}
+          date={data.date}
+          lokasi={data.lokasi}
+          judul={data.judul}
+        />
+      </Sheet>
+    </Dialog>
   );
 };

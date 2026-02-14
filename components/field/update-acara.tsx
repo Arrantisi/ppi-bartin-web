@@ -2,50 +2,55 @@
 
 import { FormAcara, formAcara } from "@/schemas";
 import { useForm } from "@tanstack/react-form";
-import { useRouter } from "next/navigation";
 import { Field, FieldLabel, FieldDescription, FieldError } from "../ui/field";
 import { Button } from "../ui/button";
 import { DatePickerField } from "../event/date-picker-field";
 import { toastManager } from "../ui/toast";
-import { createAcara } from "@/actions/acara";
+import { updateAcara } from "@/actions/acara";
 import { Textarea } from "../ui/textarea";
 import props from "@/data/create-acara-props.json";
 import slugify from "slugify";
 import { IconSparkles } from "@tabler/icons-react";
 
-export const CreateAcaraField = ({
+export const UpdateAcaraField = ({
   onClose,
-  onLoading,
+  content,
+  date,
+  judul,
+  lokasi,
+  slug,
 }: {
   onClose: () => void;
-  onLoading: (e: boolean) => void;
+  judul: string;
+  slug: string;
+  date: Date;
+  lokasi: string;
+  content: string;
 }) => {
-  const router = useRouter();
+  // const { data: session } = useQuery({
+  //   queryKey: ["getUpdateAcara", slug],
+  //   queryFn: () => getAcaraPreview(slug),
+  // });
 
   const form = useForm({
     defaultValues: {
-      slug: "",
-      judul: "",
-      lokasi: "",
-      date: new Date(),
-      content: "",
+      slug,
+      judul,
+      lokasi,
+      date,
+      content,
     },
     validators: { onSubmit: formAcara },
     onSubmit: async ({ value }: { value: FormAcara }) => {
-      onLoading(true);
-      const matched = await createAcara(value);
+      const matched = await updateAcara(value);
       if (matched.status === "error") {
         toastManager.add({
           type: "error",
           title: "ada kesalahan",
           description: matched.msg,
         });
-      } else if (matched.status === "success") {
-        router.push(`/previews/${matched.slug}`);
-        onClose();
       }
-
-      onLoading(false);
+      onClose();
     },
   });
 
@@ -182,7 +187,7 @@ export const CreateAcaraField = ({
                     placeholder={props.textarea[3].placeholder}
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="min-h-[350px]"
+                    className="min-h-[155px]"
                   />
                   <FieldDescription className="text-[12px] leading-tight">
                     {props.textarea[3].description}

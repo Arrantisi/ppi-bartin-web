@@ -80,14 +80,17 @@ model dataSiswa {
 }
 
 model Images {
-  id       String @id @default(uuid())
-  name     String
-  key      String
-  url      String
-  eventId  String
-  beritaId String
-  berita   News   @relation(fields: [beritaId], references: [id], onDelete: Cascade)
-  event    Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  id String @id @default(uuid())
+
+  name String
+  key  String
+  url  String
+
+  eventId  String?
+  beritaId String?
+
+  berita News?   @relation(fields: [beritaId], references: [id], onDelete: Cascade)
+  event  Events? @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@map("images")
 }
@@ -100,6 +103,8 @@ model News {
   content  String
 
   slug String @unique
+
+  status status @default(DRAFT)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -115,13 +120,14 @@ model News {
 model Events {
   id String @id @default(uuid())
 
-  judul    String
-  lokasi   String
-  date     DateTime
-  content  String
-  catagory String
+  judul   String
+  lokasi  String
+  date    DateTime
+  content String
 
   slug String @unique
+
+  status status @default(DRAFT)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -143,4 +149,9 @@ model Participants {
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("participants")
+}
+
+enum status {
+  DRAFT
+  PUSBLISH
 }

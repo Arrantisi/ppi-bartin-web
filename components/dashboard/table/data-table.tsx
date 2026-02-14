@@ -52,22 +52,17 @@ export const DataTable = () => {
   });
 
   useEffect(() => {
-    const channel = supabase
-      .channel("channel_user_registered")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "user", // Sesuai screenshot kamu: huruf kecil
-        },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["dataUser"] });
-        },
-      )
-      .subscribe((status) => {
-        console.log("Status Koneksi:", status);
-      });
+    const channel = supabase.channel("channel_user_registered").on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "user", // Sesuai screenshot kamu: huruf kecil
+      },
+      () => {
+        queryClient.invalidateQueries({ queryKey: ["dataUser"] });
+      },
+    );
 
     return () => {
       supabase.removeChannel(channel);

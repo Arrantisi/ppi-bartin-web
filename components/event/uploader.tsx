@@ -15,8 +15,13 @@ import Image from "next/image";
 import { Progress } from "../ui/progress";
 import { toastManager } from "../ui/toast";
 import { LoadingAnimation } from "../ui/loading-animation";
+import { createAcaraPhoto } from "@/actions/acara";
 
-export const UploaderPhoto = ({ catagory, onClose }: TcatagoryDialogEvent) => {
+export const UploaderPhoto = ({
+  catagory,
+  onClose,
+  slug,
+}: TcatagoryDialogEvent) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState(0);
@@ -36,7 +41,8 @@ export const UploaderPhoto = ({ catagory, onClose }: TcatagoryDialogEvent) => {
   const catagoryType = catagory === "acara" ? "acaraUploud" : "beritaUpload";
 
   const { startUpload, isUploading } = useUploadThing(catagoryType, {
-    onClientUploadComplete: () => {
+    onClientUploadComplete: async (res) => {
+      await createAcaraPhoto(slug, res);
       setFile(null);
       setPreview(null);
       setProgress(0);
@@ -116,9 +122,11 @@ export const UploaderPhoto = ({ catagory, onClose }: TcatagoryDialogEvent) => {
           ) : (
             file && (
               <>
-                <Image src={preview} alt="" height={200} width={200} />
-                <DialogTitle>{file.name}</DialogTitle>
-                <div>
+                <div className="flex flex-col items-center gap-3">
+                  <Image src={preview} alt="" height={200} width={200} />
+                  <DialogTitle className={"text-center"}>
+                    {file.name}
+                  </DialogTitle>
                   <DialogDescription className={"text-xs"}>
                     {(file.size / (1024 * 1024)).toFixed(2)} MB
                   </DialogDescription>

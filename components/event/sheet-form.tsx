@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { CreateAcaraField } from "../field/create-acara";
 import {
   SheetContent,
@@ -10,13 +9,26 @@ import {
 } from "../ui/sheet";
 import { ScrollArea } from "../ui/scroll-area";
 import props from "@/data/create-acara-props.json";
+import { UpdateAcaraField } from "../field/update-acara";
 
-export const SheetCreate = ({
+export const SheetForm = ({
+  catagory,
   onClose,
   onLoading,
+  content,
+  date,
+  judul,
+  lokasi,
+  slug,
 }: {
+  catagory: "create" | "update";
   onClose: () => void;
-  onLoading: (e: boolean) => void;
+  onLoading?: (e: boolean) => void;
+  judul: string;
+  slug: string;
+  date: Date;
+  lokasi: string;
+  content: string;
 }) => {
   return (
     <SheetContent showCloseButton={false}>
@@ -26,10 +38,21 @@ export const SheetCreate = ({
           <SheetDescription>{props.subtitle}</SheetDescription>
         </SheetHeader>
         <div className="space-y-2 mx-2 h-full">
-          <CreateAcaraField
-            onClose={() => onClose()}
-            onLoading={() => onLoading}
-          />
+          {catagory === "create" ? (
+            <CreateAcaraField
+              onClose={() => onClose()}
+              onLoading={() => onLoading}
+            />
+          ) : (
+            <UpdateAcaraField
+              onClose={onClose}
+              content={content}
+              slug={slug}
+              date={date}
+              lokasi={lokasi}
+              judul={judul}
+            />
+          )}
         </div>
       </ScrollArea>
     </SheetContent>

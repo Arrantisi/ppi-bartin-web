@@ -9,7 +9,7 @@ export const formCreateBerita = z.object({
 
 export type FormCreateBerita = z.infer<typeof formCreateBerita>;
 
-export const formCreateAcara = z.object({
+export const formAcara = z.object({
   judul: z.string().min(8, "nomor setidak nya paling sedikit 8 angka"),
   lokasi: z.string(),
   date: z.date(),
@@ -17,7 +17,7 @@ export const formCreateAcara = z.object({
   slug: z.string().min(3),
 });
 
-export type FormCreateAcara = z.infer<typeof formCreateAcara>;
+export type FormAcara = z.infer<typeof formAcara>;
 
 export const formSchema = z.object({
   nomor_siswa: z

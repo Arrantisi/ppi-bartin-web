@@ -3,43 +3,19 @@ import CardBeritaTerbaru from "@/components/event/card-berita-terbaru";
 import AcaraMendatang from "@/components/event/home/acara-mendatang";
 import BeritaTerbaru from "@/components/event/home/berita-terbaru";
 import ProfileHome from "@/components/event/home/profile";
-import { CardEventProps } from "@/types";
-
-const cardEventProp: CardEventProps = {
-  id: "ba74b474-9b4d-56f7-abfa-6f8e474ded86",
-  image: "/card-event-01.jpeg",
-  judul: " pelatihan public speaking",
-  createdBy: "otong subrono",
-  tanggal: "15 Maret 2026",
-  lokasi: "Aula Kampus",
-  description:
-    " brave dark verb too court memory open excellent morning fought salmon soap birds chain describe story different base pass addition wind visit record runningopposite stood train store action branch winter because merely idea breakfast chief vessels noun pocket start secret everybody phrase tone was rise wire air",
-  participant: [
-    {
-      image: "/user-profile-05.png",
-    },
-    {
-      image: "/user-profile-02.png",
-    },
-    {
-      image: "/user-profile-03.png",
-    },
-    {
-      image: "/user-profile-04.png",
-    },
-    {
-      image: "/user-profile-01.png",
-    },
-  ],
-  totalParticipant: "45",
-};
+import { SkeletonCardAcara } from "@/components/event/skeleton-card-acara";
+import { getAllEvents } from "@/data/acara";
+import { formattedDate } from "@/utils/date-format";
+import { Suspense } from "react";
 
 const EventPage = () => {
   return (
     <div>
       <ProfileHome />
       <AcaraMendatang>
-        <CardEvent {...cardEventProp} />
+        <Suspense fallback={<SkeletonCardAcara />}>
+          <RenderAcara />
+        </Suspense>
       </AcaraMendatang>
       <BeritaTerbaru>
         <CardBeritaTerbaru />
@@ -49,3 +25,23 @@ const EventPage = () => {
 };
 
 export default EventPage;
+
+const RenderAcara = async () => {
+  const fetch = await getAllEvents();
+
+  const data = fetch[0];
+
+  return (
+    <CardEvent
+      id={data.id}
+      createdBy={data.creator.name || ""}
+      description={data.content}
+      slug={data.slug}
+      image={data.images[0].url || "/prestasi-news.jpeg"}
+      judul={data.judul}
+      lokasi={data.lokasi}
+      tanggal={formattedDate(data.date)}
+      totalParticipant={"50"}
+    />
+  );
+};
