@@ -17,9 +17,10 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   accounts      Account[]
-  sessions      Session[]
   events        Events[]       @relation("createdEvent")
+  news          News[]         @relation("createdNews")
   participants  Participants[]
+  sessions      Session[]
 
   @@map("user")
 }
@@ -78,32 +79,79 @@ model dataSiswa {
   @@map("dataSiswa")
 }
 
+model Images {
+  id String @id @default(uuid())
+
+  name String
+  key  String
+  url  String
+
+  eventId  String?
+  beritaId String?
+
+  berita News?   @relation(fields: [beritaId], references: [id], onDelete: Cascade)
+  event  Events? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("images")
+}
+
+model News {
+  id String @id @default(uuid())
+
+  judul    String
+  catagory String
+  content  String
+
+  slug String @unique
+
+  status status @default(DRAFT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId  String
+  creator User   @relation("createdNews", fields: [userId], references: [id], onDelete: Cascade)
+
+  images Images[]
+
+  @@map("news")
+}
+
 model Events {
-  id          String   @id @default(uuid())
-  name        String
-  lokasi      String
-  images      String?
-  date        DateTime @default(now())
-  description String
+  id String @id @default(uuid())
+
+  judul   String
+  lokasi  String
+  date    DateTime
+  content String
+
+  slug String @unique
+
+  status status @default(DRAFT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   userId  String
   creator User   @relation("createdEvent", fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  images       Images[]
   participants Participants[]
 
   @@map("events")
 }
 
 model Participants {
-  id String @id @default(uuid())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  id      String @id @default(uuid())
+  userId  String
   eventId String
   event   Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("participants")
+}
+
+enum status {
+  DRAFT
+  PUSBLISH
 }

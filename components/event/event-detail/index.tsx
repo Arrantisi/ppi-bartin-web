@@ -1,46 +1,87 @@
 "use client";
 
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import {
   IconArrowLeft,
   IconBookmark,
   IconCalendarWeek,
+  IconCloud,
   IconMapPin,
   IconShare,
 } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import AvatarParticipant from "../avatar-participant";
-import { CardEventProps } from "@/types";
-import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAcaraPreview } from "@/data/acara";
+import { formattedDate } from "@/utils/date-format";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { DialogTrigger } from "@/components/animate-ui/components/base/dialog";
 import DrawerAcara from "../drawer-acara";
-import { useState } from "react";
+import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 
-const EventDetail = ({
-  createdBy,
-  description,
-  image,
-  judul,
-  lokasi,
-  participant,
-  tanggal,
-  totalParticipant,
-}: CardEventProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const EventDetail = ({ slug }: { slug: string }) => {
   const router = useRouter();
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["getPreviewAcara", slug],
+    queryFn: () => getAcaraPreview(slug),
+    enabled: !!slug && slug !== "undefined",
+  });
+
+  useEffect(() => {
+    const channel = supabase.channel("preview_acara").on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "events",
+      },
+      () => {
+        queryClient.invalidateQueries({ queryKey: ["getPreviewAcara"] });
+      },
+    );
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
+  if (isLoading)
+    return <div className="p-10 text-center">Loading data acara...</div>;
+
+  if (!data)
+    return <div className="p-10 text-center">Data tidak ditemukan.</div>;
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <div className="relative flex flex-col h-screen bg-background overflow-hidden">
         {/* Gambar & Header Sticky */}
         <div className="relative h-[40vh] w-full">
-          <Image
-            src={image}
-            alt={judul}
-            fill
-            className="object-cover"
-            priority
-          />
+          {data.images ? (
+            <Image
+              src={data.images[0].url}
+              alt={""}
+              fill
+              className="object-cover"
+              priority
+            />
+          ) : (
+            <div className="flex justify-center items-center h-full">
+              <DialogTrigger
+                className={
+                  "rounded-full py-3 px-4 text-sm shadow flex items-center gap-2"
+                }
+              >
+                Upload Photo <IconCloud />
+              </DialogTrigger>
+            </div>
+          )}
+
           <div className="absolute top-4 left-0 right-0 px-4 flex items-center justify-between z-10">
             <Button
               variant="secondary"
@@ -51,9 +92,9 @@ const EventDetail = ({
               <IconArrowLeft size={20} />
             </Button>
 
-            <span className="text-white font-bold text-lg drop-shadow-md">
+            <div className="font-bold text-lg drop-shadow-md bg-white/80 p-2 rounded-full backdrop-blur-md">
               Acara
-            </span>
+            </div>
 
             <div className="flex gap-2">
               <Button
@@ -77,20 +118,24 @@ const EventDetail = ({
         {/* Konten Detail */}
         <div className="flex-1 bg-background -mt-8 relative z-20 rounded-t-[2.5rem] px-6 pt-8 flex flex-col justify-between overflow-y-auto">
           <div>
-            <h1 className="text-2xl font-bold text-foreground mb-2">{judul}</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-2">
+              {data.judul}
+            </h1>
             <div className="flex items-center justify-between mb-6">
               <p className="text-sm text-muted-foreground">
                 Oleh{" "}
-                <span className="font-medium text-foreground">{createdBy}</span>
+                <span className="font-medium text-foreground capitalize">
+                  {data.creator.name}
+                </span>
               </p>
-              <AvatarParticipant
-                participant={participant}
-                totalParticipant={totalParticipant}
-              />
+              {/* <AvatarParticipant
+              participant={participant}
+              totalParticipant={totalParticipant}
+            /> */}
             </div>
 
             <div className="prose prose-sm text-muted-foreground mb-8">
-              <p>{description}</p>
+              <p>{data.content}</p>
             </div>
 
             {/* Info Waktu & Tempat */}
@@ -99,16 +144,11 @@ const EventDetail = ({
                 <div className="p-2 bg-primary/10 rounded-lg text-primary">
                   <IconCalendarWeek size={20} />
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold">
-                    Sabtu, {tanggal}
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-sm font-semibold">Tanggal</span>
+                  <span className="text-xs text-muted-foregroun">
+                    Sabtu, {formattedDate(data.date)}
                   </span>
-                  <span className="text-xs text-muted-foreground">
-                    09.00 - 15.00 TRT
-                  </span>
-                  <button className="text-[10px] text-primary font-bold uppercase tracking-wider mt-1 hover:underline">
-                    Add to Calendar
-                  </button>
                 </div>
               </div>
 
@@ -116,10 +156,10 @@ const EventDetail = ({
                 <div className="p-2 bg-primary/10 rounded-lg text-primary">
                   <IconMapPin size={20} />
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold">{lokasi}</span>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-sm font-semibold">Lokasi</span>
                   <span className="text-xs text-muted-foreground">
-                    Bartın Üniversitesi Kutlubey Kampüsü
+                    {data.lokasi}
                   </span>
                 </div>
               </div>
@@ -137,10 +177,12 @@ const EventDetail = ({
         </div>
       </div>
 
-      {/* Konten Drawer */}
-      <DrawerAcara onClose={() => setIsOpen(false)} />
+      <DrawerAcara
+        eventId={data.id}
+        onClose={() => setIsOpen(false)}
+        tanggal={formattedDate(data.date)}
+        lokasi={data.lokasi}
+      />
     </Drawer>
   );
 };
-
-export default EventDetail;

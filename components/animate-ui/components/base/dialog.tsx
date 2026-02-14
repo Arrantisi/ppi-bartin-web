@@ -47,7 +47,10 @@ type DialogBackdropProps = DialogBackdropPrimitiveProps;
 function DialogBackdrop({ className, ...props }: DialogBackdropProps) {
   return (
     <DialogBackdropPrimitive
-      className={cn("fixed inset-0 z-50 bg-black/50", className)}
+      className={cn(
+        "fixed inset-0 z-50 bg-black/50 backdrop-blur-xs",
+        className,
+      )}
       {...props}
     />
   );
@@ -75,7 +78,7 @@ function DialogPopup({
       >
         {children}
         {showCloseButton && (
-          <DialogClosePrimitive className="ring-offset-background focus:ring-ring data-open:bg-accent data-open:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+          <DialogClosePrimitive className="ring-offset-background focus:ring-ring data-open:bg-accent data-open:text-muted-foreground absolute top-5 right-5 rounded-full opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 shadow-2xl p-1.5">
             <XIcon />
             <span className="sr-only">Close</span>
           </DialogClosePrimitive>

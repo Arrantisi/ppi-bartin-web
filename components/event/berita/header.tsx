@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/input-group";
 
 import { IconPlus, IconSearch } from "@tabler/icons-react";
-import PhotoUpload from "../photo-upload";
+import PhotoUpload from "../dialog-upload";
 import { useState } from "react";
 
 const HeaderBerita = () => {
@@ -40,7 +40,7 @@ const HeaderBerita = () => {
           </DialogTrigger>
         </div>
       </div>
-      <PhotoUpload catagory="berita" onClose={() => setIsOpen(false)} />
+      <PhotoUpload catagory="berita" onClose={() => setIsOpen(false)} slug="" />
     </Dialog>
   );
 };
