@@ -129,7 +129,6 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
             </div>
           </div>
 
-          {/* Konten Detail */}
           <div className="flex-1 bg-background -mt-8 relative z-20 rounded-t-[2.5rem] px-6 pt-8 flex flex-col justify-between overflow-y-auto">
             <div>
               <h1 className="text-2xl font-bold text-foreground mb-2">

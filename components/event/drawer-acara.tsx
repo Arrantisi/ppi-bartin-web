@@ -42,7 +42,7 @@ const DrawerAcara = ({
   return (
     <DrawerContent className="rounded-t-4xl">
       <DrawerHeader>
-        <DrawerTitle>DrawerAcara</DrawerTitle>
+        <DrawerTitle>browser acara</DrawerTitle>
         <DrawerDescription asChild>
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">

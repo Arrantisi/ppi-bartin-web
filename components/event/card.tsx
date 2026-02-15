@@ -25,15 +25,18 @@ const CardEvent = ({
   return (
     <Drawer open={isOpen} onOpenChange={setisOpen}>
       <Card className="py-2 shadow-2xl">
-        <CardHeader className="px-2">
-          <Image
-            src={image}
-            alt="card-event"
-            height={200}
-            width={200}
-            className="w-full h-[300px] object-cover rounded-2xl"
-          />
-        </CardHeader>
+        {image && (
+          <CardHeader className={`px-2`}>
+            <Image
+              src={image}
+              alt="card-event"
+              height={200}
+              width={200}
+              className="w-full h-[300px] object-cover rounded-2xl"
+            />
+          </CardHeader>
+        )}
+
         <CardContent className="px-3">
           <h1 className="judul-card-event">{judul}</h1>
           <div className="flex items-center justify-between mt-3">
@@ -47,12 +50,12 @@ const CardEvent = ({
               Lebih Detail
             </Link>
           </div>
-          <div className="flex items-center text-muted-foreground/80 my-3 gap-5">
-            <div className="flex items-center gap-1.5">
+          <div className="grid grid-cols-6 items-start text-muted-foreground/80 my-3">
+            <div className=" col-span-2 flex items-start gap-1.5">
               <IconCalendarWeek className="size-4 " />
-              <span className="text-xs font-semibold">Sabtu, {tanggal}</span>
+              <span className="text-xs font-semibold w-full">{tanggal}</span>
             </div>
-            <div className="flex items-center gap-1.5 ">
+            <div className="col-span-4 flex items-start gap-1.5">
               <IconMapPin className="size-4 " />
               <span className="text-xs font-semibold">{lokasi}</span>
             </div>
@@ -72,8 +75,8 @@ const CardEvent = ({
       <DrawerAcara
         onClose={() => setisOpen(false)}
         eventId={id}
-        tanggal={""}
-        lokasi={""}
+        tanggal={tanggal}
+        lokasi={lokasi}
       />
     </Drawer>
   );

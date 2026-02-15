@@ -36,7 +36,7 @@ const CardAcaras = () => {
               createdBy={data.creator.name || ""}
               description={data.content}
               slug={data.slug}
-              image={data.images[0].url || "/prestasi-news.jpeg"}
+              image={data.images[0]?.url || ""}
               judul={data.judul}
               lokasi={data.lokasi}
               tanggal={formattedDate(data.date)}

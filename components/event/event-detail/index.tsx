@@ -5,7 +5,6 @@ import {
   IconArrowLeft,
   IconBookmark,
   IconCalendarWeek,
-  IconCloud,
   IconMapPin,
   IconShare,
 } from "@tabler/icons-react";
@@ -16,7 +15,6 @@ import { getAcaraPreview } from "@/data/acara";
 import { formattedDate } from "@/utils/date-format";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { DialogTrigger } from "@/components/animate-ui/components/base/dialog";
 import DrawerAcara from "../drawer-acara";
 import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 
@@ -64,21 +62,15 @@ export const EventDetail = ({ slug }: { slug: string }) => {
         <div className="relative h-[40vh] w-full">
           {data.images ? (
             <Image
-              src={data.images[0].url}
+              src={data.images[0]?.url}
               alt={""}
               fill
               className="object-cover"
               priority
             />
           ) : (
-            <div className="flex justify-center items-center h-full">
-              <DialogTrigger
-                className={
-                  "rounded-full py-3 px-4 text-sm shadow flex items-center gap-2"
-                }
-              >
-                Upload Photo <IconCloud />
-              </DialogTrigger>
+            <div className="flex justify-center items-center h-full capitalize">
+              acara hari ini
             </div>
           )}
 
