@@ -47,9 +47,9 @@ export const ButtonField = ({
       variant={"default"}
       form={formId}
       disabled={loading}
-      className="w-full"
+      className="w-full text-sm capitalize"
     >
-      {loading && <Spinner />} Submit
+      {loading && <Spinner />} cocokkan data
     </Button>
   );
 };
@@ -101,7 +101,7 @@ export const GoogleProvider = () => {
           ></path>
         </svg>
       )}
-      <span>Sign in with Google</span>
+      <span className="text-sm">Sign in with Google</span>
     </Button>
   );
 };

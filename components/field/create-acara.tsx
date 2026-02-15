@@ -52,7 +52,11 @@ export const CreateAcaraField = ({
   const handleSlug = () => {
     const titleValue = form.getFieldValue("judul");
 
-    const slug = slugify(titleValue);
+    const slug = slugify(titleValue, {
+      lower: true,
+      strict: true,
+      remove: /[*+~.()'"!:@]/g,
+    });
 
     form.setFieldValue("slug", slug);
   };

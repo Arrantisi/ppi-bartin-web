@@ -16,12 +16,14 @@ import { Progress } from "../ui/progress";
 import { toastManager } from "../ui/toast";
 import { LoadingAnimation } from "../ui/loading-animation";
 import { createAcaraPhoto } from "@/actions/acara";
+import { useRouter } from "next/navigation";
 
 export const UploaderPhoto = ({
   catagory,
   onClose,
   slug,
 }: TcatagoryDialogEvent) => {
+  const router = useRouter();
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState(0);
@@ -46,6 +48,8 @@ export const UploaderPhoto = ({
       setFile(null);
       setPreview(null);
       setProgress(0);
+      onClose();
+      router.refresh();
     },
     onUploadProgress: setProgress,
   });

@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma";
 export const getAllEvents = async () => {
   return await prisma.events.findMany({
     include: {
-      creator: { select: { name: true, image: true } },
+      creator: { select: { username: true, image: true } },
       images: { select: { key: true, url: true } },
       participants: { select: { user: true } },
     },
@@ -20,7 +20,7 @@ export const getAcaraPreview = async (slug: string) => {
   return await prisma.events.findUnique({
     where: { slug },
     include: {
-      creator: { select: { name: true, image: true } },
+      creator: { select: { username: true, image: true } },
       images: { select: { key: true, url: true } },
       participants: { select: { user: true } },
     },

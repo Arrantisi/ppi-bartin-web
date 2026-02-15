@@ -1,5 +1,14 @@
 import * as z from "zod";
 
+export const formUsername = z.object({
+  username: z
+    .string()
+    .min(2, "nomor setidak nya paling sedikit 8 angka")
+    .max(12, "nomor setidak nya paling banyak 8 angka"),
+});
+
+export type FormUsername = z.infer<typeof formUsername>;
+
 export const formCreateBerita = z.object({
   judul: z.string().min(8, "nomor setidak nya paling sedikit 8 angka"),
   slug: z.string().min(3),

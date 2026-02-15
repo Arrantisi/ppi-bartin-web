@@ -37,21 +37,25 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["getPreviewAcara", slug],
     queryFn: () => getAcaraPreview(slug),
-    enabled: !!slug && slug !== "undefined",
   });
 
   useEffect(() => {
-    const channel = supabase.channel("preview_acara").on(
-      "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "events",
-      },
-      () => {
-        queryClient.invalidateQueries({ queryKey: ["getPreviewAcara"] });
-      },
-    );
+    const channel = supabase
+      .channel("preview_acara")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "events",
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["getPreviewAcara"] });
+        },
+      )
+      .subscribe((status) => {
+        console.log(status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
@@ -82,7 +86,7 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
         <div className="relative flex flex-col h-screen bg-background overflow-hidden">
           {/* Gambar & Header Sticky */}
           <div className="relative h-[40vh] w-full">
-            {data.images ? (
+            {data.images && data.images.length > 0 ? (
               <Image
                 src={data.images[0].url}
                 alt={""}
@@ -138,7 +142,7 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
                 <p className="text-sm text-muted-foreground">
                   Oleh{" "}
                   <span className="font-medium text-foreground capitalize">
-                    {data.creator.name}
+                    {data.creator.username}
                   </span>
                 </p>
                 {/* <AvatarParticipant
@@ -160,7 +164,7 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
                   <div className="flex flex-col gap-0.5">
                     <span className="text-sm font-semibold">Tanggal</span>
                     <span className="text-xs text-muted-foregroun">
-                      Sabtu, {formattedDate(data.date)}
+                      {formattedDate(data.date)}
                     </span>
                   </div>
                 </div>

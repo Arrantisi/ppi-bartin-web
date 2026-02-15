@@ -117,7 +117,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
               <p className="text-sm text-muted-foreground">
                 Oleh{" "}
                 <span className="font-medium text-foreground capitalize">
-                  {data.creator.name}
+                  {data.creator.username}
                 </span>
               </p>
               {/* <AvatarParticipant
@@ -139,7 +139,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                 <div className="flex flex-col gap-0.5">
                   <span className="text-sm font-semibold">Tanggal</span>
                   <span className="text-xs text-muted-foregroun">
-                    Sabtu, {formattedDate(data.date)}
+                    {formattedDate(data.date)}
                   </span>
                 </div>
               </div>

@@ -27,14 +27,17 @@ const EventPage = () => {
 export default EventPage;
 
 const RenderAcara = async () => {
-  const fetch = await getAllEvents();
+  const events = await getAllEvents();
 
-  const data = fetch[0];
+  if (!events || events.length === 0) {
+    return <>Event tidak ada</>;
+  }
+  const data = events[0];
 
   return (
     <CardEvent
       id={data.id}
-      createdBy={data.creator.name || ""}
+      createdBy={data.creator.username || ""}
       description={data.content}
       slug={data.slug}
       image={data.images[0].url || "/prestasi-news.jpeg"}

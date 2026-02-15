@@ -1,6 +1,7 @@
 import ButtonUser from "@/components/button-user";
 import { AdminLink } from "@/components/buttons";
 import RegisterField from "@/components/field/complite-profile-field";
+import Image from "next/image";
 
 const CompleteProfilePage = () => {
   return (
@@ -8,6 +9,15 @@ const CompleteProfilePage = () => {
       <div className="flex flex-col w-full md:max-w-md max-w-xs items-center">
         <div className="flex flex-col w-full items-start">
           <div className="mb-6 space-y-1">
+            <div className="rounded-full shadow p-2 w-fit">
+              <Image
+                src={"/logo-ppi-bartin.png"}
+                alt=""
+                height={200}
+                width={200}
+                className="size-8"
+              />
+            </div>
             <h2 className="text-2xl font-bold tracking-tight">
               Lengkapi Profil
             </h2>

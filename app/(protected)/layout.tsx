@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { checkNoSiswa } from "@/lib/data";
+import { UsernameForceDialog } from "@/components/alert-username";
 
 export default async function ProtectedLayout({
   children,
@@ -18,5 +19,10 @@ export default async function ProtectedLayout({
     redirect("/complite-profile");
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {!student.username && <UsernameForceDialog />}
+      {children}
+    </>
+  );
 }

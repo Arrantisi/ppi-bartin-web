@@ -33,7 +33,7 @@ const CardAcaras = () => {
           {data.status === "PUSBLISH" && (
             <CardEvent
               id={data.id}
-              createdBy={data.creator.name || ""}
+              createdBy={data.creator.username || ""}
               description={data.content}
               slug={data.slug}
               image={data.images[0]?.url || ""}
