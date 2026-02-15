@@ -1,22 +1,26 @@
 "use client";
 
+import { getProfileUser } from "@/actions/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { authClient } from "@/lib/auth-client";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
 const ProfileHome = () => {
-  const { data: session } = authClient.useSession();
+  const { data: session } = useQuery({
+    queryKey: ["profilePage"],
+    queryFn: () => getProfileUser(),
+  });
 
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-3">
         <Avatar className="size-12">
-          <AvatarImage src={session?.user.image || "/user-profile-01.png"} />
+          <AvatarImage src={session?.image || "/user-profile-01.png"} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div>
           <h3 className="text-muted-foreground text-sm capitalize">
-            Halo, {session?.user.name}
+            Halo, {session?.username}
           </h3>
           <h1 className="font-semibold text-lg tracking-tight">
             Selamat Datang!

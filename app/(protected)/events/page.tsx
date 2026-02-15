@@ -29,10 +29,12 @@ export default EventPage;
 const RenderAcara = async () => {
   const events = await getAllEvents();
 
-  if (!events || events.length === 0) {
+  if (!events || events.length < 0) {
     return <>Event tidak ada</>;
   }
-  const data = events[0];
+  const filterEvent = events.filter((publish) => publish.status === "PUSBLISH");
+
+  const data = filterEvent[0];
 
   return (
     <CardEvent
@@ -40,7 +42,7 @@ const RenderAcara = async () => {
       createdBy={data.creator.username || ""}
       description={data.content}
       slug={data.slug}
-      image={data.images[0].url || "/prestasi-news.jpeg"}
+      image={data.images[0]?.url}
       judul={data.judul}
       lokasi={data.lokasi}
       tanggal={formattedDate(data.date)}
