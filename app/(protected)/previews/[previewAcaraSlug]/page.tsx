@@ -7,8 +7,6 @@ const PreviewAcaraPage = async ({
 }) => {
   const param = await params;
 
-  console.log("SLUG DITERIMA:", param.previewAcaraSlug);
-
   return (
     <div>
       <EventPreviewComoponent slug={param.previewAcaraSlug} />

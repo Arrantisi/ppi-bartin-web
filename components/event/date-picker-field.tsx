@@ -37,10 +37,12 @@ export const DatePickerField = ({ value, onChange }: DatePickerFieldProps) => {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          className="group/pick-date w-60 justify-between text-sm"
+          className="group/pick-date w-60 justify-between text-sm rounded-full"
           variant={"outline"}
         >
-          <span className={cn("truncate", value && "")}>
+          <span
+            className={cn("text-muted-foreground/70 ", "truncate", value && "")}
+          >
             {value ? formattedDate(value) : "Pick a date"}
           </span>
           <IconCalendar

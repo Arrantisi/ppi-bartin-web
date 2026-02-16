@@ -9,6 +9,27 @@ interface IServerPrompt {
   msg: string;
 }
 
+export const deleteEvent = async (eventId: string) => {
+  const { user } = await studentAccount();
+
+  try {
+    await prisma.events.delete({
+      where: { id: eventId, userId: user.id },
+    });
+
+    return {
+      status: "success",
+      msg: "Acara telah di hapus dari draft",
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: "error",
+      msg: "masalah pada server delete acara",
+    };
+  }
+};
+
 export const joinEvent = async (eventId: string): Promise<IServerPrompt> => {
   const session = await studentAccount();
 
@@ -95,13 +116,14 @@ export const updateAcara = async ({
   judul,
   lokasi,
   slug,
+  maxCapacity,
 }: FormAcara): Promise<IServerPrompt> => {
   await studentAccount();
 
   try {
     await prisma.events.update({
       where: { slug },
-      data: { content, date, judul, lokasi, slug },
+      data: { content, date, judul, lokasi, slug, maxCapacity },
     });
 
     return {
@@ -123,12 +145,14 @@ export const createAcara = async ({
   date,
   judul,
   lokasi,
+  maxCapacity,
 }: FormAcara) => {
   const session = await studentAccount();
 
   try {
     await prisma.events.create({
       data: {
+        maxCapacity,
         content,
         date,
         judul,

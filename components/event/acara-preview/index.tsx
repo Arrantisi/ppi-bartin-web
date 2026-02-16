@@ -24,6 +24,7 @@ import {
 import { toastManager } from "@/components/ui/toast";
 import { publishAcara } from "@/actions/acara";
 import { Spinner } from "@/components/ui/spinner";
+import AvatarParticipant from "../avatar-participant";
 
 export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
   const router = useRouter();
@@ -145,10 +146,13 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
                     {data.creator.username}
                   </span>
                 </p>
-                {/* <AvatarParticipant
-              participant={participant}
-              totalParticipant={totalParticipant}
-            /> */}
+                <AvatarParticipant
+                  participant={data.participants.map((p) => ({
+                    image: p.user.image || "",
+                  }))}
+                  totalParticipant={data.participants.length}
+                  maxCapacity={data.maxCapacity}
+                />
               </div>
 
               <div className="prose prose-sm text-muted-foreground mb-8">
@@ -203,6 +207,7 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
         <SheetForm
           onClose={() => setIsSheetOpen(false)}
           catagory="update"
+          maxCapacity={data.maxCapacity}
           content={data.content}
           slug={data.slug}
           date={data.date}

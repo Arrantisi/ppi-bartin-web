@@ -11,6 +11,9 @@ import { Textarea } from "../ui/textarea";
 import props from "@/data/create-acara-props.json";
 import slugify from "slugify";
 import { IconSparkles } from "@tabler/icons-react";
+import { Input } from "../ui/input";
+import { useState } from "react";
+import { Spinner } from "../ui/spinner";
 
 export const UpdateAcaraField = ({
   onClose,
@@ -19,6 +22,7 @@ export const UpdateAcaraField = ({
   judul,
   lokasi,
   slug,
+  maxCapacity,
 }: {
   onClose: () => void;
   judul: string;
@@ -26,11 +30,14 @@ export const UpdateAcaraField = ({
   date: Date;
   lokasi: string;
   content: string;
+  maxCapacity: number;
 }) => {
   // const { data: session } = useQuery({
   //   queryKey: ["getUpdateAcara", slug],
   //   queryFn: () => getAcaraPreview(slug),
   // });
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -39,9 +46,11 @@ export const UpdateAcaraField = ({
       lokasi,
       date,
       content,
+      maxCapacity,
     },
     validators: { onSubmit: formAcara },
     onSubmit: async ({ value }: { value: FormAcara }) => {
+      setIsLoading(true);
       const matched = await updateAcara(value);
       if (matched.status === "error") {
         toastManager.add({
@@ -49,8 +58,15 @@ export const UpdateAcaraField = ({
           title: "ada kesalahan",
           description: matched.msg,
         });
+      } else if (matched.status === "success") {
+        toastManager.add({
+          type: "success",
+          title: "berhasil update",
+          description: matched.msg,
+        });
+        onClose();
       }
-      onClose();
+      setIsLoading(false);
     },
   });
 
@@ -158,6 +174,32 @@ export const UpdateAcaraField = ({
             }}
           </form.Field>
 
+          <form.Field name="maxCapacity">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field>
+                  <FieldLabel>{props.textarea[5].label}</FieldLabel>
+
+                  <Input
+                    type="number"
+                    id={field.name}
+                    placeholder={props.textarea[5].placeholder}
+                    className="focus-visible:ring-primary"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+                  />
+
+                  <FieldDescription className="text-[12px] leading-tight">
+                    {props.textarea[5].description}
+                  </FieldDescription>
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
           <form.Field name="lokasi">
             {(field) => {
               const isInvalid =
@@ -203,20 +245,27 @@ export const UpdateAcaraField = ({
           </form.Field>
         </form>
       </div>
-      <div className="flex items-center justify-end">
-        <Button
-          className="text-sm rounded-full px-4 py-3"
-          form="create-acara-form"
-          type="submit"
-        >
-          Upload
-        </Button>
+      <div className="flex items-center justify-end gap-2">
         <Button
           variant={"outline"}
-          className="text-sm rounded-full px-4 py-3"
+          className="text-sm rounded-full px-4 py-3 w-28"
           onClick={() => onClose()}
         >
           Cancel
+        </Button>
+        <Button
+          disabled={isLoading}
+          className="text-sm rounded-full px-4 py-3 w-28"
+          form="create-acara-form"
+          type="submit"
+        >
+          {isLoading ? (
+            <span className="flex items-center gap-1">
+              <Spinner /> Uploading
+            </span>
+          ) : (
+            "Upload"
+          )}
         </Button>
       </div>
     </div>

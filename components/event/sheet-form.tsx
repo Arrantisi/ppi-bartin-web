@@ -14,12 +14,12 @@ import { UpdateAcaraField } from "../field/update-acara";
 export const SheetForm = ({
   catagory,
   onClose,
-  onLoading,
   content,
   date,
   judul,
   lokasi,
   slug,
+  maxCapacity,
 }: {
   catagory: "create" | "update";
   onClose: () => void;
@@ -29,6 +29,7 @@ export const SheetForm = ({
   date: Date;
   lokasi: string;
   content: string;
+  maxCapacity: number;
 }) => {
   return (
     <SheetContent showCloseButton={false}>
@@ -39,12 +40,10 @@ export const SheetForm = ({
         </SheetHeader>
         <div className="space-y-2 mx-2 h-full">
           {catagory === "create" ? (
-            <CreateAcaraField
-              onClose={() => onClose()}
-              onLoading={() => onLoading}
-            />
+            <CreateAcaraField onClose={() => onClose()} />
           ) : (
             <UpdateAcaraField
+              maxCapacity={maxCapacity}
               onClose={onClose}
               content={content}
               slug={slug}

@@ -12,14 +12,12 @@ import { Textarea } from "../ui/textarea";
 import props from "@/data/create-acara-props.json";
 import slugify from "slugify";
 import { IconSparkles } from "@tabler/icons-react";
+import { Input } from "../ui/input";
+import { useState } from "react";
+import { Spinner } from "../ui/spinner";
 
-export const CreateAcaraField = ({
-  onClose,
-  onLoading,
-}: {
-  onClose: () => void;
-  onLoading: (e: boolean) => void;
-}) => {
+export const CreateAcaraField = ({ onClose }: { onClose: () => void }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const form = useForm({
@@ -29,10 +27,11 @@ export const CreateAcaraField = ({
       lokasi: "",
       date: new Date(),
       content: "",
+      maxCapacity: 0,
     },
     validators: { onSubmit: formAcara },
     onSubmit: async ({ value }: { value: FormAcara }) => {
-      onLoading(true);
+      setIsLoading(true);
       const matched = await createAcara(value);
       if (matched.status === "error") {
         toastManager.add({
@@ -45,7 +44,7 @@ export const CreateAcaraField = ({
         onClose();
       }
 
-      onLoading(false);
+      setIsLoading(false);
     },
   });
 
@@ -153,6 +152,32 @@ export const CreateAcaraField = ({
             }}
           </form.Field>
 
+          <form.Field name="maxCapacity">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field>
+                  <FieldLabel>{props.textarea[5].label}</FieldLabel>
+
+                  <Input
+                    type="number"
+                    id={field.name}
+                    placeholder={props.textarea[5].placeholder}
+                    className="focus-visible:ring-primary"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+                  />
+
+                  <FieldDescription className="text-[12px] leading-tight">
+                    {props.textarea[5].description}
+                  </FieldDescription>
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
           <form.Field name="lokasi">
             {(field) => {
               const isInvalid =
@@ -198,20 +223,27 @@ export const CreateAcaraField = ({
           </form.Field>
         </form>
       </div>
-      <div className="flex items-center justify-end">
-        <Button
-          className="text-sm rounded-full px-4 py-3"
-          form="create-acara-form"
-          type="submit"
-        >
-          Upload
-        </Button>
+      <div className="flex items-center justify-end gap-2">
         <Button
           variant={"outline"}
-          className="text-sm rounded-full px-4 py-3"
+          className="text-sm rounded-full px-4 py-3 w-28"
           onClick={() => onClose()}
         >
           Cancel
+        </Button>
+        <Button
+          disabled={isLoading}
+          className="text-sm rounded-full px-4 py-3 w-28"
+          form="create-acara-form"
+          type="submit"
+        >
+          {isLoading ? (
+            <span className="flex items-center gap-1">
+              <Spinner /> Uploading
+            </span>
+          ) : (
+            "Upload"
+          )}
         </Button>
       </div>
     </div>

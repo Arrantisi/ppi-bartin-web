@@ -1,16 +1,53 @@
 "use client";
 
 import CardEvent from "../card";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllEvents } from "@/data/acara";
 import { SkeletonCardAcara } from "../skeleton-card-acara";
 import { formattedDate } from "@/utils/date-format";
+import { useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 const CardAcaras = () => {
+  const queryClient = useQueryClient();
+
   const { data: session, isLoading } = useQuery({
     queryKey: ["getAllEvents"],
     queryFn: () => getAllEvents(),
   });
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("getAllEvents")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "events" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["getAllEvents"] });
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "participants" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["getAllEvents"] });
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "images" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["getAllEvents"] });
+        },
+      )
+      .subscribe((status) => {
+        console.log(status);
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   if (isLoading) {
     return (
@@ -40,7 +77,12 @@ const CardAcaras = () => {
               judul={data.judul}
               lokasi={data.lokasi}
               tanggal={formattedDate(data.date)}
-              totalParticipant={"50"}
+              participant={data.participants.map((p) => ({
+                image: p.user.image || "",
+                id: p.user.id,
+              }))}
+              maxCapacity={data.maxCapacity}
+              totalParticipant={data.participants.length}
             />
           )}
         </div>

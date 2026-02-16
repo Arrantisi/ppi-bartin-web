@@ -60,7 +60,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
       <div className="relative flex flex-col h-screen bg-background overflow-hidden">
         {/* Gambar & Header Sticky */}
         <div className="relative h-[40vh] w-full">
-          {data.images ? (
+          {data.images && data.images.length > 0 ? (
             <Image
               src={data.images[0]?.url}
               alt={""}

@@ -7,8 +7,9 @@ export type CardEventProps = {
   tanggal: string;
   lokasi: string;
   description: string;
-  participant?: { image: string }[];
-  totalParticipant: string;
+  participant: { image: string; id: string }[];
+  totalParticipant: number;
+  maxCapacity: number;
 };
 
 export type TcatagoryDialogEvent = {

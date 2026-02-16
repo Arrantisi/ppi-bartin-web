@@ -3,6 +3,7 @@
 import { getProfileUser } from "@/actions/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 import Link from "next/link";
 
 const ProfileHome = () => {
@@ -28,9 +29,15 @@ const ProfileHome = () => {
         </div>
       </div>
       <Link href={"/"}>
-        <Avatar className=" bg-white rounded-full shadow-xl p-1.5 mx-2 flex items-center justify-center">
-          <AvatarImage src={"/logo-ppi-bartin.png"} />
-        </Avatar>
+        <div className=" bg-white rounded-full shadow-xl p-1.5 mx-2 flex items-center justify-center">
+          <Image
+            src={"/logo-PPI.png"}
+            alt=""
+            width={200}
+            height={200}
+            className="size-6"
+          />
+        </div>
       </Link>
     </div>
   );

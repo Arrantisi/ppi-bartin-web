@@ -1,31 +1,36 @@
 {
-  "title": "Rancang Momen Berkesan",
-  "subtitle": "Setiap acara besar dimulai dari detail kecil yang apik. Yuk, mulai buat sekarang! 🚀",
+  "title": "Buat Acara Baru",
+  "subtitle": "Wujudkan momen spesialmu. Mulai dari detail sederhana untuk hasil yang luar biasa! 🚀",
   "textarea": [
     {
-      "label": "Nama Agenda",
-      "placeholder": "Contoh: Malam Akrab Mahasiswa 2026",
-      "description": "Gunakan judul yang singkat, padat, dan bikin orang penasaran untuk datang."
+      "label": "Judul Acara",
+      "placeholder": "Contoh: Workshop Desain Digital 2026",
+      "description": "Gunakan nama yang menarik dan mudah diingat."
     },
     {
       "label": "Waktu Pelaksanaan",
-      "placeholder": "Pilih tanggal dan jam terbaik...",
-      "description": "Pastikan waktu tidak bentrok dengan jadwal penting lainnya."
+      "placeholder": "Pilih tanggal dan waktu...",
+      "description": "Tentukan jadwal yang tepat bagi peserta."
     },
     {
-      "label": "Tempat Berkumpul",
-      "placeholder": "Sebutkan nama gedung atau link virtual...",
-      "description": "Berikan detail lokasi yang jelas agar peserta tidak tersesat."
+      "label": "Lokasi",
+      "placeholder": "Nama tempat atau link meeting...",
+      "description": "Pastikan lokasi mudah ditemukan atau diakses."
     },
     {
-      "label": "Deskripsi Kegiatan",
-      "placeholder": "Ceritakan hal seru apa saja yang akan dilakukan...",
-      "description": "Tuliskan ringkasan kegiatan atau kejutan menarik untuk peserta."
+      "label": "Deskripsi",
+      "placeholder": "Jelaskan keseruan acara kamu...",
+      "description": "Berikan ringkasan singkat mengenai agenda kegiatan."
     },
     {
-      "label": "Nama Slug",
-      "placeholder": "harus unique",
-      "description": "untuk di gunakan sebagai endpoint di link."
+      "label": "Slug URL",
+      "placeholder": "contoh-acara-seru",
+      "description": "Alamat unik untuk link acara Anda (hanya huruf, angka, dan strip)."
+    },
+    {
+      "label": "Kapasitas Maksimal",
+      "placeholder": "Contoh: 100",
+      "description": "Batasi jumlah peserta yang dapat mendaftar."
     }
   ]
 }

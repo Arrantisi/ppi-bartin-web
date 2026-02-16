@@ -81,61 +81,47 @@ model dataSiswa {
 }
 
 model Images {
-  id String @id @default(uuid())
-
-  name String
-  key  String
-  url  String
-
+  id       String  @id @default(uuid())
+  name     String
+  key      String
+  url      String
   eventId  String?
   beritaId String?
-
-  berita News?   @relation(fields: [beritaId], references: [id], onDelete: Cascade)
-  event  Events? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  berita   News?   @relation(fields: [beritaId], references: [id], onDelete: Cascade)
+  event    Events? @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@map("images")
 }
 
 model News {
-  id String @id @default(uuid())
-
-  judul    String
-  catagory String
-  content  String
-
-  slug String @unique
-
-  status status @default(DRAFT)
-
+  id        String   @id @default(uuid())
+  judul     String
+  catagory  String
+  content   String
+  slug      String   @unique
+  status    status   @default(DRAFT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  userId  String
-  creator User   @relation("createdNews", fields: [userId], references: [id], onDelete: Cascade)
-
-  images Images[]
+  userId    String
+  images    Images[]
+  creator   User     @relation("createdNews", fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("news")
 }
 
 model Events {
-  id String @id @default(uuid())
-
-  judul   String
-  lokasi  String
-  date    DateTime
-  content String
-
-  slug String @unique
-
-  status status @default(DRAFT)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId  String
-  creator User   @relation("createdEvent", fields: [userId], references: [id], onDelete: Cascade)
-
+  id           String         @id @default(uuid())
+  judul        String
+  lokasi       String
+  date         DateTime
+  content      String
+  slug         String         @unique
+  status       status         @default(DRAFT)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  userId       String
+  maxCapacity  Int
+  creator      User           @relation("createdEvent", fields: [userId], references: [id], onDelete: Cascade)
   images       Images[]
   participants Participants[]
 

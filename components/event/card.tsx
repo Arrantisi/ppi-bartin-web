@@ -9,6 +9,8 @@ import Link from "next/link";
 import { Drawer, DrawerTrigger } from "../ui/drawer";
 import DrawerAcara from "./drawer-acara";
 import { useState } from "react";
+import AvatarParticipant from "./avatar-participant";
+import { authClient } from "@/lib/auth-client";
 
 const CardEvent = ({
   id,
@@ -19,8 +21,16 @@ const CardEvent = ({
   judul,
   lokasi,
   tanggal,
+  participant,
+  totalParticipant,
+  maxCapacity,
 }: CardEventProps) => {
   const [isOpen, setisOpen] = useState(false);
+
+  const { data: session } = authClient.useSession();
+
+  const userJoined = participant.find((user) => user.id === session?.user.id);
+  const capacityFull = participant.length >= maxCapacity;
 
   return (
     <Drawer open={isOpen} onOpenChange={setisOpen}>
@@ -63,13 +73,25 @@ const CardEvent = ({
           <p className="line-clamp-3 description-card-event">{description}</p>
         </CardContent>
         <CardFooter className="px-3 pb-3 justify-between">
-          {/* <AvatarParticipant
+          <AvatarParticipant
+            maxCapacity={maxCapacity}
             participant={participant}
             totalParticipant={totalParticipant}
-          /> */}
-          <DrawerTrigger asChild>
-            <Button className="rounded-full text-xs">Daftar Sekarang</Button>
-          </DrawerTrigger>
+          />
+
+          {capacityFull ? (
+            <div className="text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+              sudah penuh{" "}
+            </div>
+          ) : userJoined?.id === session?.user.id ? (
+            <div className="text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+              kamu telah join
+            </div>
+          ) : (
+            <DrawerTrigger asChild>
+              <Button className="rounded-full text-xs">Daftar Sekarang</Button>
+            </DrawerTrigger>
+          )}
         </CardFooter>
       </Card>
       <DrawerAcara
