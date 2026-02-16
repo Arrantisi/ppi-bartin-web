@@ -46,6 +46,7 @@ const HeaderAcara = () => {
           </div>
         </div>
         <SheetForm
+          maxCapacity={0}
           catagory="create"
           onClose={() => setIsOpen(false)}
           onLoading={() => setIsLoading(true)}
