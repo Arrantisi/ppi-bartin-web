@@ -11,7 +11,7 @@ const CompleteProfilePage = () => {
           <div className="mb-6 space-y-1">
             <div className="rounded-full shadow p-2 w-fit">
               <Image
-                src={"/logo-ppi-bartin.png"}
+                src={"/logo-ppi.png"}
                 alt=""
                 height={200}
                 width={200}

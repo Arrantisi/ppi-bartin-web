@@ -8,7 +8,7 @@ const RegisterPage = () => {
         <div className="flex flex-col w-full items-start">
           <div className="rounded-full shadow p-2">
             <Image
-              src={"/logo-ppi-bartin.png"}
+              src={"/logo-ppi.png"}
               alt=""
               height={200}
               width={200}
