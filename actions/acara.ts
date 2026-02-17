@@ -3,6 +3,7 @@
 import { studentAccount } from "@/lib/account";
 import prisma from "@/lib/prisma";
 import { FormAcara } from "@/schemas";
+import { revalidatePath } from "next/cache";
 
 interface IServerPrompt {
   status: "error" | "success";
@@ -161,6 +162,7 @@ export const createAcara = async ({
         userId: session.user.id,
       },
     });
+    revalidatePath(`/previews/${slug}`);
 
     return {
       status: "success",

@@ -54,6 +54,17 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
           queryClient.invalidateQueries({ queryKey: ["getPreviewAcara"] });
         },
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "images",
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["getPreviewAcara"] });
+        },
+      )
       .subscribe((status) => {
         console.log(status);
       });

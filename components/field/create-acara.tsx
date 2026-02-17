@@ -40,8 +40,8 @@ export const CreateAcaraField = ({ onClose }: { onClose: () => void }) => {
           description: matched.msg,
         });
       } else if (matched.status === "success") {
-        router.push(`/previews/${matched.slug}`);
         onClose();
+        router.push(`/previews/${matched.slug}`);
       }
 
       setIsLoading(false);

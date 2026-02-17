@@ -31,7 +31,7 @@ const ProfileHome = () => {
       <Link href={"/"}>
         <div className=" bg-white rounded-full shadow-xl p-1.5 mx-2 flex items-center justify-center">
           <Image
-            src={"/logo-PPI.png"}
+            src={"/logo-ppi.png"}
             alt=""
             width={200}
             height={200}
