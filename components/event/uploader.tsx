@@ -2,12 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
-import {
-  DialogDescription,
-  DialogTitle,
-} from "../animate-ui/components/base/dialog";
 import { Button } from "../ui/button";
-import { TcatagoryDialogEvent } from "@/types";
 import { IconCloudUpload } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { useUploadThing } from "@/lib/uploadthing";
@@ -15,44 +10,54 @@ import Image from "next/image";
 import { Progress } from "../ui/progress";
 import { toastManager } from "../ui/toast";
 import { LoadingAnimation } from "../ui/loading-animation";
-import { createAcaraPhoto } from "@/actions/acara";
 import { useRouter } from "next/navigation";
+import { CardDescription, CardTitle } from "../ui/card";
+import { AspectRatio } from "../ui/aspect-ratio";
+import { updateNewsPhoto } from "@/actions/news";
+import { updateEventPhoto } from "@/actions/acara";
+import Link from "next/link";
 
 export const UploaderPhoto = ({
   catagory,
-  onClose,
   slug,
-}: TcatagoryDialogEvent) => {
+}: {
+  catagory: "news" | "events";
+  slug: string;
+}) => {
   const router = useRouter();
   const [preview, setPreview] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null);
+
   const [progress, setProgress] = useState(0);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles && acceptedFiles.length > 0) {
-      const f = acceptedFiles[0];
+  const catagoryType = catagory === "events" ? "acaraUploud" : "beritaUpload";
 
-      const previewUrl = URL.createObjectURL(f);
-      setPreview(previewUrl);
-      setFile(f);
-    } else {
-      console.log("File ditolak, tidak membuat preview.");
-    }
-  }, []);
-
-  const catagoryType = catagory === "acara" ? "acaraUploud" : "beritaUpload";
-
-  const { startUpload, isUploading } = useUploadThing(catagoryType, {
+  const { startUpload, isUploading } = useUploadThing("onOploadFile", {
     onClientUploadComplete: async (res) => {
-      await createAcaraPhoto(slug, res);
-      setFile(null);
-      setPreview(null);
+      if (catagoryType === "beritaUpload") {
+        await updateNewsPhoto(slug, res);
+      } else if (catagoryType === "acaraUploud") {
+        await updateEventPhoto(slug, res);
+      }
       setProgress(0);
-      onClose();
       router.refresh();
     },
     onUploadProgress: setProgress,
   });
+
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      if (acceptedFiles && acceptedFiles.length > 0) {
+        const f = acceptedFiles[0];
+
+        const previewUrl = URL.createObjectURL(f);
+        setPreview(previewUrl);
+        startUpload([f]);
+      } else {
+        console.log("File ditolak, tidak membuat preview.");
+      }
+    },
+    [startUpload],
+  );
 
   const rejectedFiles = (fileRejections: FileRejection[]) => {
     fileRejections.forEach(({ file, errors }) => {
@@ -80,7 +85,6 @@ export const UploaderPhoto = ({
             description: "Hanya file gambar yang diperbolehkan",
           });
         }
-        onClose();
       });
     });
   };
@@ -93,69 +97,67 @@ export const UploaderPhoto = ({
   });
 
   return (
-    <div {...getRootProps()}>
-      {isUploading ? (
-        <UploadingAnimation
-          progress={progress}
-          size={file?.size || 0}
-          name={file?.name || ""}
-        />
-      ) : (
-        <div
-          className={cn(
-            "shadow-2xl rounded-3xl p-6 flex flex-col items-center justify-center gap-2 duration-300",
-            isDragActive ? "bg-primary/15" : "bg-transparent",
-          )}
-        >
-          {!preview ? (
-            <>
-              <input {...getInputProps()} />
-              <UploadIllustration />
-              <DialogTitle>Tarik & Lepas Foto</DialogTitle>
-              <DialogDescription className={"text-xs"}>
-                Mendukung format SVG, PNG, JPG, atau GIF (Maks. 4 MB)
-              </DialogDescription>
-              <Button className="p-2 text-sm w-2/3 rounded-full mt-4">
-                Unggah File
-                <IconCloudUpload />
-              </Button>
-              <DialogDescription className={"text-xs"}>
-                Atau seret file ke sini
-              </DialogDescription>
-            </>
-          ) : (
-            file && (
+    <div>
+      <AspectRatio
+        {...getRootProps()}
+        ratio={4 / 3}
+        className="relative bg-muted rounded-4xl overflow-hidden border"
+      >
+        {isUploading ? (
+          <UploadingAnimation progress={progress} />
+        ) : (
+          <div
+            className={cn(
+              "shadow-2xl rounded-3xl p-2 flex flex-col items-center justify-center gap-2 duration-300 h-full",
+              isDragActive ? "bg-primary/15" : "bg-transparent",
+            )}
+          >
+            {!preview ? (
               <>
-                <div className="flex flex-col items-center gap-3">
-                  <Image src={preview} alt="" height={200} width={200} />
-                  <DialogTitle className={"text-center"}>
-                    {file.name}
-                  </DialogTitle>
-                  <DialogDescription className={"text-xs"}>
-                    {(file.size / (1024 * 1024)).toFixed(2)} MB
-                  </DialogDescription>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 w-full">
-                  <Button
-                    variant={"outline"}
-                    className="p-2 text-sm  rounded-full mt-4"
-                    onClick={() => setPreview(null)}
-                  >
-                    Batal
-                  </Button>
-                  <Button
-                    className="p-2 text-sm rounded-full mt-4"
-                    onClick={() => startUpload([file])}
-                  >
-                    Upload <IconCloudUpload />
-                  </Button>
-                </div>
+                <input {...getInputProps()} />
+                <UploadIllustration />
+                <CardTitle>Tarik & Lepas Foto</CardTitle>
+                <CardDescription className="text-xs text-center px-4">
+                  Foto akan langsung diunggah (Maks. 4 MB)
+                </CardDescription>
+                <Button
+                  variant="outline"
+                  className="rounded-full mt-4 pointer-events-none text-sm"
+                >
+                  Pilih File <IconCloudUpload className="ml-2" />
+                </Button>
               </>
-            )
-          )}
-        </div>
-      )}
+            ) : (
+              <div className=" w-full h-full">
+                <Image
+                  src={preview}
+                  alt="Preview"
+                  fill
+                  className="object-cover"
+                />
+                {/* Overlay Tombol Ganti Foto jika sudah selesai upload */}
+                <div className=" absolute flex w-full left-0 justify-end pr-2">
+                  <Button className=" rounded-2xl" variant={"destructive"}>
+                    Hapus
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </AspectRatio>
+
+      <Link
+        href={`/home/news/update/${slug}`}
+        className={cn(
+          "flex justify-end -mr-14 opacity-0",
+          !isUploading &&
+            preview &&
+            "opacity-100 mr-3 transition-all duration-700 ease-in-out",
+        )}
+      >
+        <Button className="text-sm rounded-2xl mt-3">ke menu update</Button>
+      </Link>
     </div>
   );
 };
@@ -248,28 +250,15 @@ const UploadIllustration = () => (
   </div>
 );
 
-const UploadingAnimation = ({
-  progress,
-  size,
-  name,
-}: {
-  progress: number;
-  size: number;
-  name: string;
-}) => (
-  <div className="shadow-2xl rounded-3xl p-6 flex flex-col items-center justify-center">
+const UploadingAnimation = ({ progress }: { progress: number }) => (
+  <div className="flex flex-col items-center justify-center w-full h-full">
     <LoadingAnimation progress={progress} />
-    <div className="flex items-center justify-between mt-3 mb-1 w-full">
-      <h1>Mengaupload...</h1>
-      <div>
-        <DialogTitle>{name}</DialogTitle>
-        <DialogDescription className={"text-xs"}>
-          {(size / (1024 * 1024)).toFixed(2)} MB{" "}
-          <span className="text-primary">{progress}%</span>
-        </DialogDescription>
+    <div className="mt-4 w-full max-w-[200px]">
+      <div className="flex justify-between text-xs mb-1">
+        <span>Mengunggah...</span>
+        <span>{progress}%</span>
       </div>
+      <Progress value={progress} className="h-1" />
     </div>
-
-    <Progress value={progress} />
   </div>
 );

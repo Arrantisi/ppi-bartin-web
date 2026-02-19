@@ -4,11 +4,7 @@ import { studentAccount } from "@/lib/account";
 import prisma from "@/lib/prisma";
 import { FormAcara } from "@/schemas";
 import { revalidatePath } from "next/cache";
-
-interface IServerPrompt {
-  status: "error" | "success";
-  msg: string;
-}
+import { TServerPrompt } from "@/types";
 
 export const deleteEvent = async (eventId: string) => {
   const { user } = await studentAccount();
@@ -31,7 +27,7 @@ export const deleteEvent = async (eventId: string) => {
   }
 };
 
-export const joinEvent = async (eventId: string): Promise<IServerPrompt> => {
+export const joinEvent = async (eventId: string): Promise<TServerPrompt> => {
   const session = await studentAccount();
 
   try {
@@ -55,7 +51,7 @@ export const joinEvent = async (eventId: string): Promise<IServerPrompt> => {
   }
 };
 
-export const publishAcara = async (slug: string): Promise<IServerPrompt> => {
+export const publishAcara = async (slug: string): Promise<TServerPrompt> => {
   await studentAccount();
 
   try {
@@ -77,11 +73,11 @@ export const publishAcara = async (slug: string): Promise<IServerPrompt> => {
   }
 };
 
-export const createAcaraPhoto = async (
+export const updateEventPhoto = async (
   slug: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   images: any[],
-): Promise<IServerPrompt> => {
+): Promise<TServerPrompt> => {
   await studentAccount();
 
   try {
@@ -118,7 +114,7 @@ export const updateAcara = async ({
   lokasi,
   slug,
   maxCapacity,
-}: FormAcara): Promise<IServerPrompt> => {
+}: FormAcara): Promise<TServerPrompt> => {
   await studentAccount();
 
   try {

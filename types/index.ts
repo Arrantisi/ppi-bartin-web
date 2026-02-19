@@ -1,3 +1,8 @@
+export type TServerPrompt = {
+  status: "error" | "success";
+  msg: string;
+};
+
 export type CardEventProps = {
   id: string;
   slug: string;

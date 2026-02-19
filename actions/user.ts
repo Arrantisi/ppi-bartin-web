@@ -3,11 +3,7 @@
 import { studentAccount } from "@/lib/account";
 import prisma from "@/lib/prisma";
 import { FormUsername } from "@/schemas";
-
-interface IServerPrompt {
-  status: "error" | "success";
-  msg: string;
-}
+import { TServerPrompt } from "@/types";
 
 export const getProfileUser = async () => {
   const session = await studentAccount();
@@ -19,7 +15,7 @@ export const getProfileUser = async () => {
 
 export const postUsername = async ({
   username,
-}: FormUsername): Promise<IServerPrompt> => {
+}: FormUsername): Promise<TServerPrompt> => {
   const session = await studentAccount();
 
   try {

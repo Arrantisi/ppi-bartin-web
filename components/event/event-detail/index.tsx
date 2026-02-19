@@ -139,7 +139,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                 <div className="flex flex-col gap-0.5">
                   <span className="text-sm font-semibold">Tanggal</span>
                   <span className="text-xs text-muted-foregroun">
-                    {formattedDate(data.date)}
+                    {formattedDate(data.date || new Date())}
                   </span>
                 </div>
               </div>
@@ -172,8 +172,8 @@ export const EventDetail = ({ slug }: { slug: string }) => {
       <DrawerAcara
         eventId={data.id}
         onClose={() => setIsOpen(false)}
-        tanggal={formattedDate(data.date)}
-        lokasi={data.lokasi}
+        tanggal={formattedDate(data.date || new Date())}
+        lokasi={data.lokasi || ""}
       />
     </Drawer>
   );

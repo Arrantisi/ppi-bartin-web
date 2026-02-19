@@ -130,7 +130,7 @@ export default function HeroSection() {
                       </Button>
                     </Link>
                   </div>
-                  <Link href="/events">
+                  <Link href="/home">
                     <Button
                       key={2}
                       size="lg"

@@ -63,15 +63,15 @@ export const RenderAcara = () => {
 
   return (
     <CardEvent
-      maxCapacity={data.maxCapacity}
+      maxCapacity={data.maxCapacity || 0}
       id={data.id}
       createdBy={data.creator.username || ""}
-      description={data.content}
+      description={data.content || ""}
       slug={data.slug}
       image={data.images[0]?.url}
       judul={data.judul}
-      lokasi={data.lokasi}
-      tanggal={formattedDate(data.date)}
+      lokasi={data.lokasi || ""}
+      tanggal={formattedDate(data.date || new Date())}
       participant={
         data.participants.map((p) => ({
           image: p.user.image || "",

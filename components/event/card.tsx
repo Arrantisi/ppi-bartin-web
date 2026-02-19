@@ -54,7 +54,7 @@ const CardEvent = ({
               created by <span className="capitalize">{createdBy}</span>
             </h4>
             <Link
-              href={`/detail/event/${slug}`}
+              href={`/home/events/${slug}`}
               className="text-xs text-primary mr-3"
             >
               Lebih Detail

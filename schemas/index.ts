@@ -9,14 +9,19 @@ export const formUsername = z.object({
 
 export type FormUsername = z.infer<typeof formUsername>;
 
-export const formCreateBerita = z.object({
+export const postJudulNewsSchema = z.object({
+  judul: z.string().min(6, "judul minimal 6 karakter"),
+});
+
+export type TPostJudulNewsSchema = z.infer<typeof postJudulNewsSchema>;
+
+export const updateNewsSchema = z.object({
   judul: z.string().min(8, "Judul berita minimal 8 karakter"),
-  slug: z.string().min(3, "Slug minimal 3 karakter"),
   content: z.string().min(8, "Isi berita terlalu pendek, minimal 8 karakter"),
   catagory: z.string().min(1, "Silakan pilih kategori"),
 });
 
-export type FormCreateBerita = z.infer<typeof formCreateBerita>;
+export type TUpdateNewsSchema = z.infer<typeof updateNewsSchema>;
 
 export const formAcara = z.object({
   judul: z.string().min(8, "Nama agenda minimal 8 karakter"),

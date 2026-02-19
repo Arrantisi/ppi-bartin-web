@@ -18,10 +18,10 @@ type EventProps = {
 
 const NavMainEvent = ({ show = true }: { show?: boolean }) => {
   const eventProps: EventProps = [
-    { title: "Home", icon: IconHome, url: "/events" },
-    { title: "Acara", icon: IconCalendarWeek, url: "/events/acara" },
-    { title: "Berita", icon: IconPencilPlus, url: "/events/berita" },
-    { title: "profile", icon: IconUser, url: "/events/profile" },
+    { title: "Home", icon: IconHome, url: "/home" },
+    { title: "Events", icon: IconCalendarWeek, url: "/home/events" },
+    { title: "News", icon: IconPencilPlus, url: "/home/news" },
+    { title: "profile", icon: IconUser, url: "/home/profile" },
   ];
 
   const params = usePathname();

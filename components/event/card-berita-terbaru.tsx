@@ -1,99 +1,120 @@
+"use client";
+
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
-
-type BeritaTerbaruProps = {
-  id: string;
-  image: string;
-  title: string;
-  judul: string;
-  createdBy: {
-    image: string;
-    user: string;
-  };
-  tanggal: string;
-}[];
+import { getNews } from "@/data/news";
+import { supabase } from "@/lib/supabase";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { NewsCaratogorySkeleton } from "../skeleton/news-catagory-skeleton";
+import { formattedDate } from "@/utils/date-format";
+import { Badge } from "../ui/badge";
 
 const CardBeritaTerbaru = () => {
-  const beritaTerbaruProps: BeritaTerbaruProps = [
-    {
-      id: "403720ea-519e-59ec-ab25-5bb2d855de96",
-      image: "/prestasi-news.jpeg",
-      title: "Kegiatan",
-      judul: "Turnamen Futsal Antar Mahasiswa Indonesia di Turki Meriah!",
-      createdBy: {
-        image: "/user-profile-03.png",
-        user: "Jared Washington",
-      },
-      tanggal: "11 Maret 2026",
-    },
-    {
-      id: "0babe669-e503-5f37-a387-b17e66d4468e",
-      image: "/passport-news.jpeg",
-      title: "Kegiatan",
-      judul: "Panduan Perpanjangan ikamet untuk Mahasiswa Indonesia",
-      createdBy: {
-        image: "/user-profile-02.png",
-        user: "Allen Marshall",
-      },
-      tanggal: "10 Feb 2026",
-    },
-    {
-      id: "67ece45c-48fd-5a97-8710-f3286eb391fa",
-      image: "/apartmen-news.jpeg",
-      title: "Kegiatan",
-      judul: "Tips Mencari Apartemen untuk Mahasiswa Baru di Bartin",
-      createdBy: {
-        image: "/user-profile-04.png",
-        user: "Justin Casey",
-      },
-      tanggal: "07 Feb 2026",
-    },
-    {
-      id: "b83d2253-f4b4-571b-b569-7541af4fb350",
-      image: "/nkri-news.jpeg",
-      title: "Kegiatan",
-      judul: "Perayaan Hari Kemerdekaan RI ke-79 di Bartin Penuh Kebersamaan",
-      createdBy: {
-        image: "/user-profile-01.png",
-        user: "Ethan Atkins",
-      },
-      tanggal: "18 Agustus 2025",
-    },
-  ];
+  const queryClient = useQueryClient();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["getAllNews"],
+    queryFn: () => getNews(),
+  });
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("get_all_news")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "news" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "images" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "user" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
+        },
+      )
+      .subscribe((status) => {
+        console.log(status);
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
+  if (!data || data.length < 0) {
+    return <div>Berita tidak ada</div>;
+  }
+
+  if (isLoading) {
+    return (
+      <>
+        {Array.from({ length: 5 }).map((_, idx) => (
+          <NewsCaratogorySkeleton key={idx} />
+        ))}
+      </>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <>
+        {Array.from({ length: 5 }).map((_, idx) => (
+          <NewsCaratogorySkeleton key={idx} />
+        ))}
+      </>
+    );
+  }
 
   return (
     <div className="flex flex-col items-start gap-3 my-3 ">
-      {beritaTerbaruProps.map((news) => (
+      {data.map((news) => (
         <Link
-          href={`/detail/berita/${news.id}`}
-          key={news.id}
+          href={`/home/news/${news.slug}`}
+          key={news.slug}
           className="grid grid-cols-5 w-full hover:bg-muted-foreground/5 p-2 rounded-4xl gap-2"
         >
           <Image
-            src={news.image}
+            src={news.images[0].url}
             alt="berita"
             height={200}
             width={200}
             className="size-36 rounded-4xl col-span-2"
           />
-          <div className="flex flex-col items-start h-36 col-span-3">
+
+          <div className="flex flex-col items-start justify-between h-36 col-span-3">
             <div className="space-y-1">
-              <h3 className="text-sm text-muted-foreground">{news.title}</h3>
-              <h1 className="text-lg/6 font-semibold">{news.judul}</h1>
+              <Badge size={"sm"} className="text-xs rounded-2xl capitalize">
+                {" "}
+                <div className="size-2 rounded-full bg-accent" />
+                {news.catagory}
+              </Badge>
+              <h1 className="text-lg/6 font-semibold line-clamp-2">
+                {news.judul}
+              </h1>
             </div>
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-1">
                 <Avatar className="size-6">
-                  <AvatarImage src={news.createdBy.image} />
+                  <AvatarImage src={news.creator.image || ""} />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-                <span className="text-xs">{news.createdBy.user}</span>
+                <span className="text-xs">{news.creator.username || ""}</span>
               </div>
               <div className="flex items-center gap-1">
                 <div className="size-2 bg-muted-foreground rounded-full" />
                 <span className="text-xs text-muted-foreground">
-                  {news.tanggal}
+                  {formattedDate(news.createdAt)}
                 </span>
               </div>
             </div>

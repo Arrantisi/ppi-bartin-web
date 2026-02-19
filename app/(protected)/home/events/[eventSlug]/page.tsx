@@ -7,8 +7,6 @@ const DetailEventPage = async ({
 }) => {
   const { eventSlug } = await params;
 
-  console.log(eventSlug);
-
   return (
     <div>
       <EventDetail slug={eventSlug} />

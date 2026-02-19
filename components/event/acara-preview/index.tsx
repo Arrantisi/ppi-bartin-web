@@ -12,15 +12,11 @@ import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAcaraPreview } from "@/data/acara";
 import { formattedDate } from "@/utils/date-format";
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { SheetTrigger } from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
-import { SheetForm } from "../sheet-form";
 import { supabase } from "@/lib/supabase";
-import PhotoUpload from "../dialog-upload";
-import {
-  Dialog,
-  DialogTrigger,
-} from "@/components/animate-ui/components/base/dialog";
+
+import { DialogTrigger } from "@/components/animate-ui/components/base/dialog";
 import { toastManager } from "@/components/ui/toast";
 import { publishAcara } from "@/actions/acara";
 import { Spinner } from "@/components/ui/spinner";
@@ -29,8 +25,6 @@ import AvatarParticipant from "../avatar-participant";
 export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
   const router = useRouter();
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [onLoading, setOnLoading] = useState(false);
 
   const queryClient = useQueryClient();
@@ -79,7 +73,7 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
     const fetc = await publishAcara(slug);
     if (fetc.status === "success") {
       toastManager.add({ type: "success", title: "Acara berhasil di publish" });
-      router.push("/events/acara");
+      router.push("/home/events");
     } else {
       toastManager.add({ type: "error", title: fetc.msg });
     }
@@ -93,8 +87,8 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
     return <div className="p-10 text-center">Data tidak ditemukan.</div>;
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+    <div>
+      <div>
         <div className="relative flex flex-col h-screen bg-background overflow-hidden">
           {/* Gambar & Header Sticky */}
           <div className="relative h-[40vh] w-full">
@@ -162,7 +156,7 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
                     image: p.user.image || "",
                   }))}
                   totalParticipant={data.participants.length}
-                  maxCapacity={data.maxCapacity}
+                  maxCapacity={data.maxCapacity || 0}
                 />
               </div>
 
@@ -179,7 +173,7 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
                   <div className="flex flex-col gap-0.5">
                     <span className="text-sm font-semibold">Tanggal</span>
                     <span className="text-xs text-muted-foregroun">
-                      {formattedDate(data.date)}
+                      {formattedDate(data.date || new Date())}
                     </span>
                   </div>
                 </div>
@@ -210,22 +204,7 @@ export const EventPreviewComoponent = ({ slug }: { slug: string }) => {
             </div>
           </div>
         </div>
-        <PhotoUpload
-          catagory="acara"
-          onClose={() => setIsDialogOpen(false)}
-          slug={slug}
-        />
-        <SheetForm
-          onClose={() => setIsSheetOpen(false)}
-          catagory="update"
-          maxCapacity={data.maxCapacity}
-          content={data.content}
-          slug={data.slug}
-          date={data.date}
-          lokasi={data.lokasi}
-          judul={data.judul}
-        />
-      </Sheet>
-    </Dialog>
+      </div>
+    </div>
   );
 };

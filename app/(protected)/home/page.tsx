@@ -3,10 +3,11 @@ import AcaraMendatang from "@/components/event/home/acara-mendatang";
 import BeritaTerbaru from "@/components/event/home/berita-terbaru";
 import ProfileHome from "@/components/event/home/profile";
 import { RenderAcara } from "@/components/event/home/render-acara";
+import { HomeLayoutComponent } from "@/components/layouts/home-layout";
 
 const EventPage = () => {
   return (
-    <div>
+    <HomeLayoutComponent>
       <ProfileHome />
       <AcaraMendatang>
         <RenderAcara />
@@ -14,7 +15,7 @@ const EventPage = () => {
       <BeritaTerbaru>
         <CardBeritaTerbaru />
       </BeritaTerbaru>
-    </div>
+    </HomeLayoutComponent>
   );
 };
 

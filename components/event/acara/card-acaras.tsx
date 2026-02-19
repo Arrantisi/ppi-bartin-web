@@ -71,17 +71,17 @@ const CardAcaras = () => {
             <CardEvent
               id={data.id}
               createdBy={data.creator.username || ""}
-              description={data.content}
+              description={data.content || ""}
               slug={data.slug}
               image={data.images[0]?.url || ""}
               judul={data.judul}
-              lokasi={data.lokasi}
-              tanggal={formattedDate(data.date)}
+              lokasi={data.lokasi || ""}
+              tanggal={formattedDate(data.date || new Date())}
               participant={data.participants.map((p) => ({
                 image: p.user.image || "",
                 id: p.user.id,
               }))}
-              maxCapacity={data.maxCapacity}
+              maxCapacity={data.maxCapacity || 0}
               totalParticipant={data.participants.length}
             />
           )}
