@@ -33,7 +33,7 @@ const HeaderBerita = () => {
           <IconPlus />
         </DialogTrigger>
       </div>
-      <DialogJudul />
+      <DialogJudul catagory="news" />
     </Dialog>
   );
 };

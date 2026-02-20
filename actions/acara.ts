@@ -2,9 +2,40 @@
 
 import { studentAccount } from "@/lib/account";
 import prisma from "@/lib/prisma";
-import { FormAcara } from "@/schemas";
+import { FormAcara, TPostJudulSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import { TServerPrompt } from "@/types";
+import { createSlug } from "@/utils/slug";
+
+export const postEvent = async ({
+  judul,
+}: TPostJudulSchema): Promise<TServerPrompt> => {
+  const { user } = await studentAccount();
+
+  const slug = createSlug(judul);
+
+  try {
+    await prisma.events.create({
+      data: {
+        slug,
+        judul,
+        userId: user.id,
+      },
+    });
+    revalidatePath(`/home/events/uploader/${slug}`);
+
+    return {
+      status: "success",
+      msg: slug,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: "error",
+      msg: "masalah pada server delete acara",
+    };
+  }
+};
 
 export const deleteEvent = async (eventId: string) => {
   const { user } = await studentAccount();

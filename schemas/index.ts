@@ -9,11 +9,11 @@ export const formUsername = z.object({
 
 export type FormUsername = z.infer<typeof formUsername>;
 
-export const postJudulNewsSchema = z.object({
+export const postJudulSchema = z.object({
   judul: z.string().min(6, "judul minimal 6 karakter"),
 });
 
-export type TPostJudulNewsSchema = z.infer<typeof postJudulNewsSchema>;
+export type TPostJudulSchema = z.infer<typeof postJudulSchema>;
 
 export const updateNewsSchema = z.object({
   judul: z.string().min(8, "Judul berita minimal 8 karakter"),

@@ -1,6 +1,6 @@
 import { UploaderPhoto } from "@/components/event/uploader";
 
-const UploaderPageNews = async ({
+const UploaderPageEvent = async ({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -9,9 +9,9 @@ const UploaderPageNews = async ({
 
   return (
     <div>
-      <UploaderPhoto slug={slug} catagory="news" />
+      <UploaderPhoto slug={slug} catagory="events" />
     </div>
   );
 };
 
-export default UploaderPageNews;
+export default UploaderPageEvent;
