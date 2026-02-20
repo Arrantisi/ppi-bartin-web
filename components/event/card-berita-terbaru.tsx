@@ -52,28 +52,18 @@ const CardBeritaTerbaru = () => {
     };
   }, [queryClient]);
 
+  if (isLoading) {
+    return (
+      <>
+        {Array.from({ length: 5 }).map((_, idx) => (
+          <NewsCaratogorySkeleton key={idx} />
+        ))}
+      </>
+    );
+  }
+
   if (!data || data.length < 0) {
     return <div>Berita tidak ada</div>;
-  }
-
-  if (isLoading) {
-    return (
-      <>
-        {Array.from({ length: 5 }).map((_, idx) => (
-          <NewsCaratogorySkeleton key={idx} />
-        ))}
-      </>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <>
-        {Array.from({ length: 5 }).map((_, idx) => (
-          <NewsCaratogorySkeleton key={idx} />
-        ))}
-      </>
-    );
   }
 
   return (

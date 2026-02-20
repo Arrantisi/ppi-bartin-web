@@ -32,6 +32,7 @@ export type TGetNewsBySlug = Awaited<ReturnType<typeof getNewsBySlug>>;
 
 export const getNews = async () => {
   return await prisma.news.findMany({
+    orderBy: { createdAt: "desc" },
     select: {
       slug: true,
       catagory: true,
