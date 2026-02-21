@@ -23,19 +23,18 @@ export const updateNewsSchema = z.object({
 
 export type TUpdateNewsSchema = z.infer<typeof updateNewsSchema>;
 
-export const formAcara = z.object({
+export const updateEventField = z.object({
   judul: z.string().min(8, "Nama agenda minimal 8 karakter"),
   lokasi: z.string().min(1, "Lokasi acara wajib diisi"),
   date: z.date({ error: "Silakan tentukan tanggal acara" }),
   content: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
-  slug: z.string().min(3, "Slug unik wajib diisi"),
   maxCapacity: z
     .number({ error: "Kapasitas harus berupa angka" })
     .int("Harus berupa bilangan bulat")
     .min(1, "Kapasitas minimal 1 orang"),
 });
 
-export type FormAcara = z.infer<typeof formAcara>;
+export type TUpdateEventField = z.infer<typeof updateEventField>;
 
 export const formSchema = z.object({
   nomor_siswa: z.string().length(8, "Nomor induk siswa harus tepat 8 angka"),

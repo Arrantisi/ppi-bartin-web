@@ -1,4 +1,4 @@
-import BeritaEventComoponent from "@/components/event/berita-event";
+import { NewsDetailComponent } from "@/components/event/news-detail";
 
 const DetailBeritaPage = async ({
   params,
@@ -11,7 +11,7 @@ const DetailBeritaPage = async ({
 
   return (
     <div>
-      <BeritaEventComoponent slug={slug} />
+      <NewsDetailComponent slug={slug} />
     </div>
   );
 };

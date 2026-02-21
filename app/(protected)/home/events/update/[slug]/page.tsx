@@ -1,4 +1,4 @@
-import { PostNewsComoponent } from "@/components/event/news/update";
+import { UpdateEventComponent } from "@/components/event/acara/update";
 
 const UpdateEventPage = async ({
   params,
@@ -9,7 +9,7 @@ const UpdateEventPage = async ({
 
   return (
     <div>
-      <PostNewsComoponent slug={slug} />
+      <UpdateEventComponent slug={slug} />
     </div>
   );
 };

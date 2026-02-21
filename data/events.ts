@@ -14,7 +14,7 @@ export const getAllEvents = async () => {
   });
 };
 
-export const getAcaraPreview = async (slug: string) => {
+export const getEventBySlug = async (slug: string) => {
   await studentAccount();
 
   return await prisma.events.findUnique({

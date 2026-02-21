@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getNewsBySlug } from "@/data/news";
 import { formattedDate } from "@/utils/date-format";
 
-const BeritaEventComoponent = ({ slug }: { slug: string }) => {
+export const NewsDetailComponent = ({ slug }: { slug: string }) => {
   const router = useRouter();
 
   const { data, isLoading } = useQuery({
@@ -115,5 +115,3 @@ const BeritaEventComoponent = ({ slug }: { slug: string }) => {
     </div>
   );
 };
-
-export default BeritaEventComoponent;

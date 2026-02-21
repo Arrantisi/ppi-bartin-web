@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAcaraPreview } from "@/data/acara";
+import { getEventBySlug } from "@/data/events";
 import { formattedDate } from "@/utils/date-format";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -29,7 +29,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
 
   const { data, isLoading } = useQuery({
     queryKey: ["getPreviewAcara", slug],
-    queryFn: () => getAcaraPreview(slug),
+    queryFn: () => getEventBySlug(slug),
     enabled: !!slug && slug !== "undefined",
   });
 

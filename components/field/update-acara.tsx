@@ -1,57 +1,45 @@
 "use client";
 
-import { FormAcara, formAcara } from "@/schemas";
+import { updateEventField, TUpdateEventField } from "@/schemas";
 import { useForm } from "@tanstack/react-form";
+import { useRouter } from "next/navigation";
 import { Field, FieldLabel, FieldDescription, FieldError } from "../ui/field";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { DatePickerField } from "../event/date-picker-field";
 import { toastManager } from "../ui/toast";
 import { updateAcara } from "@/actions/acara";
 import { Textarea } from "../ui/textarea";
 import props from "@/data/create-acara-props.json";
-import slugify from "slugify";
-import { IconSparkles } from "@tabler/icons-react";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
+import { useQuery } from "@tanstack/react-query";
+import { getEventBySlug } from "@/data/events";
+import Link from "next/link";
 
-export const UpdateAcaraField = ({
-  onClose,
-  content,
-  date,
-  judul,
-  lokasi,
-  slug,
-  maxCapacity,
-}: {
-  onClose: () => void;
-  judul: string;
-  slug: string;
-  date: Date;
-  lokasi: string;
-  content: string;
-  maxCapacity: number;
-}) => {
-  // const { data: session } = useQuery({
-  //   queryKey: ["getUpdateAcara", slug],
-  //   queryFn: () => getAcaraPreview(slug),
-  // });
-
+export const UpdateAcaraField = ({ slug }: { slug: string }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const { data } = useQuery({
+    queryKey: ["getEventBySlug"],
+    queryFn: () => getEventBySlug(slug),
+  });
+
+  console.log(slug);
 
   const form = useForm({
     defaultValues: {
-      slug,
-      judul,
-      lokasi,
-      date,
-      content,
-      maxCapacity,
+      judul: data?.judul || "",
+      lokasi: data?.lokasi || "",
+      date: data?.date || new Date(),
+      content: data?.content || "",
+      maxCapacity: data?.maxCapacity || 0,
     },
-    validators: { onSubmit: formAcara },
-    onSubmit: async ({ value }: { value: FormAcara }) => {
+    validators: { onSubmit: updateEventField },
+    onSubmit: async ({ value }: { value: TUpdateEventField }) => {
       setIsLoading(true);
-      const matched = await updateAcara(value);
+      const matched = await updateAcara(slug, value);
       if (matched.status === "error") {
         toastManager.add({
           type: "error",
@@ -59,28 +47,16 @@ export const UpdateAcaraField = ({
           description: matched.msg,
         });
       } else if (matched.status === "success") {
-        toastManager.add({
-          type: "success",
-          title: "berhasil update",
-          description: matched.msg,
-        });
-        onClose();
+        router.push(`/home/events`);
       }
+
       setIsLoading(false);
     },
   });
 
-  const handleSlug = () => {
-    const titleValue = form.getFieldValue("judul");
-
-    const slug = slugify(titleValue, {
-      lower: true,
-      strict: true,
-      remove: /[*+~.()'"!:@]/g,
-    });
-
-    form.setFieldValue("slug", slug);
-  };
+  if (!data) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col justify-between h-full pb-4">
@@ -111,40 +87,6 @@ export const UpdateAcaraField = ({
 
                   <FieldDescription className="text-[12px] leading-tight">
                     {props.textarea[0].description}
-                  </FieldDescription>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="slug">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field>
-                  <div className="flex justify-between ">
-                    <FieldLabel>{props.textarea[4].label}</FieldLabel>
-                    <Button
-                      size={"xs"}
-                      className="rounded-full text-xs"
-                      onClick={handleSlug}
-                    >
-                      Generate Slug <IconSparkles />
-                    </Button>
-                  </div>
-
-                  <Textarea
-                    id={field.name}
-                    placeholder={props.textarea[4].placeholder}
-                    className="focus-visible:ring-primary"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-
-                  <FieldDescription className="text-[12px] leading-tight">
-                    {props.textarea[4].description}
                   </FieldDescription>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
@@ -233,7 +175,7 @@ export const UpdateAcaraField = ({
                     placeholder={props.textarea[3].placeholder}
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="min-h-[155px]"
+                    className="min-h-[350px]"
                   />
                   <FieldDescription className="text-[12px] leading-tight">
                     {props.textarea[3].description}
@@ -245,26 +187,28 @@ export const UpdateAcaraField = ({
           </form.Field>
         </form>
       </div>
-      <div className="flex items-center justify-end gap-2">
-        <Button
-          variant={"outline"}
-          className="text-sm rounded-full px-4 py-3 w-28"
-          onClick={() => onClose()}
+      <div className="grid grid-cols-2 items-center justify-center gap-2 mt-4">
+        <Link
+          href={"/home/events"}
+          className={buttonVariants({
+            variant: "secondary",
+            className: "text-sm rounded-full px-4 py-3 w-full",
+          })}
         >
-          Cancel
-        </Button>
+          cancel
+        </Link>
         <Button
           disabled={isLoading}
-          className="text-sm rounded-full px-4 py-3 w-28"
+          className="text-sm rounded-full px-4 py-3 w-full"
           form="create-acara-form"
           type="submit"
         >
           {isLoading ? (
             <span className="flex items-center gap-1">
-              <Spinner /> Uploading
+              <Spinner /> Publishing
             </span>
           ) : (
-            "Upload"
+            "Publish"
           )}
         </Button>
       </div>
