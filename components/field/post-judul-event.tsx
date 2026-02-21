@@ -5,13 +5,13 @@ import { useForm } from "@tanstack/react-form";
 import { Button } from "../ui/button";
 import { Field, FieldError } from "../ui/field";
 import { Textarea } from "../ui/textarea";
-import { postNews } from "@/actions/news";
 import { toastManager } from "../ui/toast";
 import { useRouter } from "next/navigation";
+import { postEvent } from "@/actions/acara";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
 
-export const PostJudulNews = () => {
+export const PostJudulEvent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -22,14 +22,14 @@ export const PostJudulNews = () => {
     validators: { onSubmit: postJudulSchema },
     onSubmit: async ({ value }: { value: TPostJudulSchema }) => {
       setIsLoading(true);
-      const data = await postNews(value);
+      const data = await postEvent(value);
       if (data.status === "error") {
         toastManager.add({
           type: "error",
           title: "ada yg salah coba ganti judul",
         });
-      } else if (data.status === "success") {
-        router.push(`/home/news/uploader/${data.msg}`);
+      } else {
+        router.push(`/home/events/uploader/${data.msg}`);
       }
       setIsLoading(false);
     },
@@ -54,7 +54,7 @@ export const PostJudulNews = () => {
                   className="w-full h-24"
                   data-invalid={isInvalid}
                   name={field.name}
-                  placeholder="Apa judul berita menarik yang ingin Anda bagikan?"
+                  placeholder="Buat acara yang seru apa hari ini?"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />

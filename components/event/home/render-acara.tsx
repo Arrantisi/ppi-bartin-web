@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllEvents } from "@/data/acara";
+import { getAllEvents } from "@/data/events";
 import { formattedDate } from "@/utils/date-format";
 import CardEvent from "../card";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

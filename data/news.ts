@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 
 export const getNewsBySlug = async (slug: string) => {
-  return prisma.news.findUnique({
+  return await prisma.news.findUnique({
     where: { slug },
     select: {
       catagory: true,

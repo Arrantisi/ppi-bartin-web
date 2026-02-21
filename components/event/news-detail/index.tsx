@@ -6,9 +6,25 @@ import { IconArrowLeft, IconShare, IconBookmark } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { getNewsBySlug } from "@/data/news";
+import { formattedDate } from "@/utils/date-format";
 
-const BeritaEventComoponent = () => {
+export const NewsDetailComponent = ({ slug }: { slug: string }) => {
   const router = useRouter();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["getNewsBySlug"],
+    queryFn: () => getNewsBySlug(slug),
+  });
+
+  if (isLoading) {
+    return <div>sedang memuat data</div>;
+  }
+
+  if (!data) {
+    return <div>data tidak di temukan</div>;
+  }
 
   return (
     <div className="max-w-2xl mx-auto bg-background min-h-screen pb-10">
@@ -46,20 +62,22 @@ const BeritaEventComoponent = () => {
       <div className="px-5">
         {/* Author & Meta */}
         <div className="flex items-center gap-3 mt-6">
-          <Avatar className="size-10 border">
-            <AvatarImage src="/user-profile-02.png" />
+          <Avatar className="size-10">
+            <AvatarImage src={data.creator.image || ""} />
             <AvatarFallback>DP</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <p className="text-sm font-semibold">Dapta Ganteng</p>
+            <p className="text-sm font-semibold capitalize">
+              {data.creator.username || ""}
+            </p>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>15 Feb 2026</span>
+              <span>{formattedDate(data.createdAt)}</span>
               <div className="size-1 rounded-full bg-muted-foreground" />
               <Badge
                 variant="secondary"
                 className="text-[10px] h-4 leading-none"
               >
-                Beasiswa
+                {data.catagory}
               </Badge>
             </div>
           </div>
@@ -67,13 +85,13 @@ const BeritaEventComoponent = () => {
 
         {/* Title */}
         <h1 className="text-2xl md:text-3xl font-bold mt-4 leading-tight">
-          Beasiswa Türkiye Bursları 2025 Dibuka! Simak Syarat dan Cara Daftarnya
+          {data.judul}
         </h1>
 
         {/* Hero Image */}
         <div className="relative aspect-video w-full mt-6 overflow-hidden rounded-3xl shadow-lg">
           <Image
-            src="/prestasi-news.jpeg"
+            src={data.images[0].url}
             alt="Beasiswa Turki"
             fill
             className="object-cover"
@@ -84,32 +102,7 @@ const BeritaEventComoponent = () => {
         {/* Bagian Article - Khusus Teks Beasiswa */}
         <article className="mt-8 px-5 max-w-2xl mx-auto">
           <div className="text-foreground/90 leading-relaxed whitespace-pre-line text-base md:text-lg tracking-wide">
-            {`ISTANBUL, TURKI - Kabar gembira bagi kamu yang ingin melanjutkan studi ke Turki! Pemerintah Turki kembali membuka pendaftaran beasiswa Türkiye Burslari untuk tahun akademik 2025-2026. Beasiswa bergengsi ini menawarkan kesempatan emas untuk kuliah gratis di universitas-universitas terbaik Turki dengan fasilitas yang sangat lengkap.
-
-APA ITU TÜRKIYE BURSLARI?
-
-Türkiye Burslari adalah program beasiswa penuh yang diberikan oleh pemerintah Turki melalui Presidency for Turks Abroad and Related Communities (YTB). Beasiswa ini terbuka untuk calon mahasiswa internasional dari seluruh dunia, termasuk Indonesia, untuk program Sarjana (S1), Magister (S2), dan Doktoral (S3).
-
-FASILITAS BEASISWA
-
-Beasiswa Türkiye Burslari menawarkan fasilitas yang sangat komplet, antara lain:
-
-✅ Biaya kuliah GRATIS penuh
-✅ Tunjangan bulanan (sekitar 5.000 - 7.000 TL tergantung jenjang)
-✅ Akomodasi/tempat tinggal gratis di asrama
-✅ Asuransi kesehatan
-✅ Tiket pesawat pulang-pergi (1x setahun)
-✅ Kursus bahasa Turki gratis selama 1 tahun
-✅ Tidak ada ikatan dinas setelah lulus
-
-PERSYARATAN UMUM
-
-Untuk mendaftar Türkiye Burslari 2025, kamu harus memenuhi persyaratan berikut:
-
-UNTUK S1 (SARJANA):
-- Belum berusia 21 tahun pada 1 Januari tahun pendaftaran
-- Lulusan SMA/sederajat dengan nilai minimal 70%
-- Belum pernah terdaftar di universitas Turki untuk program yang sama`.trim()}
+            {(data.content || "").trim()}
           </div>
 
           <div className="mt-10 pt-6 border-t border-muted text-xs text-muted-foreground text-center">
@@ -122,5 +115,3 @@ UNTUK S1 (SARJANA):
     </div>
   );
 };
-
-export default BeritaEventComoponent;

@@ -2,9 +2,40 @@
 
 import { studentAccount } from "@/lib/account";
 import prisma from "@/lib/prisma";
-import { FormAcara } from "@/schemas";
+import { TUpdateEventField, TPostJudulSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import { TServerPrompt } from "@/types";
+import { createSlug } from "@/utils/slug";
+
+export const postEvent = async ({
+  judul,
+}: TPostJudulSchema): Promise<TServerPrompt> => {
+  const { user } = await studentAccount();
+
+  const slug = createSlug(judul);
+
+  try {
+    await prisma.events.create({
+      data: {
+        slug,
+        judul,
+        userId: user.id,
+      },
+    });
+    revalidatePath(`/home/events/uploader/${slug}`);
+
+    return {
+      status: "success",
+      msg: slug,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: "error",
+      msg: "masalah pada server delete acara",
+    };
+  }
+};
 
 export const deleteEvent = async (eventId: string) => {
   const { user } = await studentAccount();
@@ -107,22 +138,29 @@ export const updateEventPhoto = async (
   }
 };
 
-export const updateAcara = async ({
-  content,
-  date,
-  judul,
-  lokasi,
-  slug,
-  maxCapacity,
-}: FormAcara): Promise<TServerPrompt> => {
+export const updateAcara = async (
+  slug: string,
+  { content, date, judul, lokasi, maxCapacity }: TUpdateEventField,
+): Promise<TServerPrompt> => {
   await studentAccount();
 
   try {
+    const updattedSlug = createSlug(judul);
+
     await prisma.events.update({
       where: { slug },
-      data: { content, date, judul, lokasi, slug, maxCapacity },
+      data: {
+        content,
+        date,
+        judul,
+        slug: updattedSlug,
+        lokasi,
+        maxCapacity,
+        status: "PUSBLISH",
+      },
     });
 
+    revalidatePath("/home/events");
     return {
       status: "success",
       msg: "Acara berhasil di update",
@@ -132,44 +170,6 @@ export const updateAcara = async ({
     return {
       status: "error",
       msg: "masalah pada server update acara",
-    };
-  }
-};
-
-export const createAcara = async ({
-  slug,
-  content,
-  date,
-  judul,
-  lokasi,
-  maxCapacity,
-}: FormAcara) => {
-  const session = await studentAccount();
-
-  try {
-    await prisma.events.create({
-      data: {
-        maxCapacity,
-        content,
-        date,
-        judul,
-        lokasi,
-        slug,
-        userId: session.user.id,
-      },
-    });
-    revalidatePath(`/previews/${slug}`);
-
-    return {
-      status: "success",
-      msg: "Acara berhasil di buat",
-      slug: slug,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      status: "error",
-      msg: "masalah pada server buat acara",
     };
   }
 };

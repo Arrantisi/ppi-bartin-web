@@ -1,6 +1,6 @@
 import { PostNewsComoponent } from "@/components/event/news/update";
 
-const PostNewsPage = async ({
+const UpdateNewsPage = async ({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -14,4 +14,4 @@ const PostNewsPage = async ({
   );
 };
 
-export default PostNewsPage;
+export default UpdateNewsPage;

@@ -11,23 +11,25 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAcaraPreview } from "@/data/acara";
+import { getEventBySlug } from "@/data/events";
 import { formattedDate } from "@/utils/date-format";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import DrawerAcara from "../drawer-acara";
 import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
+import AvatarParticipant from "../avatar-participant";
+import { authClient } from "@/lib/auth-client";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
+  const { data: session } = authClient.useSession();
   const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
-
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["getPreviewAcara", slug],
-    queryFn: () => getAcaraPreview(slug),
+    queryFn: () => getEventBySlug(slug),
     enabled: !!slug && slug !== "undefined",
   });
 
@@ -54,6 +56,11 @@ export const EventDetail = ({ slug }: { slug: string }) => {
 
   if (!data)
     return <div className="p-10 text-center">Data tidak ditemukan.</div>;
+
+  const userJoined = data.participants.find(
+    ({ user }) => user.id === session?.user.id,
+  );
+  const capacityFull = data.participants.length >= (data.maxCapacity || 0);
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
@@ -120,10 +127,13 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                   {data.creator.username}
                 </span>
               </p>
-              {/* <AvatarParticipant
-              participant={participant}
-              totalParticipant={totalParticipant}
-            /> */}
+              <AvatarParticipant
+                participant={data.participants.map((img) => ({
+                  image: img.user.image || "",
+                }))}
+                totalParticipant={data.participants.length}
+                maxCapacity={data.maxCapacity || 0}
+              />
             </div>
 
             <div className="prose prose-sm text-muted-foreground mb-8">
@@ -159,13 +169,20 @@ export const EventDetail = ({ slug }: { slug: string }) => {
           </div>
 
           {/* Action Button */}
-          <div className="pb-8 mt-auto">
+
+          {capacityFull ? (
+            <div className="text-center text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+              sudah penuh
+            </div>
+          ) : userJoined?.user.id === session?.user.id ? (
+            <div className="text-center text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+              kamu telah join
+            </div>
+          ) : (
             <DrawerTrigger asChild>
-              <Button className="w-full rounded-full py-7 text-base font-semibold shadow-lg shadow-primary/20 transition-transform active:scale-[0.98]">
-                Daftar Sekarang
-              </Button>
+              <Button className="rounded-full text-xs">Daftar Sekarang</Button>
             </DrawerTrigger>
-          </div>
+          )}
         </div>
       </div>
 

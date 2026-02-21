@@ -2,9 +2,10 @@
 
 import { studentAccount } from "@/lib/account";
 import prisma from "@/lib/prisma";
-import { TPostJudulNewsSchema, TUpdateNewsSchema } from "@/schemas";
+import { TUpdateNewsSchema, TPostJudulSchema } from "@/schemas";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
+import { revalidatePath } from "next/cache";
 
 export const updateNewsContent = async (
   slug: string,
@@ -65,7 +66,7 @@ export const updateNewsPhoto = async (
 
 export const postNews = async ({
   judul,
-}: TPostJudulNewsSchema): Promise<TServerPrompt> => {
+}: TPostJudulSchema): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
 
   const slug = createSlug(judul);
@@ -79,6 +80,7 @@ export const postNews = async ({
       },
     });
 
+    revalidatePath(`/home/news/uploader/${slug}`);
     return {
       status: "success",
       msg: slug,
