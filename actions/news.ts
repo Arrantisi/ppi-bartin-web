@@ -13,9 +13,17 @@ export const updateNewsContent = async (
 ): Promise<TServerPrompt> => {
   await studentAccount();
   try {
+    const updateedSlug = createSlug(judul);
+
     await prisma.news.update({
       where: { slug },
-      data: { catagory, content, judul },
+      data: {
+        catagory,
+        content,
+        judul,
+        slug: updateedSlug,
+        status: "PUSBLISH",
+      },
     });
 
     return {

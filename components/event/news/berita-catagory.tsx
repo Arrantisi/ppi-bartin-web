@@ -107,6 +107,7 @@ const BeritaCatagory = () => {
             .filter((news) =>
               category.ctg === "all" ? true : news.catagory === category.ctg,
             )
+            .filter((news) => news.status === "PUSBLISH")
             .map((news) => (
               <Link
                 href={`/home/news/${news.slug}`}
@@ -114,7 +115,7 @@ const BeritaCatagory = () => {
                 className="grid grid-cols-5 w-full hover:bg-muted-foreground/5 p-2 rounded-4xl gap-2"
               >
                 <Image
-                  src={news.images[0].url}
+                  src={news.images[0]?.url}
                   alt="berita"
                   height={200}
                   width={200}
