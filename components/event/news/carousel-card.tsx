@@ -25,7 +25,7 @@ const CarouselCard = () => {
 
   useEffect(() => {
     const channel = supabase
-      .channel("get_all_news")
+      .channel("getCoursellCard")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "news" },
@@ -42,13 +42,13 @@ const CarouselCard = () => {
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "user" },
+        { event: "*", schema: "public", table: "participants" },
         () => {
           queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
         },
       )
       .subscribe((status) => {
-        console.log(status);
+        console.log("coursel-card", status);
       });
 
     return () => {

@@ -51,13 +51,13 @@ const BeritaCatagory = () => {
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "user" },
+        { event: "*", schema: "public", table: "participants" },
         () => {
           queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
         },
       )
       .subscribe((status) => {
-        console.log(status);
+        console.log("berita-catagory", status);
       });
 
     return () => {
