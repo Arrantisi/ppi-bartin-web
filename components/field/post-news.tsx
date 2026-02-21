@@ -128,7 +128,12 @@ export const PostNewsField = ({
             ratio={4 / 3}
             className="bg-muted rounded-4xl overflow-hidden border"
           >
-            <Image src={urlImage} alt="4:3" fill className="object-cover" />
+            <Image
+              src={urlImage || ""}
+              alt="4:3"
+              fill
+              className="object-cover"
+            />
           </AspectRatio>
         </div>
         <form.Field name="content">

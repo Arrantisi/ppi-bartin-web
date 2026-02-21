@@ -15,6 +15,8 @@ export const PostNewsComoponent = ({ slug }: { slug: string }) => {
     queryFn: () => getNewsBySlug(slug),
   });
 
+  console.log(slug);
+
   const router = useRouter();
 
   return (

@@ -148,7 +148,11 @@ export const UploaderPhoto = ({
       </AspectRatio>
 
       <Link
-        href={`/home/events/update/${slug}`}
+        href={
+          catagory === "events"
+            ? `/home/events/update/${slug}`
+            : `/home/news/update/${slug}`
+        }
         className={cn(
           "flex justify-end -mr-14 opacity-0",
           !isUploading &&
