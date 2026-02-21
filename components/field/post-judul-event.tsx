@@ -28,7 +28,7 @@ export const PostJudulEvent = () => {
           type: "error",
           title: "ada yg salah coba ganti judul",
         });
-      } else {
+      } else if (data.status === "success") {
         router.push(`/home/events/uploader/${data.msg}`);
       }
       setIsLoading(false);
