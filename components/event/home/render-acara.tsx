@@ -53,11 +53,12 @@ export const RenderAcara = () => {
     return <SkeletonCardAcara />;
   }
 
-  if (!events || events.length < 0) {
+  const filterEvent = events?.filter(
+    (publish) => publish.status === "PUSBLISH",
+  );
+  if (!filterEvent || filterEvent.length === 0) {
     return <div>event terbaru tidak ada</div>;
   }
-
-  const filterEvent = events.filter((publish) => publish.status === "PUSBLISH");
 
   const data = filterEvent[0];
 

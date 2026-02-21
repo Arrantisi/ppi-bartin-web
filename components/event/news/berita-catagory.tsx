@@ -75,8 +75,8 @@ const BeritaCatagory = () => {
     );
   }
 
-  if (!data || data.length < 0) {
-    return <div>Berita tidak ada</div>;
+  if (!data || data.length === 0) {
+    return <div>berita belum update</div>;
   }
 
   return (

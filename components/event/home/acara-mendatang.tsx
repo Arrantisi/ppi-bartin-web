@@ -6,7 +6,7 @@ const AcaraMendatang = ({ children }: { children: React.ReactNode }) => {
       <div className="flex justify-between items-center">
         <h1 className="font-semibold text-lg tracking-tight">Acara Tebaru</h1>
         <Link
-          href={"/events/acara"}
+          href={"/home/events"}
           className="text-primary font-semibold text-sm"
         >
           selengkapnya

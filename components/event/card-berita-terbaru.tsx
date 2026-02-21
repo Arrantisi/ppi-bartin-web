@@ -62,13 +62,13 @@ const CardBeritaTerbaru = () => {
     );
   }
 
-  if (!data || data.length < 0) {
+  if (!data || data.length === 0) {
     return <div>Berita tidak ada</div>;
   }
 
   return (
     <div className="flex flex-col items-start gap-3 my-3 ">
-      {data.map((news) => (
+      {data.slice(0, 5).map((news) => (
         <Link
           href={`/home/news/${news.slug}`}
           key={news.slug}

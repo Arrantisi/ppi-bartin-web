@@ -8,7 +8,7 @@ const BeritaTerbaru = ({ children }: { children: React.ReactNode }) => {
           berita terbaru
         </h1>
         <Link
-          href={"/events/berita"}
+          href={"/home/news"}
           className="text-primary font-semibold text-sm"
         >
           selengkapnya

@@ -64,7 +64,7 @@ const CarouselCard = () => {
     );
   }
 
-  if (!data || data.length < 0) {
+  if (!data || data.length === 0) {
     return <div>Berita tidak ada</div>;
   }
 

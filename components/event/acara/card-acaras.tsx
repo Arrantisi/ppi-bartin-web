@@ -58,33 +58,32 @@ const CardAcaras = () => {
       </div>
     );
   }
+  const filteredEvent = session?.filter((event) => event.status === "PUSBLISH");
 
-  if (!session) {
+  if (!filteredEvent || filteredEvent?.length === 0) {
     return <div>Event tidak ada</div>;
   }
 
   return (
     <div>
-      {session.map((data) => (
+      {filteredEvent.map((data) => (
         <div key={data.id} className="my-3">
-          {data.status === "PUSBLISH" && (
-            <CardEvent
-              id={data.id}
-              createdBy={data.creator.username || ""}
-              description={data.content || ""}
-              slug={data.slug}
-              image={data.images[0]?.url || ""}
-              judul={data.judul}
-              lokasi={data.lokasi || ""}
-              tanggal={formattedDate(data.date || new Date())}
-              participant={data.participants.map((p) => ({
-                image: p.user.image || "",
-                id: p.user.id,
-              }))}
-              maxCapacity={data.maxCapacity || 0}
-              totalParticipant={data.participants.length}
-            />
-          )}
+          <CardEvent
+            id={data.id}
+            createdBy={data.creator.username || ""}
+            description={data.content || ""}
+            slug={data.slug}
+            image={data.images[0]?.url || ""}
+            judul={data.judul}
+            lokasi={data.lokasi || ""}
+            tanggal={formattedDate(data.date || new Date())}
+            participant={data.participants.map((p) => ({
+              image: p.user.image || "",
+              id: p.user.id,
+            }))}
+            maxCapacity={data.maxCapacity || 0}
+            totalParticipant={data.participants.length}
+          />
         </div>
       ))}
     </div>
