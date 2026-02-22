@@ -9,7 +9,12 @@ export const getProfileUser = async () => {
   const session = await studentAccount();
   return prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { image: true, username: true },
+    select: {
+      image: true,
+      username: true,
+      name: true,
+      nomorSiswa: true,
+    },
   });
 };
 

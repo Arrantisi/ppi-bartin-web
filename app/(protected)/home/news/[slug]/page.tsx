@@ -1,4 +1,4 @@
-import { NewsDetailComponent } from "@/components/event/news-detail";
+import { NewsDetailComponent } from "@/components/event/news/news-detail";
 
 const DetailBeritaPage = async ({
   params,
