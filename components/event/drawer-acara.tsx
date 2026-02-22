@@ -9,8 +9,8 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "../ui/drawer";
-import { joinEvent } from "@/actions/acara";
-import { toastManager } from "../ui/toast";
+import { joinEvent } from "@/server/actions/acara";
+import { goeyToast } from "../ui/goey-toaster";
 import { Spinner } from "../ui/spinner";
 import { useState } from "react";
 
@@ -28,12 +28,16 @@ const DrawerAcara = ({
   const [onLoading, setOnLoading] = useState(false);
 
   const handleJoinEvent = async () => {
-    setOnLoading(false);
+    setOnLoading(true);
     const fetch = await joinEvent(eventId);
     if (fetch.status === "error") {
-      toastManager.add({ type: "error", title: fetch.msg });
+      goeyToast.error("Kesalahan", {
+        description: "Maaf, Tidak bisa join event",
+      });
     } else if (fetch.status === "success") {
-      toastManager.add({ type: "success", title: fetch.msg });
+      goeyToast.success("Berhasil", {
+        description: "Selamat, kamu sudah join event",
+      });
     }
     setOnLoading(false);
     onClose();

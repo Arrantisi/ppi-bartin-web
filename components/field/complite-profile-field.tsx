@@ -6,10 +6,10 @@ import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { ButtonField } from "../buttons";
-import { completeProfile } from "@/lib/action";
-import { toastManager } from "../ui/toast";
+import { completeProfile } from "@/server/actions/setting-user";
 import { useRouter } from "next/navigation";
 import { Card } from "../ui/card";
+import { goeyToast } from "../ui/goey-toaster";
 
 const RegisterField = () => {
   const [loading, setLoading] = useState(false);
@@ -27,7 +27,8 @@ const RegisterField = () => {
     },
     onSubmit: async ({ value }: { value: FormSchema }) => {
       setLoading(true);
-      toastManager.promise(
+
+      goeyToast.promise(
         new Promise<string>(async (resolve, rejects) => {
           const matched = await completeProfile(
             value.nomor_siswa,
@@ -41,19 +42,13 @@ const RegisterField = () => {
           }
         }),
         {
-          loading: {
-            title: "Sedang Memverifikasi",
-            description: "Mencocokkan data kamu dengan database PPI Bartin...",
+          loading: "Menyinkronkan...",
+          success: "Data sesuai",
+          error: "terjadi kesalahan",
+          description: {
+            success: "kini kamu sudah menjadi bagian ppi bartin",
+            error: "sesuaikan dengan data yang kamu kirim di google form",
           },
-          success: () => ({
-            title: "Verifikasi Berhasil",
-            description: `Mantap! Data kamu sudah sesuai.`,
-          }),
-          error: () => ({
-            title: "Data Tidak Cocok",
-            description:
-              "NIS atau Nama yang kamu masukkan tidak ditemukan di sistem. Silakan hubungi admin jika ini kesalahan.",
-          }),
         },
       );
 

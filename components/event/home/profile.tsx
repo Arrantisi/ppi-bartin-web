@@ -1,6 +1,6 @@
 "use client";
 
-import { getProfileUser } from "@/actions/user";
+import { getProfileUser } from "@/server/actions/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";

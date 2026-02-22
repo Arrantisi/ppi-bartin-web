@@ -3,13 +3,13 @@
 import { formUsername, FormUsername } from "@/schemas";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
-import { toastManager } from "../ui/toast";
-import { postUsername } from "@/actions/user";
+import { postUsername } from "@/server/actions/user";
 import { Field, FieldDescription, FieldError } from "../ui/field";
 import { Input } from "../ui/input";
-import props from "@/data/username-props.json";
+import props from "@/props/username-props.json";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
+import { goeyToast } from "../ui/goey-toaster";
 
 export const UsernameField = ({ onClose }: { onClose: () => void }) => {
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ export const UsernameField = ({ onClose }: { onClose: () => void }) => {
     },
     onSubmit: async ({ value }: { value: FormUsername }) => {
       setLoading(true);
-      toastManager.promise(
+      goeyToast.promise(
         new Promise<string>(async (resolve, rejects) => {
           const matched = await postUsername(value);
           if (matched.status === "success") {
@@ -34,18 +34,13 @@ export const UsernameField = ({ onClose }: { onClose: () => void }) => {
           }
         }),
         {
-          loading: {
-            title: "Sedang Memverifikasi",
-            description: "Mencocokkan data lu dengan database PPI Bartin...",
+          loading: "Memverifikasi...",
+          success: "Verifikasi Berhasil",
+          error: "Something went wrong",
+          description: {
+            success: `Mantap! kamu dah punya username baru ${value.username}`,
+            error: "Username sudah ada yang make.",
           },
-          success: () => ({
-            title: "Verifikasi Berhasil",
-            description: `Mantap! Lu dah punya username baru.`,
-          }),
-          error: () => ({
-            title: "Data Tidak Cocok",
-            description: "Username lu ada yang sama.",
-          }),
         },
       );
 

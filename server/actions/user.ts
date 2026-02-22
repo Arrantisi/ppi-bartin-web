@@ -1,6 +1,6 @@
 "use server";
 
-import { studentAccount } from "@/lib/account";
+import { studentAccount } from "../actions/account";
 import prisma from "@/lib/prisma";
 import { FormUsername } from "@/schemas";
 import { TServerPrompt } from "@/types";

@@ -1,7 +1,7 @@
 "use server";
 
-import { studentAccount } from "@/lib/account";
 import prisma from "@/lib/prisma";
+import { studentAccount } from "../actions/account";
 
 export const getAllEvents = async () => {
   return await prisma.events.findMany({

@@ -8,12 +8,12 @@ import {
 } from "@/components/ui/carousel";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { getNews } from "@/data/news";
+import { getNews } from "@/server/data/news";
 import { supabase } from "@/lib/supabase";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { formattedDate } from "@/utils/date-format";
-import { NewsCorouselSkelet } from "@/components/skeleton/news-corousel-skeleton";
+import { NewsCorouselSkelet } from "@/components/skeletons/news-corousel-skeleton";
 
 const CarouselCard = () => {
   const queryClient = useQueryClient();

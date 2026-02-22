@@ -11,10 +11,13 @@ import {
   DialogTrigger,
 } from "@/components/animate-ui/components/base/dialog";
 import { DialogJudul } from "../dialog-judul";
+import { useState } from "react";
 
 const HeaderAcara = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <h1 className="text-lg font-semibold">Events</h1>
       <p className="text-xs text-muted-foreground capitalize">
         Semua Event seru ada disini
@@ -33,7 +36,7 @@ const HeaderAcara = () => {
           <IconPlus />
         </DialogTrigger>
       </div>
-      <DialogJudul catagory="event" />
+      <DialogJudul catagory="events" />
     </Dialog>
   );
 };

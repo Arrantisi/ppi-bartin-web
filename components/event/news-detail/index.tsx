@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
-import { getNewsBySlug } from "@/data/news";
+import { getNewsBySlug } from "@/server/data/news";
 import { formattedDate } from "@/utils/date-format";
 
 export const NewsDetailComponent = ({ slug }: { slug: string }) => {

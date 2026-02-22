@@ -1,6 +1,6 @@
 "use server";
 
-import { studentAccount } from "@/lib/account";
+import { studentAccount } from "@/server/actions/account";
 import prisma from "@/lib/prisma";
 import { TUpdateEventField, TPostJudulSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";

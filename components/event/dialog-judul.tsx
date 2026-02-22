@@ -1,13 +1,13 @@
+import { TCatagory } from "@/types";
 import {
   DialogHeader,
   DialogDescription,
   DialogPopup,
   DialogTitle,
 } from "../animate-ui/components/base/dialog";
-import { PostJudulEvent } from "../field/post-judul-event";
-import { PostJudulNews } from "../field/post-judul-news";
+import { PostJudulEvent } from "../field/post-judul";
 
-export const DialogJudul = ({ catagory }: { catagory: "news" | "event" }) => {
+export const DialogJudul = ({ catagory }: TCatagory) => {
   return (
     <DialogPopup
       showCloseButton={false}
@@ -24,7 +24,7 @@ export const DialogJudul = ({ catagory }: { catagory: "news" | "event" }) => {
         </DialogDescription>
       </DialogHeader>
       <div className="w-full">
-        {catagory === "news" ? <PostJudulNews /> : <PostJudulEvent />}
+        <PostJudulEvent catagory={catagory} />
       </div>
     </DialogPopup>
   );

@@ -8,14 +8,14 @@ import { cn } from "@/lib/utils";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getNews } from "@/data/news";
+import { getNews } from "@/server/data/news";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { formattedDate } from "@/utils/date-format";
 import { Badge } from "@/components/ui/badge";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Skeleton } from "@/components/ui/skeleton";
-import { NewsCaratogorySkeleton } from "@/components/skeleton/news-catagory-skeleton";
+import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
 
 const catagoryTrigger = [
   { ctg: "all" },

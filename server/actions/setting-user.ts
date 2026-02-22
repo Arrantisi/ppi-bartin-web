@@ -1,9 +1,9 @@
 "use server";
 
 import { headers } from "next/headers";
-import { auth } from "./auth";
-import prisma from "./prisma";
-import { studentAccount } from "./account";
+import { auth } from "../../lib/auth";
+import prisma from "../../lib/prisma";
+import { studentAccount } from "@/server/actions/account";
 
 interface IServerPrompt {
   status: "error" | "success";

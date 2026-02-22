@@ -14,10 +14,10 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { toastManager } from "./ui/toast";
-import { deleteAccount } from "@/lib/action";
+import { deleteAccount } from "@/server/actions/setting-user";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import { goeyToast } from "./ui/goey-toaster";
 
 export const ButtonSettings = ({
   children,
@@ -129,7 +129,7 @@ export const DeleteAccount = () => {
   const router = useRouter();
 
   const handleDeleteAccount = async () => {
-    toastManager.promise(
+    goeyToast.promise(
       new Promise<string>(async (resolve, reject) => {
         const fetch = await deleteAccount();
         if (fetch.status === "success") {
@@ -141,20 +141,15 @@ export const DeleteAccount = () => {
         }
       }),
       {
-        loading: {
-          title: "Menghapus Akun...",
-          description: "Sedang membersihkan data kamu dari sistem PPI Bartın.",
-        },
-        success: () => ({
-          title: "Akun Terhapus",
-          description:
+        loading: "Menghapus Akun...",
+        success: "Akun Terhapus",
+        error: "Gagal Menghapus",
+        description: {
+          success:
             "Semua data profil kamu telah berhasil dihapus secara permanen.",
-        }),
-        error: () => ({
-          title: "Gagal Menghapus",
-          description:
+          error:
             "Terjadi kendala teknis. Silakan coba lagi atau hubungi admin.",
-        }),
+        },
       },
     );
   };

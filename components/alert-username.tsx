@@ -10,7 +10,7 @@ import {
   AlertDialogTitle,
 } from "@/components/animate-ui/components/base/alert-dialog";
 import { UsernameField } from "./field/username-field";
-import props from "@/data/username-props.json";
+import props from "@/props/username-props.json";
 
 export function UsernameForceDialog() {
   const [open, setOpen] = useState(true);

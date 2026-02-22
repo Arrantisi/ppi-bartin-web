@@ -8,14 +8,14 @@ import { cn } from "@/lib/utils";
 import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
 import { Progress } from "../ui/progress";
-import { toastManager } from "../ui/toast";
 import { LoadingAnimation } from "../ui/loading-animation";
 import { useRouter } from "next/navigation";
 import { CardDescription, CardTitle } from "../ui/card";
 import { AspectRatio } from "../ui/aspect-ratio";
-import { updateNewsPhoto } from "@/actions/news";
-import { updateEventPhoto } from "@/actions/acara";
+import { updateNewsPhoto } from "@/server/actions/news";
+import { updateEventPhoto } from "@/server/actions/acara";
 import Link from "next/link";
+import { goeyToast } from "../ui/goey-toaster";
 
 export const UploaderPhoto = ({
   catagory,
@@ -63,25 +63,19 @@ export const UploaderPhoto = ({
     fileRejections.forEach(({ file, errors }) => {
       errors.forEach((err) => {
         if (err.code === "file-too-large") {
-          toastManager.add({
-            type: "info",
-            title: "File Terlalu Besar",
+          goeyToast.warning("File Terlalu Besar", {
             description: `File "${file.name}" sebesar ${(file.size / (1024 * 1024)).toFixed(2)}MB melebihi batas 4MB`,
           });
         }
 
         if (err.code === "too-many-files") {
-          toastManager.add({
-            type: "info",
-            title: "Terlalu Banyak File",
+          goeyToast.warning("Terlalu Banyak File", {
             description: "Hanya diperbolehkan mengunggah 1 file saja",
           });
         }
 
         if (err.code === "file-invalid-type") {
-          toastManager.add({
-            type: "error",
-            title: "Format Salah",
+          goeyToast.warning("Format Salah", {
             description: "Hanya file gambar yang diperbolehkan",
           });
         }

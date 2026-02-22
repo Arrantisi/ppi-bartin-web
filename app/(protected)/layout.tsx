@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { checkNoSiswa } from "@/lib/data";
+import { checkNoSiswa } from "@/server/data/users";
 import { UsernameForceDialog } from "@/components/alert-username";
 
 export default async function ProtectedLayout({

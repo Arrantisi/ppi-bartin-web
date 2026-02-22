@@ -5,13 +5,15 @@ import { useForm } from "@tanstack/react-form";
 import { Button } from "../ui/button";
 import { Field, FieldError } from "../ui/field";
 import { Textarea } from "../ui/textarea";
-import { toastManager } from "../ui/toast";
 import { useRouter } from "next/navigation";
-import { postEvent } from "@/actions/acara";
+import { postEvent } from "@/server/actions/acara";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
+import { TCatagory } from "@/types";
+import { postNews } from "@/server/actions/news";
+import { goeyToast } from "../ui/goey-toaster";
 
-export const PostJudulEvent = () => {
+export const PostJudulEvent = ({ catagory }: TCatagory) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -22,14 +24,29 @@ export const PostJudulEvent = () => {
     validators: { onSubmit: postJudulSchema },
     onSubmit: async ({ value }: { value: TPostJudulSchema }) => {
       setIsLoading(true);
-      const data = await postEvent(value);
-      if (data.status === "error") {
-        toastManager.add({
-          type: "error",
-          title: "ada yg salah coba ganti judul",
+      let data;
+      if (catagory === "events") {
+        data = await postEvent(value);
+      } else if (catagory === "news") {
+        data = await postNews(value);
+      }
+      if (data?.status === "error") {
+        goeyToast.error("Kesalahan", {
+          description: "Judul kamu sudah ada yg punya",
         });
-      } else if (data.status === "success") {
-        router.push(`/home/events/uploader/${data.msg}`);
+      } else if (data?.status === "success") {
+        goeyToast.success("Berhasil", {
+          description:
+            catagory === "events"
+              ? "Event kamu sudah di simpan di profile kamu"
+              : "Berita kamu sudah di simpan di profile kamu",
+        });
+
+        router.push(
+          catagory === "events"
+            ? `/home/events/uploader/${data.msg}`
+            : `/home/news/uploader/${data.msg}`,
+        );
       }
       setIsLoading(false);
     },
@@ -54,7 +71,11 @@ export const PostJudulEvent = () => {
                   className="w-full h-24"
                   data-invalid={isInvalid}
                   name={field.name}
-                  placeholder="Buat acara yang seru apa hari ini?"
+                  placeholder={
+                    catagory === "events"
+                      ? "Buat acara yang seru apa hari ini?"
+                      : "Apa judul berita menarik yang ingin Anda bagikan?"
+                  }
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />

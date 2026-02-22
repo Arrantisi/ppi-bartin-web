@@ -25,11 +25,14 @@ import {
   gantiNomorSiswaSchema,
 } from "@/schemas";
 import { useState } from "react";
-import { toastManager } from "../ui/toast";
-import { gantiNamaSiswaAction, gantiNomorSiswaAction } from "@/lib/action";
+import {
+  gantiNamaSiswaAction,
+  gantiNomorSiswaAction,
+} from "@/server/actions/setting-user";
 import { Field, FieldError } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
+import { goeyToast } from "../ui/goey-toaster";
 
 export const GantiNamaSiswaCard = () => {
   const [loading, setLoading] = useState(false);
@@ -41,7 +44,7 @@ export const GantiNamaSiswaCard = () => {
     validators: { onSubmit: gantiNamaSiswaSchema },
     onSubmit: async ({ value }: { value: GantiNamaSiswaSchema }) => {
       setLoading(true);
-      toastManager.promise(
+      goeyToast.promise(
         new Promise<string>(async (resolve, rejects) => {
           const matched = await gantiNamaSiswaAction(value.nama_siswa);
           if (matched.status === "success") {
@@ -53,20 +56,16 @@ export const GantiNamaSiswaCard = () => {
           }
         }),
         {
-          error: () => ({
-            description: "Silahkan coba lagi",
-            title: "Ada yang salah",
-          }),
-          loading: {
-            description: "memasukan data ke database",
-            title: "Loading…",
+          loading: "Memasukan data ke database...",
+          success: "Data kamu sudah disimpan",
+          error: "Ada yang salah",
+          description: {
+            success: `Berhasil ganti nama siswa`,
+            error: "Gagal ganti nama siswa, silahkan hubungi admin",
           },
-          success: (data: string) => ({
-            description: `Berhasil: ${data}`,
-            title: "Data kamu sudah disimpan",
-          }),
         },
       );
+
       setLoading(false);
     },
   });
@@ -131,7 +130,7 @@ export const GantiNomorSiswaCard = () => {
     validators: { onSubmit: gantiNomorSiswaSchema },
     onSubmit: async ({ value }: { value: GantiNomorSiswaSchema }) => {
       setLoading(true);
-      toastManager.promise(
+      goeyToast.promise(
         new Promise<string>(async (resolve, rejects) => {
           const matched = await gantiNomorSiswaAction(value.nomor_siswa);
           if (matched.status === "success") {
@@ -143,20 +142,16 @@ export const GantiNomorSiswaCard = () => {
           }
         }),
         {
-          error: (data: string) => ({
-            description: `${data}`,
-            title: "Ada yang salah",
-          }),
-          loading: {
-            description: "memasukan data ke admin",
-            title: "Loading…",
+          loading: "Memasukan data ke database...",
+          success: "Data kamu sudah disimpan",
+          error: "Ada yang salah",
+          description: {
+            success: `Berhasil ganti nomor siswa`,
+            error: "Gagal ganti nomor siswa, silahkan hubungi admin",
           },
-          success: (data: string) => ({
-            description: `Berhasil: ${data}`,
-            title: "Data kamu sudah disimpan",
-          }),
         },
       );
+
       setLoading(false);
     },
   });

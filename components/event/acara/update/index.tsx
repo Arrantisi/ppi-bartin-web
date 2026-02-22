@@ -3,7 +3,7 @@
 import { UpdateAcaraField } from "@/components/field/update-acara";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getEventBySlug } from "@/data/events";
+import { getEventBySlug } from "@/server/data/events";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 

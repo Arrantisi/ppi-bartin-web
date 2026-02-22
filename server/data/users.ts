@@ -1,9 +1,9 @@
 "use server";
 
 import { headers } from "next/headers";
-import { studentAccount } from "./account";
-import { auth } from "./auth";
-import prisma from "./prisma";
+import { studentAccount } from "../actions/account";
+import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
 export const userSession = async () => {
   return await auth.api.getSession({ headers: await headers() });

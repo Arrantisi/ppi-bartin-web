@@ -1,3 +1,7 @@
+export type TCatagory = {
+  catagory: "events" | "news";
+};
+
 export type TServerPrompt = {
   status: "error" | "success";
   msg: string;

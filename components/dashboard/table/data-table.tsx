@@ -35,9 +35,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { userData } from "@/lib/data";
+import { userData } from "@/server/data/users";
 import { columns } from "./columns";
-import { SkeletonTable } from "./skeleton";
+import { SkeletonTable } from "../../skeletons/table-users-skeleton";
 import { supabase } from "@/lib/supabase";
 
 export const DataTable = () => {
@@ -142,7 +142,11 @@ export const DataTable = () => {
             ))}
           </TableHeader>
           {isLoading ? (
-            <SkeletonTable />
+            <TableBody>
+              {Array.from({ length: 7 }).map((_, idx) => (
+                <SkeletonTable key={idx} />
+              ))}
+            </TableBody>
           ) : (
             <TableBody>
               {table.getRowModel().rows.length ? (

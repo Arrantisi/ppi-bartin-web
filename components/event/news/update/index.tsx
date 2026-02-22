@@ -4,10 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import { PostNewsField } from "@/components/field/post-news";
+import { PostNewsField } from "@/components/field/update-news";
 import { formattedDate } from "@/utils/date-format";
 import { useQuery } from "@tanstack/react-query";
-import { getNewsBySlug } from "@/data/news";
+import { getNewsBySlug } from "@/server/data/news";
 
 export const PostNewsComoponent = ({ slug }: { slug: string }) => {
   const { data } = useQuery({
@@ -53,7 +53,7 @@ export const PostNewsComoponent = ({ slug }: { slug: string }) => {
         </div>
 
         <PostNewsField
-          urlImage={data?.images[0].url || ""}
+          urlImage={data?.images[0]?.url || ""}
           judul={data?.judul || ""}
           slug={slug}
         />

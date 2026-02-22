@@ -6,16 +6,16 @@ import { useRouter } from "next/navigation";
 import { Field, FieldLabel, FieldDescription, FieldError } from "../ui/field";
 import { Button, buttonVariants } from "../ui/button";
 import { DatePickerField } from "../event/date-picker-field";
-import { toastManager } from "../ui/toast";
-import { updateAcara } from "@/actions/acara";
+import { updateAcara } from "@/server/actions/acara";
 import { Textarea } from "../ui/textarea";
-import props from "@/data/create-acara-props.json";
+import props from "@/props/create-acara-props.json";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
 import { useQuery } from "@tanstack/react-query";
-import { getEventBySlug } from "@/data/events";
+import { getEventBySlug } from "@/server/data/events";
 import Link from "next/link";
+import { goeyToast } from "../ui/goey-toaster";
 
 export const UpdateAcaraField = ({ slug }: { slug: string }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -41,9 +41,7 @@ export const UpdateAcaraField = ({ slug }: { slug: string }) => {
       setIsLoading(true);
       const matched = await updateAcara(slug, value);
       if (matched.status === "error") {
-        toastManager.add({
-          type: "error",
-          title: "ada kesalahan",
+        goeyToast.error("ada kesalahan", {
           description: matched.msg,
         });
       } else if (matched.status === "success") {

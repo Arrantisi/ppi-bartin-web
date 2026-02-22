@@ -1,11 +1,11 @@
 "use server";
 
-import { studentAccount } from "@/lib/account";
 import prisma from "@/lib/prisma";
 import { TUpdateNewsSchema, TPostJudulSchema } from "@/schemas";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
 import { revalidatePath } from "next/cache";
+import { studentAccount } from "./account";
 
 export const updateNewsContent = async (
   slug: string,

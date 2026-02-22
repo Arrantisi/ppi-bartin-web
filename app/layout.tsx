@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Poppins, Libre_Baskerville, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import { AnchoredToastProvider, ToastProvider } from "@/components/ui/toast";
+
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
 import Head from "next/head";
+import { GoeyToaster } from "@/components/ui/goey-toaster";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -48,20 +49,19 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${libre_baskerville.variable} ${ibm_plex_mono.variable} antialiased font-sans`}
       >
-        <ToastProvider position="top-center">
-          <AnchoredToastProvider>
-            <main>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-              >
-                <TanstackProvider>{children}</TanstackProvider>
-              </ThemeProvider>
-            </main>
-          </AnchoredToastProvider>
-        </ToastProvider>
+        <main>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <TanstackProvider>
+              <GoeyToaster position="top-center" />
+              {children}
+            </TanstackProvider>
+          </ThemeProvider>
+        </main>
       </body>
     </html>
   );

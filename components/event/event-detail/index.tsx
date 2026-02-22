@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getEventBySlug } from "@/data/events";
+import { getEventBySlug } from "@/server/data/events";
 import { formattedDate } from "@/utils/date-format";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";

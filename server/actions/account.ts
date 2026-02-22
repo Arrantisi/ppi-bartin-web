@@ -1,7 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
-import { auth } from "./auth";
+import { auth } from "@/lib/auth";
 
 export const studentAccount = async () => {
   const user = await auth.api.getSession({
