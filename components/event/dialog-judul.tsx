@@ -5,7 +5,7 @@ import {
   DialogPopup,
   DialogTitle,
 } from "../animate-ui/components/base/dialog";
-import { PostJudulEvent } from "../field/post-judul";
+import { PostEvent } from "../field/post-judul";
 
 export const DialogJudul = ({ catagory }: TCatagory) => {
   return (
@@ -24,7 +24,7 @@ export const DialogJudul = ({ catagory }: TCatagory) => {
         </DialogDescription>
       </DialogHeader>
       <div className="w-full">
-        <PostJudulEvent catagory={catagory} />
+        <PostEvent catagory={catagory} />
       </div>
     </DialogPopup>
   );

@@ -1,52 +1,29 @@
 "use client";
 
-import { HeaderProfileSkeleton } from "@/components/skeletons/header-profile-skeleton";
-import { goeyToast, GoeyToaster } from "@/components/ui/goey-toaster";
-import { getProfileUser } from "@/server/actions/user";
-import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export const HeaderProfile = () => {
-  const { data: user, isLoading } = useQuery({
-    queryKey: ["getProfile"],
-    queryFn: () => getProfileUser(),
-  });
+  const router = useRouter();
 
-  if (isLoading) {
-    return <HeaderProfileSkeleton />;
-  }
-
-  if (!user) {
-    return null;
-  }
+  const signout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => router.refresh(),
+      },
+    });
+  };
 
   return (
-    <div className="flex items-center justify-center flex-col">
-      <Image
-        src={user.image || ""}
-        alt=""
-        width={20}
-        height={20}
-        className="size-18 rounded-full my-2
-        "
-      />
-
-      <div className="font-semibold text-lg tracking-wide">{user.name}</div>
+    <div className="flex justify-between">
+      {/* title */}
+      <h1 className="title-satu">Profile</h1>
+      {/* logOut */}
       <button
-        onClick={() =>
-          goeyToast.info("copy nomor siswa", {
-            description: "nomor siswa telah di generate",
-            action: {
-              label: "Copy nomor siswa",
-              onClick: () =>
-                navigator.clipboard.writeText(user.nomorSiswa || ""),
-              successLabel: "Nomor siswa telah di copy",
-            },
-          })
-        }
-        className=""
+        onClick={() => signout()}
+        className="text-[16px] leading-[21px] tracking-[-0,31px] rounded-2xl px-2 text-destructive capitalize hover:bg-destructive/10 hover:ring active:bg-destructive/20 active:ring ring-destructive "
       >
-        {user.nomorSiswa}
+        logout
       </button>
     </div>
   );

@@ -1,4 +1,4 @@
-import { EventDetail } from "@/components/event/event-detail";
+import { EventDetail } from "@/components/event/acara/event-detail";
 
 const DetailEventPage = async ({
   params,
