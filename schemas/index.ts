@@ -1,5 +1,22 @@
 import * as z from "zod";
 
+export const updateProfileSchema = z.object({
+  fullname: z.string(),
+  username: z
+    .string()
+    .min(2, "Username minimal 2 karakter")
+    .max(12, "Username maksimal 12 karakter"),
+  email: z.email(),
+  telpon: z.string().or(z.undefined()),
+  noSiswa: z.string(),
+  Bio: z.string().or(z.undefined()),
+  tanggalLahir: z.date().or(z.undefined()),
+  jenisKelamin: z.string().or(z.undefined()),
+  alamat: z.string().or(z.undefined()),
+});
+
+export type TupdateProfileSchema = z.infer<typeof updateProfileSchema>;
+
 export const formUsername = z.object({
   username: z
     .string()

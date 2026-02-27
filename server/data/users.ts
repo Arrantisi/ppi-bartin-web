@@ -9,6 +9,27 @@ export const userSession = async () => {
   return await auth.api.getSession({ headers: await headers() });
 };
 
+export const getProfileUser = async () => {
+  const session = await studentAccount();
+  return prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: {
+      id: true,
+      username: true,
+      name: true,
+      nomorSiswa: true,
+      email: true,
+      image: true,
+      alamat: true,
+      bio: true,
+      noTelephone: true,
+      jenisKelamin: true,
+      tanggalLahir: true,
+    },
+  });
+};
+export type TgetProfileUser = Awaited<ReturnType<typeof getProfileUser>>;
+
 export const userData = async () => {
   return await prisma.user.findMany({
     orderBy: {
@@ -20,6 +41,11 @@ export const userData = async () => {
       nomorSiswa: true,
       email: true,
       image: true,
+      alamat: true,
+      bio: true,
+      noTelephone: true,
+      jenisKelamin: true,
+      tanggalLahir: true,
     },
   });
 };

@@ -13,6 +13,7 @@
   "dependencies": {
     "@base-ui-components/react": "1.0.0-rc.0",
     "@base-ui/react": "^1.1.0",
+    "@phosphor-icons/react": "^2.1.10",
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.4.1",
     "@radix-ui/react-avatar": "^1.1.11",
@@ -46,6 +47,7 @@
     "react-day-picker": "^9.13.2",
     "react-dom": "19.2.3",
     "react-dropzone": "^15.0.0",
+    "react-phone-number-input": "^3.4.16",
     "slugify": "^1.6.6",
     "tailwind-merge": "^3.4.0",
     "uploadthing": "^7.7.4",

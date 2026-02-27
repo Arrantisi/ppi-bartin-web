@@ -238,6 +238,54 @@
 }
 
 @layer components {
+  .title-satu {
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 28px;
+    line-height: 34px;
+    letter-spacing: 0.38px;
+  }
+
+  .title-tiga {
+    font-weight: 590;
+    font-style: Semibold;
+    font-size: 20px;
+    line-height: 25px;
+    letter-spacing: -0.45px;
+  }
+
+  .content-description {
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 21px;
+    letter-spacing: -0.31px;
+  }
+
+  .subheadline {
+    font-weight: 590;
+    font-style: Semibold;
+    font-size: 15px;
+    line-height: 20px;
+    letter-spacing: -0.23px;
+  }
+
+  .body {
+    font-weight: 590;
+    font-style: Semibold;
+    font-size: 17px;
+    line-height: 22px;
+    letter-spacing: -0.43px;
+  }
+
+  .footnote {
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: -0.08px;
+  }
+
   .judul-card-event {
     @apply capitalize text-xl font-semibold;
   }

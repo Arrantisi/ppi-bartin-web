@@ -8,20 +8,31 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  email         String         @unique
-  name          String?
-  username      String?
-  nomorSiswa    String?        @unique
-  emailVerified Boolean        @default(false)
-  image         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  accounts      Account[]
-  events        Events[]       @relation("createdEvent")
-  news          News[]         @relation("createdNews")
-  participants  Participants[]
-  sessions      Session[]
+  id String @id @default(uuid())
+
+  image       String?
+  name        String?
+  username    String?
+  email       String  @unique
+  noTelephone String?
+  nomorSiswa  String? @unique
+
+  bio          String?
+  tanggalLahir DateTime?
+  jenisKelamin String?
+  alamat       String?
+
+  emailVerified Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events Events[] @relation("createdEvent")
+  news   News[]   @relation("createdNews")
+
+  accounts     Account[]
+  participants Participants[]
+  sessions     Session[]
 
   @@map("user")
 }

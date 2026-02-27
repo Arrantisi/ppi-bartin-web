@@ -13,7 +13,7 @@ import { TCatagory } from "@/types";
 import { postNews } from "@/server/actions/news";
 import { goeyToast } from "../ui/goey-toaster";
 
-export const PostJudulEvent = ({ catagory }: TCatagory) => {
+export const PostEvent = ({ catagory }: TCatagory) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -41,7 +41,6 @@ export const PostJudulEvent = ({ catagory }: TCatagory) => {
               ? "Event kamu sudah di simpan di profile kamu"
               : "Berita kamu sudah di simpan di profile kamu",
         });
-
         router.push(
           catagory === "events"
             ? `/home/events/uploader/${data.msg}`

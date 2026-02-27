@@ -3,7 +3,7 @@
 import CardEvent from "../card";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllEvents } from "@/server/data/events";
-import { SkeletonCardAcara } from "../skeleton-card-acara";
+import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
 import { formattedDate } from "@/utils/date-format";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";

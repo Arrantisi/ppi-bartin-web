@@ -15,9 +15,9 @@ import { getEventBySlug } from "@/server/data/events";
 import { formattedDate } from "@/utils/date-format";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import DrawerAcara from "../drawer-acara";
+import DrawerAcara from "../../drawer-acara";
 import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
-import AvatarParticipant from "../avatar-participant";
+import AvatarParticipant from "../../avatar-participant";
 import { authClient } from "@/lib/auth-client";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
