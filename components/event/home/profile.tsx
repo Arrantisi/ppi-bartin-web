@@ -16,7 +16,7 @@ const ProfileHome = () => {
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-3">
         <Avatar className="size-12">
-          <AvatarImage src={session?.image || "/user-profile-01.png"} />
+          <AvatarImage src={session?.image || ""} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div>

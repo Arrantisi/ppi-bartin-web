@@ -19,7 +19,7 @@ const AvatarParticipant = ({
             <AvatarImage
               src={user.image}
               alt="@reui"
-              className="border-2 border-background hover:z-10"
+              className="border border-accent hover:z-10"
             />
             <AvatarFallback className="border-2 border-background hover:z-10">
               CN
@@ -31,7 +31,6 @@ const AvatarParticipant = ({
         {filteredParticipant.length > 0 && "+"} {totalParticipant} /{" "}
         {maxCapacity} Participants
       </p>
-      {/* */}
     </div>
   );
 };

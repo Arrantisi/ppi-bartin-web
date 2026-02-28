@@ -123,7 +123,7 @@ export const DataTable = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="max-h-[400px] overflow-auto relative">
+      <div className="max-h-100 overflow-auto relative">
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-white dark:bg-slate-950 shadow-sm">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -187,7 +187,7 @@ export const DataTable = () => {
             table.setPageSize(Number(value));
           }}
         >
-          <SelectTrigger className="h-8 w-[70px]">
+          <SelectTrigger className="h-8 w-17.5">
             <SelectValue placeholder={table.getState().pagination.pageSize} />
           </SelectTrigger>
           <SelectContent>
