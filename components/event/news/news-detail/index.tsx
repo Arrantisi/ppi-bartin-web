@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { getNewsBySlug } from "@/server/data/news";
 import { formattedDate } from "@/utils/date-format";
+import { imageUrl } from "@/utils/image-url";
 
 export const NewsDetailComponent = ({ slug }: { slug: string }) => {
   const router = useRouter();
@@ -91,7 +92,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
         {/* Hero Image */}
         <div className="relative aspect-video w-full mt-6 overflow-hidden rounded-3xl shadow-lg">
           <Image
-            src={data.images[0].url}
+            src={imageUrl(data.fileKey)}
             alt="Beasiswa Turki"
             fill
             className="object-cover"
@@ -102,7 +103,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
         {/* Bagian Article - Khusus Teks Beasiswa */}
         <article className="mt-8 px-5 max-w-2xl mx-auto">
           <div className="text-foreground/90 leading-relaxed whitespace-pre-line text-base md:text-lg tracking-wide">
-            {(data.content || "").trim()}
+            {(data.desckripsi || "").trim()}
           </div>
 
           <div className="mt-10 pt-6 border-t border-muted text-xs text-muted-foreground text-center">

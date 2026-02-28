@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { TUpdateNewsSchema, TPostJudulSchema } from "@/schemas";
+import { TUpdateNewsSchema, TcreateNewsSchema } from "@/schemas";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
 import { revalidatePath } from "next/cache";
@@ -9,7 +9,7 @@ import { studentAccount } from "./account";
 
 export const updateNewsContent = async (
   slug: string,
-  { catagory, content, judul }: TUpdateNewsSchema,
+  { catagory, desckripsi, judul }: TUpdateNewsSchema,
 ): Promise<TServerPrompt> => {
   await studentAccount();
   try {
@@ -19,10 +19,9 @@ export const updateNewsContent = async (
       where: { slug },
       data: {
         catagory,
-        content,
+        desckripsi,
         judul,
         slug: updateedSlug,
-        status: "PUSBLISH",
       },
     });
 
@@ -39,42 +38,13 @@ export const updateNewsContent = async (
   }
 };
 
-export const updateNewsPhoto = async (
-  slug: string,
-  images: { key: string; url: string; name: string }[],
-): Promise<TServerPrompt> => {
-  await studentAccount();
-
-  try {
-    await prisma.news.update({
-      where: { slug },
-      data: {
-        images: {
-          create: images.map(({ key, name, url }) => ({
-            key,
-            name,
-            url,
-          })),
-        },
-      },
-    });
-
-    return {
-      status: "success",
-      msg: "Photo telah disimpan",
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      status: "error",
-      msg: "masalah pada server delete acara",
-    };
-  }
-};
-
-export const postNews = async ({
+export const createNews = async ({
   judul,
-}: TPostJudulSchema): Promise<TServerPrompt> => {
+  catagory,
+  desckripsi,
+  fileKey,
+  ringkasan,
+}: TcreateNewsSchema): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
 
   const slug = createSlug(judul);
@@ -82,6 +52,10 @@ export const postNews = async ({
   try {
     await prisma.news.create({
       data: {
+        catagory,
+        desckripsi,
+        fileKey,
+        ringkasan,
         judul,
         slug,
         userId: user.id,

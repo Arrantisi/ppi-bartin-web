@@ -32,7 +32,6 @@ export const getAllEvents = async () => {
   return await prisma.events.findMany({
     include: {
       creator: { select: { username: true, image: true } },
-      images: { select: { key: true, url: true } },
       participants: { select: { user: true } },
     },
     orderBy: { createdAt: "desc" },
@@ -46,7 +45,6 @@ export const getEventBySlug = async (slug: string) => {
     where: { slug },
     include: {
       creator: { select: { username: true, image: true } },
-      images: { select: { key: true, url: true } },
       participants: { select: { user: true } },
     },
   });

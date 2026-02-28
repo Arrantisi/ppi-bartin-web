@@ -92,15 +92,15 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
             );
           }}
         </form.Field>
-        <div className="bg-accent/50 py-[24px] px-[20px] space-y-[4px] my-3">
-          <h3 className="text-[15px] leading-[15px] font-semibold">
+        <div className="bg-accent/50 py-6 px-5 space-y-1 my-3">
+          <h3 className="text-[15px] leading-3.75 font-semibold">
             Informasi Pribadi
           </h3>
-          <p className="text-[12px] leading-[18px] text-foreground/40">
+          <p className="text-[12px] leading-4.5 text-foreground/40">
             Data diri yang akan ditampilkan di profil
           </p>
         </div>
-        <div className="mx-3 space-y-[20px]">
+        <div className="mx-3 space-y-5">
           <form.Field name="fullname">
             {(field) => {
               const isInvalid =
@@ -235,7 +235,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                     placeholder="Tulis bio singkat tentang diri kamu..."
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="min-h-[116px]"
+                    className="min-h-29"
                   />
                   <div className="flex justify-between items-center">
                     <FieldDescription>
@@ -249,15 +249,15 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
             }}
           </form.Field>
         </div>
-        <div className="bg-accent/50 py-[24px] px-[20px] space-y-[4px] my-3">
-          <h3 className="text-[15px] leading-[15px] font-semibold">
+        <div className="bg-accent/50 py-6 px-5 space-y-1 my-3">
+          <h3 className="text-[15px] leading-3.75 font-semibold">
             Detail Pribadi
           </h3>
-          <p className="text-[12px] leading-[18px] text-foreground/40">
+          <p className="text-[12px] leading-4.5 text-foreground/40">
             Informasi tambahan untuk profil
           </p>
         </div>
-        <div className="mx-3 space-y-[20px]">
+        <div className="mx-3 space-y-5">
           <div className="flex items-center gap-2">
             <form.Field name="tanggalLahir">
               {(field) => {
@@ -339,7 +339,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                     placeholder="Bartın, Turkey"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="min-h-[75px]"
+                    className="min-h-18.75"
                   />
 
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -353,11 +353,11 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
         <Button
           type="submit"
           form="update-profile-field"
-          className="text-[14px] leading-[24px] w-full rounded-xl"
+          className="text-[14px] leading-6 w-full rounded-xl"
           disabled={isLoading}
         >
           {isLoading ? (
-            <Spinner className="size-[18px]" />
+            <Spinner className="size-4.5" />
           ) : (
             <IconFileCheck size={18} />
           )}

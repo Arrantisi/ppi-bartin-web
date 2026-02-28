@@ -14,6 +14,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { formattedDate } from "@/utils/date-format";
 import { NewsCorouselSkelet } from "@/components/skeletons/news-corousel-skeleton";
+import { imageUrl } from "@/utils/image-url";
 
 const CarouselCard = () => {
   const queryClient = useQueryClient();
@@ -79,16 +80,16 @@ const CarouselCard = () => {
       <CarouselContent className="-ml-4 py-4">
         {data
           .slice(0, 4)
-          .filter((news) => news.status === "PUSBLISH")
+
           .map((news) => (
             <CarouselItem
               key={news.slug}
               className="pl-4 basis-[85%] md:basis-1/2 lg:basis-1/3"
             >
-              <div className="relative group overflow-hidden rounded-[2rem] h-[280px] w-full">
+              <div className="relative group overflow-hidden rounded-4xl h-70 w-full">
                 {/* Image Background */}
                 <Image
-                  src={news.images[0]?.url}
+                  src={imageUrl(news.fileKey)}
                   alt="News"
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"

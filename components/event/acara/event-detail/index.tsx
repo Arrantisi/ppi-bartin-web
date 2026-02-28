@@ -19,6 +19,7 @@ import DrawerAcara from "../../drawer-acara";
 import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 import AvatarParticipant from "../../avatar-participant";
 import { authClient } from "@/lib/auth-client";
+import { imageUrl } from "@/utils/image-url";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -67,19 +68,13 @@ export const EventDetail = ({ slug }: { slug: string }) => {
       <div className="relative flex flex-col h-screen bg-background overflow-hidden">
         {/* Gambar & Header Sticky */}
         <div className="relative h-[40vh] w-full">
-          {data.images && data.images.length > 0 ? (
-            <Image
-              src={data.images[0]?.url}
-              alt={""}
-              fill
-              className="object-cover"
-              priority
-            />
-          ) : (
-            <div className="flex justify-center items-center h-full capitalize">
-              acara hari ini
-            </div>
-          )}
+          <Image
+            src={imageUrl(data.fileKey)}
+            alt={""}
+            fill
+            className="object-cover"
+            priority
+          />
 
           <div className="absolute top-4 left-0 right-0 px-4 flex items-center justify-between z-10">
             <Button
@@ -137,7 +132,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
             </div>
 
             <div className="prose prose-sm text-muted-foreground mb-8">
-              <p>{data.content}</p>
+              <p>{data.deskripsi}</p>
             </div>
 
             {/* Info Waktu & Tempat */}

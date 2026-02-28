@@ -6,18 +6,13 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { IconSearch } from "@tabler/icons-react";
-import { Dialog } from "@/components/animate-ui/components/base/dialog";
-import { DialogJudul } from "../dialog-judul";
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ButtonCreate } from "@/components/buttons";
 
 const HeaderAcara = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <div>
       <div className="flex justify-between">
         <div>
           <h1 className="text-lg font-semibold">Events</h1>
@@ -46,10 +41,9 @@ const HeaderAcara = () => {
           </InputGroupAddon>
         </InputGroup>
 
-        <ButtonCreate />
+        <ButtonCreate catagory="events" />
       </div>
-      <DialogJudul catagory="events" />
-    </Dialog>
+    </div>
   );
 };
 

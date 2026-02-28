@@ -7,11 +7,12 @@ import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
 import { formattedDate } from "@/utils/date-format";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { imageUrl } from "@/utils/image-url";
 
 const CardAcaras = () => {
   const queryClient = useQueryClient();
 
-  const { data: session, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["getAllEvents"],
     queryFn: () => getAllEvents(),
   });
@@ -58,22 +59,21 @@ const CardAcaras = () => {
       </div>
     );
   }
-  const filteredEvent = session?.filter((event) => event.status === "PUSBLISH");
 
-  if (!filteredEvent || filteredEvent?.length === 0) {
+  if (!data || data.length === 0) {
     return <div>Event tidak ada</div>;
   }
 
   return (
     <div>
-      {filteredEvent.map((data) => (
+      {data.map((data) => (
         <div key={data.id} className="my-3">
           <CardEvent
             id={data.id}
             createdBy={data.creator.username || ""}
-            description={data.content || ""}
+            description={data.deskripsi || ""}
             slug={data.slug}
-            image={data.images[0]?.url || ""}
+            image={imageUrl(data.fileKey)}
             judul={data.judul}
             lokasi={data.lokasi || ""}
             tanggal={formattedDate(data.date || new Date())}

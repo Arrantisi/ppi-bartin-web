@@ -20,15 +20,19 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { goeyToast } from "./ui/goey-toaster";
 
-export const ButtonCreate = () => {
+export const ButtonCreate = ({ catagory }: { catagory: "news" | "events" }) => {
+  const page =
+    catagory === "events" ? "/home/events/create" : "/home/news/create";
+
   return (
-    <div
+    <Link
+      href={page}
       className={
         "rounded-full bg-accent-foreground p-1.5 text-accent border border-accent"
       }
     >
       <IconPlus />
-    </div>
+    </Link>
   );
 };
 

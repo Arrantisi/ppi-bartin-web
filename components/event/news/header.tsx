@@ -1,20 +1,18 @@
 "use client";
 
-import { Dialog } from "@/components/animate-ui/components/base/dialog";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { IconSearch } from "@tabler/icons-react";
-import { DialogJudul } from "../dialog-judul";
 import Link from "next/link";
 import Image from "next/image";
 import { ButtonCreate } from "@/components/buttons";
 
 const HeaderBerita = () => {
   return (
-    <Dialog>
+    <div>
       <div className="flex justify-between">
         <div>
           <h1 className="text-lg font-semibold">Berita</h1>
@@ -42,10 +40,9 @@ const HeaderBerita = () => {
           </InputGroupAddon>
         </InputGroup>
 
-        <ButtonCreate />
+        <ButtonCreate catagory="news" />
       </div>
-      <DialogJudul catagory="news" />
-    </Dialog>
+    </div>
   );
 };
 

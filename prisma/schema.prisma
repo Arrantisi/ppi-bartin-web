@@ -91,36 +91,22 @@ model dataSiswa {
   @@map("dataSiswa")
 }
 
-model Images {
-  id       String  @id @default(uuid())
-  name     String
-  key      String
-  url      String
-  eventId  String?
-  beritaId String?
-  berita   News?   @relation(fields: [beritaId], references: [id], onDelete: Cascade)
-  event    Events? @relation(fields: [eventId], references: [id], onDelete: Cascade)
-
-  @@map("images")
-}
-
 model News {
-  id    String @id @default(uuid())
-  judul String
+  id String @id @default(uuid())
 
-  catagory String?
-  content  String?
+  judul      String
+  catagory   String
+  desckripsi String
+  fileKey    String
+  ringkasan  String
 
-  slug   String @unique
-  status status @default(DRAFT)
+  slug String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   userId  String
   creator User   @relation("createdNews", fields: [userId], references: [id], onDelete: Cascade)
-
-  images Images[]
 
   @@map("news")
 }
@@ -129,13 +115,17 @@ model Events {
   id    String @id @default(uuid())
   judul String
 
-  lokasi      String?
-  date        DateTime?
-  content     String?
-  maxCapacity Int?
+  lokasi      String
+  date        DateTime
+  deskripsi   String
+  maxCapacity Int
+  catagory    String
+  batasDaftar DateTime
+  biayaAcara  String
+  persyaratan String
+  fileKey     String
 
-  slug   String @unique
-  status status @default(DRAFT)
+  slug String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -143,7 +133,6 @@ model Events {
   userId  String
   creator User   @relation("createdEvent", fields: [userId], references: [id], onDelete: Cascade)
 
-  images       Images[]
   participants Participants[]
 
   @@map("events")

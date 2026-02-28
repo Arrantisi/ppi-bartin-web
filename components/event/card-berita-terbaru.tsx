@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { NewsCaratogorySkeleton } from "../skeletons/news-catagory-skeleton";
 import { formattedDate } from "@/utils/date-format";
 import { Badge } from "../ui/badge";
+import { imageUrl } from "@/utils/image-url";
 
 const CardBeritaTerbaru = () => {
   const queryClient = useQueryClient();
@@ -70,7 +71,7 @@ const CardBeritaTerbaru = () => {
     <div className="flex flex-col items-start gap-3 my-3 ">
       {data
         .slice(0, 5)
-        .filter(({ status }) => status === "PUSBLISH")
+
         .map((news) => (
           <Link
             href={`/home/news/${news.slug}`}
@@ -78,7 +79,7 @@ const CardBeritaTerbaru = () => {
             className="grid grid-cols-5 w-full hover:bg-muted-foreground/5 p-2 rounded-4xl gap-2"
           >
             <Image
-              src={news.images[0]?.url || ""}
+              src={imageUrl(news.fileKey)}
               alt="berita"
               height={200}
               width={200}

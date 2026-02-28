@@ -7,8 +7,9 @@ export const getNewsBySlug = async (slug: string) => {
     where: { slug },
     select: {
       catagory: true,
-      content: true,
+      desckripsi: true,
       createdAt: true,
+      fileKey: true,
       creator: {
         select: {
           image: true,
@@ -16,14 +17,6 @@ export const getNewsBySlug = async (slug: string) => {
         },
       },
       judul: true,
-      status: true,
-      images: {
-        select: {
-          key: true,
-          name: true,
-          url: true,
-        },
-      },
     },
   });
 };
@@ -36,7 +29,8 @@ export const getNews = async () => {
     select: {
       slug: true,
       catagory: true,
-      content: true,
+      desckripsi: true,
+      fileKey: true,
       createdAt: true,
       creator: {
         select: {
@@ -45,14 +39,6 @@ export const getNews = async () => {
         },
       },
       judul: true,
-      status: true,
-      images: {
-        select: {
-          key: true,
-          name: true,
-          url: true,
-        },
-      },
     },
   });
 };

@@ -6,38 +6,34 @@ import { CardTitle, CardDescription } from "@/components/ui/card";
 import { goeyToast } from "@/components/ui/goey-toaster";
 import { LoadingAnimation } from "@/components/ui/loading-animation";
 import { Progress } from "@/components/ui/progress";
+import { useConstruct } from "@/hooks/use-construct-url";
 import { useUploadThing } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
-import { updateEventPhoto } from "@/server/actions/acara";
-import { updateNewsPhoto } from "@/server/actions/news";
 import { IconCloudUpload } from "@tabler/icons-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useCallback } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
 
 export const UploaderPhoto = ({
-  catagory,
-  slug,
+  onChange,
+  value,
 }: {
-  catagory: "news" | "events";
-  slug: string;
+  onChange?: (key: string) => void;
+  value: string;
 }) => {
   const router = useRouter();
+  const valueUrl = useConstruct(value || "");
 
   const [preview, setPreview] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
 
-  const catagoryType = catagory === "events" ? "acaraUploud" : "beritaUpload";
-
   const { startUpload, isUploading } = useUploadThing("onOploadFile", {
     onClientUploadComplete: async (res) => {
-      if (catagoryType === "beritaUpload") {
-        await updateNewsPhoto(slug, res);
-      } else if (catagoryType === "acaraUploud") {
-        await updateEventPhoto(slug, res);
-      }
+      const key = res[0].key;
+
+      onChange?.(key);
+
       setProgress(0);
       router.refresh();
     },
@@ -107,7 +103,22 @@ export const UploaderPhoto = ({
               isDragActive ? "bg-primary/15" : "bg-transparent",
             )}
           >
-            {!preview ? (
+            {value ? (
+              <div className=" w-full h-full">
+                <Image
+                  src={valueUrl}
+                  alt="Preview"
+                  fill
+                  className="object-cover"
+                />
+                {/* Overlay Tombol Ganti Foto jika sudah selesai upload */}
+                <div className=" absolute flex w-full left-0 justify-end pr-2">
+                  <Button className=" rounded-2xl" variant={"destructive"}>
+                    Hapus
+                  </Button>
+                </div>
+              </div>
+            ) : !preview ? (
               <>
                 <input {...getInputProps()} />
                 <UploadIllustration />
@@ -115,6 +126,10 @@ export const UploaderPhoto = ({
                 <CardDescription className="text-xs text-center px-4">
                   Foto akan langsung diunggah (Maks. 4 MB)
                 </CardDescription>
+                <CardDescription className="text-xs text-center px-4 text-muted-foreground/50">
+                  Rekomendasi: 1200x630px (16:9)
+                </CardDescription>
+
                 <Button
                   variant="outline"
                   className="rounded-full mt-4 pointer-events-none text-sm"
@@ -130,33 +145,11 @@ export const UploaderPhoto = ({
                   fill
                   className="object-cover"
                 />
-                {/* Overlay Tombol Ganti Foto jika sudah selesai upload */}
-                <div className=" absolute flex w-full left-0 justify-end pr-2">
-                  <Button className=" rounded-2xl" variant={"destructive"}>
-                    Hapus
-                  </Button>
-                </div>
               </div>
             )}
           </div>
         )}
       </AspectRatio>
-
-      <Link
-        href={
-          catagory === "events"
-            ? `/home/events/update/${slug}`
-            : `/home/news/update/${slug}`
-        }
-        className={cn(
-          "flex justify-end -mr-14 opacity-0",
-          !isUploading &&
-            preview &&
-            "opacity-100 mr-3 transition-all duration-700 ease-in-out",
-        )}
-      >
-        <Button className="text-sm rounded-2xl mt-3">ke menu update</Button>
-      </Link>
     </div>
   );
 };
@@ -252,7 +245,7 @@ const UploadIllustration = () => (
 const UploadingAnimation = ({ progress }: { progress: number }) => (
   <div className="flex flex-col items-center justify-center w-full h-full">
     <LoadingAnimation progress={progress} />
-    <div className="mt-4 w-full max-w-[200px]">
+    <div className="mt-4 w-full max-w-50">
       <div className="flex justify-between text-xs mb-1">
         <span>Mengunggah...</span>
         <span>{progress}%</span>

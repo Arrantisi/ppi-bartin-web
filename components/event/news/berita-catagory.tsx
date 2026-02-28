@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Skeleton } from "@/components/ui/skeleton";
 import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
+import { imageUrl } from "@/utils/image-url";
 
 const catagoryTrigger = [
   { ctg: "all" },
@@ -107,7 +108,7 @@ const BeritaCatagory = () => {
             .filter((news) =>
               category.ctg === "all" ? true : news.catagory === category.ctg,
             )
-            .filter((news) => news.status === "PUSBLISH")
+
             .map((news) => (
               <Link
                 href={`/home/news/${news.slug}`}
@@ -115,7 +116,7 @@ const BeritaCatagory = () => {
                 className="grid grid-cols-5 w-full hover:bg-muted-foreground/5 p-2 rounded-4xl gap-2"
               >
                 <Image
-                  src={news.images[0]?.url}
+                  src={imageUrl(news.fileKey)}
                   alt="berita"
                   height={200}
                   width={200}

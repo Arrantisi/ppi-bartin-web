@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { imageUrl } from "@/utils/image-url";
 
 export const RenderAcara = () => {
   const queryClient = useQueryClient();
@@ -53,23 +54,20 @@ export const RenderAcara = () => {
     return <SkeletonCardAcara />;
   }
 
-  const filterEvent = events?.filter(
-    (publish) => publish.status === "PUSBLISH",
-  );
-  if (!filterEvent || filterEvent.length === 0) {
-    return <div>event terbaru tidak ada</div>;
+  if (!events || events.length === 0) {
+    return <div>Event tidak ada</div>;
   }
 
-  const data = filterEvent[0];
+  const data = events[0];
 
   return (
     <CardEvent
       maxCapacity={data.maxCapacity || 0}
       id={data.id}
       createdBy={data.creator.username || ""}
-      description={data.content || ""}
+      description={data.deskripsi || ""}
       slug={data.slug}
-      image={data.images[0]?.url}
+      image={imageUrl(data.fileKey)}
       judul={data.judul}
       lokasi={data.lokasi || ""}
       tanggal={formattedDate(data.date || new Date())}

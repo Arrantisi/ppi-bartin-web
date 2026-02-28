@@ -2,14 +2,23 @@
 
 import { studentAccount } from "@/server/actions/account";
 import prisma from "@/lib/prisma";
-import { TUpdateEventField, TPostJudulSchema } from "@/schemas";
+import { TUpdateEventField, TcreateEventSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
 
-export const postEvent = async ({
+export const createAcara = async ({
   judul,
-}: TPostJudulSchema): Promise<TServerPrompt> => {
+  deskripsi,
+  date,
+  lokasi,
+  maxCapacity,
+  biayaAcara,
+  batasDaftar,
+  fileKey,
+  catagory,
+  persyaratan,
+}: TcreateEventSchema): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
 
   const slug = createSlug(judul);
@@ -17,22 +26,65 @@ export const postEvent = async ({
   try {
     await prisma.events.create({
       data: {
+        biayaAcara: biayaAcara,
+        batasDaftar,
+        fileKey,
+        catagory,
+        persyaratan,
         slug,
         judul,
         userId: user.id,
+        deskripsi,
+        maxCapacity,
+        date,
+        lokasi,
       },
     });
-    revalidatePath(`/home/events/uploader/${slug}`);
 
     return {
       status: "success",
-      msg: slug,
+      msg: "berhasil membuat acara",
     };
   } catch (error) {
     console.error(error);
     return {
       status: "error",
-      msg: "masalah pada server delete acara",
+      msg: "masalah pada server create acara, silahkan hubungi admin",
+    };
+  }
+};
+
+export const updateAcara = async (
+  slug: string,
+  { deskripsi, date, judul, lokasi, maxCapacity }: TUpdateEventField,
+): Promise<TServerPrompt> => {
+  await studentAccount();
+
+  try {
+    const updattedSlug = createSlug(judul);
+
+    await prisma.events.update({
+      where: { slug },
+      data: {
+        deskripsi,
+        date,
+        judul,
+        slug: updattedSlug,
+        lokasi,
+        maxCapacity,
+      },
+    });
+
+    revalidatePath("/home/events");
+    return {
+      status: "success",
+      msg: "Acara berhasil di update",
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: "error",
+      msg: "masalah pada server update acara",
     };
   }
 };
@@ -88,7 +140,7 @@ export const publishAcara = async (slug: string): Promise<TServerPrompt> => {
   try {
     await prisma.events.update({
       where: { slug },
-      data: { status: "PUSBLISH" },
+      data: {},
     });
 
     return {
@@ -100,76 +152,6 @@ export const publishAcara = async (slug: string): Promise<TServerPrompt> => {
     return {
       status: "error",
       msg: "masalah pada server publish acara",
-    };
-  }
-};
-
-export const updateEventPhoto = async (
-  slug: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  images: any[],
-): Promise<TServerPrompt> => {
-  await studentAccount();
-
-  try {
-    await prisma.events.update({
-      where: { slug },
-      data: {
-        images: {
-          create: images.map((img) => ({
-            url: img.url,
-            key: img.key,
-            name: img.name,
-          })),
-        },
-      },
-    });
-
-    return {
-      status: "success",
-      msg: "Photo acara berhasil di update",
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      status: "error",
-      msg: "masalah pada server update acara",
-    };
-  }
-};
-
-export const updateAcara = async (
-  slug: string,
-  { content, date, judul, lokasi, maxCapacity }: TUpdateEventField,
-): Promise<TServerPrompt> => {
-  await studentAccount();
-
-  try {
-    const updattedSlug = createSlug(judul);
-
-    await prisma.events.update({
-      where: { slug },
-      data: {
-        content,
-        date,
-        judul,
-        slug: updattedSlug,
-        lokasi,
-        maxCapacity,
-        status: "PUSBLISH",
-      },
-    });
-
-    revalidatePath("/home/events");
-    return {
-      status: "success",
-      msg: "Acara berhasil di update",
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      status: "error",
-      msg: "masalah pada server update acara",
     };
   }
 };
