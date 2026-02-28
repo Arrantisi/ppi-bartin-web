@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { IconArrowNarrowLeft } from "@tabler/icons-react";
-import { AvatarUpdateProfile } from "./avatar";
 import { useQuery } from "@tanstack/react-query";
 import { getProfileUser } from "@/server/data/users";
 import { UpdateProfileField } from "@/components/field/update-profle";
@@ -34,10 +33,6 @@ export const UpdateProfileComponent = () => {
           <IconArrowNarrowLeft />
         </Button>
       </div>
-      {/* avatar */}
-      <AvatarUpdateProfile {...user} />
-
-      {/* field */}
 
       <UpdateProfileField {...user} />
     </div>

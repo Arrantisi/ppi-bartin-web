@@ -89,7 +89,7 @@ const CardBeritaTerbaru = () => {
               <div className="space-y-1">
                 <Badge size={"sm"} className="text-xs rounded-2xl capitalize">
                   {" "}
-                  <div className="size-2 rounded-full bg-accent" />
+                  <span className="size-2 rounded-full bg-primary-foreground" />
                   {news.catagory}
                 </Badge>
                 <h1 className="text-lg/6 font-semibold line-clamp-2">

@@ -82,6 +82,7 @@ export const UploaderPhoto = ({
       });
     });
   };
+
   const { isDragActive, getInputProps, getRootProps } = useDropzone({
     onDrop,
     maxFiles: 1,

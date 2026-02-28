@@ -1,6 +1,7 @@
 import * as z from "zod";
 
 export const updateProfileSchema = z.object({
+  fileKey: z.string(),
   fullname: z.string(),
   username: z
     .string()

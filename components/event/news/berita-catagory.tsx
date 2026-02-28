@@ -82,23 +82,23 @@ const BeritaCatagory = () => {
   return (
     <Tabs defaultValue="all" className="w-full my-3">
       {/* 1. Scrollable Tabs List */}
-      <ScrollArea className="w-full whitespace-nowrap pb-4">
-        <TabsList className="bg-transparent h-auto p-0 gap-3 flex justify-start">
+      <div className="w-full overflow-x-auto overflow-y-hidden pb-4 scrollbar-none">
+        <TabsList className="bg-transparent h-auto p-0 gap-3 flex justify-start w-max">
           {catagoryTrigger.map((item) => (
             <TabsTrigger
               key={item.ctg}
               value={item.ctg}
               className={cn(
                 "rounded-full bg-muted px-6 py-2.5 capitalize transition-all",
-                "data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md",
+                "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md",
+                "dark:data-[state=active]:bg-accent-foreground dark:data-[state=active]:text-accent dark:data-[state=active]:shadow-md",
               )}
             >
               {item.ctg}
             </TabsTrigger>
           ))}
         </TabsList>
-        <ScrollBar orientation="horizontal" className="invisible" />
-      </ScrollArea>
+      </div>
 
       {/* 2. Mapping Content berdasarkan Kategori */}
       {catagoryTrigger.map((category) => (
@@ -128,8 +128,7 @@ const BeritaCatagory = () => {
                       size={"sm"}
                       className="text-xs rounded-2xl capitalize"
                     >
-                      {" "}
-                      <div className="size-2 rounded-full bg-accent" />
+                      <div className="size-2 rounded-full bg-primary-foreground" />
                       {news.catagory}
                     </Badge>
                     <h1 className="text-lg/6 font-semibold line-clamp-2">

@@ -7,7 +7,7 @@ const AcaraMendatang = ({ children }: { children: React.ReactNode }) => {
         <h1 className="font-semibold text-lg tracking-tight">Acara Tebaru</h1>
         <Link
           href={"/home/events"}
-          className="text-primary font-semibold text-sm"
+          className="text-accent-foreground font-semibold text-sm"
         >
           selengkapnya
         </Link>

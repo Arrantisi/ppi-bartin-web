@@ -42,7 +42,7 @@ const CardEvent = ({
               alt="card-event"
               height={200}
               width={200}
-              className="w-full h-[300px] object-cover rounded-2xl"
+              className="w-full h-75 object-cover rounded-2xl"
             />
           </CardHeader>
         )}
@@ -55,7 +55,7 @@ const CardEvent = ({
             </h4>
             <Link
               href={`/home/events/${slug}`}
-              className="text-xs text-primary mr-3"
+              className="text-xs text-accent-foreground mr-3"
             >
               Lebih Detail
             </Link>
@@ -80,11 +80,11 @@ const CardEvent = ({
           />
 
           {capacityFull ? (
-            <div className="text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+            <div className="text-xs font-semibold rounded-full capitalize bg-primary text-primary-foreground py-2.5 px-3">
               sudah penuh{" "}
             </div>
           ) : userJoined?.id === session?.user.id ? (
-            <div className="text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+            <div className="text-xs font-semibold rounded-full capitalize bg-primary text-primary-foreground py-2.5 px-3">
               kamu telah join
             </div>
           ) : (

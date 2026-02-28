@@ -31,6 +31,7 @@ import { goeyToast } from "../ui/goey-toaster";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
+import { UploadPhotoProfile } from "../event/uploader/upload-photo-profile";
 
 const items = [{ value: "pria" }, { value: "wanita" }];
 
@@ -41,6 +42,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
 
   const form = useForm({
     defaultValues: {
+      fileKey: props.image || "",
       email: props.email,
       fullname: props.name || "",
       noSiswa: props.nomorSiswa || "",
@@ -75,6 +77,21 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
           form.handleSubmit();
         }}
       >
+        <form.Field name="fileKey">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field>
+                <UploadPhotoProfile
+                  value={field.state.value}
+                  onValueChange={(e) => field.handleChange(e)}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
         <div className="bg-accent/50 py-[24px] px-[20px] space-y-[4px] my-3">
           <h3 className="text-[15px] leading-[15px] font-semibold">
             Informasi Pribadi

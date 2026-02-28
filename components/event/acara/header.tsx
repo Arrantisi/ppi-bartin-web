@@ -5,15 +5,13 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { IconPlus, IconSearch } from "@tabler/icons-react";
-import {
-  Dialog,
-  DialogTrigger,
-} from "@/components/animate-ui/components/base/dialog";
+import { IconSearch } from "@tabler/icons-react";
+import { Dialog } from "@/components/animate-ui/components/base/dialog";
 import { DialogJudul } from "../dialog-judul";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { ButtonCreate } from "@/components/buttons";
 
 const HeaderAcara = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,11 +46,7 @@ const HeaderAcara = () => {
           </InputGroupAddon>
         </InputGroup>
 
-        <DialogTrigger
-          className={"rounded-full bg-primary p-1.5 text-white/80"}
-        >
-          <IconPlus />
-        </DialogTrigger>
+        <ButtonCreate />
       </div>
       <DialogJudul catagory="events" />
     </Dialog>

@@ -9,7 +9,7 @@ const BeritaTerbaru = ({ children }: { children: React.ReactNode }) => {
         </h1>
         <Link
           href={"/home/news"}
-          className="text-primary font-semibold text-sm"
+          className="text-accent-foreground font-semibold text-sm"
         >
           selengkapnya
         </Link>

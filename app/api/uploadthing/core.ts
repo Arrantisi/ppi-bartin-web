@@ -8,6 +8,12 @@ export const ourFileRouter = {
   }).onUploadComplete(async ({ file }) => {
     return { key: file.key, url: file.ufsUrl, name: file.name };
   }),
+
+  onOploadProfile: f({
+    image: { maxFileSize: "1MB", maxFileCount: 1 },
+  }).onUploadComplete(({ file }) => {
+    return { key: file.key };
+  }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

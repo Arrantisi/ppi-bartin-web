@@ -1,4 +1,4 @@
-import { UploaderPhoto } from "@/components/event/uploader";
+import { UploaderPhoto } from "@/components/event/uploader/upload-event-news";
 
 const UploaderPageNews = async ({
   params,

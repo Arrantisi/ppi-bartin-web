@@ -1,18 +1,16 @@
 "use client";
 
-import {
-  Dialog,
-  DialogTrigger,
-} from "@/components/animate-ui/components/base/dialog";
+import { Dialog } from "@/components/animate-ui/components/base/dialog";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { IconPlus, IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import { DialogJudul } from "../dialog-judul";
 import Link from "next/link";
 import Image from "next/image";
+import { ButtonCreate } from "@/components/buttons";
 
 const HeaderBerita = () => {
   return (
@@ -44,11 +42,7 @@ const HeaderBerita = () => {
           </InputGroupAddon>
         </InputGroup>
 
-        <DialogTrigger
-          className={"rounded-full bg-primary p-1.5 text-white/80"}
-        >
-          <IconPlus />
-        </DialogTrigger>
+        <ButtonCreate />
       </div>
       <DialogJudul catagory="news" />
     </Dialog>

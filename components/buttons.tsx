@@ -7,6 +7,7 @@ import {
   IconArrowLeftDashed,
   IconLogout,
   IconMoonStars,
+  IconPlus,
   IconShareplay,
   IconSunHighFilled,
   IconTrash,
@@ -18,6 +19,18 @@ import { deleteAccount } from "@/server/actions/setting-user";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { goeyToast } from "./ui/goey-toaster";
+
+export const ButtonCreate = () => {
+  return (
+    <div
+      className={
+        "rounded-full bg-accent-foreground p-1.5 text-accent border border-accent"
+      }
+    >
+      <IconPlus />
+    </div>
+  );
+};
 
 export const ButtonSettings = ({
   children,

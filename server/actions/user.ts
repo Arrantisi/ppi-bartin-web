@@ -13,6 +13,7 @@ export const updateProfile = async ({
   jenisKelamin,
   telpon,
   tanggalLahir,
+  fileKey,
 }: TupdateProfileSchema): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
 
@@ -20,6 +21,7 @@ export const updateProfile = async ({
     await prisma.user.update({
       where: { id: user.id },
       data: {
+        image: fileKey,
         username,
         alamat,
         bio: Bio,
