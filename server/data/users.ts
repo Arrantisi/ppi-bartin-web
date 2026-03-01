@@ -14,6 +14,10 @@ export const getProfileUser = async () => {
   return prisma.user.findUnique({
     where: { id: session.user.id },
     select: {
+      fakultas: true,
+      statusPelajar: true,
+      angkatan: true,
+      jurusan: true,
       id: true,
       username: true,
       name: true,

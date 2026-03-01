@@ -17,12 +17,16 @@ export const createNewsSchema = z.object({
 export type TcreateNewsSchema = z.infer<typeof createNewsSchema>;
 
 export const updateProfileSchema = z.object({
+  statusPelajar: z.string().min(3),
+  fakultas: z.string().min(3),
   fileKey: z.string(),
   fullname: z.string(),
   username: z
     .string()
     .min(2, "Username minimal 2 karakter")
     .max(12, "Username maksimal 12 karakter"),
+  jurusan: z.string().min(3, "karakter"),
+  angkatan: z.string().min(3, "minimal 3 karakter"),
   email: z.email(),
   telpon: z.string().or(z.undefined()),
   noSiswa: z.string(),

@@ -1,0 +1,92 @@
+[
+  {
+    "fakultas": "Bartın Orman Fakültesi",
+    "jurusan": [
+      "Orman Endüstri Mühendisliği",
+      "Orman Mühendisliği"
+    ]
+  },
+  {
+    "fakultas": "Edebiyat Fakültesi",
+    "jurusan": [
+      "Arapça Mütercim ve Tercümanlık",
+      "Bilgi ve Belge Yönetimi",
+      "Çağdaş Türk Lehçeleri ve Edebiyatları",
+      "Felsefe",
+      "İngilizce Mütercim ve Tercümanlık",
+      "Psikoloji",
+      "Sanat Tarihi",
+      "Sosyoloji",
+      "Tarih",
+      "Türk Dili ve Edebiyatı"
+    ]
+  },
+  {
+    "fakultas": "Eğitim Fakültesi",
+    "jurusan": [
+      "Fen Bilgisi Öğretmenliği",
+      "İlköğretim Matematik Öğretmenliği",
+      "İngilizce Öğretmenliği",
+      "Okul Öncesi Öğretmenliği",
+      "Özel Eğitim Öğretmenliği",
+      "Rehberlik ve Psikolojik Danışmanlık",
+      "Sınıf Öğretmenliği",
+      "Sosyal Bilgiler Öğretmenliği",
+      "Türkçe Öğretmenliği",
+      "Resim-İş Öğretmenliği"
+    ]
+  },
+  {
+    "fakultas": "Fen Fakültesi",
+    "jurusan": [
+      "Bilgisayar Teknolojisi ve Bilişim Sistemleri",
+      "Biyoteknoloji",
+      "Matematik",
+      "Moleküler Biyoloji ve Genetik"
+    ]
+  },
+  {
+    "fakultas": "İktisadi ve İdari Bilimler Fakültesi",
+    "jurusan": [
+      "İktisat",
+      "İşletme",
+      "Siyaset Bilimi ve Kamu Yönetimi",
+      "Uluslararası Ticaret ve Lojistik",
+      "Yönetim Bilişim Sistemleri"
+    ]
+  },
+  {
+    "fakultas": "İlahiyat Fakültesi",
+    "jurusan": [
+      "İlahiyat"
+    ]
+  },
+  {
+    "fakultas": "Mühendislik, Mimarlık ve Tasarım Fakültesi",
+    "jurusan": [
+      "Bilgisayar Mühendisliği",
+      "Elektrik-Elektronik Mühendisliği",
+      "İnşaat Mühendisliği",
+      "Makine Mühendisliği",
+      "Metalurji ve Malzeme Mühendisliği",
+      "Peyzaj Mimarlığı"
+    ]
+  },
+  {
+    "fakultas": "Sağlık Bilimleri Fakültesi",
+    "jurusan": [
+      "Ebelik",
+      "Hemşirelik",
+      "Sosyal Hizmet"
+    ]
+  },
+  {
+    "fakultas": "Spor Bilimleri Fakültesi",
+    "jurusan": [
+      "Antrenörlük Eğitimi",
+      "Beden Eğitimi ve Spor Öğretmenliği",
+      "Rekreasyon",
+      "Spor Yöneticiliği"
+    ]
+  }
+]
