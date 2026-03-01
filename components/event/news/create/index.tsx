@@ -1,4 +1,3 @@
-import React from "react";
 import { CreateNewsHeader } from "./header";
 import { CreateNewsContent } from "./content";
 

@@ -1,27 +1,29 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { TUpdateNewsSchema, TcreateNewsSchema } from "@/schemas";
+import { TcreateNewsSchema } from "@/schemas";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
 import { revalidatePath } from "next/cache";
 import { studentAccount } from "./account";
 
-export const updateNewsContent = async (
+export const updateNews = async (
   slug: string,
-  { catagory, desckripsi, judul }: TUpdateNewsSchema,
+  { judul, catagory, desckripsi, fileKey, ringkasan }: TcreateNewsSchema,
 ): Promise<TServerPrompt> => {
   await studentAccount();
   try {
-    const updateedSlug = createSlug(judul);
+    const updatedSlug = createSlug(judul);
 
     await prisma.news.update({
       where: { slug },
       data: {
         catagory,
         desckripsi,
+        fileKey,
+        ringkasan,
         judul,
-        slug: updateedSlug,
+        slug: updatedSlug,
       },
     });
 

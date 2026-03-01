@@ -71,16 +71,6 @@ export const createEventSchema = z.object({
 
 export type TcreateEventSchema = z.infer<typeof createEventSchema>;
 
-export const updateNewsSchema = z.object({
-  judul: z.string().min(8, "Judul berita minimal 8 karakter"),
-  desckripsi: z
-    .string()
-    .min(8, "Isi berita terlalu pendek, minimal 8 karakter"),
-  catagory: z.string().min(1, "Silakan pilih kategori"),
-});
-
-export type TUpdateNewsSchema = z.infer<typeof updateNewsSchema>;
-
 export const updateEventField = z.object({
   judul: z.string().min(8, "Nama agenda minimal 8 karakter"),
   lokasi: z.string().min(1, "Lokasi acara wajib diisi"),

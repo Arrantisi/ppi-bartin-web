@@ -1,3 +1,16 @@
+import { TgetEventBySlug } from "@/server/data/events";
+import { TgetNewsBySlug } from "@/server/data/news";
+
+export type TupdateNewsProps = {
+  slug: string;
+  data: TgetNewsBySlug;
+};
+
+export type TupdateEventProps = {
+  slug: string;
+  data: TgetEventBySlug;
+};
+
 export type TCatagory = {
   catagory: "events" | "news";
 };
@@ -5,20 +18,6 @@ export type TCatagory = {
 export type TServerPrompt = {
   status: "error" | "success";
   msg: string;
-};
-
-export type CardEventProps = {
-  id: string;
-  slug: string;
-  image: string;
-  judul: string;
-  createdBy: string;
-  tanggal: string;
-  lokasi: string;
-  description: string;
-  participant: { image: string; id: string }[];
-  totalParticipant: number;
-  maxCapacity: number;
 };
 
 export type TcatagoryDialogEvent = {

@@ -38,6 +38,8 @@ export const getAllEvents = async () => {
   });
 };
 
+export type TgetAllEvent = Awaited<ReturnType<typeof getAllEvents>>[0];
+
 export const getEventBySlug = async (slug: string) => {
   await studentAccount();
 
@@ -49,3 +51,5 @@ export const getEventBySlug = async (slug: string) => {
     },
   });
 };
+
+export type TgetEventBySlug = Awaited<ReturnType<typeof getEventBySlug>>;

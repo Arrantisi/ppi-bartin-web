@@ -2,7 +2,7 @@
 
 import { studentAccount } from "@/server/actions/account";
 import prisma from "@/lib/prisma";
-import { TUpdateEventField, TcreateEventSchema } from "@/schemas";
+import { TcreateEventSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
@@ -56,7 +56,18 @@ export const createAcara = async ({
 
 export const updateAcara = async (
   slug: string,
-  { deskripsi, date, judul, lokasi, maxCapacity }: TUpdateEventField,
+  {
+    judul,
+    deskripsi,
+    date,
+    lokasi,
+    maxCapacity,
+    biayaAcara,
+    batasDaftar,
+    fileKey,
+    catagory,
+    persyaratan,
+  }: TcreateEventSchema,
 ): Promise<TServerPrompt> => {
   await studentAccount();
 
@@ -66,12 +77,18 @@ export const updateAcara = async (
     await prisma.events.update({
       where: { slug },
       data: {
-        deskripsi,
-        date,
-        judul,
+        biayaAcara: biayaAcara,
+        batasDaftar,
+        fileKey,
+        catagory,
+        persyaratan,
         slug: updattedSlug,
-        lokasi,
+        judul,
+
+        deskripsi,
         maxCapacity,
+        date,
+        lokasi,
       },
     });
 

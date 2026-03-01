@@ -1,13 +1,11 @@
 "use client";
 
 import { getAllEvents } from "@/server/data/events";
-import { formattedDate } from "@/utils/date-format";
 import CardEvent from "../card";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { imageUrl } from "@/utils/image-url";
 
 export const RenderAcara = () => {
   const queryClient = useQueryClient();
@@ -60,24 +58,5 @@ export const RenderAcara = () => {
 
   const data = events[0];
 
-  return (
-    <CardEvent
-      maxCapacity={data.maxCapacity || 0}
-      id={data.id}
-      createdBy={data.creator.username || ""}
-      description={data.deskripsi || ""}
-      slug={data.slug}
-      image={imageUrl(data.fileKey)}
-      judul={data.judul}
-      lokasi={data.lokasi || ""}
-      tanggal={formattedDate(data.date || new Date())}
-      participant={
-        data.participants.map((p) => ({
-          image: p.user.image || "",
-          id: p.user.id,
-        })) || []
-      }
-      totalParticipant={data.participants.length}
-    />
-  );
+  return <CardEvent {...data} />;
 };

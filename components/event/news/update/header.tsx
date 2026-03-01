@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
-export const CreateNewsHeader = () => {
+export const UpdateNewsHeader = () => {
   const router = useRouter();
 
   return (
@@ -17,7 +17,7 @@ export const CreateNewsHeader = () => {
         >
           <IconArrowLeft />
         </Button>
-        <h1 className="title-tiga">Buat Berita</h1>
+        <h1 className="title-tiga">Update Berita</h1>
       </div>
     </div>
   );

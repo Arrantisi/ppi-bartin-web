@@ -4,10 +4,8 @@ import CardEvent from "../card";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllEvents } from "@/server/data/events";
 import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
-import { formattedDate } from "@/utils/date-format";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { imageUrl } from "@/utils/image-url";
 
 const CardAcaras = () => {
   const queryClient = useQueryClient();
@@ -68,22 +66,7 @@ const CardAcaras = () => {
     <div>
       {data.map((data) => (
         <div key={data.id} className="my-3">
-          <CardEvent
-            id={data.id}
-            createdBy={data.creator.username || ""}
-            description={data.deskripsi || ""}
-            slug={data.slug}
-            image={imageUrl(data.fileKey)}
-            judul={data.judul}
-            lokasi={data.lokasi || ""}
-            tanggal={formattedDate(data.date || new Date())}
-            participant={data.participants.map((p) => ({
-              image: p.user.image || "",
-              id: p.user.id,
-            }))}
-            maxCapacity={data.maxCapacity || 0}
-            totalParticipant={data.participants.length}
-          />
+          <CardEvent {...data} />
         </div>
       ))}
     </div>
