@@ -29,7 +29,7 @@ const AvatarParticipant = ({
       </div>
       <p className="text-xs">
         {filteredParticipant.length > 0 && "+"} {totalParticipant} /{" "}
-        {maxCapacity} Participants
+        {maxCapacity} Mengikuti
       </p>
     </div>
   );

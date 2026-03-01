@@ -43,6 +43,9 @@ Tips menulis berita yang baik:
 
 export const CreateNewsField = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [lenghtOfJudul, setLenghtOfJudul] = useState(0);
+  const [lenghtOfRingkasan, setLenghtOfRingkasan] = useState(0);
+  const [lenghtOfDeskripsi, setLenghtOfDeskripsi] = useState(0);
 
   const router = useRouter();
 
@@ -117,8 +120,14 @@ export const CreateNewsField = () => {
                   id={field.name}
                   placeholder="Masukkan judul berita yang menarik"
                   value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
+                  onChange={(e) => {
+                    field.handleChange(e.target.value);
+                    setLenghtOfJudul(e.target.value.length);
+                  }}
                 />
+                <FieldDescription className="text-right">
+                  {lenghtOfJudul}/100
+                </FieldDescription>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
@@ -175,14 +184,22 @@ export const CreateNewsField = () => {
                 </FieldLabel>
                 <Textarea
                   name={field.name}
-                  placeholder="Tulis ringkasan singkat berita ini (maksimal 200 karakter)"
                   id={field.name}
+                  placeholder="Masukkan judul berita yang menarik"
                   value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
+                  onChange={(e) => {
+                    field.handleChange(e.target.value);
+                    setLenghtOfRingkasan(e.target.value.length);
+                  }}
                 />
-                <FieldDescription>
-                  Ringkasan singkat yang akan muncul di preview berita
-                </FieldDescription>
+                <div className="flex items-center justify-between">
+                  <FieldDescription>
+                    Ringkasan singkat yang akan muncul di preview berita
+                  </FieldDescription>
+                  <FieldDescription className="text-right">
+                    {lenghtOfRingkasan}/100
+                  </FieldDescription>
+                </div>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
@@ -205,9 +222,15 @@ export const CreateNewsField = () => {
                   placeholder={desckripsiPlacholder.trim()}
                   id={field.name}
                   value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
+                  onChange={(e) => {
+                    field.handleChange(e.target.value);
+                    setLenghtOfDeskripsi(e.target.value.length);
+                  }}
                   className="min-h-78.5"
                 />
+                <FieldDescription className="text-right">
+                  {lenghtOfDeskripsi} kata
+                </FieldDescription>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );

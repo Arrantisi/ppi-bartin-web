@@ -3,7 +3,7 @@
 import { TcreateEventSchema, createEventSchema } from "@/schemas";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
-import { Field, FieldLabel, FieldError } from "../ui/field";
+import { Field, FieldLabel, FieldError, FieldDescription } from "../ui/field";
 import { Button, buttonVariants } from "../ui/button";
 import { DatePickerField } from "../event/date-picker-field";
 import { createAcara } from "@/server/actions/acara";
@@ -41,6 +41,7 @@ const catagoryTrigger = [
 
 export const CreateEventField = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [lengthOfDeskripsi, setLengthOfDeskripsi] = useState(0);
   const router = useRouter();
 
   const form = useForm({
@@ -123,10 +124,10 @@ export const CreateEventField = () => {
                   <Textarea
                     id={field.name}
                     placeholder={props.textarea[0].placeholder}
-                    className="min-h-18.75"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
+
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               );
@@ -217,8 +218,9 @@ export const CreateEventField = () => {
                     id={field.name}
                     placeholder={props.textarea[2].placeholder}
                     value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    className="min-h-18.75"
+                    onChange={(e) => {
+                      field.handleChange(e.target.value);
+                    }}
                   />
 
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -239,12 +241,17 @@ export const CreateEventField = () => {
                   </FieldLabel>
                   <Textarea
                     id={field.name}
-                    placeholder={props.textarea[3].placeholder}
+                    placeholder={props.textarea[0].placeholder}
                     value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    className="min-h-18.75"
+                    className="min-h-36"
+                    onChange={(e) => {
+                      field.handleChange(e.target.value);
+                      setLengthOfDeskripsi(e.target.value.length);
+                    }}
                   />
-
+                  <FieldDescription className="text-right">
+                    {lengthOfDeskripsi}/200
+                  </FieldDescription>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               );
@@ -349,7 +356,6 @@ export const CreateEventField = () => {
                     placeholder={props.textarea[3].placeholder}
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="min-h-18.75"
                   />
 
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}

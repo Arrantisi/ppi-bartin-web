@@ -90,11 +90,11 @@ const CardEvent = ({
             </DialogTrigger>
             {capacityFull ? (
               <div className="text-xs font-semibold rounded-full capitalize bg-primary text-primary-foreground py-2.5 px-3">
-                sudah penuh{" "}
+                acara sudah penuh
               </div>
             ) : userJoined?.id === session?.user.id ? (
               <div className="text-xs font-semibold rounded-full capitalize bg-primary text-primary-foreground py-2.5 px-3">
-                kamu telah join
+                kamu telah mengitkuti
               </div>
             ) : (
               <DrawerTrigger asChild>

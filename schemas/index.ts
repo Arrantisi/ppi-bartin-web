@@ -1,11 +1,17 @@
 import * as z from "zod";
 
 export const createNewsSchema = z.object({
-  judul: z.string().min(8, "Nama agenda minimal 8 karakter"),
+  judul: z
+    .string()
+    .min(8, "Nama agenda minimal 8 karakter")
+    .max(100, "Judul tidak boleh lebih dari 100 kata"),
   desckripsi: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
   fileKey: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
   catagory: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
-  ringkasan: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
+  ringkasan: z
+    .string()
+    .min(8, "Deskripsi acara minimal 8 karakter")
+    .max(100, "Ringkasan tidak boleh lebih dari 100 kata"),
 });
 
 export type TcreateNewsSchema = z.infer<typeof createNewsSchema>;
@@ -38,10 +44,16 @@ export const formUsername = z.object({
 export type FormUsername = z.infer<typeof formUsername>;
 
 export const createEventSchema = z.object({
-  judul: z.string().min(8, "Nama agenda minimal 8 karakter"),
+  judul: z
+    .string()
+    .min(8, "Nama agenda minimal 8 karakter")
+    .max(100, "Judul tidak boleh lebih dari 100 kata"),
   lokasi: z.string().min(1, "Lokasi acara wajib diisi"),
   date: z.date({ error: "Silakan tentukan tanggal acara" }),
-  deskripsi: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
+  deskripsi: z
+    .string()
+    .min(8, "Deskripsi acara minimal 8 karakter")
+    .max(200, "Judul tidak boleh lebih dari 200 kata"),
   biayaAcara: z.string().min(2, "Deskripsi acara minimal 2 karakter"),
   batasDaftar: z.date({ error: "Silakan tentukan tanggal acara" }),
   fileKey: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
