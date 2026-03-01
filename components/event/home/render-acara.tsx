@@ -32,13 +32,6 @@ export const RenderAcara = () => {
           queryClient.invalidateQueries({ queryKey: ["render_acara_terbaru"] });
         },
       )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "images" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["render_acara_terbaru"] });
-        },
-      )
       .subscribe((status) => {
         console.log(status);
       });

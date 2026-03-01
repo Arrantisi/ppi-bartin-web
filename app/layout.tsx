@@ -1,27 +1,14 @@
 import type { Metadata } from "next";
-import { Poppins, Libre_Baskerville, IBM_Plex_Mono } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
-
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
 import Head from "next/head";
 import { GoeyToaster } from "@/components/ui/goey-toaster";
 
-const poppins = Poppins({
+const fontSans = Outfit({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
-
-const libre_baskerville = Libre_Baskerville({
-  subsets: ["latin"],
-  variable: "--font-serif",
-});
-
-const ibm_plex_mono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  weight: ["100", "200", "300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -46,9 +33,7 @@ export default function RootLayout({
           src="https://tweakcn.com/live-preview.min.js"
         />
       </Head>
-      <body
-        className={`${poppins.variable} ${libre_baskerville.variable} ${ibm_plex_mono.variable} antialiased font-sans`}
-      >
+      <body className={`${fontSans.variable} antialiased`}>
         <main>
           <ThemeProvider
             attribute="class"

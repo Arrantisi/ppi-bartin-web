@@ -32,13 +32,6 @@ const CardAcaras = () => {
           queryClient.invalidateQueries({ queryKey: ["getAllEvents"] });
         },
       )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "images" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllEvents"] });
-        },
-      )
       .subscribe((status) => {
         console.log(status);
       });

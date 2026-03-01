@@ -45,13 +45,6 @@ const BeritaCatagory = () => {
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "images" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
-        },
-      )
-      .on(
-        "postgres_changes",
         { event: "*", schema: "public", table: "participants" },
         () => {
           queryClient.invalidateQueries({ queryKey: ["getAllNews"] });

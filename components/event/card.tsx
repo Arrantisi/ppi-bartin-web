@@ -87,17 +87,15 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
             </DialogTrigger>
             {capacityFull ? (
               <div className="text-xs font-semibold rounded-full capitalize bg-primary text-primary-foreground py-2.5 px-3">
-                acara sudah penuh
+                Penuh
               </div>
             ) : userJoined?.user.id === session?.user.id ? (
               <div className="text-xs font-semibold rounded-full capitalize bg-primary text-primary-foreground py-2.5 px-3">
-                kamu telah mengitkuti
+                Mengitkuti
               </div>
             ) : (
               <DrawerTrigger asChild>
-                <Button className="rounded-full text-xs">
-                  Daftar Sekarang
-                </Button>
+                <Button className="rounded-full text-xs">Ikuti</Button>
               </DrawerTrigger>
             )}
           </CardFooter>
