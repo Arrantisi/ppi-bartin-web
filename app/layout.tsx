@@ -6,6 +6,7 @@ import { TanstackProvider } from "@/components/providers/tanstack";
 import Head from "next/head";
 import { GoeyToaster } from "@/components/ui/goey-toaster";
 import { BackgroundTheme } from "@/components/layouts/background-theme";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const fontSans = Outfit({
   subsets: ["latin"],
@@ -48,7 +49,10 @@ export default function RootLayout({
               <GoeyToaster position="top-center" />
 
               <BackgroundTheme />
-              <div className="z-50">{children}</div>
+              <div className="z-50">
+                <SpeedInsights />
+                {children}
+              </div>
             </TanstackProvider>
           </ThemeProvider>
         </main>
