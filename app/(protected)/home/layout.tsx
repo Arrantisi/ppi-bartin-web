@@ -6,7 +6,11 @@ export const metadata: Metadata = {
 };
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
-  return <div className="relative mb-24">{children}</div>;
+  return (
+    <div className="relative mb-24 max-w-xl md:max-w-3xl xl:max-w-6xl mx-auto">
+      {children}
+    </div>
+  );
 };
 
 export default HomeLayout;

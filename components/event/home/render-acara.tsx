@@ -49,7 +49,15 @@ export const RenderAcara = () => {
     return <div>Event tidak ada</div>;
   }
 
-  const data = events[0];
+  const data1 = events[0];
+  const data2 = events[1];
 
-  return <CardEvent {...data} />;
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <CardEvent {...data1} />
+      <div className="hidden md:block">
+        <CardEvent {...data2} />
+      </div>
+    </div>
+  );
 };

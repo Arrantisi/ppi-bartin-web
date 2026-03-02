@@ -27,7 +27,7 @@ export const ContentProfile = () => {
   return (
     <div className="space-y-3 my-3">
       <h1 className="title-tiga">Setting</h1>
-      <div className="space-y-3 py-4 px-2 shadow-2xl rounded-2xl">
+      <div className="space-y-3 py-4 px-2 shadow-2xl rounded-2xl bg-card">
         <Link
           href={`/home/profile/update`}
           className="flex items-center justify-between px-5"

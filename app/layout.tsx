@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
 import Head from "next/head";
 import { GoeyToaster } from "@/components/ui/goey-toaster";
+import { BackgroundTheme } from "@/components/layouts/background-theme";
 
 const fontSans = Outfit({
   subsets: ["latin"],
@@ -33,7 +34,9 @@ export default function RootLayout({
           src="https://tweakcn.com/live-preview.min.js"
         />
       </Head>
-      <body className={`${fontSans.variable} antialiased`}>
+      <body
+        className={`${fontSans.variable} antialiased min-h-screen w-full relative`}
+      >
         <main>
           <ThemeProvider
             attribute="class"
@@ -43,7 +46,9 @@ export default function RootLayout({
           >
             <TanstackProvider>
               <GoeyToaster position="top-center" />
-              {children}
+
+              <BackgroundTheme />
+              <div className="z-50">{children}</div>
             </TanstackProvider>
           </ThemeProvider>
         </main>

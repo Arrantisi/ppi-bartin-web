@@ -12,7 +12,7 @@ const AcaraMendatang = ({ children }: { children: React.ReactNode }) => {
           selengkapnya
         </Link>
       </div>
-      <div>{children}</div>
+      <div className="flex justify-center">{children}</div>
     </div>
   );
 };

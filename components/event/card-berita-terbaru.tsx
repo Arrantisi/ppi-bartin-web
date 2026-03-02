@@ -3,120 +3,54 @@
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
-import { getNews } from "@/server/data/news";
-import { supabase } from "@/lib/supabase";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { NewsCaratogorySkeleton } from "../skeletons/news-catagory-skeleton";
 import { formattedDate } from "@/utils/date-format";
 import { Badge } from "../ui/badge";
 import { imageUrl } from "@/utils/image-url";
+import { TgetNews } from "@/server/data/news";
 
-const CardBeritaTerbaru = () => {
-  const queryClient = useQueryClient();
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["getAllNews"],
-    queryFn: () => getNews(),
-  });
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("get_all_news")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "news" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "images" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "user" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
-        },
-      )
-      .subscribe((status) => {
-        console.log(status);
-      });
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient]);
-
-  if (isLoading) {
-    return (
-      <>
-        {Array.from({ length: 5 }).map((_, idx) => (
-          <NewsCaratogorySkeleton key={idx} />
-        ))}
-      </>
-    );
-  }
-
-  if (!data || data.length === 0) {
-    return <div>Berita tidak ada</div>;
-  }
-
+export const CardNewsRender = ({ ...news }: TgetNews) => {
   return (
-    <div className="flex flex-col items-start gap-3 my-3 ">
-      {data
-        .slice(0, 5)
+    <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-3 my-3">
+      <Link
+        href={`/home/news/${news.slug}`}
+        key={news.slug}
+        className="flex items-center w-full hover:bg-card rounded-4xl ring ring-accent bg-background"
+      >
+        <Image
+          src={imageUrl(news.fileKey)}
+          alt="berita"
+          height={200}
+          width={200}
+          className="h-26 w-32 rounded-l-4xl"
+        />
 
-        .map((news) => (
-          <Link
-            href={`/home/news/${news.slug}`}
-            key={news.slug}
-            className="grid grid-cols-5 w-full hover:bg-muted-foreground/5 p-2 rounded-4xl gap-2"
-          >
-            <Image
-              src={imageUrl(news.fileKey)}
-              alt="berita"
-              height={200}
-              width={200}
-              className="size-36 rounded-4xl col-span-2"
-            />
-
-            <div className="flex flex-col items-start justify-between h-36 col-span-3">
-              <div className="space-y-1">
-                <Badge size={"sm"} className="text-xs rounded-2xl capitalize">
-                  {" "}
-                  <span className="size-2 rounded-full bg-primary-foreground" />
-                  {news.catagory}
-                </Badge>
-                <h1 className="text-lg/6 font-semibold line-clamp-2">
-                  {news.judul}
-                </h1>
-              </div>
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center gap-1">
-                  <Avatar className="size-6">
-                    <AvatarImage src={news.creator.image || ""} />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <span className="text-xs">{news.creator.username || ""}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="size-2 bg-muted-foreground rounded-full" />
-                  <span className="text-xs text-muted-foreground">
-                    {formattedDate(news.createdAt)}
-                  </span>
-                </div>
-              </div>
+        <div className="flex flex-col items-start justify-between h-24 w-full mx-4">
+          <div className="space-y-1">
+            <Badge size={"sm"} className="text-xs rounded-2xl capitalize">
+              <span className="size-2 rounded-full bg-primary-foreground" />
+              {news.catagory}
+            </Badge>
+            <h1 className="text-lg/6 font-semibold line-clamp-2">
+              {news.judul}
+            </h1>
+          </div>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-1">
+              <Avatar className="size-6">
+                <AvatarImage src={news.creator.image || ""} />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <span className="text-xs">{news.creator.username || ""}</span>
             </div>
-          </Link>
-        ))}
+            <div className="flex items-center gap-1 mx-2">
+              <span className="size-2 bg-muted-foreground rounded-full" />
+              <span className="text-xs text-muted-foreground">
+                {formattedDate(news.createdAt)}
+              </span>
+            </div>
+          </div>
+        </div>
+      </Link>
     </div>
   );
 };
-
-export default CardBeritaTerbaru;

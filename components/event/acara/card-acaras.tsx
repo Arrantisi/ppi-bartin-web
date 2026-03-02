@@ -56,9 +56,9 @@ const CardAcaras = () => {
   }
 
   return (
-    <div>
+    <div className="mt-3 gap-6 min-h-screen w-full relative grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 justify-center">
       {data.map((data) => (
-        <div key={data.id} className="my-3">
+        <div key={data.id} className="flex justify-center z-10">
           <CardEvent {...data} />
         </div>
       ))}

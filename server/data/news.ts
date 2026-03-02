@@ -45,4 +45,4 @@ export const getNews = async () => {
   });
 };
 
-export type TGetNews = Awaited<ReturnType<typeof getNews>>[0];
+export type TgetNews = Awaited<ReturnType<typeof getNews>>[0];

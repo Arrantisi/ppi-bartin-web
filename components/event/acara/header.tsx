@@ -33,7 +33,7 @@ const HeaderAcara = () => {
         </Link>
       </div>
 
-      <div className="flex items-center gap-2 mt-3">
+      <div className="flex items-center gap-2 mt-3 ">
         <InputGroup className="rounded-full py-5">
           <InputGroupInput placeholder="Search..." className="text-sm" />
           <InputGroupAddon>

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Card, CardContent, CardFooter } from "../ui/card";
 import { IconCalendarWeek, IconMapPin } from "@tabler/icons-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
@@ -10,7 +10,6 @@ import DrawerAcara from "./drawer-acara";
 import { useState } from "react";
 import AvatarParticipant from "./avatar-participant";
 import { authClient } from "@/lib/auth-client";
-import { AspectRatio } from "../ui/aspect-ratio";
 import { Dialog, DialogTrigger } from "../animate-ui/components/base/dialog";
 import { DialogTableParticipant } from "./table-participant";
 import { cn } from "@/lib/utils";
@@ -31,21 +30,19 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
   return (
     <Dialog>
       <Drawer open={isOpen} onOpenChange={setisOpen}>
-        <Card className="py-2 shadow-2xl">
-          <CardHeader className={`px-2 mb-1`}>
-            <AspectRatio ratio={16 / 9}>
-              <Image
-                src={imageUrl(props.fileKey)}
-                alt="card-event"
-                height={200}
-                width={200}
-                className="w-full h-75 object-cover rounded-3xl"
-              />
-            </AspectRatio>
-          </CardHeader>
+        <Card className="py-0 max-w-sm min-h-117.5 max-h-117.5">
+          <div className="object-cover">
+            <Image
+              src={imageUrl(props.fileKey)}
+              alt="card-event"
+              height={200}
+              width={200}
+              className="w-full h-60 object-cover rounded-t-4xl "
+            />
+          </div>
 
           <CardContent className="px-3">
-            <h1 className="judul-card-event">{props.judul}</h1>
+            <h1 className="judul-card-event line-clamp-2">{props.judul} </h1>
             <div className="flex items-center justify-between mt-3">
               <h4 className="subtitle-card-event">
                 created by{" "}
@@ -71,7 +68,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="px-3 pb-3 justify-between">
+          <CardFooter className="px-3 justify-between absolute bottom-2 w-full">
             <DialogTrigger
               className={cn(
                 "cursor-pointer py-1.5 px-2 rounded-2xl duration-300 transition-all",
