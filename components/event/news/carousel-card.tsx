@@ -8,37 +8,34 @@ import {
 } from "@/components/ui/carousel";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { getNews } from "@/server/data/news";
 import { supabase } from "@/lib/supabase";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { formattedDate } from "@/utils/date-format";
 import { NewsCorouselSkelet } from "@/components/skeletons/news-corousel-skeleton";
 import { imageUrl } from "@/utils/image-url";
+import { UseNews } from "@/hooks/use-news";
 
 const CarouselCard = () => {
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["getAllNews"],
-    queryFn: () => getNews(),
-  });
+  const { data, isLoading } = UseNews();
 
   useEffect(() => {
     const channel = supabase
-      .channel("getCoursellCard")
+      .channel("news")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "news" },
         () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
+          queryClient.invalidateQueries({ queryKey: ["news"] });
         },
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "participants" },
         () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
+          queryClient.invalidateQueries({ queryKey: ["news"] });
         },
       )
       .subscribe((status) => {
@@ -115,8 +112,7 @@ const CarouselCard = () => {
                     </div>
 
                     <h2 className="text-white text-lg font-bold leading-tight">
-                      Panduan Perpanjangan Ikamet untuk Mahasiswa Indonesia di
-                      Bartin
+                      {news.judul}
                     </h2>
                   </div>
                 </div>

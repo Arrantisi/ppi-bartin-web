@@ -1,16 +1,12 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getProfileUser } from "@/server/data/users";
-import { useQuery } from "@tanstack/react-query";
+import { UseProfileUser } from "@/hooks/use-profile-user";
 import Image from "next/image";
 import Link from "next/link";
 
 const ProfileHome = () => {
-  const { data: session } = useQuery({
-    queryKey: ["profilePage"],
-    queryFn: () => getProfileUser(),
-  });
+  const { data: session } = UseProfileUser();
 
   return (
     <div className="flex justify-between items-center">

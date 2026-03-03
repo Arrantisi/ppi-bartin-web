@@ -1,16 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { formattedDate } from "@/utils/date-format";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { imageUrl } from "@/utils/image-url";
 import { TgetNews } from "@/server/data/news";
 
 export const CardNewsRender = ({ ...news }: TgetNews) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-3 my-3">
+    <div className="items-start gap-3 my-3">
       <Link
         href={`/home/news/${news.slug}`}
         key={news.slug}

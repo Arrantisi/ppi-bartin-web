@@ -2,12 +2,12 @@
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getNews } from "@/server/data/news";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
-import { CardNewsRender } from "../card-berita-terbaru";
+import { CardNewsRender } from "./../home/render-news";
+import { UseNews } from "@/hooks/use-news";
 
 const catagoryTrigger = [
   { ctg: "all" },
@@ -19,10 +19,7 @@ const catagoryTrigger = [
 const BeritaCatagory = () => {
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["getAllNews"],
-    queryFn: () => getNews(),
-  });
+  const { data, isLoading } = UseNews();
 
   useEffect(() => {
     const channel = supabase
@@ -87,7 +84,11 @@ const BeritaCatagory = () => {
 
       {/* 2. Mapping Content berdasarkan Kategori */}
       {catagoryTrigger.map((category) => (
-        <TabsContent key={category.ctg} value={category.ctg} className="mt-4">
+        <TabsContent
+          key={category.ctg}
+          value={category.ctg}
+          className="mt-4 grid grid-cols-1 md:grid-cols-2"
+        >
           {data
             .filter((news) =>
               category.ctg === "all" ? true : news.catagory === category.ctg,

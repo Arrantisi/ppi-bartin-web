@@ -1,35 +1,32 @@
 "use client";
 
 import CardEvent from "../card";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAllEvents } from "@/server/data/events";
+import { useQueryClient } from "@tanstack/react-query";
 import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { UseEvents } from "@/hooks/use-events";
 
 const CardAcaras = () => {
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["getAllEvents"],
-    queryFn: () => getAllEvents(),
-  });
+  const { data, isLoading } = UseEvents();
 
   useEffect(() => {
     const channel = supabase
-      .channel("getAllEvents")
+      .channel("events")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "events" },
         () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllEvents"] });
+          queryClient.invalidateQueries({ queryKey: ["events"] });
         },
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "participants" },
         () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllEvents"] });
+          queryClient.invalidateQueries({ queryKey: ["events"] });
         },
       )
       .subscribe((status) => {

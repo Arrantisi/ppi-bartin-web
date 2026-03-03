@@ -6,18 +6,14 @@ import { IconArrowLeft, IconShare, IconBookmark } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { useQuery } from "@tanstack/react-query";
-import { getNewsBySlug } from "@/server/data/news";
 import { formattedDate } from "@/utils/date-format";
 import { imageUrl } from "@/utils/image-url";
+import { UseNewsBySlug } from "@/hooks/use-news";
 
 export const NewsDetailComponent = ({ slug }: { slug: string }) => {
   const router = useRouter();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["getNewsBySlug"],
-    queryFn: () => getNewsBySlug(slug),
-  });
+  const { data, isLoading } = UseNewsBySlug({ slug });
 
   if (isLoading) {
     return <div>sedang memuat data</div>;

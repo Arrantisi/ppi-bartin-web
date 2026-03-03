@@ -1,20 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { getNews } from "@/server/data/news";
 import { supabase } from "@/lib/supabase";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
-import { CardNewsRender } from "../card-berita-terbaru";
+import { CardNewsRender } from "./render-news";
+import { UseNews } from "@/hooks/use-news";
 
 const BeritaTerbaru = () => {
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["getAllNews"],
-    queryFn: () => getNews(),
-  });
+  const { data, isLoading } = UseNews();
 
   useEffect(() => {
     const channel = supabase
@@ -23,21 +20,21 @@ const BeritaTerbaru = () => {
         "postgres_changes",
         { event: "*", schema: "public", table: "news" },
         () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
+          queryClient.invalidateQueries({ queryKey: ["news"] });
         },
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "images" },
         () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
+          queryClient.invalidateQueries({ queryKey: ["news"] });
         },
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "user" },
         () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
+          queryClient.invalidateQueries({ queryKey: ["news"] });
         },
       )
       .subscribe((status) => {
@@ -75,7 +72,7 @@ const BeritaTerbaru = () => {
           selengkapnya
         </Link>
       </div>
-      <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {data.slice(0, 6).map((news) => (
           <CardNewsRender {...news} key={news.slug} />
         ))}

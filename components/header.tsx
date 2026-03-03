@@ -21,7 +21,9 @@ export const HeroHeader = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   return (
-    <header>
+    <header
+      className="bg-[radial-gradient(circle_at_50%_50%,rgba(237,237,237,1)_100%,rgba(0,0,0,1)_0%)] bg-clip-text text-transparent [-webkit-background-clip:text]"
+    >
       <nav className="fixed z-20 w-full px-2 top-0 left-0">
         <div
           className={cn(

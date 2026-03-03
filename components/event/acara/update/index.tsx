@@ -1,15 +1,11 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { UpdateEventContent } from "./content";
 import { UpdateEventHeader } from "./header";
-import { getEventBySlug } from "@/server/data/events";
+import { UseEventBySlug } from "@/hooks/use-events";
 
 export const UpdateEventComponent = ({ slug }: { slug: string }) => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["update_event", slug],
-    queryFn: () => getEventBySlug(slug),
-  });
+  const { data, isLoading } = UseEventBySlug({ slug });
 
   if (isLoading) {
     return <div>Memuat Data</div>;

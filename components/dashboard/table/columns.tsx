@@ -10,11 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserData } from "@/server/data/users";
+import { TgetUsers } from "@/server/data/users";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
-export const columns: ColumnDef<UserData>[] = [
+export const columns: ColumnDef<TgetUsers>[] = [
   {
     accessorKey: "image",
     header: "Profile",

@@ -34,7 +34,7 @@ export const getProfileUser = async () => {
 };
 export type TgetProfileUser = Awaited<ReturnType<typeof getProfileUser>>;
 
-export const userData = async () => {
+export const getUsers = async () => {
   return await prisma.user.findMany({
     orderBy: {
       name: "desc",
@@ -54,7 +54,7 @@ export const userData = async () => {
   });
 };
 
-export type UserData = Awaited<ReturnType<typeof userData>>[0];
+export type TgetUsers = Awaited<ReturnType<typeof getUsers>>[0];
 
 export const checkNoSiswa = async () => {
   const session = await studentAccount();

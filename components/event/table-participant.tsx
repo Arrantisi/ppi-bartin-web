@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/incompatible-library */
 "use client";
 
 import {
@@ -15,17 +14,15 @@ import {
   DialogPopup,
   DialogTitle,
 } from "../animate-ui/components/base/dialog";
-import {
-  getEventParticipants,
-  TgetEventParticipants,
-} from "@/server/data/events";
+import { TgetEventParticipants } from "@/server/data/events";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Table, TableBody, TableCell, TableRow } from "../ui/table";
 import { EventTableParticipantSkeleton } from "../skeletons/event-table-participant-skeleton";
 import { Input } from "../ui/input";
+import { UseEventParticipants } from "@/hooks/use-events";
 
 type TparticipantRow = TgetEventParticipants[number];
 
@@ -69,28 +66,25 @@ export const DialogTableParticipant = ({ eventId }: { eventId: string }) => {
 
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["event_participant", eventId],
-    queryFn: () => getEventParticipants(eventId),
-  });
+  const { data, isLoading } = UseEventParticipants({ eventId });
 
   useEffect(() => {
-    const channel = supabase.channel("Channel_event_participant").on(
+    const channel = supabase.channel(`participants-${eventId}`).on(
       "postgres_changes",
       {
         event: "*",
         schema: "public",
-        table: "user", // Sesuai screenshot kamu: huruf kecil
+        table: "participants",
       },
       () => {
-        queryClient.invalidateQueries({ queryKey: ["event_participant"] });
+        queryClient.invalidateQueries({ queryKey: ["participants", eventId] });
       },
     );
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [queryClient]);
+  }, [queryClient, eventId]);
 
   const table = useReactTable({
     data: data ?? [],

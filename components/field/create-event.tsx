@@ -71,7 +71,6 @@ export const CreateEventField = () => {
         });
         router.push(`/home/events`);
       }
-      console.log(value);
 
       setIsLoading(false);
     },

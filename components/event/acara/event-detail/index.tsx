@@ -10,8 +10,7 @@ import {
 } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getEventBySlug } from "@/server/data/events";
+import { useQueryClient } from "@tanstack/react-query";
 import { formattedDate } from "@/utils/date-format";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -20,6 +19,7 @@ import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 import AvatarParticipant from "../../avatar-participant";
 import { authClient } from "@/lib/auth-client";
 import { imageUrl } from "@/utils/image-url";
+import { UseEventBySlug } from "@/hooks/use-events";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -28,14 +28,10 @@ export const EventDetail = ({ slug }: { slug: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["getPreviewAcara", slug],
-    queryFn: () => getEventBySlug(slug),
-    enabled: !!slug && slug !== "undefined",
-  });
+  const { data, isLoading } = UseEventBySlug({ slug });
 
   useEffect(() => {
-    const channel = supabase.channel("preview_acara").on(
+    const channel = supabase.channel("events").on(
       "postgres_changes",
       {
         event: "*",
@@ -43,7 +39,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
         table: "events",
       },
       () => {
-        queryClient.invalidateQueries({ queryKey: ["getPreviewAcara"] });
+        queryClient.invalidateQueries({ queryKey: ["events"] });
       },
     );
 

@@ -35,7 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { userData } from "@/server/data/users";
+import { getUsers } from "@/server/data/users";
 import { columns } from "./columns";
 import { SkeletonTable } from "../../skeletons/table-users-skeleton";
 import { supabase } from "@/lib/supabase";
@@ -47,8 +47,8 @@ export const DataTable = () => {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["dataUser"],
-    queryFn: () => userData(),
+    queryKey: ["users"],
+    queryFn: () => getUsers(),
   });
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export const DataTable = () => {
         table: "user", // Sesuai screenshot kamu: huruf kecil
       },
       () => {
-        queryClient.invalidateQueries({ queryKey: ["dataUser"] });
+        queryClient.invalidateQueries({ queryKey: ["users"] });
       },
     );
 
