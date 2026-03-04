@@ -19,7 +19,7 @@ import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 import AvatarParticipant from "../../avatar-participant";
 import { authClient } from "@/lib/auth-client";
 import { imageUrl } from "@/utils/image-url";
-import { UseEventBySlug } from "@/hooks/use-events";
+import { useEventBySlug } from "@/hooks/use-events";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -28,20 +28,36 @@ export const EventDetail = ({ slug }: { slug: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = UseEventBySlug({ slug });
+  const { data, isLoading } = useEventBySlug({ slug });
 
   useEffect(() => {
-    const channel = supabase.channel("events").on(
-      "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "events",
-      },
-      () => {
-        queryClient.invalidateQueries({ queryKey: ["events"] });
-      },
-    );
+    const channel = supabase
+      .channel("events")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "events",
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["events"] });
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "participants",
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["events"] });
+        },
+      )
+      .subscribe((status) => {
+        console.log("event-detail", status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
@@ -62,17 +78,17 @@ export const EventDetail = ({ slug }: { slug: string }) => {
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <div className="relative flex flex-col h-screen bg-background overflow-hidden">
-        {/* Gambar & Header Sticky */}
-        <div className="relative h-[40vh] w-full">
-          <Image
-            src={imageUrl(data.fileKey)}
-            alt={""}
-            fill
-            className="object-cover"
-            priority
-          />
+        <Image
+          src={imageUrl(data.fileKey)}
+          alt={""}
+          fill
+          className="object-cover z-0 absolute"
+          priority
+        />
 
-          <div className="absolute top-4 left-0 right-0 px-4 flex items-center justify-between z-10">
+        {/* Gambar & Header Sticky */}
+        <div className="fixed  w-full z-10 ">
+          <div className="pt-3 pb-2 absolute top-0 bg-background left-0 right-0 px-4 flex items-center justify-between">
             <Button
               variant="secondary"
               size="icon"
@@ -106,8 +122,8 @@ export const EventDetail = ({ slug }: { slug: string }) => {
         </div>
 
         {/* Konten Detail */}
-        <div className="flex-1 bg-background -mt-8 relative z-20 rounded-t-[2.5rem] px-6 pt-8 flex flex-col justify-between overflow-y-auto">
-          <div>
+        <div className="pt-[500px] bg-transparent overflow-y-auto">
+          <div className="flex-1 relative z-5 rounded-t-[2.5rem] px-6 flex flex-col justify-between bg-background pt-4">
             <h1 className="text-2xl font-bold text-foreground mb-2">
               {data.judul}
             </h1>
@@ -157,23 +173,24 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                 </div>
               </div>
             </div>
+            {capacityFull ? (
+              <div className="text-center text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+                sudah penuh
+              </div>
+            ) : userJoined?.user.id === session?.user.id ? (
+              <div className="text-center text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+                kamu telah join
+              </div>
+            ) : (
+              <DrawerTrigger asChild>
+                <Button className="rounded-full text-xs">
+                  Daftar Sekarang
+                </Button>
+              </DrawerTrigger>
+            )}
           </div>
 
           {/* Action Button */}
-
-          {capacityFull ? (
-            <div className="text-center text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
-              sudah penuh
-            </div>
-          ) : userJoined?.user.id === session?.user.id ? (
-            <div className="text-center text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
-              kamu telah join
-            </div>
-          ) : (
-            <DrawerTrigger asChild>
-              <Button className="rounded-full text-xs">Daftar Sekarang</Button>
-            </DrawerTrigger>
-          )}
         </div>
       </div>
 

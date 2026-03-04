@@ -1,12 +1,12 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UseProfileUser } from "@/hooks/use-profile-user";
+import { useProfileUser } from "@/hooks/use-users";
 import Image from "next/image";
 import Link from "next/link";
 
 const ProfileHome = () => {
-  const { data: session } = UseProfileUser();
+  const { data: session } = useProfileUser();
 
   return (
     <div className="flex justify-between items-center">

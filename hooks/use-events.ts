@@ -7,14 +7,14 @@ import {
 } from "@/server/data/events";
 import { useQuery } from "@tanstack/react-query";
 
-export const UseEvents = () => {
+export const useEvents = () => {
   return useQuery({
     queryKey: ["events"],
     queryFn: () => getAllEvents(),
   });
 };
 
-export const UseEventBySlug = ({ slug }: { slug: string }) => {
+export const useEventBySlug = ({ slug }: { slug: string }) => {
   return useQuery({
     queryKey: ["events", slug],
     queryFn: () => getEventBySlug(slug),
@@ -22,7 +22,7 @@ export const UseEventBySlug = ({ slug }: { slug: string }) => {
   });
 };
 
-export const UseEventParticipants = ({ eventId }: { eventId: string }) => {
+export const useEventParticipants = ({ eventId }: { eventId: string }) => {
   return useQuery({
     queryKey: ["participants", eventId],
     queryFn: () => getEventParticipants(eventId),

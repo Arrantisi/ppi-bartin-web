@@ -8,44 +8,13 @@ import {
 } from "@/components/ui/carousel";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/lib/supabase";
-import { useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { formattedDate } from "@/utils/date-format";
 import { NewsCorouselSkelet } from "@/components/skeletons/news-corousel-skeleton";
 import { imageUrl } from "@/utils/image-url";
-import { UseNews } from "@/hooks/use-news";
+import { useNews } from "@/hooks/use-news";
 
 const CarouselCard = () => {
-  const queryClient = useQueryClient();
-
-  const { data, isLoading } = UseNews();
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("news")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "news" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["news"] });
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "participants" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["news"] });
-        },
-      )
-      .subscribe((status) => {
-        console.log("coursel-card", status);
-      });
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient]);
+  const { data, isLoading } = useNews();
 
   if (isLoading) {
     return (

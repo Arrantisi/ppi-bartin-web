@@ -2,10 +2,10 @@
 
 import CardEvent from "../card";
 import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
-import { UseEvents } from "@/hooks/use-events";
+import { useEvents } from "@/hooks/use-events";
 
 export const RenderAcara = () => {
-  const { data: events, isLoading } = UseEvents();
+  const { data: events, isLoading } = useEvents();
 
   if (isLoading) {
     return <SkeletonCardAcara />;

@@ -10,7 +10,7 @@ import { TgetNews } from "@/server/data/news";
 
 export const CardNewsRender = ({ ...news }: TgetNews) => {
   return (
-    <div className="items-start gap-3 my-3">
+    <div className="items-start gap-3">
       <Link
         href={`/home/news/${news.slug}`}
         key={news.slug}

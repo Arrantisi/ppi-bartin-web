@@ -249,7 +249,7 @@ export const CreateEventField = () => {
                     }}
                   />
                   <FieldDescription className="text-right">
-                    {lengthOfDeskripsi}/200
+                    {lengthOfDeskripsi} kata
                   </FieldDescription>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>

@@ -1,50 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
-import { useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
 import { CardNewsRender } from "./render-news";
-import { UseNews } from "@/hooks/use-news";
+import { useNews } from "@/hooks/use-news";
 
 const BeritaTerbaru = () => {
-  const queryClient = useQueryClient();
-
-  const { data, isLoading } = UseNews();
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("get_all_news")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "news" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["news"] });
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "images" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["news"] });
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "user" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["news"] });
-        },
-      )
-      .subscribe((status) => {
-        console.log(status);
-      });
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient]);
+  const { data, isLoading } = useNews();
 
   if (isLoading) {
     return (
@@ -72,7 +34,7 @@ const BeritaTerbaru = () => {
           selengkapnya
         </Link>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {data.slice(0, 6).map((news) => (
           <CardNewsRender {...news} key={news.slug} />
         ))}

@@ -8,12 +8,12 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { formattedDate } from "@/utils/date-format";
 import { imageUrl } from "@/utils/image-url";
-import { UseNewsBySlug } from "@/hooks/use-news";
+import { useNewsBySlug } from "@/hooks/use-news";
 
 export const NewsDetailComponent = ({ slug }: { slug: string }) => {
   const router = useRouter();
 
-  const { data, isLoading } = UseNewsBySlug({ slug });
+  const { data, isLoading } = useNewsBySlug({ slug });
 
   if (isLoading) {
     return <div>sedang memuat data</div>;

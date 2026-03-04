@@ -2,12 +2,9 @@
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { supabase } from "@/lib/supabase";
 import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
 import { CardNewsRender } from "./../home/render-news";
-import { UseNews } from "@/hooks/use-news";
+import { useNews } from "@/hooks/use-news";
 
 const catagoryTrigger = [
   { ctg: "all" },
@@ -17,35 +14,7 @@ const catagoryTrigger = [
 ];
 
 const BeritaCatagory = () => {
-  const queryClient = useQueryClient();
-
-  const { data, isLoading } = UseNews();
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("get_all_news")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "news" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "participants" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["getAllNews"] });
-        },
-      )
-      .subscribe((status) => {
-        console.log("berita-catagory", status);
-      });
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient]);
+  const { data, isLoading } = useNews();
 
   if (isLoading) {
     return (

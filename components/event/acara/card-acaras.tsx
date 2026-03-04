@@ -5,12 +5,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { UseEvents } from "@/hooks/use-events";
+import { useEvents } from "@/hooks/use-events";
 
 const CardAcaras = () => {
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = UseEvents();
+  const { data, isLoading } = useEvents();
 
   useEffect(() => {
     const channel = supabase

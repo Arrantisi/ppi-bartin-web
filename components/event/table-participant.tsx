@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/incompatible-library */
 "use client";
 
 import {
@@ -22,7 +23,7 @@ import { supabase } from "@/lib/supabase";
 import { Table, TableBody, TableCell, TableRow } from "../ui/table";
 import { EventTableParticipantSkeleton } from "../skeletons/event-table-participant-skeleton";
 import { Input } from "../ui/input";
-import { UseEventParticipants } from "@/hooks/use-events";
+import { useEventParticipants } from "@/hooks/use-events";
 
 type TparticipantRow = TgetEventParticipants[number];
 
@@ -66,7 +67,7 @@ export const DialogTableParticipant = ({ eventId }: { eventId: string }) => {
 
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = UseEventParticipants({ eventId });
+  const { data, isLoading } = useEventParticipants({ eventId });
 
   useEffect(() => {
     const channel = supabase.channel(`participants-${eventId}`).on(

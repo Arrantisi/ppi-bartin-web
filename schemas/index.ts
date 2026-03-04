@@ -54,10 +54,7 @@ export const createEventSchema = z.object({
     .max(100, "Judul tidak boleh lebih dari 100 kata"),
   lokasi: z.string().min(1, "Lokasi acara wajib diisi"),
   date: z.date({ error: "Silakan tentukan tanggal acara" }),
-  deskripsi: z
-    .string()
-    .min(8, "Deskripsi acara minimal 8 karakter")
-    .max(200, "Judul tidak boleh lebih dari 200 kata"),
+  deskripsi: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
   biayaAcara: z.string().min(2, "Deskripsi acara minimal 2 karakter"),
   batasDaftar: z.date({ error: "Silakan tentukan tanggal acara" }),
   fileKey: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
