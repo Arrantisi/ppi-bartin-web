@@ -14,7 +14,7 @@ export const CardNewsRender = ({ ...news }: TgetNews) => {
       <Link
         href={`/home/news/${news.slug}`}
         key={news.slug}
-        className="grid grid-cols-4 items-center w-full hover:bg-card rounded-4xl ring ring-accent bg-background"
+        className="grid grid-cols-4 items-center w-full hover:bg-card active:bg-card rounded-4xl ring ring-muted-foreground/20 bg-background"
       >
         <Image
           src={imageUrl(news.fileKey)}
@@ -24,7 +24,7 @@ export const CardNewsRender = ({ ...news }: TgetNews) => {
           className="h-26 w-32 rounded-l-4xl col-span-1"
         />
 
-        <div className="flex flex-col items-start justify-between h-24 w-full mx-4 col-span-3">
+        <div className="flex flex-col items-start justify-between h-24 w-full col-span-3 px-3">
           <div className="space-y-1">
             <Badge size={"sm"} className="text-xs rounded-2xl capitalize">
               <span className="size-2 rounded-full bg-primary-foreground" />
@@ -34,7 +34,7 @@ export const CardNewsRender = ({ ...news }: TgetNews) => {
               {news.judul}
             </h1>
           </div>
-          <div className="flex items-center justify-between w-full">
+          <div className="flex items-center justify-between w-full px-3">
             <div className="flex items-center gap-1">
               <Avatar className="size-6">
                 <AvatarImage src={news.creator.image || ""} />

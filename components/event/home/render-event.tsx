@@ -10,7 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 export const RenderAcara = () => {
   const queryClient = useQueryClient();
 
-  const { data: events, isLoading } = useEvents();
+  const { data, isLoading } = useEvents();
 
   useEffect(() => {
     const channel = supabase
@@ -42,18 +42,26 @@ export const RenderAcara = () => {
     return <SkeletonCardAcara />;
   }
 
-  if (!events || events.length === 0) {
+  if (!data || data.length === 0) {
     return <div>Event tidak ada</div>;
   }
 
-  const data1 = events[0];
-  const data2 = events[1];
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <CardEvent {...data1} />
+      <div className="block md:hidden">
+        {data.slice(0, 1).map((event) => (
+          <CardEvent {...event} key={event.id} />
+        ))}
+      </div>
       <div className="hidden md:block">
-        <CardEvent {...data2} />
+        {data.slice(0, 2).map((event) => (
+          <CardEvent {...event} key={event.id} />
+        ))}
+      </div>
+      <div className="hidden xl:block">
+        {data.slice(0, 3).map((event) => (
+          <CardEvent {...event} key={event.id} />
+        ))}
       </div>
     </div>
   );

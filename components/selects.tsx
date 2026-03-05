@@ -33,13 +33,13 @@ export const SelectJurusan = ({ fakultas }: { fakultas: string }) => {
 };
 
 export const SelectStatusPelajar = () => {
-  const items = [{ value: "TÖMER" }, { value: "ÜNİVERSİTE" }];
+  const items = ["TÖMER", "D2", "D3", "S1", "S2", "S3"];
   return (
     <SelectContent>
       <SelectGroup>
-        {items.map((item) => (
-          <SelectItem key={item.value} value={item.value || ""}>
-            {item.value}
+        {items.map((item, idx) => (
+          <SelectItem key={item + idx} value={item || ""}>
+            {item}
           </SelectItem>
         ))}
       </SelectGroup>

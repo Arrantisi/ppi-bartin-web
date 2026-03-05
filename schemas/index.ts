@@ -17,7 +17,7 @@ export const createNewsSchema = z.object({
 export type TcreateNewsSchema = z.infer<typeof createNewsSchema>;
 
 export const updateProfileSchema = z.object({
-  statusPelajar: z.string().min(3),
+  statusPelajar: z.string().min(1),
   fakultas: z.string().min(3),
   fileKey: z.string(),
   fullname: z.string(),

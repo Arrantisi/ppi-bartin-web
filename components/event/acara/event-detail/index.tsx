@@ -5,6 +5,8 @@ import {
   IconArrowLeft,
   IconBookmark,
   IconCalendarWeek,
+  IconCopy,
+  IconDots,
   IconMapPin,
   IconShare,
 } from "@tabler/icons-react";
@@ -20,6 +22,13 @@ import AvatarParticipant from "../../avatar-participant";
 import { authClient } from "@/lib/auth-client";
 import { imageUrl } from "@/utils/image-url";
 import { useEventBySlug } from "@/hooks/use-events";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -87,42 +96,43 @@ export const EventDetail = ({ slug }: { slug: string }) => {
         />
 
         {/* Gambar & Header Sticky */}
-        <div className="fixed  w-full z-10 ">
-          <div className="pt-3 pb-2 absolute top-0 bg-background left-0 right-0 px-4 flex items-center justify-between">
+        <div className="fixed w-full z-10 ">
+          <div className="p-2 top-0 bg-background left-0 right-0 px-4 flex items-center justify-between">
             <Button
-              variant="secondary"
-              size="icon"
-              className="rounded-full shadow-md bg-white/80 backdrop-blur-sm"
+              variant="outline"
+              size="xs"
+              className="rounded-full"
               onClick={() => router.back()}
             >
               <IconArrowLeft size={20} />
             </Button>
 
-            <div className="font-bold text-lg drop-shadow-md bg-white/80 p-2 rounded-full backdrop-blur-md">
-              Acara
-            </div>
+            <div className="font-bold text-sm">DETAIL ACARA</div>
 
             <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                size="icon"
-                className="rounded-full shadow-md bg-white/80 backdrop-blur-sm"
-              >
-                <IconShare size={20} />
-              </Button>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="rounded-full shadow-md bg-white/80 backdrop-blur-sm"
-              >
-                <IconBookmark size={20} />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant={"outline"} size={"sm"}>
+                    <IconDots />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem className="text-xs">
+                    <IconCopy /> Salin link
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-xs">
+                    <IconBookmark />
+                    Bookmark
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
 
         {/* Konten Detail */}
-        <div className="pt-[500px] bg-transparent overflow-y-auto">
+        <div className="pt-[500px] overflow-y-auto bg-red-500">
           <div className="flex-1 relative z-5 rounded-t-[2.5rem] px-6 flex flex-col justify-between bg-background pt-4">
             <h1 className="text-2xl font-bold text-foreground mb-2">
               {data.judul}
