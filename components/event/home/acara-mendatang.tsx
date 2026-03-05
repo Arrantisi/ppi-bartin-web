@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { RenderAcara } from "./render-event";
 
-const AcaraMendatang = ({ children }: { children: React.ReactNode }) => {
+const AcaraMendatang = () => {
   return (
     <div className="mt-7 space-y-2">
       <div className="flex justify-between items-center">
@@ -12,7 +13,9 @@ const AcaraMendatang = ({ children }: { children: React.ReactNode }) => {
           selengkapnya
         </Link>
       </div>
-      <div className="flex justify-center">{children}</div>
+      <div className="flex justify-center">
+        <RenderAcara />
+      </div>
     </div>
   );
 };

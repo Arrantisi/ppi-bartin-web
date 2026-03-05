@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const SkeletonCardAcara = () => {
   return (
-    <Card className="py-2 shadow-3xl">
+    <Card className="py-2 shadow-3xl w-[400px]">
       <CardHeader className="px-2">
         <Skeleton className="w-full min-h-75" />
       </CardHeader>

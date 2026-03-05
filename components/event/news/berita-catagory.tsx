@@ -3,7 +3,7 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
-import { CardNewsRender } from "./../home/render-news";
+import { CardNewsRender } from "../../cards/card-news";
 import { useNews } from "@/hooks/use-news";
 
 const catagoryTrigger = [

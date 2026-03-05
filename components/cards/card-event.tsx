@@ -6,12 +6,12 @@ import { IconCalendarWeek, IconMapPin } from "@tabler/icons-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Drawer, DrawerTrigger } from "../ui/drawer";
-import DrawerAcara from "./drawer-acara";
+import DrawerAcara from "../event/drawer-acara";
 import { useState } from "react";
-import AvatarParticipant from "./avatar-participant";
+import AvatarParticipant from "../event/avatar-participant";
 import { authClient } from "@/lib/auth-client";
 import { Dialog, DialogTrigger } from "../animate-ui/components/base/dialog";
-import { DialogTableParticipant } from "./table-participant";
+import { DialogTableParticipant } from "../event/table-participant";
 import { cn } from "@/lib/utils";
 import { TgetAllEvent } from "@/server/data/events";
 import { imageUrl } from "@/utils/image-url";
@@ -97,7 +97,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
             )}
           </CardFooter>
         </Card>
-        <DialogTableParticipant eventId={props.id} />
+        <DialogTableParticipant participants={props.participants} />
         <DrawerAcara
           onClose={() => setisOpen(false)}
           eventId={props.id}

@@ -15,17 +15,14 @@ import {
   DialogPopup,
   DialogTitle,
 } from "../animate-ui/components/base/dialog";
-import { TgetEventParticipants } from "@/server/data/events";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { useState } from "react";
 import { Table, TableBody, TableCell, TableRow } from "../ui/table";
-import { EventTableParticipantSkeleton } from "../skeletons/event-table-participant-skeleton";
 import { Input } from "../ui/input";
-import { useEventParticipants } from "@/hooks/use-events";
+import { Button } from "../ui/button";
+import { Tparticipants } from "@/types";
 
-type TparticipantRow = TgetEventParticipants[number];
+type TparticipantRow = Tparticipants[number];
 
 const columns: ColumnDef<TparticipantRow>[] = [
   {
@@ -62,33 +59,17 @@ const columns: ColumnDef<TparticipantRow>[] = [
   },
 ];
 
-export const DialogTableParticipant = ({ eventId }: { eventId: string }) => {
+type DialogTableParticipantProps = {
+  participants: Tparticipants;
+};
+
+export const DialogTableParticipant = ({
+  participants,
+}: DialogTableParticipantProps) => {
   const [columnFilters, setColumnFilter] = useState<ColumnFiltersState>([]);
 
-  const queryClient = useQueryClient();
-
-  const { data, isLoading } = useEventParticipants({ eventId });
-
-  useEffect(() => {
-    const channel = supabase.channel(`participants-${eventId}`).on(
-      "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "participants",
-      },
-      () => {
-        queryClient.invalidateQueries({ queryKey: ["participants", eventId] });
-      },
-    );
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient, eventId]);
-
   const table = useReactTable({
-    data: data ?? [],
+    data: participants ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilter,
@@ -104,53 +85,50 @@ export const DialogTableParticipant = ({ eventId }: { eventId: string }) => {
         <DialogTitle>Table Participant</DialogTitle>
         <DialogDescription>Orang yang mengikuti event ini</DialogDescription>
       </DialogHeader>
-      <Input
-        placeholder="filter Nama"
-        value={(table.getColumn("user")?.getFilterValue() as string) ?? ""}
-        onChange={(e) =>
-          table.getColumn("user")?.setFilterValue(e.target.value)
-        }
-        className="max-w-sm"
-      />
+      <div className="flex justify-center items-center gap-2">
+        <Input
+          placeholder="filter Nama"
+          value={(table.getColumn("user")?.getFilterValue() as string) ?? ""}
+          onChange={(e) =>
+            table.getColumn("user")?.setFilterValue(e.target.value)
+          }
+          className="max-w-sm"
+        />
+        <Button variant={"outline"} className="text-sm">
+          Export csv
+        </Button>
+      </div>
 
       <div className="max-h-52 overflow-auto">
         <Table>
-          {isLoading ? (
-            <TableBody>
-              {Array.from({ length: 7 }).map((_, idx) => (
-                <EventTableParticipantSkeleton key={idx} />
-              ))}
-            </TableBody>
-          ) : (
-            <TableBody className="flex flex-col justify-start">
-              {table.getRowModel().rows.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No data Result
-                  </TableCell>
+          <TableBody className="flex flex-col justify-start">
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              )}
-            </TableBody>
-          )}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No data Result
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       </div>
     </DialogPopup>
