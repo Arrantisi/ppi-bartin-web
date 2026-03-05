@@ -3,7 +3,7 @@ import { RenderNews } from "./render-news";
 
 const BeritaTerbaru = () => {
   return (
-    <div className="mt-7 space-y-2">
+    <div className="mt-7 space-y-2 mb-28">
       <div className="flex justify-between items-center">
         <h1 className="font-semibold text-lg tracking-tight capitalize">
           berita terbaru

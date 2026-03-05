@@ -8,7 +8,6 @@ import {
   IconCopy,
   IconDots,
   IconMapPin,
-  IconShare,
 } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -99,7 +98,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
         <div className="fixed w-full z-10 ">
           <div className="p-2 top-0 bg-background left-0 right-0 px-4 flex items-center justify-between">
             <Button
-              variant="outline"
+              variant="ghost"
               size="xs"
               className="rounded-full"
               onClick={() => router.back()}
@@ -112,7 +111,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
             <div className="flex gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant={"outline"} size={"sm"}>
+                  <Button variant={"ghost"} size={"xs"}>
                     <IconDots />
                   </Button>
                 </DropdownMenuTrigger>
@@ -132,8 +131,8 @@ export const EventDetail = ({ slug }: { slug: string }) => {
         </div>
 
         {/* Konten Detail */}
-        <div className="pt-[500px] overflow-y-auto bg-red-500">
-          <div className="flex-1 relative z-5 rounded-t-[2.5rem] px-6 flex flex-col justify-between bg-background pt-4">
+        <div className="pt-[500px] overflow-y-auto z-5 ">
+          <div className="flex-1 relative rounded-t-[2.5rem] px-6 flex flex-col justify-between bg-background pt-4">
             <h1 className="text-2xl font-bold text-foreground mb-2">
               {data.judul}
             </h1>
