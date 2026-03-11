@@ -180,22 +180,6 @@ npm install
 
 Buat file `.env.local`:
 
-```env
-
-# Connect to Supabase via connection pooling
-DATABASE_URL=
-
-# Direct connection to the database. Used for migrations
-SHADOW_DATABASE_URL=
-
-BETTER_AUTH_SECRET=
-BETTER_AUTH_URL=
-
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-
-```
-
 ### Database Setup
 
 jika belum ada npm dan pnpm
