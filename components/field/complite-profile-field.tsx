@@ -36,7 +36,7 @@ const RegisterField = () => {
           );
           if (matched.status === "success") {
             resolve(matched.msg);
-            router.push("/");
+            router.push("/home");
           } else {
             rejects(new Error(matched.msg));
           }

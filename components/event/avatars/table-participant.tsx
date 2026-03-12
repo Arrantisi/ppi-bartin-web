@@ -9,18 +9,20 @@ import {
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+
+import { useState } from "react";
+
+import { Tparticipants } from "@/types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DialogDescription,
   DialogHeader,
   DialogPopup,
   DialogTitle,
-} from "../animate-ui/components/base/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useState } from "react";
-import { Table, TableBody, TableCell, TableRow } from "../ui/table";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { Tparticipants } from "@/types";
+} from "@/components/animate-ui/components/base/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 type TparticipantRow = Tparticipants[number];
 

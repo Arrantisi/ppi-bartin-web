@@ -78,7 +78,7 @@ export const GoogleProvider = () => {
     setLoading(true);
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/",
+      callbackURL: "/home",
     });
     setLoading(false);
   };

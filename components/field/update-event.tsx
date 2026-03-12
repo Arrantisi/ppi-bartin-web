@@ -5,7 +5,7 @@ import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
 import { Field, FieldLabel, FieldError, FieldDescription } from "../ui/field";
 import { Button, buttonVariants } from "../ui/button";
-import { DatePickerField } from "../event/date-picker-field";
+import { DatePickerField } from "../dates/date-picker-future";
 import { updateAcara } from "@/server/actions/acara";
 import { Textarea } from "../ui/textarea";
 import props from "@/props/create-acara-props.json";

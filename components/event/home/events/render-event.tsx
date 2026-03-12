@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import CardEvent from "../../cards/card-event";
-import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
+
 import { useEvents } from "@/hooks/use-events";
 import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
+import { SkeletonCardAcara } from "@/components/skeletons/card-event-skeleton";
+import CardEvent from "@/components/cards/card-event";
 
 export const RenderAcara = () => {
   const queryClient = useQueryClient();

@@ -1,15 +1,12 @@
-import AcaraMendatang from "@/components/event/home/acara-mendatang";
-import BeritaTerbaru from "@/components/event/home/berita-terbaru";
-import ProfileHome from "@/components/event/home/profile";
+import { HomeContent } from "@/components/event/home/content";
+import ProfileHome from "@/components/event/home/header";
 import { HomeLayoutComponent } from "@/components/layouts/home-layout";
 
 const EventPage = () => {
   return (
     <HomeLayoutComponent>
       <ProfileHome />
-      <AcaraMendatang />
-
-      <BeritaTerbaru />
+      <HomeContent />
     </HomeLayoutComponent>
   );
 };

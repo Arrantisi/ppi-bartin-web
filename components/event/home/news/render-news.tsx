@@ -1,8 +1,8 @@
 "use client";
 
 import { useNews } from "@/hooks/use-news";
-import { CardNewsRender } from "../../cards/card-news";
 import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
+import { CardNewsRender } from "@/components/cards/card-news";
 
 export const RenderNews = () => {
   const { data, isLoading } = useNews();

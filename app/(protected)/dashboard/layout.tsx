@@ -1,4 +1,4 @@
-import { DashboardTitle } from "@/components/dashboard-title";
+import { DashboardTitle } from "@/components/dashboard/dashboard-title";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import {
   Breadcrumb,
