@@ -54,11 +54,6 @@ export const RenderAcara = () => {
           <CardEvent {...event} key={event.id} />
         ))}
       </div>
-      <div className="hidden md:block">
-        {data.slice(0, 2).map((event) => (
-          <CardEvent {...event} key={event.id} />
-        ))}
-      </div>
       <div className="hidden xl:block">
         {data.slice(0, 3).map((event) => (
           <CardEvent {...event} key={event.id} />

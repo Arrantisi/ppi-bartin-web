@@ -6,9 +6,8 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { IconSearch } from "@tabler/icons-react";
-import Link from "next/link";
-import Image from "next/image";
 import { ButtonCreate } from "@/components/buttons";
+import { IconHome } from "../icon-home";
 
 const HeaderBerita = () => {
   return (
@@ -20,17 +19,7 @@ const HeaderBerita = () => {
             Semua info penting untuk kamu
           </p>
         </div>
-        <Link href={"/"}>
-          <div className=" bg-white rounded-full shadow-xl p-1.5 mx-2 flex items-center justify-center">
-            <Image
-              src={"/logo-ppi.png"}
-              alt=""
-              width={200}
-              height={200}
-              className="size-6"
-            />
-          </div>
-        </Link>
+        <IconHome />
       </div>
       <div className="flex items-center gap-2 mt-3">
         <InputGroup className="rounded-full py-5">
