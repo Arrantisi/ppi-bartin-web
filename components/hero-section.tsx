@@ -3,12 +3,10 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TextEffect } from "@/components/ui/text-effect";
 import { AnimatedGroup } from "@/components/ui/animated-group";
-import { HeroHeader } from "./header";
 
 export default function HeroSection() {
   return (
     <>
-      <HeroHeader />
       <main className="overflow-hidden my-28">
         <div
           aria-hidden
