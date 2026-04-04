@@ -6,6 +6,7 @@ import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useEvents } from "@/hooks/use-events";
+import Link from "next/link";
 
 const CardAcaras = () => {
   const queryClient = useQueryClient();
@@ -55,9 +56,13 @@ const CardAcaras = () => {
   return (
     <div className="mt-3 gap-6 min-h-screen w-full relative grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 justify-center">
       {data.map((data) => (
-        <div key={data.id} className="flex justify-center z-10">
+        <Link
+          href={`/home/events/${data.slug}`}
+          key={data.id}
+          className="flex justify-center z-10"
+        >
           <CardEvent {...data} />
-        </div>
+        </Link>
       ))}
     </div>
   );

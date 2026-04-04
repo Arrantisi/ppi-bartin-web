@@ -72,7 +72,7 @@ export const ContentProfile = () => {
                   <h1 className="relative leading-4">Jurusan</h1>
                 </div>
                 <div className="self-stretch h-5 flex items-start shrink-0 text-[0.875rem] text-gray">
-                  <h3 className="flex-1 relative leading-5 font-semibold">
+                  <h3 className="flex-1 relative leading-5 font-semibold line-clamp-2">
                     {data?.jurusan}
                   </h3>
                 </div>

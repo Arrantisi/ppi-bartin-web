@@ -36,7 +36,7 @@ const CarouselCard = () => {
       }}
       className="w-full"
     >
-      <CarouselContent className="-ml-4 py-4">
+      <CarouselContent className="-ml-4 mt-4">
         {data
           .slice(0, 4)
 

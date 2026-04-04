@@ -28,6 +28,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LoaderOneDemo } from "@/components/loader";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -72,8 +74,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
     };
   }, [queryClient]);
 
-  if (isLoading)
-    return <div className="p-10 text-center">Loading data acara...</div>;
+  if (isLoading) return <LoaderOneDemo />;
 
   if (!data)
     return <div className="p-10 text-center">Data tidak ditemukan.</div>;
@@ -135,24 +136,25 @@ export const EventDetail = ({ slug }: { slug: string }) => {
             className="object-cover z-0 w-full h-[400px]"
           />
 
-          <div className="relative rounded-t-[2.5rem] px-6 flex flex-col justify-between bg-background min-h-[510px] -mt-10 pt-10 pb-5">
+          <div className="relative rounded-t-[2.5rem] px-6 flex flex-col justify-between bg-background min-h-[510px] -mt-10 pt-7 pb-5">
             <div>
-              <h1 className="text-2xl font-bold text-foreground mb-2">
+              <h1 className="text-2xl font-bold text-foreground">
                 {data.judul}
               </h1>
-              <div className="flex items-center justify-between mb-6">
-                <p className="text-sm text-muted-foreground">
-                  Oleh{" "}
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-sm text-muted-foreground flex items-center justify-between gap-1.5">
+                  <Avatar className="size-5">
+                    <AvatarImage src={data.creator.image || ""} />
+                  </Avatar>
+                  Dibuat Oleh{" "}
                   <span className="font-medium text-foreground capitalize">
                     {data.creator.username}
                   </span>
-                </p>
+                </div>
                 <AvatarParticipant
                   participant={data.participants.map((img) => ({
                     image: img.user.image || "",
                   }))}
-                  totalParticipant={data.participants.length}
-                  maxCapacity={data.maxCapacity || 0}
                 />
               </div>
 
@@ -190,16 +192,16 @@ export const EventDetail = ({ slug }: { slug: string }) => {
 
             <div>
               {capacityFull ? (
-                <div className="text-center text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+                <div className="text-center text-base font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
                   sudah penuh
                 </div>
               ) : userJoined?.user.id === session?.user.id ? (
-                <div className="text-center text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+                <div className="text-center text-base font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
                   kamu telah join
                 </div>
               ) : (
                 <DrawerTrigger asChild>
-                  <Button className="rounded-full text-xs">
+                  <Button className="rounded-full text-base">
                     Daftar Sekarang
                   </Button>
                 </DrawerTrigger>

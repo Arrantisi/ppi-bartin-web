@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { formattedDate } from "@/utils/date-format";
 import { imageUrl } from "@/utils/image-url";
 import { useNewsBySlug } from "@/hooks/use-news";
+import { LoaderOneDemo } from "@/components/loader";
 
 export const NewsDetailComponent = ({ slug }: { slug: string }) => {
   const router = useRouter();
@@ -16,7 +17,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
   const { data, isLoading } = useNewsBySlug({ slug });
 
   if (isLoading) {
-    return <div>sedang memuat data</div>;
+    return <LoaderOneDemo />;
   }
 
   if (!data) {

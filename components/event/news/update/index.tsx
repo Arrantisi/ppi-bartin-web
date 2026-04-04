@@ -1,5 +1,6 @@
 "use client";
 
+import { LoaderOneDemo } from "@/components/loader";
 import { UpdateNewsContent } from "./content";
 import { UpdateNewsHeader } from "./header";
 import { useNewsBySlug } from "@/hooks/use-news";
@@ -8,7 +9,7 @@ export const UpdateNewsComponent = ({ slug }: { slug: string }) => {
   const { data, isLoading } = useNewsBySlug({ slug });
 
   if (isLoading) {
-    return <div>Memuat Berita</div>;
+    return <LoaderOneDemo />;
   }
 
   if (!data) {

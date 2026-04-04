@@ -1,13 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 
 const AvatarParticipant = ({
-  totalParticipant,
   participant = [],
-  maxCapacity,
 }: {
   participant: { image: string }[];
-  totalParticipant: number;
-  maxCapacity: number;
 }) => {
   const filteredParticipant = participant.slice(0, 3);
 
@@ -26,11 +22,12 @@ const AvatarParticipant = ({
             </AvatarFallback>
           </Avatar>
         ))}
+        <Avatar>
+          <AvatarFallback className="border-2 border-background hover:z-10">
+            + {filteredParticipant.length}
+          </AvatarFallback>
+        </Avatar>
       </div>
-      <p className="text-xs">
-        {filteredParticipant.length > 0 && "+"} {totalParticipant} /{" "}
-        {maxCapacity} Mengikuti
-      </p>
     </div>
   );
 };

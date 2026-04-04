@@ -29,24 +29,21 @@ const NavMainEvent = ({ show = true }: { show?: boolean }) => {
 
   return (
     <div
-      className={`fixed w-full bottom-1 left-0 flex items-center justify-center p-2 z-50 ${!show && "hidden"}`}
+      className={`fixed w-full bottom-0 left-0 flex items-center justify-center z-50 ${!show && "hidden"}`}
     >
-      <div className="flex items-center justify-between bg-card rounded-full p-1 shadow-2xl gap-6">
+      <div className="flex items-center justify-between bg-card px-6 shadow-2xl gap-[16px] w-full">
         {eventProps.map((e) => (
           <Link
             href={e.url}
             key={e.title}
             className={cn(
-              "flex items-center p-2 rounded-full",
-              e.url === params ? "bg-primary text-background gap-1" : "",
+              "flex flex-col justify-center items-center p-2 min-w-[55px] m-1.5 dark:text-foreground text-foreground/40",
+              e.url === params &&
+                "text-primary bg-primary/20 dark:bg-primary/50 rounded-2xl",
             )}
           >
             <e.icon className="size-5" />
-            <span
-              className={`text-xs ${e.url === params ? "block" : "hidden"}`}
-            >
-              {e.title}
-            </span>
+            <span className={cn("text-xs")}>{e.title}</span>
           </Link>
         ))}
       </div>
