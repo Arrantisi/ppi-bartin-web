@@ -29,6 +29,12 @@ export const getProfileUser = async () => {
       noTelephone: true,
       jenisKelamin: true,
       tanggalLahir: true,
+      events: {
+        select: {
+          judul: true,
+          id: true,
+        },
+      },
     },
   });
 };

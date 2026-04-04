@@ -125,7 +125,6 @@ model Events {
   maxCapacity Int
   catagory    String
   batasDaftar DateTime
-  biayaAcara  String
   persyaratan String
   fileKey     String
 

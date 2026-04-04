@@ -85,21 +85,13 @@ export const EventDetail = ({ slug }: { slug: string }) => {
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <div className="relative flex flex-col h-screen bg-background overflow-hidden">
-        <Image
-          src={imageUrl(data.fileKey)}
-          alt={""}
-          fill
-          className="object-cover z-0 absolute"
-          priority
-        />
-
+      <div className="relative flex flex-col overflow-hidden ">
         {/* Gambar & Header Sticky */}
         <div className="fixed w-full z-10 ">
-          <div className="p-2 top-0 bg-background left-0 right-0 px-4 flex items-center justify-between">
+          <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
             <Button
-              variant="ghost"
-              size="xs"
+              variant="outline"
+              size="xl"
               className="rounded-full"
               onClick={() => router.back()}
             >
@@ -111,7 +103,11 @@ export const EventDetail = ({ slug }: { slug: string }) => {
             <div className="flex gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant={"ghost"} size={"xs"}>
+                  <Button
+                    variant={"outline"}
+                    size={"xl"}
+                    className="rounded-full"
+                  >
                     <IconDots />
                   </Button>
                 </DropdownMenuTrigger>
@@ -130,73 +126,85 @@ export const EventDetail = ({ slug }: { slug: string }) => {
           </div>
         </div>
 
-        {/* Konten Detail */}
-        <div className="pt-[500px] overflow-y-auto z-5 ">
-          <div className="flex-1 relative rounded-t-[2.5rem] px-6 flex flex-col justify-between bg-background pt-4">
-            <h1 className="text-2xl font-bold text-foreground mb-2">
-              {data.judul}
-            </h1>
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-sm text-muted-foreground">
-                Oleh{" "}
-                <span className="font-medium text-foreground capitalize">
-                  {data.creator.username}
-                </span>
-              </p>
-              <AvatarParticipant
-                participant={data.participants.map((img) => ({
-                  image: img.user.image || "",
-                }))}
-                totalParticipant={data.participants.length}
-                maxCapacity={data.maxCapacity || 0}
-              />
-            </div>
+        <div className="flex flex-col h-full">
+          <Image
+            src={imageUrl(data.fileKey)}
+            alt={""}
+            height={200}
+            width={200}
+            className="object-cover z-0 w-full h-[400px]"
+          />
 
-            <div className="prose prose-sm text-muted-foreground mb-8">
-              <p>{data.deskripsi}</p>
-            </div>
-
-            {/* Info Waktu & Tempat */}
-            <div className="space-y-4 mb-8">
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                  <IconCalendarWeek size={20} />
-                </div>
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-sm font-semibold">Tanggal</span>
-                  <span className="text-xs text-muted-foregroun">
-                    {formattedDate(data.date || new Date())}
+          <div className="relative rounded-t-[2.5rem] px-6 flex flex-col justify-between bg-background min-h-[510px] -mt-10 pt-10 pb-5">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground mb-2">
+                {data.judul}
+              </h1>
+              <div className="flex items-center justify-between mb-6">
+                <p className="text-sm text-muted-foreground">
+                  Oleh{" "}
+                  <span className="font-medium text-foreground capitalize">
+                    {data.creator.username}
                   </span>
-                </div>
+                </p>
+                <AvatarParticipant
+                  participant={data.participants.map((img) => ({
+                    image: img.user.image || "",
+                  }))}
+                  totalParticipant={data.participants.length}
+                  maxCapacity={data.maxCapacity || 0}
+                />
               </div>
 
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                  <IconMapPin size={20} />
+              <div className="prose prose-sm text-muted-foreground mb-8">
+                <p>{data.deskripsi}</p>
+              </div>
+
+              {/* Info Waktu & Tempat */}
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                    <IconCalendarWeek size={20} />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-sm font-semibold">Tanggal</span>
+                    <span className="text-xs text-muted-foregroun">
+                      {formattedDate(data.date || new Date())}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-sm font-semibold">Lokasi</span>
-                  <span className="text-xs text-muted-foreground">
-                    {data.lokasi}
-                  </span>
+
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                    <IconMapPin size={20} />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-sm font-semibold">Lokasi</span>
+                    <span className="text-xs text-muted-foreground">
+                      {data.lokasi}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-            {capacityFull ? (
-              <div className="text-center text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
-                sudah penuh
-              </div>
-            ) : userJoined?.user.id === session?.user.id ? (
-              <div className="text-center text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
-                kamu telah join
-              </div>
-            ) : (
-              <DrawerTrigger asChild>
-                <Button className="rounded-full text-xs">
-                  Daftar Sekarang
-                </Button>
-              </DrawerTrigger>
-            )}
+
+            <div>
+              {capacityFull ? (
+                <div className="text-center text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+                  sudah penuh
+                </div>
+              ) : userJoined?.user.id === session?.user.id ? (
+                <div className="text-center text-xs font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+                  kamu telah join
+                </div>
+              ) : (
+                <DrawerTrigger asChild>
+                  <Button className="rounded-full text-xs">
+                    Daftar Sekarang
+                  </Button>
+                </DrawerTrigger>
+              )}
+            </div>
           </div>
 
           {/* Action Button */}

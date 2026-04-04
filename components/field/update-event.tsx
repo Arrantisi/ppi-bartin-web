@@ -52,7 +52,6 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
       deskripsi: data?.deskripsi || "",
       maxCapacity: data?.maxCapacity || 0,
       batasDaftar: data?.batasDaftar || new Date(),
-      biayaAcara: data?.biayaAcara || "",
       catagory: data?.catagory || "",
       fileKey: data?.fileKey || "",
       persyaratan: data?.persyaratan || "",
@@ -313,31 +312,6 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
               }}
             </form.Field>
           </div>
-
-          <form.Field name="biayaAcara">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field>
-                  <FieldLabel>
-                    <IconCoin size={18} color="#0088FF" />
-                    Biaya Acara <span className="text-destructive">*</span>
-                  </FieldLabel>
-
-                  <Input
-                    id={field.name}
-                    placeholder={props.textarea[5].placeholder}
-                    className="focus-visible:ring-primary"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
 
           <form.Field name="persyaratan">
             {(field) => {

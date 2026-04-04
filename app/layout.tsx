@@ -46,10 +46,9 @@ export default function RootLayout({
           >
             <TanstackProvider>
               <GoeyToaster position="top-center" />
-              <div className="z-50">
-                <SpeedInsights />
-                {children}
-              </div>
+
+              <SpeedInsights />
+              {children}
             </TanstackProvider>
           </ThemeProvider>
         </main>

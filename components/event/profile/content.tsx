@@ -1,111 +1,147 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/buttons";
+import { Card } from "@/components/ui/card";
+import { useProfileUser } from "@/hooks/use-users";
 import {
-  Resolved,
-  ThemeSelection,
-  ThemeToggler,
-} from "@/components/animate-ui/primitives/effects/theme-toggler";
-import { Separator } from "@/components/ui/separator";
-import { IconArrowRight } from "@/icons";
-import { MoonIcon, SunIcon } from "lucide-react";
-import { useTheme } from "next-themes";
-
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import {
-  IconAlertSquareRounded,
-  IconBell,
+  IconArrowRight,
+  IconCalendar,
   IconFileText,
   IconSun,
-  IconWorld,
+  IconTimeline,
+  IconUser,
 } from "@tabler/icons-react";
+import Link from "next/link";
 
 export const ContentProfile = () => {
-  const { theme, resolvedTheme, setTheme } = useTheme();
+  const { data } = useProfileUser();
+
+  if (!data) {
+    return null;
+  }
 
   return (
-    <div className="space-y-3 my-3">
-      <h1 className="title-tiga">Setting</h1>
-      <div className="space-y-3 py-4 px-2 shadow-2xl rounded-2xl bg-card">
+    <div className="w-full relative flex flex-col items-start py-0 px-5 box-border gap-3 text-left text-[0.75rem] text-slategray font-inter">
+      {/* untuk 2 informasi */}
+      <div className="self-stretch h-7 relative text-[1.125rem] text-black">
+        <div className="absolute top-[-0.062rem] left-0 leading-7 font-semibold">
+          Informasi
+        </div>
+      </div>
+      <div className="flex justify-center items-center gap-3 h-23 w-full">
+        <Card className="py-5 rounded-xl px-2 w-full">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center">
+              <div className="bg-primary/10 rounded-full p-3">
+                <IconCalendar
+                  className="size-6 text-primary"
+                  width={44}
+                  height={44}
+                />
+              </div>
+            </div>
+            <div>
+              <div className="h-13.5 flex-1 flex flex-col items-start">
+                <div className="w-full flex items-start mb-1 pr-5">
+                  <h1 className="relative leading-4">Tahun Kedatangan</h1>
+                </div>
+                <div className="self-stretch h-5 flex items-start shrink-0 text-[0.875rem] text-gray">
+                  <h3 className="flex-1 relative leading-5 font-semibold">
+                    {data?.angkatan}
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+        <Card className=" py-5 rounded-xl px-2 w-full">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center">
+              <div className="bg-primary/10 rounded-full p-3">
+                <IconFileText
+                  className="size-6 text-primary"
+                  width={44}
+                  height={44}
+                />
+              </div>
+            </div>
+            <div>
+              <div className="h-13.5 flex-1 flex flex-col items-start">
+                <div className="w-26.5 flex items-start">
+                  <h1 className="relative leading-4">Jurusan</h1>
+                </div>
+                <div className="self-stretch h-5 flex items-start shrink-0 text-[0.875rem] text-gray">
+                  <h3 className="flex-1 relative leading-5 font-semibold">
+                    {data?.jurusan}
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* untuk 1 informasi */}
+      <Card className="py-5 rounded-xl px-2 w-full">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center">
+            <div className="bg-primary/10 rounded-full p-3">
+              <IconTimeline
+                className="size-6 text-primary"
+                width={44}
+                height={44}
+              />
+            </div>
+          </div>
+          <div>
+            <div className="h-13.5 flex-1 flex flex-col items-start">
+              <div className="w-full flex items-start mb-1 pr-5">
+                <h1 className="relative leading-4">Kegiatan yang Diikuti</h1>
+              </div>
+              <div className="self-stretch h-5 flex items-start shrink-0 text-[0.875rem] text-gray">
+                <h3 className="flex-1 relative leading-5 font-semibold">
+                  {data?.events.length} Kegiatan
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="self-stretch h-20.5 flex flex-col items-start py-0 pl-2 pr-0 box-border gap-2 text-[0.875rem] text-mediumslateblue">
+          {data.events.map((event) => (
+            <div className="flex items-center gap-3" key={event.id}>
+              <div className="size-1.5 bg-primary rounded-full" />
+              <div className="text-[15px]">{event.judul}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <div className="self-stretch h-7 relative text-[1.125rem] text-black">
+        <div className="absolute top-[-0.062rem] left-0 leading-7 font-semibold">
+          Setting
+        </div>
+      </div>
+      <div className="self-stretch h-28.5 shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-2xl bg-card border-whitesmoke border-solid border box-border overflow-hidden shrink-0 flex flex-col items-start p-[0.062rem] text-center text-[1rem] text-gray">
         <Link
           href={`/home/profile/update`}
-          className="flex items-center justify-between px-5"
+          className="self-stretch h-14 bg-card border-whitesmoke border-solid border-b box-border flex items-center justify-between py-0 px-5 gap-5"
         >
-          <div className="flex items-center gap-3">
-            <IconFileText stroke={1.2} />
-            <p className="content-description">Edit Profile</p>
+          <div className="h-6 w-full flex items-center gap-4">
+            <IconUser className="h-6 w-6" width={24} />
+            <p>Edit Profile</p>
           </div>
-          <IconArrowRight />
+          <IconArrowRight className="h-5 w-5 relative" />
         </Link>
-        <Separator className="w-full mx-0" />
-        <div className="flex items-center justify-between px-5">
-          <div className="flex items-center gap-3">
-            <IconWorld stroke={1.2} />
-            <p className="content-description">Bahasa</p>
+        <div className="self-stretch h-[3.563rem] bg-card border-whitesmoke border-solid border-b box-border flex items-center justify-between py-0 px-5 gap-5 text-left font-sf-pro">
+          <div className="h-6 flex items-center gap-4">
+            <IconSun className="h-6 w-6" />
+            <div className="h-5.5 flex-1 relative">
+              <div className="absolute top-[-0.062rem] left-0 tracking-[-0.31px] leading-5.5">
+                Tema
+              </div>
+            </div>
           </div>
-          <IconArrowRight />
-        </div>
-        <Separator className="w-full mx-0" />
-        <div className="flex items-center justify-between px-5">
-          <div className="flex items-center gap-3">
-            <IconBell stroke={1.2} />
-            <p className="content-description">Notifikasi</p>
-          </div>
-          <IconArrowRight />
-        </div>
-        <Separator className="w-full mx-0" />
-        <div className="flex items-center justify-between px-5">
-          <div className="flex items-center gap-3">
-            <IconSun stroke={1.2} />
-            <p className="content-description">Tema</p>
-          </div>
-          <ThemeToggler
-            theme={theme as ThemeSelection}
-            resolvedTheme={resolvedTheme as Resolved}
-            setTheme={setTheme}
-          >
-            {({ effective, toggleTheme }) => {
-              const nextTheme = effective === "dark" ? "light" : "dark";
-
-              return (
-                <Button
-                  size={"icon-xs"}
-                  variant={"outline"}
-                  onClick={() => toggleTheme(nextTheme)}
-                  className="relative rounded-xl"
-                >
-                  <SunIcon
-                    strokeWidth={2}
-                    className={cn(
-                      "size-5 transition-all duration-300",
-                      effective === "light"
-                        ? "scale-100 rotate-0 opacity-100"
-                        : "scale-0 -rotate-90 opacity-0",
-                    )}
-                  />
-                  <MoonIcon
-                    strokeWidth={2}
-                    className={cn(
-                      "absolute size-5 transition-all duration-300",
-                      effective === "dark"
-                        ? "scale-100 rotate-0 opacity-100"
-                        : "scale-0 rotate-90 opacity-0",
-                    )}
-                  />
-                  <span className="sr-only">Toggle theme</span>
-                </Button>
-              );
-            }}
-          </ThemeToggler>
-        </div>
-        <Separator className="w-full mx-0" />
-        <div className="flex items-center justify-between px-5">
-          <div className="flex items-center gap-3">
-            <IconAlertSquareRounded stroke={1.2} />
-            <p className="content-description">Syarat & Ketentuan</p>
-          </div>
-          <IconArrowRight />
+          <ThemeToggle />
         </div>
       </div>
     </div>

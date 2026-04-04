@@ -12,7 +12,7 @@ export const HomeLayoutComponent = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div className="my-4 mx-3">
+    <div className="mt-4 mx-3 mb-28">
       <NavMainEvent />
       {children}
     </div>

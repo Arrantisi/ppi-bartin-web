@@ -2,7 +2,7 @@
 
 import { studentAccount } from "@/server/actions/account";
 import prisma from "@/lib/prisma";
-import { TcreateEventSchema } from "@/schemas";
+import { createEventSchema, TcreateEventSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
@@ -13,20 +13,35 @@ export const createAcara = async ({
   date,
   lokasi,
   maxCapacity,
-  biayaAcara,
   batasDaftar,
   fileKey,
   catagory,
   persyaratan,
 }: TcreateEventSchema): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
+  const validation = createEventSchema.safeParse({
+    judul,
+    deskripsi,
+    date,
+    lokasi,
+    maxCapacity,
+    batasDaftar,
+    fileKey,
+    catagory,
+    persyaratan,
+  });
+  if (!validation.success) {
+    return {
+      status: "error",
+      msg: "Data acara tidak valid",
+    };
+  }
 
   const slug = createSlug(judul);
 
   try {
     await prisma.events.create({
       data: {
-        biayaAcara: biayaAcara,
         batasDaftar,
         fileKey,
         catagory,
@@ -62,22 +77,49 @@ export const updateAcara = async (
     date,
     lokasi,
     maxCapacity,
-    biayaAcara,
+
     batasDaftar,
     fileKey,
     catagory,
     persyaratan,
   }: TcreateEventSchema,
 ): Promise<TServerPrompt> => {
-  await studentAccount();
+  const { user } = await studentAccount();
+  const validation = createEventSchema.safeParse({
+    judul,
+    deskripsi,
+    date,
+    lokasi,
+    maxCapacity,
+
+    batasDaftar,
+    fileKey,
+    catagory,
+    persyaratan,
+  });
+  if (!validation.success) {
+    return {
+      status: "error",
+      msg: "Data acara tidak valid",
+    };
+  }
 
   try {
     const updattedSlug = createSlug(judul);
+    const ownedEvent = await prisma.events.findFirst({
+      where: { slug, userId: user.id },
+      select: { id: true },
+    });
+    if (!ownedEvent) {
+      return {
+        status: "error",
+        msg: "Kamu tidak memiliki akses untuk mengubah acara ini",
+      };
+    }
 
     await prisma.events.update({
-      where: { slug },
+      where: { id: ownedEvent.id },
       data: {
-        biayaAcara: biayaAcara,
         batasDaftar,
         fileKey,
         catagory,
@@ -152,11 +194,22 @@ export const joinEvent = async (eventId: string): Promise<TServerPrompt> => {
 };
 
 export const publishAcara = async (slug: string): Promise<TServerPrompt> => {
-  await studentAccount();
+  const { user } = await studentAccount();
 
   try {
+    const ownedEvent = await prisma.events.findFirst({
+      where: { slug, userId: user.id },
+      select: { id: true },
+    });
+    if (!ownedEvent) {
+      return {
+        status: "error",
+        msg: "Kamu tidak memiliki akses untuk publish acara ini",
+      };
+    }
+
     await prisma.events.update({
-      where: { slug },
+      where: { id: ownedEvent.id },
       data: {},
     });
 

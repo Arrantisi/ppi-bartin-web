@@ -3,7 +3,7 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
-import { CardNewsRender } from "../../cards/card-news";
+import { FrameNews } from "../../cards/card-news";
 import { useNews } from "@/hooks/use-news";
 
 const catagoryTrigger = [
@@ -63,7 +63,7 @@ const BeritaCatagory = () => {
               category.ctg === "all" ? true : news.catagory === category.ctg,
             )
             .map((news) => (
-              <CardNewsRender key={news.slug} {...news} />
+              <FrameNews key={news.slug} {...news} />
             ))}
         </TabsContent>
       ))}

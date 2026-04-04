@@ -98,7 +98,7 @@ export const completeProfile = async (
 
     return {
       status: "error",
-      msg: error.message || "Terjadi kesalahan pada server",
+      msg: "Terjadi kesalahan pada server",
     };
   }
 };
@@ -133,7 +133,7 @@ export const deleteAccount = async (): Promise<IServerPrompt> => {
 
     return {
       status: "error",
-      msg: error.message || "Terjadi kesalahan pada server",
+      msg: "Terjadi kesalahan pada server",
     };
   }
 };

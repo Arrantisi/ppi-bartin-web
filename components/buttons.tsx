@@ -6,10 +6,10 @@ import { Spinner } from "./ui/spinner";
 import {
   IconArrowLeftDashed,
   IconLogout,
-  IconMoonStars,
+  IconMoon,
   IconPlus,
   IconShareplay,
-  IconSunHighFilled,
+  IconSun,
   IconTrash,
 } from "@tabler/icons-react";
 import { authClient } from "@/lib/auth-client";
@@ -19,6 +19,7 @@ import { deleteAccount } from "@/server/actions/setting-user";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { goeyToast } from "./ui/goey-toaster";
+import { cn } from "@/lib/utils";
 
 export const ButtonCreate = ({ catagory }: { catagory: "news" | "events" }) => {
   const page =
@@ -186,16 +187,29 @@ export const ThemeToggle = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
   return (
-    <Button onClick={() => handleTheme()}>
-      {theme === "dark" ? (
-        <>
-          <IconSunHighFilled /> <span>light mode</span>
-        </>
-      ) : (
-        <>
-          <IconMoonStars /> <span>dark mode</span>
-        </>
-      )}
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={() => handleTheme()}
+      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+    >
+      <IconSun
+        className={cn(
+          "size-4 transition-all duration-300",
+          theme === "dark"
+            ? "scale-0 -rotate-90 opacity-0"
+            : "scale-100 rotate-0 opacity-100",
+        )}
+      />
+      <IconMoon
+        className={cn(
+          "absolute size-4 transition-all duration-300",
+          theme === "dark"
+            ? "scale-100 rotate-0 opacity-100"
+            : "scale-0 rotate-90 opacity-0",
+        )}
+      />
+      <span className="sr-only">Toggle theme</span>
     </Button>
   );
 };

@@ -2,7 +2,7 @@
 
 import { useNews } from "@/hooks/use-news";
 import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
-import { CardNewsRender } from "@/components/cards/card-news";
+import { FrameNews } from "@/components/cards/card-news";
 
 export const RenderNews = () => {
   const { data, isLoading } = useNews();
@@ -23,7 +23,7 @@ export const RenderNews = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {data.slice(0, 6).map((news) => (
-        <CardNewsRender {...news} key={news.slug} />
+        <FrameNews {...news} key={news.slug} />
       ))}
     </div>
   );
