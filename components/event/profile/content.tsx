@@ -1,6 +1,7 @@
 "use client";
 
 import { ThemeToggle } from "@/components/buttons";
+import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProfileUser } from "@/hooks/use-users";
 import {
@@ -21,9 +22,9 @@ export const ContentProfile = () => {
   }
 
   return (
-    <div className="w-full relative flex flex-col items-start py-0 px-5 box-border gap-3 text-left text-[0.75rem] text-slategray font-inter">
+    <div className="w-full relative flex flex-col items-start py-0 box-border gap-3 text-left text-[0.75rem] text-slategray font-inter">
       {/* untuk 2 informasi */}
-      <div className="self-stretch h-7 relative text-[1.125rem] text-black">
+      <div className="self-stretch h-7 relative text-[1.125rem]">
         <div className="absolute top-[-0.062rem] left-0 leading-7 font-semibold">
           Informasi
         </div>
@@ -82,6 +83,7 @@ export const ContentProfile = () => {
       </div>
 
       {/* untuk 1 informasi */}
+
       <Card className="py-5 rounded-xl px-2 w-full">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center">
@@ -116,7 +118,7 @@ export const ContentProfile = () => {
         </div>
       </Card>
 
-      <div className="self-stretch h-7 relative text-[1.125rem] text-black">
+      <div className="self-stretch h-7 relative text-[1.125rem] ">
         <div className="absolute top-[-0.062rem] left-0 leading-7 font-semibold">
           Setting
         </div>
@@ -130,7 +132,13 @@ export const ContentProfile = () => {
             <IconUser className="h-6 w-6" width={24} />
             <p>Edit Profile</p>
           </div>
-          <IconArrowRight className="h-5 w-5 relative" />
+          <div
+            className={buttonVariants({
+              variant: "outline",
+            })}
+          >
+            <IconArrowRight className="h-5 w-5 relative" />
+          </div>
         </Link>
         <div className="self-stretch h-[3.563rem] bg-card border-whitesmoke border-solid border-b box-border flex items-center justify-between py-0 px-5 gap-5 text-left font-sf-pro">
           <div className="h-6 flex items-center gap-4">

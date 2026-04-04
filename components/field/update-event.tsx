@@ -17,7 +17,6 @@ import { goeyToast } from "../ui/goey-toaster";
 import { UploaderPhoto } from "../event/uploader/upload-event-news";
 import {
   IconCalendar,
-  IconCoin,
   IconFileText,
   IconMapPin,
   IconTypography,
