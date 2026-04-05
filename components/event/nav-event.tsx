@@ -19,10 +19,10 @@ type EventProps = {
 
 const NavMainEvent = ({ show = true }: { show?: boolean }) => {
   const eventProps: EventProps = [
-    { title: "Home", icon: IconSmartHome, url: "/home" },
-    { title: "Events", icon: IconCalendarWeek, url: "/home/events" },
-    { title: "News", icon: IconNews, url: "/home/news" },
-    { title: "profile", icon: IconUser, url: "/home/profile" },
+    { title: "Beranda", icon: IconSmartHome, url: "/home" },
+    { title: "Kegiatan", icon: IconCalendarWeek, url: "/home/events" },
+    { title: "Berita", icon: IconNews, url: "/home/news" },
+    { title: "Profil", icon: IconUser, url: "/home/profile" },
   ];
 
   const params = usePathname();
@@ -31,7 +31,7 @@ const NavMainEvent = ({ show = true }: { show?: boolean }) => {
     <div
       className={`fixed w-full bottom-0 left-0 flex items-center justify-center z-50 ${!show && "hidden"}`}
     >
-      <div className="flex items-center justify-between bg-card px-6 shadow-2xl gap-[16px] w-full">
+      <div className="flex items-center justify-between bg-card px-6 pb-4 pt-0.5 shadow-2xl gap-[16px] w-full">
         {eventProps.map((e) => (
           <Link
             href={e.url}

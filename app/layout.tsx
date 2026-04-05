@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Open_Sans } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
 import { GoeyToaster } from "@/components/ui/goey-toaster";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-const fontSans = Open_Sans({
+const fontSans = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
   variable: "--font-sans",
 });

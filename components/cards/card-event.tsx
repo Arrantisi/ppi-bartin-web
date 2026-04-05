@@ -30,7 +30,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
   return (
     <Dialog>
       <Drawer open={isOpen} onOpenChange={setisOpen}>
-        <Card className="py-0 max-w-sm w-full">
+        <Card className="py-0 max-w-sm w-full h-[520px] relative">
           <div className="object-cover">
             <Image
               src={imageUrl(props.fileKey)}
@@ -77,7 +77,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
             </div>
           </CardContent>
 
-          <CardFooter className="p-3 justify-between w-full">
+          <CardFooter className="p-3 justify-between w-full absolute bottom-0">
             <DialogTrigger
               className={cn(
                 "cursor-pointer py-1.5 px-2 rounded-2xl duration-300 transition-all",
@@ -91,11 +91,11 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
             </DialogTrigger>
             <div className="w-full max-w-[218px]">
               {capacityFull ? (
-                <div className="w-full text-center text-xs font-semibold rounded-full capitalize bg-primary text-primary-foreground py-2.5 px-3">
+                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-primary text-primary-foreground py-2.5 px-3">
                   Penuh
                 </div>
               ) : userJoined?.user.id === session?.user.id ? (
-                <div className="w-full text-center text-xs font-semibold rounded-full capitalize bg-primary text-primary-foreground py-2.5 px-3">
+                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-primary text-primary-foreground py-2.5 px-3">
                   Mengitkuti
                 </div>
               ) : (

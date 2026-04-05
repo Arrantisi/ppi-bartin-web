@@ -3,11 +3,12 @@
 import { Button } from "@/components/ui/button";
 import {
   IconArrowLeft,
-  IconBookmark,
   IconCalendarWeek,
   IconCopy,
   IconDots,
+  IconEdit,
   IconMapPin,
+  IconTrash,
 } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -30,6 +31,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LoaderOneDemo } from "@/components/loader";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -92,7 +94,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
           <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
             <Button
               variant="outline"
-              size="xl"
+              size="icon-xl"
               className="rounded-full"
               onClick={() => router.back()}
             >
@@ -106,7 +108,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant={"outline"}
-                    size={"xl"}
+                    size={"icon-xl"}
                     className="rounded-full"
                   >
                     <IconDots />
@@ -116,11 +118,24 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                   <DropdownMenuItem className="text-xs">
                     <IconCopy /> Salin link
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-xs">
-                    <IconBookmark />
-                    Bookmark
-                  </DropdownMenuItem>
+                  {session?.user.id === data.creator.id && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <Link href={`/home/events/update/${data.slug}`}>
+                        <DropdownMenuItem className="text-xs">
+                          <IconEdit />
+                          Edit
+                        </DropdownMenuItem>
+                      </Link>
+                      <DropdownMenuItem
+                        className="text-xs"
+                        variant="destructive"
+                      >
+                        <IconTrash />
+                        Hapus
+                      </DropdownMenuItem>
+                    </>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -136,13 +151,13 @@ export const EventDetail = ({ slug }: { slug: string }) => {
             className="object-cover z-0 w-full h-[400px]"
           />
 
-          <div className="relative rounded-t-[2.5rem] px-6 flex flex-col justify-between bg-background min-h-[510px] -mt-10 pt-7 pb-5">
+          <div className="relative px-6 flex flex-col justify-between bg-background -mt-10 pt-4 pb-5">
             <div>
-              <h1 className="text-2xl font-bold text-foreground">
+              <h1 className="text-[24px] font-bold text-foreground">
                 {data.judul}
               </h1>
               <div className="flex items-center justify-between mb-2">
-                <div className="text-sm text-muted-foreground flex items-center justify-between gap-1.5">
+                <div className="text-[13px] text-muted-foreground flex items-center justify-between gap-1.5">
                   <Avatar className="size-5">
                     <AvatarImage src={data.creator.image || ""} />
                   </Avatar>
@@ -159,7 +174,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
               </div>
 
               <div className="prose prose-sm text-muted-foreground mb-8">
-                <p>{data.deskripsi}</p>
+                <p className="text-[13px]">{data.deskripsi}</p>
               </div>
 
               {/* Info Waktu & Tempat */}
@@ -169,7 +184,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                     <IconCalendarWeek size={20} />
                   </div>
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-sm font-semibold">Tanggal</span>
+                    <span className="text-[13px] font-semibold">Tanggal</span>
                     <span className="text-xs text-muted-foregroun">
                       {formattedDate(data.date || new Date())}
                     </span>
@@ -181,7 +196,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                     <IconMapPin size={20} />
                   </div>
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-sm font-semibold">Lokasi</span>
+                    <span className="text-[13px] font-semibold">Lokasi</span>
                     <span className="text-xs text-muted-foreground">
                       {data.lokasi}
                     </span>
@@ -190,7 +205,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
               </div>
             </div>
 
-            <div>
+            <div className="">
               {capacityFull ? (
                 <div className="text-center text-base font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
                   sudah penuh

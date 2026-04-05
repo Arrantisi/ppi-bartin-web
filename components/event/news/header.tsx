@@ -14,8 +14,8 @@ const HeaderBerita = () => {
     <div>
       <div className="flex justify-between">
         <div>
-          <h1 className="text-lg font-semibold">Berita</h1>
-          <p className="text-xs text-muted-foreground capitalize">
+          <h1 className="text-[24px] font-semibold">Berita</h1>
+          <p className="text-[13px] text-muted-foreground capitalize">
             Semua info penting untuk kamu
           </p>
         </div>

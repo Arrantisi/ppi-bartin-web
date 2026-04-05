@@ -1,16 +1,21 @@
 {
-    "name": "Pusat Informasi dan Layanan PPI Bartin",
-    "short_name": "ppibartin",
-    "description": "Portal resmi PPI Bartin untuk informasi kegiatan, berita, dan berbagai layanan anggota.",
-    "start_url": "/home",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#2563eb",
-    "icons": [
-      {
-        "src": "/logo-ppi.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      }
-    ]
-  }
+  "name": "Pusat Informasi dan Layanan PPI Bartin",
+  "short_name": "ppibartin",
+  "description": "Portal resmi PPI Bartin untuk informasi kegiatan, berita, dan berbagai layanan anggota.",
+  "start_url": "/home",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/logo-ppi.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo-ppi.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

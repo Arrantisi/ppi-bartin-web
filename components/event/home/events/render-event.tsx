@@ -8,6 +8,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { SkeletonCardAcara } from "@/components/skeletons/card-event-skeleton";
 import CardEvent from "@/components/cards/card-event";
 import Link from "next/link";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 
 export const RenderAcara = () => {
   const queryClient = useQueryClient();
@@ -49,21 +54,29 @@ export const RenderAcara = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="block md:hidden">
-        {data.slice(0, 1).map((event) => (
-          <Link href={`/home/events/${event.slug}`} key={event.id}>
-            <CardEvent {...event} />
-          </Link>
-        ))}
-      </div>
-      <div className="hidden xl:block">
+    <Carousel
+      opts={{
+        align: "start",
+        loop: false,
+      }}
+      className="w-full"
+    >
+      <CarouselContent className="-ml-4">
         {data.slice(0, 3).map((event) => (
-          <Link href={`/home/events/${event.slug}`} key={event.id}>
-            <CardEvent {...event} />
-          </Link>
+          <CarouselItem
+            key={event.slug}
+            className="pl-4 basis-1/1 md:basis-1/2 lg:basis-1/3"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="block md:hidden">
+                <Link href={`/home/events/${event.slug}`} key={event.id}>
+                  <CardEvent {...event} />
+                </Link>
+              </div>
+            </div>
+          </CarouselItem>
         ))}
-      </div>
-    </div>
+      </CarouselContent>
+    </Carousel>
   );
 };

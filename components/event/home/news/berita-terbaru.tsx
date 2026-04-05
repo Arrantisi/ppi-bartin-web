@@ -5,12 +5,12 @@ const BeritaTerbaru = () => {
   return (
     <div className="mt-7 space-y-2 mb-28">
       <div className="flex justify-between items-center">
-        <h1 className="font-semibold text-lg tracking-tight capitalize">
+        <h1 className="font-semibold text-[22px] tracking-tight capitalize">
           berita terbaru
         </h1>
         <Link
           href={"/home/news"}
-          className="text-accent-foreground font-semibold text-sm"
+          className="text-accent-foreground font-semibold text-[15px]"
         >
           selengkapnya
         </Link>
