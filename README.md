@@ -1,450 +1,403 @@
-# PPI Bartın Website - Phase 1: Login System
+# PPI Bartın Web
 
-Website Perhimpunan Pelajar Indonesia (PPI) Bartın, Turki
-
-**Status:** 🚧 Phase 1 Development - Login Page (2 minggu)
+Aplikasi web **Perhimpunan Pelajar Indonesia (PPI) Bartın, Turki** — portal untuk mahasiswa Indonesia: autentikasi, profil, acara (events), dan berita.
 
 ---
 
-## 🎯 Project Overview
+## Daftar isi
 
-Website sederhana untuk mahasiswa Indonesia di Bartın dengan 3 halaman utama:
-
-- **Home** - Landing page
-- **Profile** - Profil mahasiswa
-- **Events** - Kelola & daftar event
-
----
-
-## 📅 Development Timeline
-
-### ✅ Phase 1: Login System (2 Minggu) - **SEKARANG**
-
-**Goal:** Buat sistem login yang berfungsi sempurna
-
-**Fitur:**
-
-- Login dengan Google
-- Registrasi user (Nama Lengkap + No Öğrenci)
-- Simpan data user ke database
-- Session management
-
-### 🔜 Phase 2: Home & Profile (Next)
-
-- Homepage dengan info PPI
-- Profile page user
-
-### 🔜 Phase 3: Events (Next)
-
-- Buat event
-- Lihat events
-- Daftar ke event
+1. [Ringkasan](#ringkasan)
+2. [Stack teknologi](#stack-teknologi)
+3. [Fitur utama](#fitur-utama)
+4. [Prasyarat](#prasyarat)
+5. [Pemula: Node.js, pnpm, dan npm](#pemula-nodejs-pnpm-dan-npm)
+6. [Memulai proyek lokal](#memulai-proyek-lokal)
+7. [Variabel lingkungan](#variabel-lingkungan)
+8. [Struktur folder](#struktur-folder)
+9. [Arsitektur singkat](#arsitektur-singkat)
+10. [Database & Prisma](#database--prisma)
+11. [Autentikasi](#autentikasi)
+12. [Upload file](#upload-file)
+13. [Keamanan](#keamanan)
+14. [Skrip npm/pnpm](#skrip-npmpnpm)
+15. [Build & deployment](#build--deployment)
+16. [Lisensi & kontribusi](#lisensi--kontribusi)
 
 ---
 
-## 🏗️ Struktur Project (Simple)
+## Ringkasan
+
+| Item | Keterangan |
+|------|------------|
+| **Framework** | [Next.js](https://nextjs.org/) 16 (App Router) |
+| **Bahasa** | TypeScript |
+| **UI** | React 19, Tailwind CSS 4, komponen Radix/Base UI |
+| **Database** | PostgreSQL via [Prisma](https://www.prisma.io/) 7 |
+| **Auth** | [Better Auth](https://www.better-auth.com/) + Google OAuth |
+| **State / data** | TanStack Query, server actions & data layer di `server/` |
+
+---
+
+## Stack teknologi
+
+- **Runtime & framework:** Next.js, React Compiler (`next.config.ts`)
+- **Styling:** Tailwind CSS 4, `tw-animate-css`, tema gelap/terang (`next-themes`)
+- **Form & validasi:** TanStack Form, Zod
+- **Animasi:** Motion / Framer Motion
+- **Ikon:** Tabler Icons, Phosphor, Lucide
+- **Monitoring:** Vercel Speed Insights
+- **Storage upload:** UploadThing (gambar acara/berita)
+- **Klien Supabase:** `NEXT_PUBLIC_*` (integrasi tambahan sesuai kebutuhan)
+
+---
+
+## Fitur utama
+
+- **Login** dengan Google (Better Auth)
+- **Lengkapi profil** — alur redirect jika data siswa (`nomorSiswa`) atau username belum ada
+- **Beranda & navigasi** — area `(protected)/home/*` dengan bottom nav
+- **Events** — daftar, detail, buat/ubah acara, pendaftaran peserta
+- **News** — daftar, detail, kategori, buat/ubah berita
+- **Profil pengguna** — lihat & perbarui data
+- **PWA ringan** — `manifest.json`, meta apple web app di `app/layout.tsx`
+
+---
+
+## Prasyarat
+
+- **Node.js** (disarankan LTS sesuai Next 16) — lihat [Pemula: Node.js, pnpm, dan npm](#pemula-nodejs-pnpm-dan-npm)
+- **pnpm** — wajib untuk repo ini (`package.json` memakai `only-allow pnpm`)
+- **PostgreSQL** — untuk database aplikasi & shadow DB (migrasi Prisma)
+
+---
+
+## Pemula: Node.js, pnpm, dan npm
+
+Bagian ini untuk yang baru pertama kali menyetup lingkungan. **Di proyek ini, perintah yang dipakai adalah `pnpm`**, bukan `npm`/`yarn`.
+
+### 1. Pasang Node.js
+
+Node.js menyertakan runtime JavaScript dan **npm** (package manager bawaan).
+
+1. Unduh installer **LTS** dari [https://nodejs.org](https://nodejs.org), atau pakai version manager seperti [nvm](https://github.com/nvm-sh/nvm) / [fnm](https://github.com/Schniz/fnm) jika Anda terbiasa dengan banyak versi Node.
+2. Setelah terpasang, buka terminal dan cek:
+
+   ```bash
+   node -v
+   npm -v
+   ```
+
+   Jika angka versi muncul, Node dan npm sudah siap.
+
+### 2. Apa bedanya npm dan pnpm?
+
+| | **npm** | **pnpm** |
+|---|---------|----------|
+| Asal | Ikut terpasang bersama Node.js | Harus dipasang tambahan |
+| Fungsi | Menginstall dependency dari `package.json` | Sama — mengelola dependency proyek |
+| Proyek ini | **Tidak dipakai untuk `install`** (akan diblokir) | **Wajib** untuk install & skrip |
+
+**pnpm** umumnya lebih hemat disk (hard link) dan cepat; tim memilih satu package manager agar `lockfile` (`pnpm-lock.yaml`) konsisten.
+
+### 3. Pasang pnpm
+
+Pilih **salah satu** cara:
+
+**A — lewat Corepack (disarankan, sudah ada di Node modern)**
+
+```bash
+corepack enable
+corepack prepare pnpm@latest --activate
+```
+
+**B — lewat npm (sekali pakai npm untuk memasang pnpm secara global)**
+
+```bash
+npm install -g pnpm
+```
+
+Cek versi:
+
+```bash
+pnpm -v
+```
+
+### 4. Di repo ini: selalu `pnpm`, bukan `npm install`
+
+Di `package.json` ada skrip `preinstall` yang memakai `only-allow pnpm`. Artinya:
+
+- Jalankan **`pnpm install`** untuk mengunduh dependency.
+- Jika Anda menjalankan **`npm install`**, instalasi akan **gagal** dengan pesan yang meminta memakai pnpm — itu disengaja agar lockfile tidak tertukar.
+
+### 5. Setara perintah (jika Anda biasa pakai npm)
+
+| Kebiasaan npm | Setara pnpm di proyek ini |
+|---------------|---------------------------|
+| `npm install` | `pnpm install` |
+| `npm run dev` | `pnpm dev` |
+| `npm run build` | `pnpm build` |
+| `npx prisma migrate dev` | `pnpm exec prisma migrate dev` |
+| `npx some-package` | `pnpm dlx some-package` (setara unduh-sekali-jalankan) |
+
+Setelah pnpm terpasang, lanjut ke [Memulai proyek lokal](#memulai-proyek-lokal).
+
+---
+
+## Memulai proyek lokal
+
+```bash
+git clone <url-repo-anda>
+cd ppi-bartin-web
+pnpm install
+```
+
+1. Salin template environment dan isi variabel (lihat [Variabel lingkungan](#variabel-lingkungan)):
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. Sinkronkan skema ke PostgreSQL (pilih salah satu):
+
+   **Opsi A — `db push` (praktis untuk lokal / eksperimen)**  
+   Tanpa membuat file migrasi; skema langsung disamakan dengan `schema.prisma`.
+
+   ```bash
+   pnpm exec prisma db push
+   ```
+
+   **Opsi B — `migrate dev` (disarankan jika pakai riwayat migrasi)**  
+   Membuat migrasi di `prisma/migrations` dan menerapkannya. Pastikan `SHADOW_DATABASE_URL` di `.env.local` sudah benar (dipakai Prisma untuk shadow DB).
+
+   ```bash
+   pnpm exec prisma migrate dev
+   ```
+
+   Setelah salah satu opsi di atas, klien Prisma sudah bisa dipakai (`pnpm install` juga menjalankan `prisma generate` lewat `postinstall`).
+
+3. Jalankan pengembangan:
+
+   ```bash
+   pnpm dev
+   ```
+
+   Buka [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Variabel lingkungan
+
+Validasi runtime memakai `@t3-oss/env-core` di `lib/env.ts`. Pastikan nilai berikut terisi:
+
+### Server
+
+| Variabel | Keterangan |
+|----------|------------|
+| `DATABASE_URL` | URL koneksi PostgreSQL (Prisma) |
+| `SHADOW_DATABASE_URL` | DB shadow untuk migrasi Prisma |
+| `BETTER_AUTH_URL` | URL publik aplikasi (mis. `http://localhost:3000`) |
+| `BETTER_AUTH_SECRET` | Secret acak untuk sesi Better Auth |
+| `GOOGLE_CLIENT_ID` | Client ID OAuth Google |
+| `GOOGLE_CLIENT_SECRET` | Client Secret OAuth Google |
+| `UPLOADTHING_TOKEN` | Token UploadThing untuk upload file |
+
+### Client (`NEXT_PUBLIC_*`)
+
+| Variabel | Keterangan |
+|----------|------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | URL proyek Supabase |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Kunci anonim Supabase |
+
+> **Catatan:** Jangan commit file `.env` berisi secret. Gunakan `.env.example` di repo (boleh ditambahkan tim) sebagai template tanpa nilai sensitif.
+
+---
+
+## Struktur folder
+
+Ringkasan hierarki penting (bukan semua file):
 
 ```
-ppi-bartin-website/
-│
-├── src/
-│   ├── app/
-│   │   ├── layout.tsx              # Root layout
-│   │   ├── page.tsx                # Homepage (sementara kosong)
-│   │   │
-│   │   ├── login/
-│   │   │   └── page.tsx           # ⭐ Login page (FOKUS 2 MINGGU)
-│   │   │
-│   │   ├── register/
-│   │   │   └── page.tsx           # ⭐ Register form (FOKUS 2 MINGGU)
-│   │   │
-│   │   └── api/
-│   │       └── auth/
-│   │           └── [...nextauth]/
-│   │               └── route.ts    # ⭐ NextAuth config (FOKUS 2 MINGGU)
-│   │
-│   ├── components/
-│   │   └── auth/
-│   │       ├── GoogleLoginButton.tsx    # ⭐ Tombol login Google
-│   │       └── RegisterForm.tsx         # ⭐ Form registrasi
-│   │
-│   └── lib/
-│       ├── auth.ts                 # ⭐ Auth config
-│       └── prisma.ts               # ⭐ Database client
-│
+ppi-bartin-web/
+├── .env.example               # Template variabel lingkungan (aman di-commit)
+├── app/
+│   ├── layout.tsx                 # Root: font, tema, provider, PWA meta
+│   ├── loading.tsx              # UI loading global route
+│   ├── globals.css              # Design tokens & gaya global
+│   ├── login/                   # Halaman login
+│   ├── complite-profile/        # Lengkapi profil (redirect dari protected)
+│   ├── (protected)/             # Layout: auth + cek nomor siswa
+│   │   ├── layout.tsx
+│   │   ├── home/                # Beranda, events, news, profile
+│   │   └── dashboard/           # Dashboard (jika dipakai)
+│   └── api/
+│       ├── auth/[...all]/       # Handler Better Auth
+│       └── uploadthing/         # Router UploadThing
+├── components/                  # UI: cards, event, news, ui/, dll.
+├── hooks/                       # use-events, use-news, use-users, ...
+├── lib/
+│   ├── auth.ts                  # Konfigurasi server Better Auth
+│   ├── auth-client.ts           # Klien auth
+│   ├── env.ts                   # Validasi env
+│   └── generated/prisma/        # Output Prisma client (generate)
 ├── prisma/
-│   └── schema.prisma               # ⭐ Database schema pake apa database??
-│
-├── .env.local                      # Environment variables
+│   └── schema.prisma            # Skema PostgreSQL
+├── public/                      # Asset statis, manifest, logo
+├── server/
+│   ├── actions/                 # Server actions (acara, news, user, ...)
+│   └── data/                    # Query/fetch data untuk RSC & hooks
+├── utils/                       # Helper (format tanggal, image URL, dll.)
+├── next.config.ts
 ├── package.json
+├── tsconfig.json                # Alias `@/*` → root proyek
 └── README.md
 ```
 
-**Fokus 2 minggu:** File yang ada tanda ⭐
+---
+
+## Arsitektur singkat
+
+1. **Routing** — File-based routing Next.js; grup `(protected)` membungkus halaman yang membutuhkan sesi.
+2. **Protected layout** — Memanggil `auth.api.getSession`, redirect ke `/login` atau `/complite-profile` jika syarat profil belum terpenuhi (`app/(protected)/layout.tsx`).
+3. **Data** — Pola umum: `server/data/*` untuk fungsi akses data; `server/actions/*` untuk mutasi; hook TanStack Query di `hooks/*` untuk klien.
+4. **Path alias** — Import dengan `@/...` mengacu ke root repository (`tsconfig.json`).
 
 ---
 
-## 🗄️ Database Schema (Simple) pake apa database??
+## Database & Prisma
 
-Untuk Phase 1, kita hanya butuh **1 tabel: User**
+- **Provider:** PostgreSQL  
+- **Client output:** `lib/generated/prisma` (sesuai `schema.prisma`)
 
-```prisma
-model User {
-  id              String    @id @default(cuid())
-  name            String              // Nama Lengkap
-  email           String    @unique   // Dari Google
-  studentNumber   String    @unique   // No Öğrenci
-  image           String?             // Foto dari Google
+### `db push` vs `migrate`
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-}
-```
+| | **`prisma db push`** | **`prisma migrate dev`** |
+|---|----------------------|---------------------------|
+| **Fungsi** | Mendorong perubahan skema langsung ke DB | Membuat file migrasi + menerapkan ke DB |
+| **Folder `migrations/`** | Tidak menambah file migrasi | Menambah/mengubah migrasi versi |
+| **Kapan dipakai** | Dev cepat, prototipe, sinkron lokal | Tim ingin riwayat migrasi & deploy terkontrol |
+| **Shadow DB** | Tidak wajib untuk push | `migrate dev` membutuhkan `SHADOW_DATABASE_URL` |
 
----
-
-## 🔐 Login Flow (Yang Akan Dibuat)
-
-```
-┌─────────────────┐
-│  User buka /    │
-│   (Homepage)    │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Klik "Login"    │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────────────┐
-│  /login page            │
-│                         │
-│  [Sign in with Google]  │ ◄─── FOKUS 2 MINGGU
-└────────┬────────────────┘
-         │
-         ▼
-┌──────────────────┐
-│  Google OAuth    │
-│  (Pilih akun)    │
-└────────┬─────────┘
-         │
-         ▼
-    Sudah pernah
-    register?
-         │
-    ┌────┴────┐
-    │         │
-   NO        YES
-    │         │
-    ▼         ▼
-┌─────────┐  ┌──────────┐
-│/register│  │ Langsung │
-│ Form    │  │ ke Home  │
-│         │  └──────────┘
-│- Nama   │
-│- No Öğr │
-└────┬────┘
-     │
-     ▼
- ┌──────────┐
- │ Redirect │
- │ ke Home  │
- └──────────┘
-```
-
----
-
-## 🚀 Setup untuk Phase 1
-
-### Prerequisites
-
-```
-✅ Node.js 18+
-✅ PostgreSQL database (Supabase gratis) pake apa database??
-✅ Google OAuth credentials
-```
-
-### Install
+**Setelah mengubah `schema.prisma`:**
 
 ```bash
-# Clone project
-git clone https://github.com/[username]/ppi-bartin-website.git
-cd ppi-bartin-website
+# Cepat — tanpa file migrasi baru
+pnpm exec prisma db push
 
-# Install dependencies
-npm install
+# Atau — buat migrasi + terapkan (nama migrasi opsional)
+pnpm exec prisma migrate dev --name deskripsi_perubahan
 ```
 
-### Environment Variables
-
-Buat file `.env.local`:
-
-### Database Setup
-
-jika belum ada npm dan pnpm
+Regenerasi klien (jika perlu manual):
 
 ```bash
-# Check npm di komputer
-npm -v
-
-# Check pnpm di komputer
-pnpm -v
-
-# Jika belum ada pnpm
-npm -g install pnpm
+pnpm exec prisma generate
 ```
+
+**Produksi / CI** — biasanya memakai migrasi yang sudah ada di repo:
 
 ```bash
-# Generate Prisma Client
-pnpm dlx prisma generate
-
-# Push schema ke database
-pnpm dlx prisma db push
+pnpm exec prisma migrate deploy
 ```
 
-### Run Development
+### Model utama
 
-```bash
-pnpm dev
-```
-
-Buka: [http://localhost:3000](http://localhost:3000)
+- **User** — profil, relasi ke `Events`, `News`, `Participants`, `Account`, `Session`
+- **Events** — acara; **Participants** — many-to-many user–event
+- **News** — berita dengan slug unik
+- **dataSiswa** — referensi data siswa (id unik)
+- **Verification** — alur verifikasi Better Auth
 
 ---
 
-## 📦 Dependencies (Minimal)
+## Autentikasi
 
-```json
-{
-  "dependencies": {
-    "next": "^14.2.0",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "next-auth": "^5.0.0-beta.3",
-    "@prisma/client": "^5.8.0",
-    "react-icons": "^5.0.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.3.3",
-    "tailwindcss": "^3.4.1",
-    "prisma": "^5.8.0"
-  }
-}
-```
+- **Better Auth** menangani sesi; route API di `app/api/auth/[...all]/route.ts`.
+- **Google** sebagai penyedia OAuth — kredensial dari env `GOOGLE_*`.
+- Sesi dan akun tersimpan sesuai model Prisma (`Session`, `Account`).
+
+Untuk detail implementasi, baca `lib/auth.ts` dan dokumentasi [Better Auth](https://www.better-auth.com/docs).
 
 ---
 
-## 📋 Checklist Phase 1 (2 Minggu)
+## Upload file
 
-### Week 1: Setup & Google OAuth
-
-- [ ] **Day 1-2: Setup Project**
-  - [ ] Install Next.js
-  - [ ] Install dependencies
-  - [ ] Setup Tailwind CSS
-  - [ ] Setup folder structure
-
-- [ ] **Day 3-4: Database Setup** pake apa database??
-  - [ ] Buat akun Supabase
-  - [ ] Setup Prisma
-  - [ ] Buat User schema
-  - [ ] Test connection
-
-- [ ] **Day 5-7: Google OAuth**
-  - [ ] Buat Google OAuth credentials
-  - [ ] Setup NextAuth.js
-  - [ ] Buat login page
-  - [ ] Buat Google login button
-  - [ ] Test login flow
-
-### Week 2: Registration & Polish
-
-- [ ] **Day 8-10: Registration Form**
-  - [ ] Buat register page
-  - [ ] Form: Nama Lengkap
-  - [ ] Form: No Öğrenci (validation)
-  - [ ] Connect form ke database
-  - [ ] Test save data
-
-- [ ] **Day 11-12: Logic & Validation**
-  - [ ] Check: user baru atau lama?
-  - [ ] Redirect logic (baru → register, lama → home)
-  - [ ] Validasi No Öğrenci (8 digit, unique)
-  - [ ] Error handling
-
-- [ ] **Day 13-14: Testing & Polish**
-  - [ ] Test full flow
-  - [ ] Fix bugs
-  - [ ] Improve UI/UX
-  - [ ] Add loading states
-  - [ ] Deploy ke Vercel (optional)
+- **UploadThing** — konfigurasi di `app/api/uploadthing/` (`core.ts`, `route.ts`).
+- Gambar diizinkan dari host yang dikonfigurasi di `next.config.ts` (`images.remotePatterns`), mis. `utfs.io`, `lh3.googleusercontent.com`, `d9i7wgmc1q.ufs.sh`.
 
 ---
 
-## 🎨 UI Pages (Phase 1)
+## Keamanan
 
-### 1. Login Page (`/login`)
+Ringkasan praktik yang relevan dengan codebase ini — bukan pengganti audit keamanan formal.
 
-**Simple & clean:**
+### Rahasia & konfigurasi
 
-```
-┌─────────────────────────────────┐
-│                                 │
-│      [Logo PPI Bartın]          │
-│                                 │
-│   Portal Mahasiswa Indonesia    │
-│        di Bartın, Turki         │
-│                                 │
-│   ┌─────────────────────────┐   │
-│   │  [G] Sign in with Google│   │
-│   └─────────────────────────┘   │
-│                                 │
-└─────────────────────────────────┘
-```
+- **Jangan commit** file `.env`, `.env.local`, atau kredensial ke repositori. Gunakan `.env.example` hanya sebagai nama variabel tanpa nilai sensitif.
+- **`BETTER_AUTH_SECRET`** harus panjang dan acak (mis. `openssl rand -base64 32`). Ganti jika pernah bocor; secret lemah berarti risiko pemalsuan sesi.
+- **`GOOGLE_CLIENT_SECRET`**, **`UPLOADTHING_TOKEN`**, **`DATABASE_URL`**, dan kunci server lainnya hanya boleh ada di **variabel server** / platform hosting, bukan di kode atau di variabel `NEXT_PUBLIC_*`.
+- Validasi env di **`lib/env.ts`** membantu mencegah aplikasi jalan dengan konfigurasi kosong atau salah di build/runtime — tetap periksa pesan error saat deploy.
 
-### 2. Register Page (`/register`)
+### Variabel `NEXT_PUBLIC_*`
 
-**Form sederhana:**
+- Nilai dengan prefix ini **terbundel ke bundle klien** dan bisa dibaca siapa saja yang membuka DevTools. Hanya letakkan data yang memang untuk publik (mis. URL Supabase anon, bukan service role key).
+- Jangan menaruh secret database, token server, atau kunci privat di nama variabel `NEXT_PUBLIC_*`.
 
-```
-┌─────────────────────────────────┐
-│                                 │
-│   Selamat datang, [Nama]! 👋    │
-│                                 │
-│   Lengkapi data untuk lanjut:   │
-│                                 │
-│   Nama Lengkap                  │
-│   ┌─────────────────────────┐   │
-│   │ [Input nama]            │   │
-│   └─────────────────────────┘   │
-│                                 │
-│   No Öğrenci (NIM)              │
-│   ┌─────────────────────────┐   │
-│   │ [Contoh: 12345678]      │   │
-│   └─────────────────────────┘   │
-│                                 │
-│   ┌─────────────────────────┐   │
-│   │   Complete Registration │   │
-│   └─────────────────────────┘   │
-│                                 │
-└─────────────────────────────────┘
-```
+### Autentikasi & sesi
+
+- **Better Auth** menangani sesi di server; route dilindungi memverifikasi sesi di **`app/(protected)/layout.tsx`** (bukan hanya menyembunyikan UI di klien).
+- Di **produksi**, layani aplikasi lewat **HTTPS** dan set **`BETTER_AUTH_URL`** ke URL HTTPS canonical (domain final). OAuth Google membutuhkan **Authorized redirect URI** yang cocok dengan konfigurasi Better Auth / Google Cloud Console.
+- Putar ulang kredensial OAuth jika client secret pernah terpapar.
+
+### Basis data
+
+- **`DATABASE_URL`** hanya untuk server; koneksi tidak diekspos ke browser.
+- Batasi akses PostgreSQL dengan firewall / allowlist IP di lingkungan produksi; gunakan user DB dengan privilege minimal yang dibutuhkan aplikasi.
+
+### Upload & konten
+
+- **UploadThing** memakai token server (`UPLOADTHING_TOKEN`); pastikan aturan upload di `app/api/uploadthing/core.ts` sesuai kebijakan (tipe file, ukuran) dan tinjau dokumentasi UploadThing untuk hardening.
+- **`images.remotePatterns`** di `next.config.ts` membatasi sumber gambar Next/Image — jangan membuka pola ke domain yang tidak Anda percaya.
+
+### Dependensi & pemeliharaan
+
+- Jalankan **`pnpm audit`** atau peralatan CI secara berkala; perbarui dependensi untuk patch keamanan.
+- Ikuti advisori dari Next.js, React, Prisma, dan Better Auth saat rilis penting.
+
+### Checklist singkat sebelum produksi
+
+- [ ] Semua secret di panel hosting, bukan di repo  
+- [ ] `BETTER_AUTH_URL` = URL produksi HTTPS  
+- [ ] Redirect URI OAuth Google sudah mencakup domain produksi  
+- [ ] Database tidak dapat diakses publik tanpa autentikasi  
+- [ ] HTTPS aktif di edge/hosting  
 
 ---
 
-## 🔧 Setup Google OAuth (Step-by-Step)
+## Skrip npm/pnpm
 
-### 1. Google Cloud Console
-
-1. Buka: [https://console.cloud.google.com](https://console.cloud.google.com)
-2. Buat project baru: "PPI Bartin Website"
-3. Enable "Google+ API"
-
-### 2. Buat OAuth Credentials
-
-1. Sidebar → "APIs & Services" → "Credentials"
-2. "Create Credentials" → "OAuth client ID"
-3. Application type: "Web application"
-4. **Authorized JavaScript origins:**
-   ```
-   http://localhost:3000
-   ```
-5. **Authorized redirect URIs:**
-   ```
-   http://localhost:3000/api/auth/callback/google
-   ```
-6. Copy **Client ID** & **Client Secret**
-7. Paste ke `.env.local`
-
-### 3. Test
-
-```bash
-pnpm dev
-# Buka http://localhost:3000/login
-# Klik "Sign in with Google"
-# Harus redirect ke Google login
-```
+| Perintah | Fungsi |
+|----------|--------|
+| `pnpm dev` | Server pengembangan Next.js |
+| `pnpm build` | Build produksi |
+| `pnpm start` | Jalankan hasil build |
+| `pnpm lint` | ESLint |
+| `pnpm install` | Install + `prisma generate` (postinstall) |
 
 ---
 
-## 🎓 Resources untuk Belajar
+## Build & deployment
 
-### NextAuth.js
-
-- Docs: https://next-auth.js.org/
-- Google Provider: https://next-auth.js.org/providers/google
-
-### Prisma
-
-- Docs: https://www.prisma.io/docs
-- Getting Started: https://www.prisma.io/docs/getting-started
-
-### Supabase (Database)
-
-- https://supabase.com/
-- Free tier cukup untuk project ini
+1. Set semua variabel lingkungan di platform hosting (Vercel, dll.).
+2. Pastikan `BETTER_AUTH_URL` mengarah ke domain produksi.
+3. Terapkan skema DB di lingkungan produksi: `pnpm exec prisma migrate deploy` (bukan `db push`, kecuali Anda sengaja memakai alur khusus).
+4. `pnpm build` harus sukses tanpa error TypeScript/ESLint.
 
 ---
 
-## 💡 Tips Development
+## Lisensi & kontribusi
 
-### 1. Kerja Step-by-Step
-
-Jangan skip steps, ikuti checklist di atas satu per satu.
-
-### 2. Test Sering
-
-Setiap selesai 1 fitur, langsung test. Jangan tunggu semuanya selesai.
-
-### 3. Commit Sering
-
-```bash
-git add .
-git commit -m "Add Google OAuth login"
-git push
-```
-
-### 4. Pakai Prisma Studio pake apa database??
-
-Untuk lihat data di database:
-
-```bash
-pnpm dlx prisma studio
-```
-
-### 5. Debug dengan Console
-
-Tambahkan `console.log()` untuk debug:
-
-```typescript
-console.log("User data:", user);
-```
-
-## 🎯 Success Criteria (2 Minggu)
-
-Phase 1 dianggap selesai jika:
-
-✅ User bisa login dengan Google  
-✅ User baru diredirect ke form registrasi  
-✅ User bisa input Nama & No Öğrenci  
-✅ Data tersimpan ke database  
-✅ User lama langsung masuk (skip registrasi)  
-✅ Tidak ada error/bug critical  
-✅ UI clean dan user-friendly
+Proyek ini **private** (`"private": true` di `package.json`). Untuk kontribusi internal: buat branch fitur, PR dengan deskripsi jelas, dan ikuti konvensi commit tim.
 
 ---
 
-## 🚀 Next Steps (Setelah Phase 1)
-
-- **Phase 2 (2 minggu):** Home page & Profile page
-- **Phase 3 (2 minggu):** Event page (buat & lihat event)
-- **Phase 4 (2 minggu):** Event registration (daftar ke event)
-
----
-
-Let's build this together! 🚀
-Focus 2 minggu ini: Login & Registration yang sempurna!
-Setelah fase 1 selesai, kita lanjut ke Home Page & Profile (fase 2).
-
-Good luck! 💪
+*Dokumen ini menggambarkan struktur dan alur utama pada saat penulisan; sesuaikan jika modul baru ditambahkan.*
