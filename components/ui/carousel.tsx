@@ -19,6 +19,9 @@ type CarouselProps = {
   plugins?: CarouselPlugin
   orientation?: "horizontal" | "vertical"
   setApi?: (api: CarouselApi) => void
+  autoplay?: boolean
+  autoplayDelay?: number
+  pauseOnHover?: boolean
 }
 
 type CarouselContextProps = {
@@ -26,6 +29,9 @@ type CarouselContextProps = {
   api: ReturnType<typeof useEmblaCarousel>[1]
   scrollPrev: () => void
   scrollNext: () => void
+  scrollTo: (index: number) => void
+  selectedIndex: number
+  scrollSnaps: number[]
   canScrollPrev: boolean
   canScrollNext: boolean
 } & CarouselProps
@@ -47,6 +53,9 @@ function Carousel({
   opts,
   setApi,
   plugins,
+  autoplay = false,
+  autoplayDelay = 4000,
+  pauseOnHover = true,
   className,
   children,
   ...props
@@ -60,11 +69,20 @@ function Carousel({
   )
   const [canScrollPrev, setCanScrollPrev] = React.useState(false)
   const [canScrollNext, setCanScrollNext] = React.useState(false)
+  const [selectedIndex, setSelectedIndex] = React.useState(0)
+  const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([])
+  const [isHovered, setIsHovered] = React.useState(false)
 
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return
     setCanScrollPrev(api.canScrollPrev())
     setCanScrollNext(api.canScrollNext())
+    setSelectedIndex(api.selectedScrollSnap())
+  }, [])
+
+  const onInit = React.useCallback((api: CarouselApi) => {
+    if (!api) return
+    setScrollSnaps(api.scrollSnapList())
   }, [])
 
   const scrollPrev = React.useCallback(() => {
@@ -74,6 +92,13 @@ function Carousel({
   const scrollNext = React.useCallback(() => {
     api?.scrollNext()
   }, [api])
+
+  const scrollTo = React.useCallback(
+    (index: number) => {
+      api?.scrollTo(index)
+    },
+    [api]
+  )
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -95,14 +120,35 @@ function Carousel({
 
   React.useEffect(() => {
     if (!api) return
+    onInit(api)
     onSelect(api)
+    api.on("reInit", onInit)
     api.on("reInit", onSelect)
     api.on("select", onSelect)
 
     return () => {
+      api?.off("reInit", onInit)
       api?.off("select", onSelect)
     }
-  }, [api, onSelect])
+  }, [api, onInit, onSelect])
+
+  React.useEffect(() => {
+    if (!api || !autoplay || scrollSnaps.length <= 1) return
+    if (pauseOnHover && isHovered) return
+
+    const interval = window.setInterval(() => {
+      if (api.canScrollNext()) {
+        api.scrollNext()
+        return
+      }
+
+      api.scrollTo(0)
+    }, autoplayDelay)
+
+    return () => {
+      window.clearInterval(interval)
+    }
+  }, [api, autoplay, autoplayDelay, isHovered, pauseOnHover, scrollSnaps.length])
 
   return (
     <CarouselContext.Provider
@@ -114,12 +160,17 @@ function Carousel({
           orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
         scrollPrev,
         scrollNext,
+        scrollTo,
+        selectedIndex,
+        scrollSnaps,
         canScrollPrev,
         canScrollNext,
       }}
     >
       <div
         onKeyDownCapture={handleKeyDown}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className={cn("relative", className)}
         role="region"
         aria-roledescription="carousel"
@@ -231,6 +282,35 @@ function CarouselNext({
   )
 }
 
+function CarouselDots({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  const { selectedIndex, scrollSnaps, scrollTo } = useCarousel()
+
+  return (
+    <div
+      className={cn("mt-4 flex items-center justify-center gap-2", className)}
+      data-slot="carousel-dots"
+      {...props}
+    >
+      {scrollSnaps.map((_, index) => (
+        <button
+          key={index}
+          type="button"
+          onClick={() => scrollTo(index)}
+          className={cn(
+            "size-2 rounded-full bg-muted-foreground/40 transition-colors",
+            selectedIndex === index && "bg-primary"
+          )}
+          aria-label={`Go to slide ${index + 1}`}
+          aria-current={selectedIndex === index}
+        />
+      ))}
+    </div>
+  )
+}
+
 export {
   type CarouselApi,
   Carousel,
@@ -238,4 +318,5 @@ export {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselDots,
 }

@@ -24,11 +24,11 @@ export const DatePickerField = ({ value, onChange }: DatePickerFieldProps) => {
   const today = new Date();
 
   const presents = [
-    { label: "Today", date: today },
-    { label: "Tomorrow", date: addDays(today, 1) },
-    { label: "Next week", date: addDays(today, 7) },
-    { label: "Next month", date: addMonths(today, 1) },
-    { label: "Next year", date: addYears(today, 1) },
+    { label: "Hari Ini", date: today },
+    { label: "Besok", date: addDays(today, 1) },
+    { label: "Minggu Depan", date: addDays(today, 7) },
+    { label: "Bulan Depan", date: addMonths(today, 1) },
+    { label: "Tahun Depan", date: addYears(today, 1) },
   ];
 
   const [month, setMonth] = useState(today);
@@ -41,7 +41,11 @@ export const DatePickerField = ({ value, onChange }: DatePickerFieldProps) => {
           variant={"outline"}
         >
           <span
-            className={cn("text-muted-foreground/70 ", "truncate", value && "")}
+            className={cn(
+              "text-muted-foreground/70 text-sm",
+              "truncate",
+              value && "",
+            )}
           >
             {value ? formattedDate(value) : "Pick a date"}
           </span>

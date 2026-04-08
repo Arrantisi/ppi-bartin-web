@@ -55,7 +55,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
                     <AvatarImage src={props.creator.image || ""} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
-                  created by{" "}
+                  Dibuat Oleh{" "}
                   <span className="capitalize font-semibold">
                     {props.creator.username}
                   </span>
@@ -98,16 +98,12 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
             </DialogTrigger>
             <div className="w-full max-w-[218px]">
               {capacityFull ? (
-                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-primary text-primary-foreground py-2.5 px-3">
-                  Penuh
-                </div>
-              ) : userJoined?.user.id === session?.user.id ? (
-                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-primary text-primary-foreground py-2.5 px-3">
-                  Mengitkuti
+                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-primary text-white py-2.5 px-3">
+                  {userJoined?.user.id === session?.user.id ? "Ikuti" : "penuh"}
                 </div>
               ) : (
                 <DrawerTrigger asChild>
-                  <Button className="rounded-full text-xs w-full text-center">
+                  <Button className="rounded-full text-sm font-semibold w-full text-white">
                     Ikuti
                   </Button>
                 </DrawerTrigger>

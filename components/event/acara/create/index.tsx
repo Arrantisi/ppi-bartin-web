@@ -1,10 +1,10 @@
+import { ButtonHeaderField } from "@/components/buttons";
 import { CreateEventContent } from "./content";
-import { CreateContentHeader } from "./header";
 
 export const CreateEventComponent = () => {
   return (
     <div>
-      <CreateContentHeader />
+      <ButtonHeaderField href="/home/events" label="Buat Acara" />
       <CreateEventContent />
     </div>
   );

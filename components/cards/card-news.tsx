@@ -29,7 +29,7 @@ export const FrameNews = ({ ...news }: TgetNews) => {
             {news.catagory}
           </Badge>
           <div className="max-w-52 self-stretch relative text-[15px] tracking-[-0.23px] leading-5 font-semibold text-foreground">
-            {news.judul} Lorem ipsum dolor sit.
+            {news.judul}
           </div>
         </div>
         <div className="flex items-center gap-2 text-[0.75rem] w-full">

@@ -6,6 +6,7 @@ export const getNewsBySlug = async (slug: string) => {
   return await prisma.news.findUnique({
     where: { slug },
     select: {
+      id: true,
       slug: true,
       catagory: true,
       desckripsi: true,
@@ -14,6 +15,7 @@ export const getNewsBySlug = async (slug: string) => {
       ringkasan: true,
       creator: {
         select: {
+          id: true,
           image: true,
           username: true,
         },

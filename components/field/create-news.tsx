@@ -85,7 +85,7 @@ export const CreateNewsField = () => {
     <div className="space-y-3">
       <form
         id="create-news-field"
-        className="space-y-6 my-5"
+        className="space-y-3 my-5"
         onSubmit={(e) => {
           e.preventDefault();
           form.handleSubmit();
@@ -149,7 +149,7 @@ export const CreateNewsField = () => {
               <Field data-invalid={isInvalid} orientation={"responsive"}>
                 <FieldLabel>
                   <IconTags size={18} className="text-primary" />
-                  Catagory Berita
+                  Kategori Berita
                   <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Select
@@ -162,7 +162,7 @@ export const CreateNewsField = () => {
                     data-invalid={isInvalid}
                     className="rounded-2xl"
                   >
-                    <SelectValue placeholder={"select catagory"} />
+                    <SelectValue placeholder={"Pilih Kategori"} />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl">
                     {catagoryTrigger.map(({ ctg }) => (

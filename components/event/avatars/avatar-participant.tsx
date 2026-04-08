@@ -17,7 +17,7 @@ const AvatarParticipant = ({
               alt="@reui"
               className="border border-accent hover:z-10"
             />
-            <AvatarFallback className="border-2 border-background hover:z-10">
+            <AvatarFallback className="border-2 border-background hover:z-10 text-white">
               CN
             </AvatarFallback>
           </Avatar>

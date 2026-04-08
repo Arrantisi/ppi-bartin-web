@@ -57,7 +57,7 @@ export const createEventSchema = z.object({
   deskripsi: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
   batasDaftar: z.date({ error: "Silakan tentukan tanggal acara" }),
   fileKey: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
-  catagory: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
+  catagory: z.string().min(2, "Deskripsi acara minimal 2 karakter"),
   persyaratan: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
   maxCapacity: z
     .number({ error: "Kapasitas harus berupa angka" })

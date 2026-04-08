@@ -2,8 +2,8 @@
 
 import { LoaderOneDemo } from "@/components/loader";
 import { UpdateEventContent } from "./content";
-import { UpdateEventHeader } from "./header";
 import { useEventBySlug } from "@/hooks/use-events";
+import { ButtonHeaderField } from "@/components/buttons";
 
 export const UpdateEventComponent = ({ slug }: { slug: string }) => {
   const { data, isLoading } = useEventBySlug({ slug });
@@ -18,7 +18,7 @@ export const UpdateEventComponent = ({ slug }: { slug: string }) => {
 
   return (
     <div>
-      <UpdateEventHeader />
+      <ButtonHeaderField href="/home/events" label="Edit Acara" />
       <UpdateEventContent slug={slug} data={data} />
     </div>
   );

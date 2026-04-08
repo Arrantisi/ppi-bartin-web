@@ -2,8 +2,8 @@
 
 import { LoaderOneDemo } from "@/components/loader";
 import { UpdateNewsContent } from "./content";
-import { UpdateNewsHeader } from "./header";
 import { useNewsBySlug } from "@/hooks/use-news";
+import { ButtonHeaderField } from "@/components/buttons";
 
 export const UpdateNewsComponent = ({ slug }: { slug: string }) => {
   const { data, isLoading } = useNewsBySlug({ slug });
@@ -18,7 +18,7 @@ export const UpdateNewsComponent = ({ slug }: { slug: string }) => {
 
   return (
     <div>
-      <UpdateNewsHeader />
+      <ButtonHeaderField href="/home/news" label="Edit Berita" />
       <UpdateNewsContent slug={slug} data={data} />
     </div>
   );

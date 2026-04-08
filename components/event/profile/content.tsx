@@ -8,6 +8,7 @@ import {
   IconArrowRight,
   IconCalendar,
   IconFileText,
+  IconHeadset,
   IconSun,
   IconTimeline,
   IconUser,
@@ -123,7 +124,18 @@ export const ContentProfile = () => {
           Setting
         </div>
       </div>
-      <div className="self-stretch h-28.5 shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-2xl bg-card border-whitesmoke border-solid border box-border overflow-hidden shrink-0 flex flex-col items-start p-[0.062rem] text-center text-[1rem] text-gray">
+      <div className="self-stretch shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-2xl bg-card border-whitesmoke border-solid border box-border overflow-hidden shrink-0 flex flex-col items-start p-[0.062rem] text-center text-[1rem] text-gray">
+        <div className="self-stretch h-[3.563rem] bg-card border-whitesmoke border-solid border-b box-border flex items-center justify-between py-0 px-5 gap-5 text-left font-sf-pro">
+          <div className="h-6 flex items-center gap-4">
+            <IconSun className="h-6 w-6" />
+            <div className="h-5.5 flex-1 relative">
+              <div className="absolute top-[-0.062rem] left-0 tracking-[-0.31px] leading-5.5">
+                Tema
+              </div>
+            </div>
+          </div>
+          <ThemeToggle />
+        </div>
         <Link
           href={`/home/profile/update`}
           className="self-stretch h-14 bg-card border-whitesmoke border-solid border-b box-border flex items-center justify-between py-0 px-5 gap-5"
@@ -140,17 +152,22 @@ export const ContentProfile = () => {
             <IconArrowRight className="h-5 w-5 relative" />
           </div>
         </Link>
-        <div className="self-stretch h-[3.563rem] bg-card border-whitesmoke border-solid border-b box-border flex items-center justify-between py-0 px-5 gap-5 text-left font-sf-pro">
-          <div className="h-6 flex items-center gap-4">
-            <IconSun className="h-6 w-6" />
-            <div className="h-5.5 flex-1 relative">
-              <div className="absolute top-[-0.062rem] left-0 tracking-[-0.31px] leading-5.5">
-                Tema
-              </div>
-            </div>
+        <Link
+          href={`/home/customer-service`}
+          className="self-stretch h-14 bg-card border-whitesmoke border-solid border-b box-border flex items-center justify-between py-0 px-5 gap-5"
+        >
+          <div className="h-6 w-full flex items-center gap-4">
+            <IconHeadset className="h-6 w-6" width={24} />
+            <p>Umpan Balik</p>
           </div>
-          <ThemeToggle />
-        </div>
+          <div
+            className={buttonVariants({
+              variant: "outline",
+            })}
+          >
+            <IconArrowRight className="h-5 w-5 relative" />
+          </div>
+        </Link>
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import CardEvent from "@/components/cards/card-event";
 import {
   Carousel,
   CarouselContent,
+  CarouselDots,
   CarouselItem,
 } from "@/components/ui/carousel";
 
@@ -54,6 +55,8 @@ export const RenderAcara = () => {
 
   return (
     <Carousel
+      autoplay
+      autoplayDelay={10000}
       opts={{
         align: "start",
         loop: false,
@@ -64,7 +67,7 @@ export const RenderAcara = () => {
         {data.slice(0, 3).map((event) => (
           <CarouselItem
             key={event.slug}
-            className="pl-4 basis-1/1 md:basis-1/2 lg:basis-1/3"
+            className="pl-4 basis-[90%] md:basis-1/2 lg:basis-1/3"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="block md:hidden">
@@ -74,6 +77,7 @@ export const RenderAcara = () => {
           </CarouselItem>
         ))}
       </CarouselContent>
+      <CarouselDots />
     </Carousel>
   );
 };

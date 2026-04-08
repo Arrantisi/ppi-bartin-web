@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Spinner } from "./ui/spinner";
 import {
+  IconArrowLeft,
   IconArrowLeftDashed,
   IconLogout,
   IconMoon,
@@ -21,17 +22,35 @@ import Link from "next/link";
 import { goeyToast } from "./ui/goey-toaster";
 import { cn } from "@/lib/utils";
 
+export const ButtonHeaderField = ({
+  href,
+  label,
+}: {
+  href: string;
+  label: string;
+}) => {
+  const router = useRouter();
+
+  return (
+    <div className="relative flex items-center justify-center my-5">
+      <Button
+        onClick={() => router.push(href)}
+        variant={"outline"}
+        className="absolute left-2 rounded-full border-none"
+      >
+        <IconArrowLeft />
+      </Button>
+      <h1 className="title-tiga">{label}</h1>
+    </div>
+  );
+};
+
 export const ButtonCreate = ({ catagory }: { catagory: "news" | "events" }) => {
   const page =
     catagory === "events" ? "/home/events/create" : "/home/news/create";
 
   return (
-    <Link
-      href={page}
-      className={
-        "rounded-full bg-accent-foreground p-1.5 text-accent border border-accent"
-      }
-    >
+    <Link href={page} className={"rounded-full bg-primary p-1.5 text-white"}>
       <IconPlus />
     </Link>
   );

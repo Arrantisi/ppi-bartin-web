@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
     ],
   },
   reactCompiler: true,
-  allowedDevOrigins: ["1a8f-85-109-93-100.ngrok-free.app"],
+  allowedDevOrigins: ["c263-85-109-93-100.ngrok-free.app"],
 };
 
 export default nextConfig;

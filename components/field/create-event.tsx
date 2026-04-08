@@ -166,7 +166,7 @@ export const CreateEventField = () => {
                   <Field>
                     <FieldLabel>
                       <IconFileText size={18} className="text-primary" />
-                      Catagory
+                      Kategori
                       <span className="text-destructive">*</span>
                     </FieldLabel>
                     <Select
@@ -179,7 +179,7 @@ export const CreateEventField = () => {
                         data-invalid={isInvalid}
                         className="rounded-2xl"
                       >
-                        <SelectValue placeholder={"select catagory"} />
+                        <SelectValue placeholder={"Pilih Kategori"} />
                       </SelectTrigger>
                       <SelectContent className="rounded-2xl">
                         {catagoryTrigger.map(({ ctg }) => (

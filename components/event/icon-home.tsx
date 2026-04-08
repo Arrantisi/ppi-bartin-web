@@ -4,7 +4,7 @@ import Link from "next/link";
 export const IconHome = () => {
   return (
     <Link href={"/home"}>
-      <div className=" bg-white rounded-full shadow-xl p-1.5 mx-2 flex items-center justify-center">
+      <div className="bg-white rounded-full p-1.5 mx-2 flex items-center justify-center">
         <Image
           src={"/logo-ppi.png"}
           alt=""
