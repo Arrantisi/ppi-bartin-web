@@ -28,9 +28,18 @@ import {
 import Link from "next/link";
 
 const catagoryTrigger = [
-  { ctg: "beasiswa" },
-  { ctg: "kegiatan" },
-  { ctg: "pengumuman" },
+  // --- KATEGORI ACARA/KEGIATAN ---
+  { ctg: "beasiswa" }, // Info beasiswa (YTB, kampus, dll)
+  { ctg: "kegiatan" }, // Event yang akan datang (Makrab, Futsal)
+
+  // --- KATEGORI BERITA/INFO ---
+  { ctg: "berita-utama" }, // Berita penting/headline PPI
+  { ctg: "kabar-kampus" }, // Berita seputar Bartın Üniversitesi
+  { ctg: "prestasi" }, // Berita mahasiswa berprestasi di Bartin
+  { ctg: "artikel" }, // Tulisan edukatif atau opini mahasiswa
+
+  // --- KATEGORI UMUM ---
+  { ctg: "pengumuman" }, // Urgent (Verifikasi, admin, dll)
 ];
 
 const desckripsiPlacholder = `Tulis isi berita secara lengkap dan detail...
@@ -89,7 +98,7 @@ export const CreateNewsField = () => {
             return (
               <Field>
                 <FieldLabel>
-                  <IconPhotoScan size={18} color="#0088FF" />
+                  <IconPhotoScan size={18} className="text-primary" />
                   Gambar Cover
                   <span className="text-destructive">*</span>
                 </FieldLabel>
@@ -109,7 +118,7 @@ export const CreateNewsField = () => {
             return (
               <Field>
                 <FieldLabel>
-                  <IconTypography size={18} color="#0088FF" />
+                  <IconTypography size={18} className="text-primary" />
                   Judul Berita
                   <span className="text-destructive">*</span>
                 </FieldLabel>
@@ -139,7 +148,7 @@ export const CreateNewsField = () => {
             return (
               <Field data-invalid={isInvalid} orientation={"responsive"}>
                 <FieldLabel>
-                  <IconTags size={18} color="#0088FF" />
+                  <IconTags size={18} className="text-primary" />
                   Catagory Berita
                   <span className="text-destructive">*</span>
                 </FieldLabel>
@@ -176,7 +185,7 @@ export const CreateNewsField = () => {
             return (
               <Field>
                 <FieldLabel>
-                  <IconClipboardText size={18} color="#0088FF" />
+                  <IconClipboardText size={18} className="text-primary" />
                   Ringkasan Berita
                   <span className="text-destructive">*</span>
                 </FieldLabel>
@@ -211,7 +220,7 @@ export const CreateNewsField = () => {
             return (
               <Field>
                 <FieldLabel>
-                  <IconFileText size={18} color="#0088FF" />
+                  <IconFileText size={18} className="text-primary" />
                   Deskripsi Berita
                   <span className="text-destructive">*</span>
                 </FieldLabel>

@@ -16,6 +16,7 @@ import { imageUrl } from "@/utils/image-url";
 import { formattedDate } from "@/utils/date-format";
 import { DialogTableParticipant } from "../event/avatars/table-participant";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import Link from "next/link";
 
 const CardEvent = ({ ...props }: TgetAllEvent) => {
   const [isOpen, setisOpen] = useState(false);
@@ -30,52 +31,58 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
   return (
     <Dialog>
       <Drawer open={isOpen} onOpenChange={setisOpen}>
-        <Card className="py-0 max-w-sm w-full h-[520px] relative">
-          <div className="object-cover">
-            <Image
-              src={imageUrl(props.fileKey)}
-              alt="card-event"
-              height={200}
-              width={200}
-              className="w-full h-60 object-cover rounded-t-4xl "
-            />
-          </div>
-
-          <CardContent className="px-3">
-            <h1 className="judul-card-event line-clamp-2">{props.judul} </h1>
-            <div className="flex items-center justify-between mt-1">
-              <div className="subtitle-card-event text-foreground flex items-center gap-2">
-                <Avatar className="size-5">
-                  <AvatarImage src={props.creator.image || ""} />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                created by{" "}
-                <span className="capitalize font-semibold">
-                  {props.creator.username}
-                </span>
-              </div>
+        <Card className="py-0 ">
+          <Link
+            href={`/home/events/${props.slug}`}
+            key={props.id}
+            className="max-w-sm w-full min-h-[520px] relative space-y-5"
+          >
+            <div className="object-cover">
+              <Image
+                src={imageUrl(props.fileKey)}
+                alt="card-event"
+                height={200}
+                width={200}
+                className="w-full h-60 object-cover rounded-t-4xl "
+              />
             </div>
-            <p className="line-clamp-2 text-foreground/60 text-sm pt-2">
-              {props.deskripsi}
-            </p>
 
-            <div className="flex flex-col items-start justify-start text-muted-foreground/80 my-3 gap-1">
-              <div className=" flex items-start gap-1.5">
-                <div className="size-4 flex items-center justify-center">
-                  <IconCalendarWeek className="size-4 " />
+            <CardContent className="px-3 space-y-3">
+              <h1 className="judul-card-event line-clamp-2">{props.judul}</h1>
+              <div className="flex items-center justify-between mt-1">
+                <div className="subtitle-card-event text-foreground flex items-center gap-2">
+                  <Avatar className="size-5">
+                    <AvatarImage src={props.creator.image || ""} />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  created by{" "}
+                  <span className="capitalize font-semibold">
+                    {props.creator.username}
+                  </span>
                 </div>
-                <span className="text-xs font-semibold w-full">
-                  {formattedDate(props.date)}
-                </span>
               </div>
-              <div className="flex items-start gap-1.5">
-                <div className="size-4 flex items-center justify-center">
-                  <IconMapPin className="size-4 " />
+              <p className="line-clamp-2 text-foreground/60 text-sm pt-2">
+                {props.deskripsi}
+              </p>
+
+              <div className="flex flex-col items-start justify-start text-muted-foreground/80 my-3 gap-1">
+                <div className=" flex items-start gap-1.5">
+                  <div className="size-4 flex items-center justify-center">
+                    <IconCalendarWeek className="size-4 " />
+                  </div>
+                  <span className="text-xs font-semibold w-full">
+                    {formattedDate(props.date)}
+                  </span>
                 </div>
-                <span className="text-xs font-semibold">{props.lokasi}</span>
+                <div className="flex items-start gap-1.5">
+                  <div className="size-4 flex items-center justify-center">
+                    <IconMapPin className="size-4 " />
+                  </div>
+                  <span className="text-xs font-semibold">{props.lokasi}</span>
+                </div>
               </div>
-            </div>
-          </CardContent>
+            </CardContent>
+          </Link>
 
           <CardFooter className="p-3 justify-between w-full absolute bottom-0">
             <DialogTrigger

@@ -7,7 +7,6 @@ import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
 import { SkeletonCardAcara } from "@/components/skeletons/card-event-skeleton";
 import CardEvent from "@/components/cards/card-event";
-import Link from "next/link";
 import {
   Carousel,
   CarouselContent,
@@ -69,9 +68,7 @@ export const RenderAcara = () => {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="block md:hidden">
-                <Link href={`/home/events/${event.slug}`} key={event.id}>
-                  <CardEvent {...event} />
-                </Link>
+                <CardEvent {...event} />
               </div>
             </div>
           </CarouselItem>

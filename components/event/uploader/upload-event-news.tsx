@@ -60,7 +60,7 @@ export const UploaderPhoto = ({
       errors.forEach((err) => {
         if (err.code === "file-too-large") {
           goeyToast.warning("File Terlalu Besar", {
-            description: `File "${file.name}" sebesar ${(file.size / (1024 * 1024)).toFixed(2)}MB melebihi batas 4MB`,
+            description: `File kamu sebesar ${(file.size / (1024 * 1024)).toFixed(2)}MB melebihi batas 2MB`,
           });
         }
 
@@ -82,7 +82,7 @@ export const UploaderPhoto = ({
   const { isDragActive, getInputProps, getRootProps } = useDropzone({
     onDrop,
     maxFiles: 1,
-    maxSize: 1024 * 1024 * 4,
+    maxSize: 1024 * 1024 * 2,
     onDropRejected: rejectedFiles,
     accept: { "image/*": [] },
   });

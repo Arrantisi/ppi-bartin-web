@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   IconArrowLeft,
   IconCalendarWeek,
@@ -17,18 +17,11 @@ import { formattedDate } from "@/utils/date-format";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import DrawerAcara from "../../../drawers/join-events";
-import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import AvatarParticipant from "../../avatars/avatar-participant";
 import { authClient } from "@/lib/auth-client";
 import { imageUrl } from "@/utils/image-url";
 import { useEventBySlug } from "@/hooks/use-events";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { LoaderOneDemo } from "@/components/loader";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
@@ -37,6 +30,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/animate-ui/components/base/alert-dialog";
 import { AlertDEelete } from "../../alert-delete";
+import { DialogTitle } from "@/components/ui/dialog";
+import { goeyToast } from "@/components/ui/goey-toaster";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -48,6 +43,22 @@ export const EventDetail = ({ slug }: { slug: string }) => {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useEventBySlug({ slug });
+
+  const handleCopyLink = () => {
+    const currentUrl = window.location.href; // Mengambil URL halaman detail saat ini
+
+    navigator.clipboard
+      .writeText(currentUrl)
+      .then(() => {
+        // Gunakan toast atau alert sederhana
+        goeyToast.success("Link berhasil disalin ke clipboard!");
+        // Jika kamu punya library toast (seperti shadcn/ui toast), gunakan itu:
+        // toast({ title: "Tersalin!", description: "Link acara telah disalin." });
+      })
+      .catch((err) => {
+        console.error("Gagal menyalin link: ", err);
+      });
+  };
 
   useEffect(() => {
     const channel = supabase
@@ -109,11 +120,9 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                 <IconArrowLeft size={20} />
               </Button>
 
-              <div className="font-bold text-sm">DETAIL ACARA</div>
-
               <div className="flex gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+                <Drawer>
+                  <DrawerTrigger asChild>
                     <Button
                       variant={"outline"}
                       size={"icon-xl"}
@@ -121,33 +130,49 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                     >
                       <IconDots />
                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem className="text-xs">
-                      <IconCopy /> Salin link
-                    </DropdownMenuItem>
-                    {session?.user.id === data.creator.id && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <Link href={`/home/events/update/${data.slug}`}>
-                          <DropdownMenuItem className="text-xs">
-                            <IconEdit />
-                            Edit
-                          </DropdownMenuItem>
-                        </Link>
-                        <AlertDialogTrigger>
-                          <DropdownMenuItem
-                            className="text-xs"
-                            variant="destructive"
+                  </DrawerTrigger>
+                  <DrawerContent className="p-4">
+                    <div className="flex flex-col gap-2 pb-6">
+                      <DialogTitle className="text-center text-sm font-medium text-muted-foreground mb-4">
+                        Opsi Acara
+                      </DialogTitle>
+
+                      <Button
+                        variant="ghost"
+                        className="justify-start gap-3 h-12 rounded-xl"
+                        onClick={() => handleCopyLink()}
+                      >
+                        <IconCopy size={20} /> Salin Link
+                      </Button>
+
+                      {session?.user.id === data.creator.id && (
+                        <>
+                          <Link href={`/home/events/update/${data.slug}`}>
+                            <Button
+                              variant="ghost"
+                              className="w-full justify-start gap-3 rounded-xl"
+                            >
+                              <IconEdit size={20} /> Edit Acara
+                            </Button>
+                          </Link>
+
+                          <AlertDialogTrigger
+                            className={buttonVariants({
+                              variant: "ghost",
+                              className:
+                                "w-full justify-start gap-3 rounded-xl bg-destructive/45 ring ring-destructive text-destructive",
+                            })}
                           >
-                            <IconTrash />
-                            Hapus
-                          </DropdownMenuItem>
-                        </AlertDialogTrigger>
-                      </>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                            <IconTrash size={20} className="text-destructive" />
+                            <span className="text-destructive">
+                              Hapus Acara
+                            </span>
+                          </AlertDialogTrigger>
+                        </>
+                      )}
+                    </div>
+                  </DrawerContent>
+                </Drawer>
               </div>
             </div>
           </div>
@@ -215,18 +240,16 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                 </div>
               </div>
 
-              <div className="">
+              <div className="w-full">
                 {capacityFull ? (
-                  <div className="text-center text-base font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
-                    sudah penuh
-                  </div>
-                ) : userJoined?.user.id === session?.user.id ? (
-                  <div className="text-center text-base font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
-                    kamu telah join
+                  <div className="w-full text-center text-base font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+                    {userJoined?.user.id === session?.user.id
+                      ? "kamu telah join"
+                      : "sudah penuh"}
                   </div>
                 ) : (
                   <DrawerTrigger asChild>
-                    <Button className="rounded-full text-base">
+                    <Button className="rounded-full text-base w-full">
                       Daftar Sekarang
                     </Button>
                   </DrawerTrigger>

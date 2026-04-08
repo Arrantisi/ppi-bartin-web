@@ -33,9 +33,12 @@ import {
 import { TupdateEventProps } from "@/types";
 
 const catagoryTrigger = [
-  { ctg: "beasiswa" },
-  { ctg: "kegiatan" },
-  { ctg: "pengumuman" },
+  { ctg: "beasiswa", label: "Beasiswa & Finansial" },
+  { ctg: "akademik", label: "Seminar & Edukasi" },
+  { ctg: "sosial", label: "Gathering & Sosial" },
+  { ctg: "olahraga", label: "Olahraga & Hobi" },
+  { ctg: "pengumuman", label: "Info Penting" },
+  { ctg: "kaderisasi", label: "Internal PPI" },
 ];
 
 export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
@@ -91,7 +94,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
               return (
                 <Field>
                   <FieldLabel>
-                    <IconUpload size={18} color="#0088FF" />
+                    <IconUpload size={18} className="text-primary" />
                     Foto Acara
                     <span className="text-destructive">*</span>
                   </FieldLabel>
@@ -112,7 +115,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
               return (
                 <Field>
                   <FieldLabel>
-                    <IconTypography size={18} color="#0088FF" />
+                    <IconTypography size={18} className="text-primary" />
                     Judul Acara
                     <span className="text-destructive">*</span>
                   </FieldLabel>
@@ -138,7 +141,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconCalendar size={18} color="#0088FF" />
+                      <IconCalendar size={18} className="text-primary" />
                       Tanggal
                       <span className="text-destructive">*</span>
                     </FieldLabel>
@@ -163,7 +166,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconFileText size={18} color="#0088FF" />
+                      <IconFileText size={18} className="text-primary" />
                       Catagory
                       <span className="text-destructive">*</span>
                     </FieldLabel>
@@ -207,7 +210,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
               return (
                 <Field>
                   <FieldLabel>
-                    <IconMapPin size={18} color="#0088FF" />
+                    <IconMapPin size={18} className="text-primary" />
                     Lokasi <span className="text-destructive">*</span>
                   </FieldLabel>
                   <Textarea
@@ -232,7 +235,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
               return (
                 <Field>
                   <FieldLabel>
-                    <IconFileText size={18} color="#0088FF" />
+                    <IconFileText size={18} className="text-primary" />
                     Deskripsi <span className="text-destructive">*</span>
                   </FieldLabel>
                   <Textarea
@@ -261,7 +264,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconUsers size={18} color="#0088FF" />
+                      <IconUsers size={18} className="text-primary" />
                       Kuota <span className="text-destructive">*</span>
                     </FieldLabel>
 
@@ -290,7 +293,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconCalendar size={18} color="#0088FF" />
+                      <IconCalendar size={18} className="text-primary" />
                       Batas Daftar <span className="text-destructive">*</span>
                     </FieldLabel>
 
@@ -317,7 +320,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
               return (
                 <Field>
                   <FieldLabel>
-                    <IconFileText size={18} color="#0088FF" />
+                    <IconFileText size={18} className="text-primary" />
                     Persyaratan Peserta{" "}
                     <span className="text-destructive">*</span>
                   </FieldLabel>

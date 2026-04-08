@@ -127,7 +127,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
               return (
                 <Field>
                   <FieldLabel className="gap-1">
-                    <IconUser size={18} /> Nama Lengkap
+                    <IconUser size={18} className="text-primary" /> Nama Lengkap
                     <span className="text-destructive">*</span>
                   </FieldLabel>
                   <Input
@@ -149,7 +149,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
               return (
                 <Field>
                   <FieldLabel className="gap-1">
-                    <IconUser size={18} />
+                    <IconUser size={18} className="text-primary" />
                     Username
                     <span className="text-destructive">*</span>
                   </FieldLabel>
@@ -171,7 +171,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
               return (
                 <Field>
                   <FieldLabel className="gap-1">
-                    <IconMail size={18} />
+                    <IconMail size={18} className="text-primary" />
                     Email
                     <span className="text-destructive">*</span>
                   </FieldLabel>
@@ -197,7 +197,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
               return (
                 <Field>
                   <FieldLabel className="gap-1">
-                    <IconPhone size={18} />
+                    <IconPhone size={18} className="text-primary" />
                     Nomor Telephone
                   </FieldLabel>
                   <PhoneInput
@@ -220,7 +220,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
               return (
                 <Field>
                   <FieldLabel className="gap-1">
-                    <IconIdBadge2 size={18} />
+                    <IconIdBadge2 size={18} className="text-primary" />
                     Nomor Siswa
                     <span className="text-destructive">*</span>
                   </FieldLabel>
@@ -257,7 +257,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconBuilding size={18} />
+                      <IconBuilding size={18} className="text-primary" />
                       Fakultas <span className="text-destructive">*</span>
                     </FieldLabel>
 
@@ -289,7 +289,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconBook2 size={18} />
+                      <IconBook2 size={18} className="text-primary" />
                       Jurusan <span className="text-destructive">*</span>
                     </FieldLabel>
                     <Select
@@ -319,7 +319,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconCalendar size={18} />
+                      <IconCalendar size={18} className="text-primary" />
                       Angkatan <span className="text-destructive">*</span>
                     </FieldLabel>
                     <Select
@@ -347,7 +347,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconLanguage size={18} />
+                      <IconLanguage size={18} className="text-primary" />
                       Status Pelajar <span className="text-destructive">*</span>
                     </FieldLabel>
                     <Select
@@ -390,7 +390,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconCalendar size={18} />
+                      <IconCalendar size={18} className="text-primary" />
                       Tanggal Lahir
                     </FieldLabel>
                     <TanggalLahitField
@@ -414,7 +414,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconGenderBigender size={18} />
+                      <IconGenderBigender size={18} className="text-primary" />
                       Jenis Kelamiin
                     </FieldLabel>
                     <Select
@@ -454,7 +454,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
               return (
                 <Field>
                   <FieldLabel className="gap-1">
-                    <IconUser size={18} />
+                    <IconUser size={18} className="text-primary" />
                     Bio
                   </FieldLabel>
                   <Textarea
@@ -486,7 +486,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
               return (
                 <Field>
                   <FieldLabel>
-                    <IconUsers size={18} />
+                    <IconUsers size={18} className="text-primary" />
                     Alamat Lengkap
                   </FieldLabel>
                   <Textarea
@@ -515,7 +515,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
           {isLoading ? (
             <Spinner className="size-4.5" />
           ) : (
-            <IconFileCheck size={18} />
+            <IconFileCheck size={18} className="text-primary" />
           )}
           Simpan Perubahan
         </Button>

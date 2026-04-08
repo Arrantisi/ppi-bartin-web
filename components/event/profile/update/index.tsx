@@ -20,7 +20,7 @@ export const UpdateProfileComponent = () => {
   }
 
   return (
-    <div>
+    <div className="mb-16">
       {/* header */}
       <div className="relative flex items-center justify-center m-3">
         <h1 className="title-tiga">Edit Profile</h1>

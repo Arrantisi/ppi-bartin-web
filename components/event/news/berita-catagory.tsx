@@ -8,9 +8,18 @@ import { useNews } from "@/hooks/use-news";
 
 const catagoryTrigger = [
   { ctg: "all" },
-  { ctg: "beasiswa" },
-  { ctg: "kegiatan" },
-  { ctg: "pengumuman" },
+  // --- KATEGORI ACARA/KEGIATAN ---
+  { ctg: "beasiswa" }, // Info beasiswa (YTB, kampus, dll)
+  { ctg: "kegiatan" }, // Event yang akan datang (Makrab, Futsal)
+
+  // --- KATEGORI BERITA/INFO ---
+  { ctg: "berita-utama" }, // Berita penting/headline PPI
+  { ctg: "kabar-kampus" }, // Berita seputar Bartın Üniversitesi
+  { ctg: "prestasi" }, // Berita mahasiswa berprestasi di Bartin
+  { ctg: "artikel" }, // Tulisan edukatif atau opini mahasiswa
+
+  // --- KATEGORI UMUM ---
+  { ctg: "pengumuman" }, // Urgent (Verifikasi, admin, dll)
 ];
 
 const BeritaCatagory = () => {

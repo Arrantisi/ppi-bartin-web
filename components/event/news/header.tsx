@@ -23,7 +23,7 @@ const HeaderBerita = () => {
       </div>
       <div className="flex items-center gap-2 mt-3">
         <InputGroup className="rounded-full py-5">
-          <InputGroupInput placeholder="Search..." className="text-sm" />
+          <InputGroupInput placeholder="Search..." />
           <InputGroupAddon>
             <IconSearch className="size-5" />
           </InputGroupAddon>
