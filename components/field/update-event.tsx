@@ -64,9 +64,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
           description: matched.msg,
         });
       } else if (matched.status === "success") {
-        goeyToast.success("Berhasil Membuat Acara", {
-          description: matched.msg,
-        });
+        goeyToast.success("Selamat Kamu Telah Berhasil Membuat Acara");
         router.push(`/home/events`);
       }
       console.log(value);

@@ -62,9 +62,7 @@ export const CreateNewsField = () => {
       setIsLoading(true);
       const data = await createNews(value);
       if (data.status === "error") {
-        goeyToast.error("error", {
-          description: "Ada Masalah mohon hubungi admin ppi bartin",
-        });
+        goeyToast.error("maaf terjadi kesalahan");
       } else if (data.status === "success") {
         goeyToast.success("Berahail Membuat Berita");
         router.push("/home/news");

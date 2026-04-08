@@ -45,10 +45,6 @@ const RegisterField = () => {
           loading: "Menyinkronkan...",
           success: "Data sesuai",
           error: "terjadi kesalahan",
-          description: {
-            success: "kini kamu sudah menjadi bagian ppi bartin",
-            error: "sesuaikan dengan data yang kamu kirim di google form",
-          },
         },
       );
 

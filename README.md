@@ -60,6 +60,7 @@ Aplikasi web **Perhimpunan Pelajar Indonesia (PPI) Bartın, Turki** — portal u
 - **News** — daftar, detail, kategori, buat/ubah berita
 - **Profil pengguna** — lihat & perbarui data
 - **PWA ringan** — `manifest.json`, meta apple web app di `app/layout.tsx`
+- **Web push notification** — subscribe perangkat via service worker dan kirim notifikasi broadcast dari API
 
 ---
 
@@ -200,6 +201,7 @@ Validasi runtime memakai `@t3-oss/env-core` di `lib/env.ts`. Pastikan nilai beri
 | `GOOGLE_CLIENT_ID` | Client ID OAuth Google |
 | `GOOGLE_CLIENT_SECRET` | Client Secret OAuth Google |
 | `UPLOADTHING_TOKEN` | Token UploadThing untuk upload file |
+| `VAPID_PRIVATE_KEY` | Kunci privat VAPID untuk mengirim web push notification |
 
 ### Client (`NEXT_PUBLIC_*`)
 
@@ -207,6 +209,7 @@ Validasi runtime memakai `@t3-oss/env-core` di `lib/env.ts`. Pastikan nilai beri
 |----------|------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL proyek Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Kunci anonim Supabase |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | Kunci publik VAPID untuk subscribe push di browser |
 
 > **Catatan:** Jangan commit file `.env` berisi secret. Gunakan `.env.example` di repo (boleh ditambahkan tim) sebagai template tanpa nilai sensitif.
 
@@ -231,13 +234,17 @@ ppi-bartin-web/
 │   │   └── dashboard/           # Dashboard (jika dipakai)
 │   └── api/
 │       ├── auth/[...all]/       # Handler Better Auth
-│       └── uploadthing/         # Router UploadThing
+│       ├── uploadthing/         # Router UploadThing
+│       ├── subscribe/           # Simpan/update push subscription browser
+│       └── send-notification/   # Endpoint kirim web push broadcast
 ├── components/                  # UI: cards, event, news, ui/, dll.
 ├── hooks/                       # use-events, use-news, use-users, ...
 ├── lib/
 │   ├── auth.ts                  # Konfigurasi server Better Auth
 │   ├── auth-client.ts           # Klien auth
 │   ├── env.ts                   # Validasi env
+│   ├── notifications.ts         # Helper registrasi service worker + push subscription
+│   ├── send-push.ts             # Util server untuk kirim push ke seluruh subscriber
 │   └── generated/prisma/        # Output Prisma client (generate)
 ├── prisma/
 │   └── schema.prisma            # Skema PostgreSQL
@@ -306,6 +313,16 @@ pnpm exec prisma migrate deploy
 - **News** — berita dengan slug unik
 - **dataSiswa** — referensi data siswa (id unik)
 - **Verification** — alur verifikasi Better Auth
+- **NotificationSubscription** — menyimpan endpoint + key (`auth`, `p256dh`) untuk web push
+
+### Web push notification
+
+Alur fitur notifikasi yang saat ini terpasang:
+
+1. Browser mendaftarkan service worker (`public/sw.js`) dan membuat subscription dengan kunci `NEXT_PUBLIC_VAPID_PUBLIC_KEY`.
+2. Subscription dikirim ke `POST /api/subscribe` untuk di-upsert ke tabel `NotificationSubscription`.
+3. Endpoint `POST /api/send-notification` (atau util server `lib/send-push.ts`) mengambil semua subscription dan mengirim push secara paralel.
+4. Subscription invalid (status 404/410) dibersihkan otomatis dari database.
 
 ---
 

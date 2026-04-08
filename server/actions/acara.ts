@@ -6,6 +6,7 @@ import { createEventSchema, TcreateEventSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
+import { sendPushToAll } from "@/lib/send-push";
 
 export const createAcara = async ({
   judul,
@@ -54,6 +55,12 @@ export const createAcara = async ({
         date,
         lokasi,
       },
+    });
+
+    await sendPushToAll({
+      title: "Acara Baru di PPI Bartin! 🏛️",
+      message: `Ada acara: ${judul}. Yuk cek detailnya!`,
+      url: `/acara/${slug}`,
     });
 
     return {
@@ -148,7 +155,7 @@ export const updateAcara = async (
   }
 };
 
-export const deleteEvent = async (eventId: string) => {
+export const deleteEvent = async (eventId: string): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
 
   try {

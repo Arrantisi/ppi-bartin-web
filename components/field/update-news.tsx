@@ -67,7 +67,7 @@ export const UpdateNewsField = ({ slug, data }: TupdateNewsProps) => {
           description: "Ada Masalah mohon hubungi admin ppi bartin",
         });
       } else if (data.status === "success") {
-        goeyToast.success("Berahail Membuat Berita");
+        goeyToast.success("Selamat Kamu Telah Berhasil Membuat Berita");
         router.push("/home/news");
       }
       console.log(value);

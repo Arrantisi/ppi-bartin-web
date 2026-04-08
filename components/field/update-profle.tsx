@@ -79,7 +79,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
       if (fetch.status === "error") {
         goeyToast.error("kesalahan", { description: fetch.msg });
       } else if (fetch.status === "success") {
-        goeyToast.success("Berhasil", { description: fetch.msg });
+        goeyToast.success("Profile kamu sudah up to date");
         router.push("/home/profile");
       }
       setIsLoading(false);

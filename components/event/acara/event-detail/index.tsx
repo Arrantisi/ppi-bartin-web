@@ -32,12 +32,19 @@ import {
 import { LoaderOneDemo } from "@/components/loader";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+} from "@/components/animate-ui/components/base/alert-dialog";
+import { AlertDEelete } from "../../alert-delete";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
   const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenAlert, setIsOpenAlert] = useState(false);
+
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useEventBySlug({ slug });
@@ -87,153 +94,163 @@ export const EventDetail = ({ slug }: { slug: string }) => {
   const capacityFull = data.participants.length >= (data.maxCapacity || 0);
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <div className="relative flex flex-col overflow-hidden ">
-        {/* Gambar & Header Sticky */}
-        <div className="fixed w-full z-10 ">
-          <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
-            <Button
-              variant="outline"
-              size="icon-xl"
-              className="rounded-full"
-              onClick={() => router.back()}
-            >
-              <IconArrowLeft size={20} />
-            </Button>
+    <AlertDialog open={isOpenAlert} onOpenChange={setIsOpenAlert}>
+      <Drawer open={isOpen} onOpenChange={setIsOpen}>
+        <div className="relative flex flex-col overflow-hidden ">
+          {/* Gambar & Header Sticky */}
+          <div className="fixed w-full z-10 ">
+            <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
+              <Button
+                variant="outline"
+                size="icon-xl"
+                className="rounded-full"
+                onClick={() => router.back()}
+              >
+                <IconArrowLeft size={20} />
+              </Button>
 
-            <div className="font-bold text-sm">DETAIL ACARA</div>
+              <div className="font-bold text-sm">DETAIL ACARA</div>
 
-            <div className="flex gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    size={"icon-xl"}
-                    className="rounded-full"
-                  >
-                    <IconDots />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem className="text-xs">
-                    <IconCopy /> Salin link
-                  </DropdownMenuItem>
-                  {session?.user.id === data.creator.id && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <Link href={`/home/events/update/${data.slug}`}>
-                        <DropdownMenuItem className="text-xs">
-                          <IconEdit />
-                          Edit
-                        </DropdownMenuItem>
-                      </Link>
-                      <DropdownMenuItem
-                        className="text-xs"
-                        variant="destructive"
-                      >
-                        <IconTrash />
-                        Hapus
-                      </DropdownMenuItem>
-                    </>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col h-full">
-          <Image
-            src={imageUrl(data.fileKey)}
-            alt={""}
-            height={200}
-            width={200}
-            className="object-cover z-0 w-full h-[400px]"
-          />
-
-          <div className="relative px-6 flex flex-col justify-between bg-background -mt-10 pt-4 pb-5">
-            <div>
-              <h1 className="text-[24px] font-bold text-foreground">
-                {data.judul}
-              </h1>
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-[13px] text-muted-foreground flex items-center justify-between gap-1.5">
-                  <Avatar className="size-5">
-                    <AvatarImage src={data.creator.image || ""} />
-                  </Avatar>
-                  Dibuat Oleh{" "}
-                  <span className="font-medium text-foreground capitalize">
-                    {data.creator.username}
-                  </span>
-                </div>
-                <AvatarParticipant
-                  participant={data.participants.map((img) => ({
-                    image: img.user.image || "",
-                  }))}
-                />
+              <div className="flex gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      size={"icon-xl"}
+                      className="rounded-full"
+                    >
+                      <IconDots />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem className="text-xs">
+                      <IconCopy /> Salin link
+                    </DropdownMenuItem>
+                    {session?.user.id === data.creator.id && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <Link href={`/home/events/update/${data.slug}`}>
+                          <DropdownMenuItem className="text-xs">
+                            <IconEdit />
+                            Edit
+                          </DropdownMenuItem>
+                        </Link>
+                        <AlertDialogTrigger>
+                          <DropdownMenuItem
+                            className="text-xs"
+                            variant="destructive"
+                          >
+                            <IconTrash />
+                            Hapus
+                          </DropdownMenuItem>
+                        </AlertDialogTrigger>
+                      </>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-
-              <div className="prose prose-sm text-muted-foreground mb-8">
-                <p className="text-[13px]">{data.deskripsi}</p>
-              </div>
-
-              {/* Info Waktu & Tempat */}
-              <div className="space-y-4 mb-8">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                    <IconCalendarWeek size={20} />
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[13px] font-semibold">Tanggal</span>
-                    <span className="text-xs text-muted-foregroun">
-                      {formattedDate(data.date || new Date())}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                    <IconMapPin size={20} />
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[13px] font-semibold">Lokasi</span>
-                    <span className="text-xs text-muted-foreground">
-                      {data.lokasi}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="">
-              {capacityFull ? (
-                <div className="text-center text-base font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
-                  sudah penuh
-                </div>
-              ) : userJoined?.user.id === session?.user.id ? (
-                <div className="text-center text-base font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
-                  kamu telah join
-                </div>
-              ) : (
-                <DrawerTrigger asChild>
-                  <Button className="rounded-full text-base">
-                    Daftar Sekarang
-                  </Button>
-                </DrawerTrigger>
-              )}
             </div>
           </div>
 
-          {/* Action Button */}
-        </div>
-      </div>
+          <div className="flex flex-col h-full">
+            <Image
+              src={imageUrl(data.fileKey)}
+              alt={""}
+              height={200}
+              width={200}
+              className="object-cover z-0 w-full h-[400px]"
+            />
 
-      <DrawerAcara
-        eventId={data.id}
-        onClose={() => setIsOpen(false)}
-        tanggal={formattedDate(data.date || new Date())}
-        lokasi={data.lokasi || ""}
-      />
-    </Drawer>
+            <div className="relative px-6 flex flex-col justify-between bg-background -mt-10 pt-4 pb-5">
+              <div>
+                <h1 className="text-[24px] font-bold text-foreground">
+                  {data.judul}
+                </h1>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-[13px] text-muted-foreground flex items-center justify-between gap-1.5">
+                    <Avatar className="size-5">
+                      <AvatarImage src={data.creator.image || ""} />
+                    </Avatar>
+                    Dibuat Oleh{" "}
+                    <span className="font-medium text-foreground capitalize">
+                      {data.creator.username}
+                    </span>
+                  </div>
+                  <AvatarParticipant
+                    participant={data.participants.map((img) => ({
+                      image: img.user.image || "",
+                    }))}
+                  />
+                </div>
+
+                <div className="prose prose-sm text-muted-foreground mb-8">
+                  <p className="text-[13px]">{data.deskripsi}</p>
+                </div>
+
+                {/* Info Waktu & Tempat */}
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                      <IconCalendarWeek size={20} />
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[13px] font-semibold">Tanggal</span>
+                      <span className="text-xs text-muted-foregroun">
+                        {formattedDate(data.date || new Date())}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                      <IconMapPin size={20} />
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[13px] font-semibold">Lokasi</span>
+                      <span className="text-xs text-muted-foreground">
+                        {data.lokasi}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="">
+                {capacityFull ? (
+                  <div className="text-center text-base font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+                    sudah penuh
+                  </div>
+                ) : userJoined?.user.id === session?.user.id ? (
+                  <div className="text-center text-base font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
+                    kamu telah join
+                  </div>
+                ) : (
+                  <DrawerTrigger asChild>
+                    <Button className="rounded-full text-base">
+                      Daftar Sekarang
+                    </Button>
+                  </DrawerTrigger>
+                )}
+              </div>
+            </div>
+
+            {/* Action Button */}
+          </div>
+        </div>
+
+        <AlertDEelete
+          type="acara"
+          id={data.id}
+          onClick={() => setIsOpenAlert(false)}
+        />
+
+        <DrawerAcara
+          eventId={data.id}
+          onClose={() => setIsOpen(false)}
+          tanggal={formattedDate(data.date || new Date())}
+          lokasi={data.lokasi || ""}
+        />
+      </Drawer>
+    </AlertDialog>
   );
 };

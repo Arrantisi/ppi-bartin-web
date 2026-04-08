@@ -35,10 +35,9 @@ export const UsernameField = ({ onClose }: { onClose: () => void }) => {
         }),
         {
           loading: "Memverifikasi...",
-          success: "Verifikasi Berhasil",
+          success: "Mantap! kamu dah punya username baru",
           error: "Something went wrong",
           description: {
-            success: `Mantap! kamu dah punya username baru ${value.username}`,
             error: "Username sudah ada yang make.",
           },
         },

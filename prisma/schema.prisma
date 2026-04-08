@@ -155,5 +155,17 @@ model Participants {
 
 enum status {
   DRAFT
-  PUSBLISH
+  PUSBLIS
+  H
+}
+
+model NotificationSubscription {
+  id        String   @id @default(cuid())
+  userId    String? // Jika ingin kirim ke user tertentu (opsional)
+  endpoint  String   @unique // URL unik dari Google/Apple
+  auth      String // Kunci enkripsi
+  p256dh    String // Kunci enkripsi
+  createdAt DateTime @default(now())
+
+  @@map("notificationSubscription")
 }

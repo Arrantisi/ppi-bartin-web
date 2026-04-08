@@ -64,9 +64,7 @@ export const CreateEventField = () => {
           description: matched.msg,
         });
       } else if (matched.status === "success") {
-        goeyToast.success("Berhasil Membuat Acara", {
-          description: matched.msg,
-        });
+        goeyToast.success("Berhasil Membuat Acara");
         router.push(`/home/events`);
       }
 

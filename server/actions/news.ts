@@ -6,6 +6,28 @@ import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
 import { revalidatePath } from "next/cache";
 import { studentAccount } from "./account";
+import { sendPushToAll } from "@/lib/send-push";
+
+export const deleteNews = async (newsId: string): Promise<TServerPrompt> => {
+  const { user } = await studentAccount();
+
+  try {
+    await prisma.news.delete({
+      where: { id: newsId, userId: user.id },
+    });
+
+    return {
+      status: "success",
+      msg: "Berita telah di hapus dari draft",
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: "error",
+      msg: "masalah pada server delete Berita",
+    };
+  }
+};
 
 export const updateNews = async (
   slug: string,
@@ -98,6 +120,12 @@ export const createNews = async ({
         slug,
         userId: user.id,
       },
+    });
+
+    await sendPushToAll({
+      title: "📰 Kabar Bartin Hari Ini",
+      message: `[Judul Berita]. Baca selengkapnya untuk tahu update kegiatan mahasiswa di Bartın minggu ini.`,
+      url: `/news/${slug}`,
     });
 
     revalidatePath(`/home/news/uploader/${slug}`);

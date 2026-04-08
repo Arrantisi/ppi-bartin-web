@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
 import { GoeyToaster } from "@/components/ui/goey-toaster";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { NotificationAlert } from "@/components/notification-alert";
 
 const fontSans = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -47,8 +48,8 @@ export default function RootLayout({
           >
             <TanstackProvider>
               <GoeyToaster position="top-center" />
-
               <SpeedInsights />
+              <NotificationAlert />
               {children}
             </TanstackProvider>
           </ThemeProvider>
