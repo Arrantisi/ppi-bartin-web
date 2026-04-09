@@ -44,7 +44,7 @@ import {
   SelectStatusPelajar,
 } from "../selects";
 
-const items = [{ value: "pria" }, { value: "wanita" }];
+const jenisKelaminItems = ["laki-laki", "perempuan"];
 
 export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
   const [isFakultas, setIsFakultas] = useState(props.fakultas || "");
@@ -427,12 +427,9 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          {items.map((item) => (
-                            <SelectItem
-                              key={item.value}
-                              value={item.value || ""}
-                            >
-                              {item.value}
+                          {jenisKelaminItems.map((item) => (
+                            <SelectItem key={item} value={item || ""}>
+                              {item}
                             </SelectItem>
                           ))}
                         </SelectGroup>

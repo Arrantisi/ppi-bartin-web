@@ -1,5 +1,16 @@
 import * as z from "zod";
 
+const STATUS_PELAJAR_OPTIONS = ["TÖMER", "D2", "D3", "S1", "S2", "S3"] as const;
+const ANGKATAN_OPTIONS = [
+  "2020",
+  "2021",
+  "2022",
+  "2023",
+  "2024",
+  "2025",
+] as const;
+const JENIS_KELAMIN_OPTIONS = ["laki-laki", "perempuan"] as const;
+
 export const customerServiceSchema = z.object({
   catagory: z.string().min(2, "catagory minimal 2 karakter"),
   subject: z.string().min(2, "subject minimal 2 karakter"),
@@ -26,22 +37,35 @@ export const createNewsSchema = z.object({
 export type TcreateNewsSchema = z.infer<typeof createNewsSchema>;
 
 export const updateProfileSchema = z.object({
-  statusPelajar: z.string().min(1),
-  fakultas: z.string().min(3),
-  fileKey: z.string(),
-  fullname: z.string(),
+  statusPelajar: z
+    .string()
+    .refine((value) => STATUS_PELAJAR_OPTIONS.includes(value as never), {
+      message: "Status pelajar tidak valid",
+    }),
+  fakultas: z.string().min(3, "Fakultas minimal 3 karakter"),
+  fileKey: z.string().min(1, "Foto profil wajib diisi"),
+  fullname: z.string().min(1, "Nama lengkap wajib diisi"),
   username: z
     .string()
     .min(2, "Username minimal 2 karakter")
     .max(12, "Username maksimal 12 karakter"),
-  jurusan: z.string().min(3, "karakter"),
-  angkatan: z.string().min(3, "minimal 3 karakter"),
-  email: z.email(),
+  jurusan: z.string().min(3, "Jurusan minimal 3 karakter"),
+  angkatan: z
+    .string()
+    .refine((value) => ANGKATAN_OPTIONS.includes(value as never), {
+      message: "Angkatan tidak valid",
+    }),
+  email: z.email("Format email tidak valid"),
   telpon: z.string().or(z.undefined()),
-  noSiswa: z.string(),
+  noSiswa: z.string().min(1, "Nomor siswa wajib diisi"),
   Bio: z.string().or(z.undefined()),
   tanggalLahir: z.date().or(z.undefined()),
-  jenisKelamin: z.string().or(z.undefined()),
+  jenisKelamin: z
+    .string()
+    .refine((value) => JENIS_KELAMIN_OPTIONS.includes(value as never), {
+      message: "Jenis kelamin harus laki-laki atau perempuan",
+    })
+    .or(z.undefined()),
   alamat: z.string().or(z.undefined()),
 });
 

@@ -1,6 +1,10 @@
 import { SelectContent, SelectGroup, SelectItem } from "./ui/select";
 import dataKampus from "@/server/data/bartin-university-jurusan.json";
 
+const statusPelajarItems = ["TÖMER", "D2", "D3", "S1", "S2", "S3"];
+const angkatanItems = ["2020", "2021", "2022", "2023", "2024", "2025"];
+const jenisKelaminItems = ["laki-laki", "perempuan"];
+
 export const SelectFakultas = () => {
   return (
     <SelectContent>
@@ -33,11 +37,10 @@ export const SelectJurusan = ({ fakultas }: { fakultas: string }) => {
 };
 
 export const SelectStatusPelajar = () => {
-  const items = ["TÖMER", "D2", "D3", "S1", "S2", "S3"];
   return (
     <SelectContent>
       <SelectGroup>
-        {items.map((item, idx) => (
+        {statusPelajarItems.map((item, idx) => (
           <SelectItem key={item + idx} value={item || ""}>
             {item}
           </SelectItem>
@@ -48,21 +51,26 @@ export const SelectStatusPelajar = () => {
 };
 
 export const SelectAngkatan = () => {
-  const items = [
-    { value: "2020" },
-    { value: "2021" },
-    { value: "2022" },
-    { value: "2023" },
-    { value: "2024" },
-    { value: "2025" },
-  ];
-
   return (
     <SelectContent>
       <SelectGroup>
-        {items.map((item) => (
-          <SelectItem key={item.value} value={item.value || ""}>
-            {item.value}
+        {angkatanItems.map((item) => (
+          <SelectItem key={item} value={item || ""}>
+            {item}
+          </SelectItem>
+        ))}
+      </SelectGroup>
+    </SelectContent>
+  );
+};
+
+export const SelectJenisKelamin = () => {
+  return (
+    <SelectContent>
+      <SelectGroup>
+        {jenisKelaminItems.map((item) => (
+          <SelectItem key={item} value={item || ""}>
+            {item}
           </SelectItem>
         ))}
       </SelectGroup>

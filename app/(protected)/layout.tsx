@@ -2,7 +2,6 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { checkNoSiswa } from "@/server/data/users";
-import { UsernameForceDialog } from "@/components/alert-username";
 
 export default async function ProtectedLayout({
   children,
@@ -16,13 +15,12 @@ export default async function ProtectedLayout({
   const student = await checkNoSiswa();
 
   if (!student?.nomorSiswa) {
+    redirect("/register-profile");
+  }
+
+  if (!student.username) {
     redirect("/complite-profile");
   }
 
-  return (
-    <>
-      {!student.username && <UsernameForceDialog />}
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

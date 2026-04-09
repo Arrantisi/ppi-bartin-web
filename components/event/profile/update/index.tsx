@@ -24,14 +24,15 @@ export const UpdateProfileComponent = () => {
       {/* header */}
       <div className="relative flex items-center justify-center m-3">
         <h1 className="title-tiga">Edit Profile</h1>
-
-        <Button
-          variant={"outline"}
-          onClick={() => router.push("/home/profile")}
-          className="absolute left-0 top-0 rounded-full shadow-xl"
-        >
-          <IconArrowNarrowLeft />
-        </Button>
+        {!user.username && (
+          <Button
+            variant={"outline"}
+            onClick={() => router.push("/home/profile")}
+            className="absolute left-0 top-0 rounded-full shadow-xl"
+          >
+            <IconArrowNarrowLeft />
+          </Button>
+        )}
       </div>
 
       <UpdateProfileField {...user} />
