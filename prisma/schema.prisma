@@ -153,12 +153,6 @@ model Participants {
   @@map("participants")
 }
 
-enum status {
-  DRAFT
-  PUSBLIS
-  H
-}
-
 model NotificationSubscription {
   id        String   @id @default(cuid())
   userId    String? // Jika ingin kirim ke user tertentu (opsional)
@@ -168,4 +162,17 @@ model NotificationSubscription {
   createdAt DateTime @default(now())
 
   @@map("notificationSubscription")
+}
+
+model CustomerService {
+  id       String @id @default(cuid())
+  catagory String
+  subject  String
+  message  String
+  status   String
+  level    String
+
+  createdAt DateTime @default(now())
+
+  @@map("customerService")
 }
