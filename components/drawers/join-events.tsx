@@ -31,13 +31,9 @@ const DrawerAcara = ({
     setOnLoading(true);
     const fetch = await joinEvent(eventId);
     if (fetch.status === "error") {
-      goeyToast.error("Kesalahan", {
-        description: "Maaf, Tidak bisa join event",
-      });
+      goeyToast.error(`maaf ${fetch.msg}`);
     } else if (fetch.status === "success") {
-      goeyToast.success("Berhasil", {
-        description: "Selamat, kamu sudah join event",
-      });
+      goeyToast.success("Selamat, kamu sudah join event");
     }
     setOnLoading(false);
     onClose();

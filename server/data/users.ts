@@ -35,6 +35,16 @@ export const getProfileUser = async () => {
           id: true,
         },
       },
+      participants: {
+        select: {
+          id: true,
+          event: {
+            select: {
+              judul: true,
+            },
+          },
+        },
+      },
     },
   });
 };

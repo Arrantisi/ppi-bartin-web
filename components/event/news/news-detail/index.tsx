@@ -179,12 +179,6 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
             <div className="max-w-full text-foreground/90 text-[13px] leading-relaxed whitespace-pre-line wrap-anywhere md:text-lg tracking-wide">
               {(data.desckripsi || "").trim()}
             </div>
-
-            <div className="mt-10 pt-6 border-t border-muted text-xs text-muted-foreground text-center">
-              <p>
-                Informasi lebih lanjut dapat diakses melalui website resmi YTB.
-              </p>
-            </div>
           </article>
         </div>
       </div>

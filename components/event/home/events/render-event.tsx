@@ -1,10 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
-
 import { useEvents } from "@/hooks/use-events";
-import { supabase } from "@/lib/supabase";
-import { useQueryClient } from "@tanstack/react-query";
 import { SkeletonCardAcara } from "@/components/skeletons/card-event-skeleton";
 import CardEvent from "@/components/cards/card-event";
 import {
@@ -15,35 +11,7 @@ import {
 } from "@/components/ui/carousel";
 
 export const RenderAcara = () => {
-  const queryClient = useQueryClient();
-
   const { data, isLoading } = useEvents();
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("events")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "events" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["events"] });
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "participants" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["events"] });
-        },
-      )
-      .subscribe((status) => {
-        console.log("home-event", status);
-      });
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient]);
 
   if (isLoading) {
     return <SkeletonCardAcara />;
@@ -69,11 +37,7 @@ export const RenderAcara = () => {
             key={event.slug}
             className="pl-4 basis-[90%] md:basis-1/2 lg:basis-1/3"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="block md:hidden">
-                <CardEvent {...event} />
-              </div>
-            </div>
+            <CardEvent {...event} />
           </CarouselItem>
         ))}
       </CarouselContent>

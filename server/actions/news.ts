@@ -124,8 +124,8 @@ export const createNews = async ({
 
     await sendPushToAll({
       title: "📰 Kabar Bartin Hari Ini",
-      message: `[Judul Berita]. Baca selengkapnya untuk tahu update kegiatan mahasiswa di Bartın minggu ini.`,
-      url: `/news/${slug}`,
+      message: `${judul}`,
+      url: `/home/news/${slug}`,
     });
 
     revalidatePath(`/home/news/uploader/${slug}`);

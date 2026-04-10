@@ -60,7 +60,7 @@ export const createAcara = async ({
     await sendPushToAll({
       title: "Acara Baru di PPI Bartin! 🏛️",
       message: `Ada acara: ${judul}. Yuk cek detailnya!`,
-      url: `/acara/${slug}`,
+      url: `/home/events/${slug}`,
     });
 
     return {
@@ -178,6 +178,41 @@ export const deleteEvent = async (eventId: string): Promise<TServerPrompt> => {
 
 export const joinEvent = async (eventId: string): Promise<TServerPrompt> => {
   const session = await studentAccount();
+
+  const event = await prisma.events.findUnique({
+    where: { id: eventId },
+    include: {
+      _count: {
+        select: {
+          participants: true,
+        },
+      },
+      participants: {
+        where: { userId: session.user.id },
+      },
+    },
+  });
+
+  if (!event) {
+    return {
+      msg: "event tidak di temukan",
+      status: "error",
+    };
+  }
+
+  if (event.participants.length > 0) {
+    return {
+      status: "error",
+      msg: "kamu telah join event",
+    };
+  }
+
+  if (event._count.participants && event.maxCapacity >= event.maxCapacity) {
+    return {
+      msg: "event sudah penuh",
+      status: "error",
+    };
+  }
 
   try {
     await prisma.participants.create({

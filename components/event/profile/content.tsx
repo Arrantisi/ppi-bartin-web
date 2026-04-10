@@ -109,11 +109,11 @@ export const ContentProfile = () => {
             </div>
           </div>
         </div>
-        <div className="self-stretch h-20.5 flex flex-col items-start py-0 pl-2 pr-0 box-border gap-2 text-[0.875rem] text-mediumslateblue">
-          {data.events.map((event) => (
-            <div className="flex items-center gap-3" key={event.id}>
+        <div className="max-h-20.5 flex flex-col items-start py-0 pl-2 pr-0 gap-2 text-[0.875rem] overflow-y-auto">
+          {data.participants.map((participant) => (
+            <div className="flex items-center gap-3" key={participant.id}>
               <div className="size-1.5 bg-primary rounded-full" />
-              <div className="text-[15px]">{event.judul}</div>
+              <div className="text-[15px]">{participant.event.judul}</div>
             </div>
           ))}
         </div>

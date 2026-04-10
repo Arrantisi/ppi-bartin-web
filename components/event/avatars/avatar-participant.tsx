@@ -22,11 +22,13 @@ const AvatarParticipant = ({
             </AvatarFallback>
           </Avatar>
         ))}
-        <Avatar>
-          <AvatarFallback className="border-2 border-background hover:z-10">
-            + {filteredParticipant.length}
-          </AvatarFallback>
-        </Avatar>
+        {participant.length >= 3 && (
+          <Avatar>
+            <AvatarFallback className="border-2 border-background hover:z-10">
+              + {filteredParticipant.length}
+            </AvatarFallback>
+          </Avatar>
+        )}
       </div>
     </div>
   );

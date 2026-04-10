@@ -17,6 +17,7 @@ import { formattedDate } from "@/utils/date-format";
 import { DialogTableParticipant } from "../event/avatars/table-participant";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
+import { getTwoWords } from "@/utils/get-twowords";
 
 const CardEvent = ({ ...props }: TgetAllEvent) => {
   const [isOpen, setisOpen] = useState(false);
@@ -35,14 +36,14 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
           <Link
             href={`/home/events/${props.slug}`}
             key={props.id}
-            className="max-w-sm w-full min-h-[520px] relative space-y-5"
+            className="w-full min-h-[520px] relative space-y-5"
           >
             <div className="object-cover">
               <Image
                 src={imageUrl(props.fileKey)}
                 alt="card-event"
-                height={200}
-                width={200}
+                height={2000}
+                width={2000}
                 className="w-full h-60 object-cover rounded-t-4xl "
               />
             </div>
@@ -57,7 +58,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
                   </Avatar>
                   Dibuat Oleh{" "}
                   <span className="capitalize font-semibold">
-                    {props.creator.username}
+                    {getTwoWords(props.creator.name || "")}
                   </span>
                 </div>
               </div>
@@ -98,8 +99,12 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
             </DialogTrigger>
             <div className="w-full max-w-[218px]">
               {capacityFull ? (
-                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-primary text-white py-2.5 px-3">
-                  {userJoined?.user.id === session?.user.id ? "Ikuti" : "penuh"}
+                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-white py-2.5 px-3">
+                  kapasitas Penuh
+                </div>
+              ) : userJoined?.user.id === session?.user.id ? (
+                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-white py-2.5 px-3">
+                  Kamu Telah Ikuti
                 </div>
               ) : (
                 <DrawerTrigger asChild>
@@ -113,7 +118,9 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
         </Card>
         <DialogTableParticipant participants={props.participants} />
         <DrawerAcara
-          onClose={() => setisOpen(false)}
+          onClose={() => {
+            setisOpen(false);
+          }}
           eventId={props.id}
           tanggal={formattedDate(props.date)}
           lokasi={props.lokasi}

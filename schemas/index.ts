@@ -10,6 +10,14 @@ const ANGKATAN_OPTIONS = [
   "2025",
 ] as const;
 const JENIS_KELAMIN_OPTIONS = ["laki-laki", "perempuan"] as const;
+const CATEGORY_VALUES = [
+  "beasiswa",
+  "akademik",
+  "sosial",
+  "olahraga",
+  "pengumuman",
+  "kaderisasi",
+] as const;
 
 export const customerServiceSchema = z.object({
   catagory: z.string().min(2, "catagory minimal 2 karakter"),
@@ -84,14 +92,24 @@ export const createEventSchema = z.object({
   judul: z
     .string()
     .min(8, "Nama agenda minimal 8 karakter")
-    .max(100, "Judul tidak boleh lebih dari 100 kata"),
+    .max(100, "Judul terlalu panjang"),
   lokasi: z.string().min(1, "Lokasi acara wajib diisi"),
-  date: z.date({ error: "Silakan tentukan tanggal acara" }),
+  date: z.date({
+    error: "Silakan tentukan tanggal acara",
+  }),
   deskripsi: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
-  batasDaftar: z.date({ error: "Silakan tentukan tanggal acara" }),
-  fileKey: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
-  catagory: z.string().min(2, "Deskripsi acara minimal 2 karakter"),
-  persyaratan: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
+  batasDaftar: z.date({
+    error: "Silakan tentukan batas pendaftaran",
+  }),
+  fileKey: z.string().min(1, "Gambar/File wajib diunggah"),
+  // Validasi kategori agar sesuai dengan list
+
+  catagory: z
+    .string()
+    .refine((value) => CATEGORY_VALUES.includes(value as never), {
+      message: "Pilih kategori yang valid",
+    }),
+  persyaratan: z.string().min(8, "Persyaratan minimal 8 karakter"),
   maxCapacity: z
     .number({ error: "Kapasitas harus berupa angka" })
     .int("Harus berupa bilangan bulat")

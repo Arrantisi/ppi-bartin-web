@@ -82,7 +82,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
           table: "participants",
         },
         () => {
-          queryClient.invalidateQueries({ queryKey: ["events"] });
+          queryClient.invalidateQueries({ queryKey: ["participants"] });
         },
       )
       .subscribe((status) => {
@@ -212,8 +212,8 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                   />
                 </div>
 
-                <div className="prose prose-sm text-muted-foreground mb-8">
-                  <p className="text-[13px]">{data.deskripsi}</p>
+                <div className="max-w-full text-foreground/90 text-[13px] leading-relaxed whitespace-pre-line wrap-anywhere md:text-lg tracking-wide">
+                  {(data.deskripsi || "").trim()}
                 </div>
 
                 {/* Info Waktu & Tempat */}
@@ -246,10 +246,12 @@ export const EventDetail = ({ slug }: { slug: string }) => {
 
               <div className="w-full">
                 {capacityFull ? (
-                  <div className="w-full text-center text-base font-semibold rounded-full capitalize bg-primary text-background py-2.5 px-3">
-                    {userJoined?.user.id === session?.user.id
-                      ? "kamu telah join"
-                      : "sudah penuh"}
+                  <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-white py-2.5 px-3">
+                    kapasitas Penuh
+                  </div>
+                ) : userJoined?.user.id === session?.user.id ? (
+                  <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-white py-2.5 px-3">
+                    Kamu Telah Ikuti
                   </div>
                 ) : (
                   <DrawerTrigger asChild>

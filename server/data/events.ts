@@ -29,13 +29,17 @@ export type TgetEventParticipants = Awaited<
 >;
 
 export const getAllEvents = async () => {
-  return await prisma.events.findMany({
+  const data = await prisma.events.findMany({
     include: {
-      creator: { select: { username: true, image: true } },
+      creator: {
+        select: { username: true, image: true, id: true, name: true },
+      },
       participants: { select: { user: true } },
     },
     orderBy: { createdAt: "desc" },
   });
+
+  return data;
 };
 
 export type TgetAllEvent = Awaited<ReturnType<typeof getAllEvents>>[0];
