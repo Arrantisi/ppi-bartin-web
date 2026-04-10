@@ -99,16 +99,20 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
             </DialogTrigger>
             <div className="w-full max-w-[218px]">
               {capacityFull ? (
-                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-white py-2.5 px-3">
+                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-secondary-foreground py-2.5 px-3">
                   kapasitas Penuh
                 </div>
+              ) : props.date <= new Date() ? (
+                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-secondary-foreground py-2.5 px-3">
+                  Pendaftaran Telah Berakhir
+                </div>
               ) : userJoined?.user.id === session?.user.id ? (
-                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-white py-2.5 px-3">
+                <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-secondary-foreground py-2.5 px-3">
                   Kamu Telah Ikuti
                 </div>
               ) : (
                 <DrawerTrigger asChild>
-                  <Button className="rounded-full text-sm font-semibold w-full text-white">
+                  <Button className="rounded-full text-sm font-semibold w-full ">
                     Ikuti
                   </Button>
                 </DrawerTrigger>

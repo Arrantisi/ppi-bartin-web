@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
 import { FrameNews } from "../../cards/card-news";
 import { useNews } from "@/hooks/use-news";
+import { DataKosong } from "@/components/data-kosong";
 
 const catagoryTrigger = [
   { ctg: "all" },
@@ -36,7 +37,7 @@ const BeritaCatagory = () => {
   }
 
   if (!data || data.length === 0) {
-    return <div>berita belum update</div>;
+    return <DataKosong href="/home/news/create" catagory="Berita" />;
   }
 
   return (

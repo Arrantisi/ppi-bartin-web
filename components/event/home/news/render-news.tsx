@@ -3,6 +3,7 @@
 import { useNews } from "@/hooks/use-news";
 import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
 import { FrameNews } from "@/components/cards/card-news";
+import { DataKosong } from "@/components/data-kosong";
 
 export const RenderNews = () => {
   const { data, isLoading } = useNews();
@@ -18,7 +19,7 @@ export const RenderNews = () => {
   }
 
   if (!data || data.length === 0) {
-    return <div>Berita tidak ada</div>;
+    return <DataKosong href="/home/news/create" catagory="Berita" />;
   }
   return (
     <div className="grid grid-cols-1 md:grid-cols-2">

@@ -270,6 +270,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
         <AlertDEelete
           type="acara"
           id={data.id}
+          href="/home/events"
           onClick={() => setIsOpenAlert(false)}
         />
 

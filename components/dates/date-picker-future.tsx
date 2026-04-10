@@ -18,9 +18,15 @@ import { formattedDate } from "@/utils/date-format";
 interface DatePickerFieldProps {
   value?: Date;
   onChange: (date: Date | undefined) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  disabled: any;
 }
 
-export const DatePickerField = ({ value, onChange }: DatePickerFieldProps) => {
+export const DatePickerField = ({
+  value,
+  onChange,
+  disabled,
+}: DatePickerFieldProps) => {
   const today = new Date();
 
   const presents = [
@@ -81,7 +87,7 @@ export const DatePickerField = ({ value, onChange }: DatePickerFieldProps) => {
                 </div>
               </div>
               <Calendar
-                disabled={[{ before: today }]}
+                disabled={disabled}
                 mode="single"
                 month={month}
                 onMonthChange={setMonth}

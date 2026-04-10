@@ -44,6 +44,10 @@ const catagoryTrigger = [
 export const CreateEventField = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [lengthOfDeskripsi, setLengthOfDeskripsi] = useState(0);
+  const [isDate, setIsDate] = useState<Date>(new Date());
+
+  const today = new Date();
+
   const router = useRouter();
 
   const form = useForm({
@@ -146,8 +150,12 @@ export const CreateEventField = () => {
                     </FieldLabel>
                     <DatePickerField
                       onChange={(e) => {
-                        if (e) field.handleChange(e);
+                        if (e) {
+                          field.handleChange(e);
+                          setIsDate(e);
+                        }
                       }}
+                      disabled={[{ before: today }]}
                       value={field.state.value}
                     />
 
@@ -300,6 +308,7 @@ export const CreateEventField = () => {
                       onChange={(e) => {
                         if (e) field.handleChange(e);
                       }}
+                      disabled={[{ before: today }, { after: isDate }]}
                       value={field.state.value}
                     />
 

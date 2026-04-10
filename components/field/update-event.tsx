@@ -46,6 +46,10 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
   const [lengthOfDeskripsi, setLengthOfDeskripsi] = useState(0);
   const router = useRouter();
 
+  const [isDate, setIsDate] = useState<Date>(new Date());
+
+  const today = new Date();
+
   const form = useForm({
     defaultValues: {
       judul: data?.judul || "",
@@ -70,7 +74,6 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
         goeyToast.success("Selamat Kamu Telah Berhasil Membuat Acara");
         router.push(`/home/events`);
       }
-      console.log(value);
 
       setIsLoading(false);
     },
@@ -147,8 +150,12 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
                     </FieldLabel>
                     <DatePickerField
                       onChange={(e) => {
-                        if (e) field.handleChange(e);
+                        if (e) {
+                          field.handleChange(e);
+                          setIsDate(e);
+                        }
                       }}
+                      disabled={[{ before: today }]}
                       value={field.state.value}
                     />
 
@@ -301,6 +308,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
                       onChange={(e) => {
                         if (e) field.handleChange(e);
                       }}
+                      disabled={[{ before: today }, { after: isDate }]}
                       value={field.state.value}
                     />
 

@@ -1,12 +1,12 @@
 "use client";
 
+import { DataKosong } from "@/components/data-kosong";
 import CardEvent from "../../cards/card-event";
 import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
-
-import { useEvents } from "@/hooks/use-events";
+import { useEventsPage } from "@/hooks/use-events";
 
 const CardAcaras = () => {
-  const { data, isLoading } = useEvents();
+  const { data, isLoading } = useEventsPage();
 
   if (isLoading) {
     return (
@@ -19,11 +19,11 @@ const CardAcaras = () => {
   }
 
   if (!data || data.length === 0) {
-    return <div>Event tidak ada</div>;
+    return <DataKosong href="/home/events/create" catagory="Acara" />;
   }
 
   return (
-    <div className="mt-3 gap-6 min-h-screen w-full relative grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 justify-center">
+    <div className="mt-3 gap-6 w-full relative grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 justify-center">
       {data.map((data) => (
         <CardEvent {...data} key={data.id} />
       ))}

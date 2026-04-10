@@ -14,16 +14,20 @@ import { deleteNews } from "@/server/actions/news";
 import { goeyToast } from "../ui/goey-toaster";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
+import { useRouter } from "next/navigation";
 
 export const AlertDEelete = ({
   type,
   id,
   onClick,
+  href,
 }: {
   type: "berita" | "acara";
   id: string;
+  href: string;
   onClick: () => void;
 }) => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const hendleDelete = async () => {
@@ -36,6 +40,7 @@ export const AlertDEelete = ({
     }
     if (deleteData.status === "success") {
       goeyToast.success(deleteData.msg);
+      router.push(href);
       onClick();
     } else {
       goeyToast.error(deleteData.msg);

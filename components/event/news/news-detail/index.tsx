@@ -183,6 +183,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
         </div>
       </div>
       <AlertDEelete
+        href="/home/news"
         type="berita"
         id={data.id}
         onClick={() => setIsOpenAlert(false)}

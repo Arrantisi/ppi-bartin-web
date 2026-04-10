@@ -1,6 +1,6 @@
 "use client";
 
-import { useEvents } from "@/hooks/use-events";
+import { useEventsHome } from "@/hooks/use-events";
 import { SkeletonCardAcara } from "@/components/skeletons/card-event-skeleton";
 import CardEvent from "@/components/cards/card-event";
 import {
@@ -9,16 +9,17 @@ import {
   CarouselDots,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { DataKosong } from "@/components/data-kosong";
 
 export const RenderAcara = () => {
-  const { data, isLoading } = useEvents();
+  const { data, isLoading } = useEventsHome();
 
   if (isLoading) {
     return <SkeletonCardAcara />;
   }
 
   if (!data || data.length === 0) {
-    return <div>Event tidak ada</div>;
+    return <DataKosong href="/home/events/create" catagory="Acara" />;
   }
 
   return (

@@ -88,33 +88,38 @@ export const formUsername = z.object({
 
 export type FormUsername = z.infer<typeof formUsername>;
 
-export const createEventSchema = z.object({
-  judul: z
-    .string()
-    .min(8, "Nama agenda minimal 8 karakter")
-    .max(100, "Judul terlalu panjang"),
-  lokasi: z.string().min(1, "Lokasi acara wajib diisi"),
-  date: z.date({
-    error: "Silakan tentukan tanggal acara",
-  }),
-  deskripsi: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
-  batasDaftar: z.date({
-    error: "Silakan tentukan batas pendaftaran",
-  }),
-  fileKey: z.string().min(1, "Gambar/File wajib diunggah"),
-  // Validasi kategori agar sesuai dengan list
-
-  catagory: z
-    .string()
-    .refine((value) => CATEGORY_VALUES.includes(value as never), {
-      message: "Pilih kategori yang valid",
+export const createEventSchema = z
+  .object({
+    judul: z
+      .string()
+      .min(8, "Nama agenda minimal 8 karakter")
+      .max(100, "Judul terlalu panjang"),
+    lokasi: z.string().min(1, "Lokasi acara wajib diisi"),
+    date: z.date({
+      error: "Silakan tentukan tanggal acara",
     }),
-  persyaratan: z.string().min(8, "Persyaratan minimal 8 karakter"),
-  maxCapacity: z
-    .number({ error: "Kapasitas harus berupa angka" })
-    .int("Harus berupa bilangan bulat")
-    .min(1, "Kapasitas minimal 1 orang"),
-});
+    deskripsi: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
+    batasDaftar: z.date({
+      error: "Silakan tentukan batas pendaftaran",
+    }),
+    fileKey: z.string().min(1, "Gambar/File wajib diunggah"),
+    // Validasi kategori agar sesuai dengan list
+
+    catagory: z
+      .string()
+      .refine((value) => CATEGORY_VALUES.includes(value as never), {
+        message: "Pilih kategori yang valid",
+      }),
+    persyaratan: z.string().min(8, "Persyaratan minimal 8 karakter"),
+    maxCapacity: z
+      .number({ error: "Kapasitas harus berupa angka" })
+      .int("Harus berupa bilangan bulat")
+      .min(1, "Kapasitas minimal 1 orang"),
+  })
+  .refine((data) => data.batasDaftar <= data.date, {
+    message: "Batas pendaftaran tidak boleh melewati tanggal acara",
+    path: ["batasDaftar"], // Pesan error akan muncul di field batasDaftar
+  });
 
 export type TcreateEventSchema = z.infer<typeof createEventSchema>;
 
@@ -132,7 +137,7 @@ export const updateEventField = z.object({
 export type TUpdateEventField = z.infer<typeof updateEventField>;
 
 export const formSchema = z.object({
-  nomor_siswa: z.string().length(8, "Nomor induk siswa harus tepat 8 angka"),
+  nomor_siswa: z.string().min(8, "Nomor induk siswa harus tepat 8 angka"),
   nama_siswa: z
     .string()
     .min(5, "Nama lengkap minimal 5 karakter")
