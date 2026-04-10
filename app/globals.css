@@ -277,3 +277,12 @@
   flex: 0 0 100%;
   min-width: 0;
 }
+
+/* Mencegah jumping saat modal/drawer dibuka */
+body[data-vaul-drawer-wrapper] {
+  filter: none !important; /* Kadang scaling effect bikin bug di PWA */
+}
+
+html.vaul-circular-indicator {
+  scroll-behavior: auto !important;
+}

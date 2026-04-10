@@ -29,18 +29,26 @@ const DrawerAcara = ({
 
   const handleJoinEvent = async () => {
     setOnLoading(true);
-    const fetch = await joinEvent(eventId);
-    if (fetch.status === "error") {
-      goeyToast.error(`maaf ${fetch.msg}`);
-    } else if (fetch.status === "success") {
-      goeyToast.success("Selamat, kamu sudah join event");
+    try {
+      const fetch = await joinEvent(eventId);
+      if (fetch.status === "error") {
+        goeyToast.error(`maaf ${fetch.msg}`);
+      } else {
+        goeyToast.success("Selamat, kamu sudah join event");
+        // Kasih delay kecil sebelum tutup agar state loading terlihat dan transisi mulus
+        setTimeout(() => {
+          onClose();
+        }, 500);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setOnLoading(false);
     }
-    setOnLoading(false);
-    onClose();
   };
 
   return (
-    <DrawerContent className="rounded-t-4xl">
+    <DrawerContent className="rounded-t-4xl fixed bottom-0 left-0 right-0">
       <DrawerHeader>
         <DrawerTitle>browser acara</DrawerTitle>
         <DrawerDescription asChild>

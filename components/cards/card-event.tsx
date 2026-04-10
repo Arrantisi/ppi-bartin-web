@@ -31,7 +31,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
 
   return (
     <Dialog>
-      <Drawer open={isOpen} onOpenChange={setisOpen}>
+      <Drawer open={isOpen} onOpenChange={setisOpen} dismissible={true}>
         <Card className="py-0 ">
           <Link
             href={`/home/events/${props.slug}`}
