@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Spinner } from "./ui/spinner";
 import {
   IconArrowLeft,
   IconArrowLeftDashed,
+  IconHandClick,
   IconLogout,
   IconMoon,
   IconPlus,
@@ -21,6 +22,52 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { goeyToast } from "./ui/goey-toaster";
 import { cn } from "@/lib/utils";
+import HoldButton from "./kokonutui/hold-button";
+import { joinEvent } from "@/server/actions/acara";
+
+export const HoldButtonJoin = ({
+  children,
+  eventId,
+}: {
+  eventId: string;
+  children: React.ReactNode;
+}) => {
+  const [onLoading, setOnLoading] = useState(false);
+
+  const handleJoinEvent = async () => {
+    setOnLoading(true);
+    try {
+      const fetch = await joinEvent(eventId);
+      if (fetch.status === "error") {
+        goeyToast.error(`maaf ${fetch.msg}`);
+      } else {
+        goeyToast.success("Selamat, kamu sudah join event");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setOnLoading(false);
+    }
+  };
+  return (
+    <HoldButton
+      holdDuration={1500}
+      className="w-full text-center text-sm rounded-full capitalize py-2.5 px-3"
+      onComplete={() => handleJoinEvent()}
+      disabled={onLoading}
+    >
+      {onLoading ? (
+        <h1 className="flex gap-2 items-center">
+          <Spinner className="size-4" /> Memproses
+        </h1>
+      ) : (
+        <h1 className="flex gap-2 items-center">
+          <IconHandClick className="size-4" /> <span> {children}</span>
+        </h1>
+      )}
+    </HoldButton>
+  );
+};
 
 export const ButtonHeaderField = ({
   href,

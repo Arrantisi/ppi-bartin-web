@@ -29,9 +29,9 @@ const NavMainEvent = ({ show = true }: { show?: boolean }) => {
 
   return (
     <div
-      className={`fixed w-full bottom-0 left-0 flex items-center justify-center z-50 ${!show && "hidden"}`}
+      className={`fixed w-full bottom-0 left-0 flex items-center justify-center z-50 bg-card ${!show && "hidden"}`}
     >
-      <div className="flex items-center justify-between bg-card px-6 pb-4 pt-0.5 shadow-2xl gap-[16px] w-full">
+      <div className="max-w-xl md:max-w-2xl xl:max-w-3xl flex items-center justify-between  px-6 pb-4 pt-0.5 shadow-2xl gap-[16px] w-full">
         {eventProps.map((e) => (
           <Link
             href={e.url}
