@@ -70,7 +70,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
             variant="outline"
             size="icon-xl"
             className="rounded-full"
-            onClick={() => router.back()}
+            onClick={() => router.push("/home/news")}
           >
             <IconArrowLeft size={20} />
           </Button>
@@ -119,11 +119,11 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
                         className={buttonVariants({
                           variant: "ghost",
                           className:
-                            "w-full justify-start gap-3 rounded-xl bg-destructive/45 ring ring-destructive text-destructive",
+                            "w-full justify-start gap-3 rounded-xl bg-destructive/45 ring ring-destructive text-foreground",
                         })}
                       >
-                        <IconTrash size={20} className="text-destructive" />
-                        <span className="text-destructive">Hapus Berita</span>
+                        <IconTrash size={20} />
+                        <span>Hapus Berita</span>
                       </AlertDialogTrigger>
                     </>
                   )}

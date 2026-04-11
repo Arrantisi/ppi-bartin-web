@@ -41,6 +41,7 @@ export const getProfileUser = async () => {
           event: {
             select: {
               judul: true,
+              date: true,
             },
           },
         },

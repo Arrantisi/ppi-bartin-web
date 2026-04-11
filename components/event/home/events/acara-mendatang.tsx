@@ -6,7 +6,7 @@ const AcaraMendatang = () => {
     <div className="mt-7 space-y-2">
       <div className="flex justify-between items-center">
         <h1 className="font-semibold text-[22px] tracking-tight">
-          Acara Tebaru
+          Kegiatan Tebaru
         </h1>
         <Link
           href={"/home/events"}

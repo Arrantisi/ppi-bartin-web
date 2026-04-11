@@ -52,7 +52,7 @@ export const HoldButtonJoin = ({
   return (
     <HoldButton
       holdDuration={1500}
-      className="w-full text-center text-sm rounded-full capitalize py-2.5 px-3"
+      className="w-full text-center text-sm rounded-full capitalize py-2.5 px-3 select-none"
       onComplete={() => handleJoinEvent()}
       disabled={onLoading}
     >

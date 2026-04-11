@@ -4,6 +4,7 @@ import { ThemeToggle } from "@/components/buttons";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProfileUser } from "@/hooks/use-users";
+import { cn } from "@/lib/utils";
 import {
   IconArrowRight,
   IconCalendar,
@@ -17,6 +18,8 @@ import Link from "next/link";
 
 export const ContentProfile = () => {
   const { data } = useProfileUser();
+
+  const today = new Date();
 
   if (!data) {
     return null;
@@ -103,7 +106,9 @@ export const ContentProfile = () => {
               </div>
               <div className="self-stretch h-5 flex items-start shrink-0 text-[0.875rem] text-gray">
                 <h3 className="flex-1 relative leading-5 font-semibold">
-                  {data?.events.length} Kegiatan
+                  {data?.participants.length > 0
+                    ? `${data.participants.length} Kegiatan`
+                    : "Belum Mengikuti Acara"}
                 </h3>
               </div>
             </div>
@@ -113,7 +118,14 @@ export const ContentProfile = () => {
           {data.participants.map((participant) => (
             <div className="flex items-center gap-3" key={participant.id}>
               <div className="size-1.5 bg-primary rounded-full" />
-              <div className="text-[15px]">{participant.event.judul}</div>
+              <div
+                className={cn(
+                  "text-[15px] text-foreground",
+                  participant.event.date <= today && "text-foreground/10",
+                )}
+              >
+                {participant.event.judul}
+              </div>
             </div>
           ))}
         </div>

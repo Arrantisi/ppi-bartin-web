@@ -13,17 +13,18 @@ export const DataKosong = ({
 
   return (
     <div className="flex flex-col items-center justify-center p-10 mt-4 text-center animate-in fade-in zoom-in duration-300">
-      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted text-primary">
         {catagory === "Acara" ? (
-          <IconCalendarOff className="h-10 w-10 text-muted-foreground" />
+          <IconCalendarOff className="h-10 w-10" />
         ) : (
-          <IconNewsOff className="h-10 w-10 text-muted-foreground" />
+          <IconNewsOff className="h-10 w-10" />
         )}
       </div>
       <h3 className="mt-4 text-lg font-semibold">Belum Ada {catagory}</h3>
       <p className="mb-6 mt-2 text-sm text-muted-foreground max-w-[250px] mx-auto">
-        Sepertinya jadwal acara masih kosong. Silakan kembali lagi nanti atau
-        buat acara baru.
+        {catagory === "Acara"
+          ? "Sepertinya jadwal acara masih kosong. Silakan kembali lagi nanti atau buat acara baru."
+          : "Sepertinya Berita masih kosong. Silakan kembali lagi nanti atau buat Berita baru."}
       </p>
       {/* Tombol opsional jika user punya akses buat event */}
       <button
