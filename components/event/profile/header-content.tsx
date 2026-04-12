@@ -32,7 +32,7 @@ export const HeaderContentProfile = () => {
       />
       <div className="title-tiga">{user.name}</div>
       <Badge className="bg-[#FFD700] text-black rounded-full px-2">
-        <IconBintangProfile /> Anggota PPI
+        <IconBintangProfile /> Anggota PPI Bartın
       </Badge>
     </div>
   );

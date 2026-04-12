@@ -207,7 +207,7 @@ export const joinEvent = async (eventId: string): Promise<TServerPrompt> => {
     };
   }
 
-  if (event._count.participants && event.maxCapacity >= event.maxCapacity) {
+  if (event._count.participants >= event.maxCapacity) {
     return {
       msg: "event sudah penuh",
       status: "error",
