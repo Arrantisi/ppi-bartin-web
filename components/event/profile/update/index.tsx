@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { IconArrowNarrowLeft } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { getProfileUser } from "@/server/data/users";
-import { UpdateProfileField } from "@/components/field/update-profle";
+import { UpdateProfileField } from "@/components/field/update-profile";
 import { useRouter } from "next/navigation";
 
 export const UpdateProfileComponent = () => {

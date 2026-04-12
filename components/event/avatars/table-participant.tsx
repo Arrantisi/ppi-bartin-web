@@ -23,6 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { authClient } from "@/lib/auth-client";
 
 type TparticipantRow = Tparticipants[number];
 
@@ -63,12 +64,21 @@ const columns: ColumnDef<TparticipantRow>[] = [
 
 type DialogTableParticipantProps = {
   participants: Tparticipants;
+  eventId: string;
+  judul: string;
+  userCreatorId: string;
 };
 
 export const DialogTableParticipant = ({
+  userCreatorId,
+  judul,
+  eventId,
   participants,
 }: DialogTableParticipantProps) => {
   const [columnFilters, setColumnFilter] = useState<ColumnFiltersState>([]);
+
+  const { data: session } = authClient.useSession();
+  const userId = session?.user.id;
 
   const table = useReactTable({
     data: participants ?? [],
@@ -81,11 +91,15 @@ export const DialogTableParticipant = ({
     },
   });
 
+  const handleDownload = () => {
+    window.location.href = `/api/export/participants?eventId=${eventId}`;
+  };
+
   return (
     <DialogPopup>
       <DialogHeader className="items-start">
-        <DialogTitle>Table Participant</DialogTitle>
-        <DialogDescription>Orang yang mengikuti event ini</DialogDescription>
+        <DialogTitle>{judul}</DialogTitle>
+        <DialogDescription>Orang yang mengikuti kegiatan</DialogDescription>
       </DialogHeader>
       <div className="flex justify-center items-center gap-2">
         <Input
@@ -96,9 +110,16 @@ export const DialogTableParticipant = ({
           }
           className="max-w-sm"
         />
-        <Button variant={"outline"} className="text-sm">
-          Export csv
-        </Button>
+
+        {userCreatorId === userId && (
+          <Button
+            variant={"outline"}
+            onClick={handleDownload}
+            className="text-sm"
+          >
+            Export (.csv)
+          </Button>
+        )}
       </div>
 
       <div className="max-h-52 overflow-auto">

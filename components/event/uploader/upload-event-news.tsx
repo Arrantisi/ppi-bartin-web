@@ -124,10 +124,7 @@ export const UploaderPhoto = ({
                 <UploadIllustration />
                 <CardTitle>Tarik & Lepas Foto</CardTitle>
                 <CardDescription className="text-xs text-center px-4">
-                  Foto akan langsung diunggah (Maks. 4 MB)
-                </CardDescription>
-                <CardDescription className="text-xs text-center px-4 text-muted-foreground/50">
-                  Rekomendasi: 1200x630px (16:9)
+                  Foto akan langsung diunggah (Maks. 2 MB)
                 </CardDescription>
 
                 <Button

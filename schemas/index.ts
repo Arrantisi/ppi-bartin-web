@@ -72,8 +72,7 @@ export const updateProfileSchema = z.object({
     .string()
     .refine((value) => JENIS_KELAMIN_OPTIONS.includes(value as never), {
       message: "Jenis kelamin harus laki-laki atau perempuan",
-    })
-    .or(z.undefined()),
+    }),
   alamat: z.string().or(z.undefined()),
 });
 

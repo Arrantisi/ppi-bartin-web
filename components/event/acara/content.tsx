@@ -4,6 +4,7 @@ import { DataKosong } from "@/components/data-kosong";
 import CardEvent from "../../cards/card-event";
 import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
 import { useEventsPage } from "@/hooks/use-events";
+import { ButtonCreate } from "@/components/buttons";
 
 const CardAcaras = () => {
   const { data, isLoading } = useEventsPage();
@@ -23,11 +24,23 @@ const CardAcaras = () => {
   }
 
   return (
-    <div className="mt-3 gap-6 w-full relative grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 justify-center">
-      {data.map((data) => (
-        <CardEvent {...data} key={data.id} />
-      ))}
-    </div>
+    <>
+      <div className="flex items-center gap-2 mt-3 ">
+        {/* <InputGroup className="rounded-full py-5">
+          <InputGroupInput placeholder="Search..." />
+          <InputGroupAddon>
+            <IconSearch className="size-5" />
+          </InputGroupAddon>
+        </InputGroup> */}
+        <div className="h-[42px] w-full bg-card rounded-full" />
+        <ButtonCreate catagory="events" />
+      </div>
+      <div className="mt-3 gap-6 w-full relative grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 justify-center">
+        {data.map((data) => (
+          <CardEvent {...data} key={data.id} />
+        ))}
+      </div>
+    </>
   );
 };
 

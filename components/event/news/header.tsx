@@ -1,12 +1,5 @@
 "use client";
 
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-import { IconSearch } from "@tabler/icons-react";
-import { ButtonCreate } from "@/components/buttons";
 import { IconHome } from "../icon-home";
 
 const HeaderBerita = () => {
@@ -20,16 +13,6 @@ const HeaderBerita = () => {
           </p>
         </div>
         <IconHome />
-      </div>
-      <div className="flex items-center gap-2 mt-3">
-        <InputGroup className="rounded-full py-5">
-          <InputGroupInput placeholder="Search..." />
-          <InputGroupAddon>
-            <IconSearch className="size-5" />
-          </InputGroupAddon>
-        </InputGroup>
-
-        <ButtonCreate catagory="news" />
       </div>
     </div>
   );

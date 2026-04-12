@@ -5,7 +5,8 @@ const AvatarParticipant = ({
 }: {
   participant: { image: string }[];
 }) => {
-  const filteredParticipant = participant.slice(0, 3);
+  const showParticipant = 3;
+  const filteredParticipant = participant.slice(0, showParticipant);
 
   return (
     <div className="flex items-center gap-3">
@@ -17,15 +18,15 @@ const AvatarParticipant = ({
               alt="@reui"
               className="border border-accent hover:z-10"
             />
-            <AvatarFallback className="border-2 border-background hover:z-10 text-white">
+            <AvatarFallback className="border-2 border-background hover:z-10 text-foreground">
               CN
             </AvatarFallback>
           </Avatar>
         ))}
-        {participant.length >= 3 && (
+        {participant.length > showParticipant && (
           <Avatar>
-            <AvatarFallback className="border-2 border-background hover:z-10">
-              + {filteredParticipant.length}
+            <AvatarFallback className="border-2 border-background hover:z-10 text-foreground">
+              + {participant.length - showParticipant}
             </AvatarFallback>
           </Avatar>
         )}

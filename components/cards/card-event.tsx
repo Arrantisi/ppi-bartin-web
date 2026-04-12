@@ -112,7 +112,12 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
           </div>
         </CardFooter>
       </Card>
-      <DialogTableParticipant participants={props.participants} />
+      <DialogTableParticipant
+        userCreatorId={props.creator.id}
+        judul={props.judul}
+        participants={props.participants}
+        eventId={props.id}
+      />
     </Dialog>
   );
 };

@@ -66,7 +66,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
       username: props.username || "",
       Bio: props.bio ?? undefined,
       alamat: props.alamat ?? undefined,
-      jenisKelamin: props.jenisKelamin ?? undefined,
+      jenisKelamin: props.jenisKelamin || "",
       telpon: props.noTelephone ?? undefined,
       tanggalLahir: props.tanggalLahir ?? undefined,
     },
@@ -391,7 +391,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                   <Field>
                     <FieldLabel>
                       <IconCalendar size={18} className="text-primary" />
-                      Tanggal Lahir
+                      Tanggal Lahir <span className="text-destructive">*</span>
                     </FieldLabel>
                     <TanggalLahitField
                       value={field.state.value}
@@ -415,7 +415,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                   <Field>
                     <FieldLabel>
                       <IconGenderBigender size={18} className="text-primary" />
-                      Jenis Kelamiin
+                      Jenis Kelamiin <span className="text-destructive">*</span>
                     </FieldLabel>
                     <Select
                       name={field.name}

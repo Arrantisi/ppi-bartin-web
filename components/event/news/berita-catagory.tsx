@@ -6,6 +6,7 @@ import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-ske
 import { FrameNews } from "../../cards/card-news";
 import { useNews } from "@/hooks/use-news";
 import { DataKosong } from "@/components/data-kosong";
+import { ButtonCreate } from "@/components/buttons";
 
 const catagoryTrigger = [
   { ctg: "all" },
@@ -41,43 +42,56 @@ const BeritaCatagory = () => {
   }
 
   return (
-    <Tabs defaultValue="all" className="w-full mt-3">
-      {/* 1. Scrollable Tabs List */}
-      <div className="w-full overflow-x-auto overflow-y-hidden scrollbar-none">
-        <TabsList className="bg-transparent h-auto p-0 gap-3 flex justify-start w-max">
-          {catagoryTrigger.map((item) => (
-            <TabsTrigger
-              key={item.ctg}
-              value={item.ctg}
-              className={cn(
-                "rounded-full bg-muted px-6 py-2.5 capitalize transition-all",
-                "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md",
-                "dark:data-[state=active]:bg-accent-foreground dark:data-[state=active]:text-accent dark:data-[state=active]:shadow-md",
-              )}
-            >
-              {item.ctg}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </div>
+    <>
+      <div className="flex items-center gap-2 mt-3">
+        {/* <InputGroup className="rounded-full py-5">
+          <InputGroupInput placeholder="Search..." />
+          <InputGroupAddon>
+            <IconSearch className="size-5" />
+          </InputGroupAddon>
+        </InputGroup> */}
+        <div className="h-[42px] w-full bg-card rounded-full" />
 
-      {/* 2. Mapping Content berdasarkan Kategori */}
-      {catagoryTrigger.map((category) => (
-        <TabsContent
-          key={category.ctg}
-          value={category.ctg}
-          className="mt-0 grid grid-cols-1 md:grid-cols-2"
-        >
-          {data
-            .filter((news) =>
-              category.ctg === "all" ? true : news.catagory === category.ctg,
-            )
-            .map((news) => (
-              <FrameNews key={news.slug} {...news} />
+        <ButtonCreate catagory="news" />
+      </div>
+      <Tabs defaultValue="all" className="w-full mt-3">
+        {/* 1. Scrollable Tabs List */}
+        <div className="w-full overflow-x-auto overflow-y-hidden scrollbar-none">
+          <TabsList className="bg-transparent h-auto p-0 gap-3 flex justify-start w-max">
+            {catagoryTrigger.map((item) => (
+              <TabsTrigger
+                key={item.ctg}
+                value={item.ctg}
+                className={cn(
+                  "rounded-full bg-muted px-6 py-2.5 capitalize transition-all",
+                  "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md",
+                  "dark:data-[state=active]:bg-accent-foreground dark:data-[state=active]:text-accent dark:data-[state=active]:shadow-md",
+                )}
+              >
+                {item.ctg}
+              </TabsTrigger>
             ))}
-        </TabsContent>
-      ))}
-    </Tabs>
+          </TabsList>
+        </div>
+
+        {/* 2. Mapping Content berdasarkan Kategori */}
+        {catagoryTrigger.map((category) => (
+          <TabsContent
+            key={category.ctg}
+            value={category.ctg}
+            className="mt-0 grid grid-cols-1 md:grid-cols-2"
+          >
+            {data
+              .filter((news) =>
+                category.ctg === "all" ? true : news.catagory === category.ctg,
+              )
+              .map((news) => (
+                <FrameNews key={news.slug} {...news} />
+              ))}
+          </TabsContent>
+        ))}
+      </Tabs>
+    </>
   );
 };
 
