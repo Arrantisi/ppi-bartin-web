@@ -32,6 +32,7 @@ import {
 import { AlertDEelete } from "../../alert-delete";
 import { DialogTitle } from "@/components/ui/dialog";
 import { goeyToast } from "@/components/ui/goey-toaster";
+import { EventActionButton } from "../../action-button-event";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -98,11 +99,6 @@ export const EventDetail = ({ slug }: { slug: string }) => {
 
   if (!data)
     return <div className="p-10 text-center">Data tidak ditemukan.</div>;
-
-  const userJoined = data.participants.find(
-    ({ user }) => user.id === session?.user.id,
-  );
-  const capacityFull = data.participants.length >= (data.maxCapacity || 0);
 
   return (
     <AlertDialog open={isOpenAlert} onOpenChange={setIsOpenAlert}>
@@ -243,21 +239,10 @@ export const EventDetail = ({ slug }: { slug: string }) => {
               </div>
 
               <div className="w-full">
-                {capacityFull ? (
-                  <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-white py-2.5 px-3">
-                    kapasitas Penuh
-                  </div>
-                ) : userJoined?.user.id === session?.user.id ? (
-                  <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-white py-2.5 px-3">
-                    Kamu Telah Ikuti
-                  </div>
-                ) : (
-                  <DrawerTrigger asChild>
-                    <Button className="rounded-full text-base w-full">
-                      Daftar Sekarang
-                    </Button>
-                  </DrawerTrigger>
-                )}
+                <EventActionButton
+                  event={data}
+                  sessionUserId={session?.user.id}
+                />
               </div>
             </div>
 

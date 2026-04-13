@@ -50,8 +50,10 @@ export const getEventBySlug = async (slug: string) => {
   return await prisma.events.findUnique({
     where: { slug },
     include: {
-      creator: { select: { username: true, image: true, id: true } },
-      participants: { select: { user: true } },
+      creator: {
+        select: { username: true, image: true, id: true, name: true },
+      },
+      participants: { select: { user: true, id: true } },
     },
   });
 };

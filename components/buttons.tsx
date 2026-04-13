@@ -35,12 +35,12 @@ export const HoldButtonCancel = ({
   const [onLoading, setOnLoading] = useState(false);
 
   const handleCancelEvent = async () => {
-    setOnLoading(false);
+    setOnLoading(true);
     const respons = await cancelParticipant(eventId, participantId);
     if (respons.status === "error") {
-      goeyToast.warning(respons.msg);
-    } else if (respons.status === "success") {
       goeyToast.error(respons.msg);
+    } else if (respons.status === "success") {
+      goeyToast.success(respons.msg);
     }
     setOnLoading(false);
   };
