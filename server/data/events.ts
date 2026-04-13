@@ -34,7 +34,7 @@ export const getAllEvents = async () => {
       creator: {
         select: { username: true, image: true, id: true, name: true },
       },
-      participants: { select: { user: true } },
+      participants: { select: { user: true, id: true } },
     },
     orderBy: { createdAt: "desc" },
   });

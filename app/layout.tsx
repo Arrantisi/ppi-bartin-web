@@ -3,9 +3,9 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
-import { GoeyToaster } from "@/components/ui/goey-toaster";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { NotificationAlert } from "@/components/notification-alert";
+import { GoeyToaster } from "@/components/ui/goey-toaster";
 
 const fontSans = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],

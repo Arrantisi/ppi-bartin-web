@@ -6,9 +6,12 @@ import Link from "next/link";
 import { formattedDateNews } from "@/utils/date-format";
 import { imageUrl } from "@/utils/image-url";
 import { TgetNews } from "@/server/data/news";
-import { Badge } from "../ui/badge";
+import { cn } from "@/lib/utils";
+import { categoryStyles } from "../event/color-catagory";
 
 export const FrameNews = ({ ...news }: TgetNews) => {
+  const dotColor = categoryStyles[news.catagory] || "bg-gray-400";
+
   return (
     <Link
       href={`/home/news/${news.slug}`}
@@ -24,10 +27,11 @@ export const FrameNews = ({ ...news }: TgetNews) => {
         alt=""
       />
       <div className="w-full flex flex-col items-start gap-1.5 justify-between h-full pb-2 pr-2">
-        <div className="flex flex-col gap-1.5">
-          <Badge className="rounded-[10px] w-24 text-[11px]">
+        <div className="flex flex-col gap-1.5 w-full">
+          <h3 className="text-[11px] text-foreground/70 uppercase flex items-center gap-2">
+            <div className={cn("size-2 rounded-full", dotColor)} />{" "}
             {news.catagory}
-          </Badge>
+          </h3>
           <div className="max-w-52 self-stretch relative text-[15px] tracking-[-0.23px] leading-5 font-semibold text-foreground">
             {news.judul}
           </div>

@@ -23,9 +23,9 @@ export const RenderNews = () => {
   }
   return (
     <div className="grid grid-cols-1 md:grid-cols-2">
-      {data.slice(0, 6).map((news) => (
-        <FrameNews {...news} key={news.slug} />
-      ))}
+      {data.slice(0, 6).map((news) => {
+        return <FrameNews {...news} key={news.slug} />;
+      })}
     </div>
   );
 };

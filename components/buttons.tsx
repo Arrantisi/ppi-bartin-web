@@ -23,7 +23,48 @@ import Link from "next/link";
 import { goeyToast } from "./ui/goey-toaster";
 import { cn } from "@/lib/utils";
 import HoldButton from "./kokonutui/hold-button";
-import { joinEvent } from "@/server/actions/acara";
+import { cancelParticipant, joinEvent } from "@/server/actions/acara";
+
+export const HoldButtonCancel = ({
+  eventId,
+  participantId,
+}: {
+  eventId: string;
+  participantId: string;
+}) => {
+  const [onLoading, setOnLoading] = useState(false);
+
+  const handleCancelEvent = async () => {
+    setOnLoading(false);
+    const respons = await cancelParticipant(eventId, participantId);
+    if (respons.status === "error") {
+      goeyToast.warning(respons.msg);
+    } else if (respons.status === "success") {
+      goeyToast.error(respons.msg);
+    }
+    setOnLoading(false);
+  };
+
+  return (
+    <HoldButton
+      holdDuration={1500}
+      variant={"outline"}
+      className="w-full text-center text-sm rounded-full capitalize py-2.5 px-3 select-none"
+      onComplete={() => handleCancelEvent()}
+      disabled={onLoading}
+    >
+      {onLoading ? (
+        <h1 className="flex gap-2 items-center">
+          <Spinner className="size-4" /> Memproses
+        </h1>
+      ) : (
+        <h1 className="flex gap-2 items-center">
+          <IconHandClick className="size-4" /> <span>Tekan Untuk Batal</span>
+        </h1>
+      )}
+    </HoldButton>
+  );
+};
 
 export const HoldButtonJoin = ({
   children,

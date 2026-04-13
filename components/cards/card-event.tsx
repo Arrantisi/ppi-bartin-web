@@ -14,15 +14,10 @@ import { DialogTableParticipant } from "../event/avatars/table-participant";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { getTwoWords } from "@/utils/get-twowords";
-import { HoldButtonJoin } from "../buttons";
+import { EventActionButton } from "../event/action-button-event";
 
 const CardEvent = ({ ...props }: TgetAllEvent) => {
   const { data: session } = authClient.useSession();
-
-  const userJoined = props.participants.find(
-    (data) => data.user.id === session?.user.id,
-  );
-  const capacityFull = props.participants.length >= props.maxCapacity;
 
   return (
     <Dialog>
@@ -92,23 +87,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
             />
           </DialogTrigger>
           <div className="w-full max-w-[218px]">
-            {capacityFull ? (
-              <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-secondary-foreground py-2.5 px-3">
-                kapasitas Penuh
-              </div>
-            ) : props.date <= new Date() ? (
-              <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-secondary-foreground py-2.5 px-3">
-                Pendaftaran Telah Berakhir
-              </div>
-            ) : userJoined?.user.id === session?.user.id ? (
-              <div className="w-full text-center text-sm font-semibold rounded-full capitalize bg-secondary text-secondary-foreground py-2.5 px-3">
-                Kamu Telah Ikuti
-              </div>
-            ) : (
-              <HoldButtonJoin eventId={props.id}>
-                Tahan Untuk Ikuti
-              </HoldButtonJoin>
-            )}
+            <EventActionButton event={props} sessionUserId={session?.user.id} />
           </div>
         </CardFooter>
       </Card>
