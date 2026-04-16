@@ -103,7 +103,7 @@ export const HoldButtonJoin = ({
         </h1>
       ) : (
         <h1 className="flex gap-2 items-center">
-          <IconHandClick className="size-4" /> <span> {children}</span>
+          <IconHandClick className="size-4" /> <span>{children}</span>
         </h1>
       )}
     </HoldButton>

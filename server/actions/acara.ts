@@ -13,26 +13,15 @@ export const cancelParticipant = async (
   participantsId: string, // Tetap kita terima untuk validasi extra
 ): Promise<TServerPrompt> => {
   try {
-    const { user } = await studentAccount();
-
-    // Menggunakan deleteMany lebih aman jika kita ingin filter berdasarkan userId & eventId sekaligus
+    const { user: session } = await studentAccount();
     await prisma.participants.delete({
       where: {
         id: participantsId,
-        userId: user.id, // Pastikan HANYA menghapus milik user yang sedang login
+        userId: session.id,
         eventId: eventId,
       },
     });
 
-    // Jika result.count === 0, berarti tidak ada data yang cocok (bisa jadi ID salah atau bukan milik user)
-    // if (result.count === 0) {
-    //   return {
-    //     msg: "Gagal membatalkan: Data tidak ditemukan atau kamu tidak memiliki akses",
-    //     status: "error",
-    //   };
-    // }
-
-    // Gunakan revalidatePath agar cache Next.js di sisi server juga ter-update
     revalidatePath("/home/events");
 
     return {

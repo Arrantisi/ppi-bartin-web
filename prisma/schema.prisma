@@ -10,16 +10,17 @@ datasource db {
 model User {
   id String @id @default(uuid())
 
-  image         String?
-  name          String?
-  username      String?
-  email         String  @unique
-  noTelephone   String?
-  nomorSiswa    String? @unique
-  statusPelajar String?
-  fakultas      String?
-  jurusan       String?
-  angkatan      String?
+  image           String?
+  name            String?
+  username        String?
+  email           String    @unique
+  noTelephone     String?
+  nomorSiswa      String?   @unique
+  statusPelajar   String?
+  fakultas        String?
+  jurusan         String?
+  angkatan        String?
+  userNameChanged DateTime?
 
   bio          String?
   tanggalLahir DateTime?
@@ -144,8 +145,9 @@ model Events {
 model Participants {
   id String @id @default(uuid())
 
-  userId  String
-  eventId String
+  userId      String
+  eventId     String
+  cancelCount Int?
 
   event Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
   user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
