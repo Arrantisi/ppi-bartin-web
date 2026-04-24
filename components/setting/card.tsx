@@ -32,7 +32,7 @@ import {
 import { Field, FieldError } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
-import { goeyToast } from "../ui/goey-toaster";
+import { toast } from "sonner";
 
 export const GantiNamaSiswaCard = () => {
   const [loading, setLoading] = useState(false);
@@ -44,27 +44,14 @@ export const GantiNamaSiswaCard = () => {
     validators: { onSubmit: gantiNamaSiswaSchema },
     onSubmit: async ({ value }: { value: GantiNamaSiswaSchema }) => {
       setLoading(true);
-      goeyToast.promise(
-        new Promise<string>(async (resolve, rejects) => {
-          const matched = await gantiNamaSiswaAction(value.nama_siswa);
-          if (matched.status === "success") {
-            resolve(matched.msg);
-            router.refresh();
-            form.reset();
-          } else {
-            rejects(new Error(matched.msg));
-          }
-        }),
-        {
-          loading: "Memasukan data ke database...",
-          success: "Data kamu sudah disimpan",
-          error: "Ada yang salah",
-          description: {
-            success: `Berhasil ganti nama siswa`,
-            error: "Gagal ganti nama siswa, silahkan hubungi admin",
-          },
-        },
-      );
+      const matched = await gantiNamaSiswaAction(value.nama_siswa);
+      if (matched.status === "success") {
+        toast.success(matched.msg);
+        router.refresh();
+        form.reset();
+      } else {
+        toast.error(matched.msg);
+      }
 
       setLoading(false);
     },
@@ -130,27 +117,14 @@ export const GantiNomorSiswaCard = () => {
     validators: { onSubmit: gantiNomorSiswaSchema },
     onSubmit: async ({ value }: { value: GantiNomorSiswaSchema }) => {
       setLoading(true);
-      goeyToast.promise(
-        new Promise<string>(async (resolve, rejects) => {
-          const matched = await gantiNomorSiswaAction(value.nomor_siswa);
-          if (matched.status === "success") {
-            resolve(matched.msg);
-            router.refresh();
-            form.reset();
-          } else {
-            rejects(new Error(matched.msg));
-          }
-        }),
-        {
-          loading: "Memasukan data ke database...",
-          success: "Data kamu sudah disimpan",
-          error: "Ada yang salah",
-          description: {
-            success: `Berhasil ganti nomor siswa`,
-            error: "Gagal ganti nomor siswa, silahkan hubungi admin",
-          },
-        },
-      );
+      const matched = await gantiNomorSiswaAction(value.nomor_siswa);
+      if (matched.status === "success") {
+        toast.success("Data kamu sudah disimpan");
+        router.refresh();
+        form.reset();
+      } else {
+        toast.error("Gagal ganti nomor siswa, silahkan hubungi admin");
+      }
 
       setLoading(false);
     },

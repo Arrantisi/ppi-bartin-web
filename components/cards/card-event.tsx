@@ -32,7 +32,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
         <Link
           href={`/home/events/${props.slug}`}
           key={props.id}
-          className="w-full min-h-[560px] relative space-y-5"
+          className="w-full min-h-[500px] relative space-y-5"
         >
           <div className="relative h-60 w-full">
             <Image
@@ -69,7 +69,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
                 </span>
               </div>
             </div>
-            <p className="line-clamp-2 text-foreground/60 text-sm py-3">
+            <p className="line-clamp-2 text-foreground/60 text-sm">
               {props.deskripsi}
             </p>
 
@@ -98,7 +98,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
           </CardContent>
         </Link>
 
-        <CardFooter className="p-3 justify-between w-full absolute bottom-0">
+        <CardFooter className="p-3 justify-between w-full ">
           <DialogTrigger
             className={cn(
               "cursor-pointer py-1.5 px-2 rounded-2xl duration-300 transition-all",

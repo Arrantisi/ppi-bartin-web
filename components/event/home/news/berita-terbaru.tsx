@@ -10,7 +10,7 @@ const BeritaTerbaru = () => {
         </h1>
         <Link
           href={"/home/news"}
-          className="text-accent-foreground font-semibold text-[15px]"
+          className="text-secondary font-semibold text-[15px]"
         >
           selengkapnya
         </Link>

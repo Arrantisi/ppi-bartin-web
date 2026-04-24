@@ -16,7 +16,6 @@ import { createNews } from "@/server/actions/news";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
-import { goeyToast } from "../ui/goey-toaster";
 import { UploaderPhoto } from "../event/uploader/upload-event-news";
 import {
   IconClipboardText,
@@ -26,6 +25,7 @@ import {
   IconTypography,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 const catagoryTrigger = [
   // --- KATEGORI ACARA/KEGIATAN ---
@@ -71,9 +71,9 @@ export const CreateNewsField = () => {
       setIsLoading(true);
       const data = await createNews(value);
       if (data.status === "error") {
-        goeyToast.error("maaf terjadi kesalahan");
+        toast.error("maaf terjadi kesalahan");
       } else if (data.status === "success") {
-        goeyToast.success("Berahail Membuat Berita");
+        toast.success("Berahail Membuat Berita");
         router.push("/home/news");
       }
       console.log(value);

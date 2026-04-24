@@ -16,7 +16,6 @@ import { updateNews } from "@/server/actions/news";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
-import { goeyToast } from "../ui/goey-toaster";
 import { UploaderPhoto } from "../event/uploader/upload-event-news";
 import {
   IconClipboardText,
@@ -27,6 +26,7 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { TupdateNewsProps } from "@/types";
+import { toast } from "sonner";
 
 const catagoryTrigger = [
   { ctg: "beasiswa" },
@@ -63,11 +63,11 @@ export const UpdateNewsField = ({ slug, data }: TupdateNewsProps) => {
       setIsLoading(true);
       const data = await updateNews(slug, value);
       if (data.status === "error") {
-        goeyToast.error("error", {
+        toast.error("error", {
           description: "Ada Masalah mohon hubungi admin ppi bartin",
         });
       } else if (data.status === "success") {
-        goeyToast.success("Selamat Kamu Telah Berhasil Membuat Berita");
+        toast.success("Selamat Kamu Telah Berhasil Membuat Berita");
         router.push("/home/news");
       }
       console.log(value);

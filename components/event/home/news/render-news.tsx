@@ -22,7 +22,7 @@ export const RenderNews = () => {
     return <DataKosong href="/home/news/create" catagory="Berita" />;
   }
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
       {data.slice(0, 6).map((news) => {
         return <FrameNews {...news} key={news.slug} />;
       })}

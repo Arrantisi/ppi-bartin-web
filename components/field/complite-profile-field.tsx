@@ -9,7 +9,7 @@ import { ButtonField } from "../buttons";
 import { completeProfile } from "@/server/actions/setting-user";
 import { useRouter } from "next/navigation";
 import { Card } from "../ui/card";
-import { goeyToast } from "../ui/goey-toaster";
+import { toast } from "sonner";
 
 const RegisterField = () => {
   const [loading, setLoading] = useState(false);
@@ -28,25 +28,16 @@ const RegisterField = () => {
     onSubmit: async ({ value }: { value: FormSchema }) => {
       setLoading(true);
 
-      goeyToast.promise(
-        new Promise<string>(async (resolve, rejects) => {
-          const matched = await completeProfile(
-            value.nomor_siswa,
-            value.nama_siswa,
-          );
-          if (matched.status === "success") {
-            resolve(matched.msg);
-            router.push("/home");
-          } else {
-            rejects(new Error(matched.msg));
-          }
-        }),
-        {
-          loading: "Menyinkronkan...",
-          success: "Data sesuai",
-          error: "terjadi kesalahan",
-        },
+      const matched = await completeProfile(
+        value.nomor_siswa,
+        value.nama_siswa,
       );
+      if (matched.status === "success") {
+        toast.success(matched.msg);
+        router.push("/home");
+      } else {
+        toast.error(matched.msg);
+      }
 
       setLoading(false);
     },

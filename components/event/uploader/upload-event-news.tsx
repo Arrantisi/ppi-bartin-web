@@ -3,7 +3,6 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { CardTitle, CardDescription } from "@/components/ui/card";
-import { goeyToast } from "@/components/ui/goey-toaster";
 import { LoadingAnimation } from "@/components/ui/loading-animation";
 import { Progress } from "@/components/ui/progress";
 import { useConstruct } from "@/hooks/use-construct-url";
@@ -14,6 +13,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useCallback } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
+import { toast } from "sonner";
 
 export const UploaderPhoto = ({
   onChange,
@@ -59,19 +59,19 @@ export const UploaderPhoto = ({
     fileRejections.forEach(({ file, errors }) => {
       errors.forEach((err) => {
         if (err.code === "file-too-large") {
-          goeyToast.warning("File Terlalu Besar", {
+          toast.warning("File Terlalu Besar", {
             description: `File kamu sebesar ${(file.size / (1024 * 1024)).toFixed(2)}MB melebihi batas 2MB`,
           });
         }
 
         if (err.code === "too-many-files") {
-          goeyToast.warning("Terlalu Banyak File", {
+          toast.warning("Terlalu Banyak File", {
             description: "Hanya diperbolehkan mengunggah 1 file saja",
           });
         }
 
         if (err.code === "file-invalid-type") {
-          goeyToast.warning("Format Salah", {
+          toast.warning("Format Salah", {
             description: "Hanya file gambar yang diperbolehkan",
           });
         }

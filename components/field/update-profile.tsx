@@ -32,7 +32,6 @@ import {
 } from "../ui/select";
 import { PhoneInput } from "../ui/phone-input";
 import { updateProfile } from "@/server/actions/user";
-import { goeyToast } from "../ui/goey-toaster";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
@@ -43,6 +42,7 @@ import {
   SelectJurusan,
   SelectStatusPelajar,
 } from "../selects";
+import { toast } from "sonner";
 
 const jenisKelaminItems = ["laki-laki", "perempuan"];
 
@@ -77,9 +77,9 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
       setIsLoading(true);
       const fetch = await updateProfile(value);
       if (fetch.status === "error") {
-        goeyToast.error("kesalahan", { description: fetch.msg });
+        toast.error("kesalahan", { description: fetch.msg });
       } else if (fetch.status === "success") {
-        goeyToast.success("Profile kamu sudah up to date");
+        toast.success("Profile kamu sudah up to date");
         router.push("/home/profile");
       }
       setIsLoading(false);

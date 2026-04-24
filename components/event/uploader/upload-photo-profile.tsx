@@ -1,9 +1,10 @@
 import { Avatar, AvatarImage, AvatarIndicator } from "@/components/ui/avatar";
-import { goeyToast } from "@/components/ui/goey-toaster";
+
 import { useUploadThing } from "@/lib/uploadthing";
 import { IconCamera } from "@tabler/icons-react";
 import { useCallback, useState } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
+import { toast } from "sonner";
 
 type TuploadPhotoProfileProps = {
   value?: string;
@@ -42,19 +43,19 @@ export const UploadPhotoProfile = ({
     fileRejections.forEach(({ file, errors }) => {
       errors.forEach((err) => {
         if (err.code === "file-too-large") {
-          goeyToast.warning("File Terlalu Besar", {
+          toast.warning("File Terlalu Besar", {
             description: `File "${file.name}" sebesar ${(file.size / (1024 * 1024)).toFixed(2)}MB melebihi batas 4MB`,
           });
         }
 
         if (err.code === "too-many-files") {
-          goeyToast.warning("Terlalu Banyak File", {
+          toast.warning("Terlalu Banyak File", {
             description: "Hanya diperbolehkan mengunggah 1 file saja",
           });
         }
 
         if (err.code === "file-invalid-type") {
-          goeyToast.warning("Format Salah", {
+          toast.warning("Format Salah", {
             description: "Hanya file gambar yang diperbolehkan",
           });
         }

@@ -10,7 +10,7 @@ const AcaraMendatang = () => {
         </h1>
         <Link
           href={"/home/events"}
-          className="text-accent-foreground font-semibold text-sm"
+          className="text-secondary font-semibold text-sm"
         >
           selengkapnya
         </Link>

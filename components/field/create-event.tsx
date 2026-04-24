@@ -14,7 +14,6 @@ import { useState } from "react";
 import { Spinner } from "../ui/spinner";
 
 import Link from "next/link";
-import { goeyToast } from "../ui/goey-toaster";
 import { UploaderPhoto } from "../event/uploader/upload-event-news";
 import {
   IconCalendar,
@@ -31,6 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { toast } from "sonner";
 
 const catagoryTrigger = [
   { ctg: "beasiswa", label: "Beasiswa & Finansial" },
@@ -67,11 +67,11 @@ export const CreateEventField = () => {
       setIsLoading(true);
       const matched = await createAcara(value);
       if (matched.status === "error") {
-        goeyToast.error("ada kesalahan", {
+        toast.error("ada kesalahan", {
           description: matched.msg,
         });
       } else if (matched.status === "success") {
-        goeyToast.success("Berhasil Membuat Acara");
+        toast.success("Berhasil Membuat Acara");
         router.push(`/home/events`);
       }
 

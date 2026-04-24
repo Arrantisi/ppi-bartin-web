@@ -30,7 +30,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 import { AlertDEelete } from "../../alert-delete";
-import { goeyToast } from "@/components/ui/goey-toaster";
+import { toast } from "sonner";
 
 export const NewsDetailComponent = ({ slug }: { slug: string }) => {
   const [isOpenAlert, setIsOpenAlert] = useState(false);
@@ -44,7 +44,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
       .writeText(currentUrl)
       .then(() => {
         // Gunakan toast atau alert sederhana
-        goeyToast.success("Link berhasil disalin ke clipboard!");
+        toast.success("Link berhasil disalin ke clipboard!");
         // Jika kamu punya library toast (seperti shadcn/ui toast), gunakan itu:
         // toast({ title: "Tersalin!", description: "Link acara telah disalin." });
       })

@@ -3,7 +3,6 @@
 import { customerServiceSchema, TcustomerServiceSchema } from "@/schemas";
 import { customerService } from "@/server/actions/customer-service";
 import { useForm } from "@tanstack/react-form";
-import { goeyToast } from "../ui/goey-toaster";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
@@ -23,6 +22,7 @@ import {
   IconTypography,
 } from "@tabler/icons-react";
 import { Textarea } from "../ui/textarea";
+import { toast } from "sonner";
 
 const catagoryTrigger = [
   { ctg: "dokumen", label: "Ikamet & Legalitas" },
@@ -51,9 +51,9 @@ export const CustomerServiceCreate = () => {
       setIsLoading(true);
       const fetch = await customerService(value);
       if (fetch.status === "error") {
-        goeyToast.error(fetch.msg);
+        toast.error(fetch.msg);
       } else if (fetch.status === "success") {
-        goeyToast.success(fetch.msg);
+        toast.success(fetch.msg);
         router.refresh();
         form.reset();
       }

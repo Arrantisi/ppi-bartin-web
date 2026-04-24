@@ -10,9 +10,9 @@ import {
   DrawerTitle,
 } from "../ui/drawer";
 import { joinEvent } from "@/server/actions/acara";
-import { goeyToast } from "../ui/goey-toaster";
 import { Spinner } from "../ui/spinner";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const DrawerAcara = ({
   onClose,
@@ -32,9 +32,9 @@ const DrawerAcara = ({
     try {
       const fetch = await joinEvent(eventId);
       if (fetch.status === "error") {
-        goeyToast.error(`maaf ${fetch.msg}`);
+        toast.error(`maaf ${fetch.msg}`);
       } else {
-        goeyToast.success("Selamat, kamu sudah join event");
+        toast.success("Selamat, kamu sudah join event");
         // Kasih delay kecil sebelum tutup agar state loading terlihat dan transisi mulus
         setTimeout(() => {
           onClose();

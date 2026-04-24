@@ -16,7 +16,7 @@ export const FrameNews = ({ ...news }: TgetNews) => {
     <Link
       href={`/home/news/${news.slug}`}
       key={news.slug}
-      className="w-full relative flex items-center p-[7px] box-border gap-[0.937rem] text-left text-[0.688rem] text-gray font-sf-pro bg-card shadow rounded-3xl mb-3"
+      className="w-full relative flex items-center p-[7px] box-border gap-[0.937rem] text-left text-[0.688rem] text-gray font-sf-pro bg-card shadow rounded-3xl "
     >
       <Image
         src={imageUrl(news.fileKey)}

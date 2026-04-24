@@ -11,10 +11,10 @@ import {
 import { AlertDialogClose } from "../animate-ui/primitives/base/alert-dialog";
 import { deleteEvent } from "@/server/actions/acara";
 import { deleteNews } from "@/server/actions/news";
-import { goeyToast } from "../ui/goey-toaster";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const AlertDEelete = ({
   type,
@@ -39,11 +39,11 @@ export const AlertDEelete = ({
       deleteData = await deleteNews(id);
     }
     if (deleteData.status === "success") {
-      goeyToast.success(deleteData.msg);
+      toast.success(deleteData.msg);
       router.push(href);
       onClick();
     } else {
-      goeyToast.error(deleteData.msg);
+      toast.error(deleteData.msg);
       onClick();
     }
     setIsLoading(false);

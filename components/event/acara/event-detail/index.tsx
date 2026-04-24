@@ -29,8 +29,8 @@ import {
 } from "@/components/animate-ui/components/base/alert-dialog";
 import { AlertDEelete } from "../../alert-delete";
 import { DialogTitle } from "@/components/ui/dialog";
-import { goeyToast } from "@/components/ui/goey-toaster";
 import { EventActionButton } from "../../action-button-event";
+import { toast } from "sonner";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -48,7 +48,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
       .writeText(currentUrl)
       .then(() => {
         // Gunakan toast atau alert sederhana
-        goeyToast.success("Link berhasil disalin ke clipboard!");
+        toast.success("Link berhasil disalin ke clipboard!");
         // Jika kamu punya library toast (seperti shadcn/ui toast), gunakan itu:
         // toast({ title: "Tersalin!", description: "Link acara telah disalin." });
       })

@@ -79,7 +79,7 @@ const BeritaCatagory = () => {
           <TabsContent
             key={category.ctg}
             value={category.ctg}
-            className="mt-0 grid grid-cols-1 md:grid-cols-2"
+            className="mt-0 grid grid-cols-1 md:grid-cols-2 gap-3"
           >
             {data
               .filter((news) =>

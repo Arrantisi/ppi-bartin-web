@@ -20,10 +20,10 @@ import { useRouter } from "next/navigation";
 import { deleteAccount } from "@/server/actions/setting-user";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { goeyToast } from "./ui/goey-toaster";
 import { cn } from "@/lib/utils";
 import HoldButton from "./kokonutui/hold-button";
 import { cancelParticipant, joinEvent } from "@/server/actions/acara";
+import { toast } from "sonner";
 
 export const HoldButtonCancel = ({
   eventId,
@@ -38,9 +38,9 @@ export const HoldButtonCancel = ({
     setOnLoading(true);
     const respons = await cancelParticipant(eventId, participantId);
     if (respons.status === "error") {
-      goeyToast.error(respons.msg);
+      toast.error(respons.msg);
     } else if (respons.status === "success") {
-      goeyToast.success(respons.msg);
+      toast.success(respons.msg);
     }
     setOnLoading(false);
   };
@@ -80,9 +80,9 @@ export const HoldButtonJoin = ({
     try {
       const fetch = await joinEvent(eventId);
       if (fetch.status === "error") {
-        goeyToast.error(`maaf ${fetch.msg}`);
+        toast.error(`maaf ${fetch.msg}`);
       } else {
-        goeyToast.success("Selamat, kamu sudah join event");
+        toast.success("Selamat, kamu sudah join event");
       }
     } catch (err) {
       console.error(err);
@@ -254,29 +254,14 @@ export const DeleteAccount = () => {
   const router = useRouter();
 
   const handleDeleteAccount = async () => {
-    goeyToast.promise(
-      new Promise<string>(async (resolve, reject) => {
-        const fetch = await deleteAccount();
-        if (fetch.status === "success") {
-          resolve(fetch.msg);
-          // Gunakan router.push atau refresh setelah berhasil
-          router.refresh();
-        } else {
-          reject(new Error(fetch.msg));
-        }
-      }),
-      {
-        loading: "Menghapus Akun...",
-        success: "Akun Terhapus",
-        error: "Gagal Menghapus",
-        description: {
-          success:
-            "Semua data profil kamu telah berhasil dihapus secara permanen.",
-          error:
-            "Terjadi kendala teknis. Silakan coba lagi atau hubungi admin.",
-        },
-      },
-    );
+    const fetch = await deleteAccount();
+    if (fetch.status === "success") {
+      toast.success(fetch.msg);
+      // Gunakan router.push atau refresh setelah berhasil
+      router.refresh();
+    } else {
+      toast.error(fetch.msg);
+    }
   };
 
   return (
