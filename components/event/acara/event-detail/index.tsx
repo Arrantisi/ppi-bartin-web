@@ -41,8 +41,6 @@ export const EventDetail = ({ slug }: { slug: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenAlert, setIsOpenAlert] = useState(false);
 
-  const queryClient = useQueryClient();
-
   const { data, isLoading } = useEventBySlug({ slug });
 
   const handleCopyLink = () => {
@@ -60,40 +58,6 @@ export const EventDetail = ({ slug }: { slug: string }) => {
         console.error("Gagal menyalin link: ", err);
       });
   };
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("events")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "events",
-        },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["events"] });
-        },
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "participants",
-        },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["participants"] });
-        },
-      )
-      .subscribe((status) => {
-        console.log("event-detail", status);
-      });
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient]);
 
   if (isLoading) return <LoaderOneDemo />;
 
