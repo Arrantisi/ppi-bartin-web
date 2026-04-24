@@ -12,10 +12,8 @@ import {
 } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 import { formattedDate } from "@/utils/date-format";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { useState } from "react";
 import DrawerAcara from "../../../drawers/join-events";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import AvatarParticipant from "../../avatars/avatar-participant";
@@ -145,7 +143,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
               alt={""}
               height={200}
               width={200}
-              className="object-cover z-0 w-full h-[400px]"
+              className="object-cover z-0 w-full h-100"
             />
 
             <div className="relative px-6 flex flex-col justify-between bg-background -mt-10 pt-4 pb-5">

@@ -2,7 +2,12 @@
 
 import Image from "next/image";
 import { Card, CardContent, CardFooter } from "../ui/card";
-import { IconCalendarWeek, IconMapPin } from "@tabler/icons-react";
+import {
+  IconCalendarWeek,
+  IconClockHour4,
+  IconMapPin,
+  IconUsers,
+} from "@tabler/icons-react";
 import AvatarParticipant from "../event/avatars/avatar-participant";
 import { authClient } from "@/lib/auth-client";
 import { Dialog, DialogTrigger } from "../animate-ui/components/base/dialog";
@@ -19,22 +24,35 @@ import { EventActionButton } from "../event/action-button-event";
 const CardEvent = ({ ...props }: TgetAllEvent) => {
   const { data: session } = authClient.useSession();
 
+  const isFull = props.participants.length >= props.maxCapacity;
+
   return (
     <Dialog>
       <Card className="py-0 ">
         <Link
           href={`/home/events/${props.slug}`}
           key={props.id}
-          className="w-full min-h-[520px] relative space-y-5"
+          className="w-full min-h-[560px] relative space-y-5"
         >
-          <div className="object-cover">
+          <div className="relative h-60 w-full">
             <Image
               src={imageUrl(props.fileKey)}
               alt="card-event"
-              height={2000}
-              width={2000}
-              className="w-full h-60 object-cover rounded-t-4xl "
+              fill
+              className="object-cover rounded-t-4xl"
             />
+            {/* CAPACITY BADGE OVERLAY */}
+            <div className="absolute top-4 right-4 bg-background backdrop-blur px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+              <IconUsers className="size-3.5 text-primary" />
+              <span
+                className={cn(
+                  "text-[10px] font-bold",
+                  isFull ? "text-destructive" : "text-foreground",
+                )}
+              >
+                {props.participants.length} / {props.maxCapacity} Peserta
+              </span>
+            </div>
           </div>
 
           <CardContent className="px-3 space-y-3">
@@ -51,24 +69,30 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
                 </span>
               </div>
             </div>
-            <p className="line-clamp-2 text-foreground/60 text-sm pt-2">
+            <p className="line-clamp-2 text-foreground/60 text-sm py-3">
               {props.deskripsi}
             </p>
 
-            <div className="flex flex-col items-start justify-start text-muted-foreground/80 my-3 gap-1">
-              <div className=" flex items-start gap-1.5">
-                <div className="size-4 flex items-center justify-center">
-                  <IconCalendarWeek className="size-4 " />
-                </div>
-                <span className="text-xs font-semibold w-full">
+            <div className="grid grid-cols-1 gap-2.5 text-muted-foreground/90 border-dotted border-t pt-2 my-2">
+              <div className="flex items-center gap-2">
+                <IconCalendarWeek className="size-4 text-primary" />
+                <span className="text-xs font-medium">
                   {formattedDate(props.date)}
                 </span>
               </div>
-              <div className="flex items-start gap-1.5">
-                <div className="size-4 flex items-center justify-center">
-                  <IconMapPin className="size-4 " />
-                </div>
-                <span className="text-xs font-semibold">{props.lokasi}</span>
+
+              <div className="flex items-center gap-2 text-rose-600">
+                <IconClockHour4 className="size-4" />
+                <span className="text-xs font-bold">
+                  Batas Daftar: {formattedDate(props.batasDaftar)}
+                </span>
+              </div>
+
+              <div className="flex items-start gap-2">
+                <IconMapPin className="size-4 text-primary shrink-0" />
+                <span className="text-xs font-medium line-clamp-1">
+                  {props.lokasi}
+                </span>
               </div>
             </div>
           </CardContent>
