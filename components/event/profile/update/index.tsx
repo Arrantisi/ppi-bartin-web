@@ -24,7 +24,7 @@ export const UpdateProfileComponent = () => {
       {/* header */}
       <div className="relative flex items-center justify-center m-3">
         <h1 className="title-tiga">Edit Profile</h1>
-        {!user.username && (
+        {user.username && (
           <Button
             variant={"outline"}
             onClick={() => router.push("/home/profile")}

@@ -1,7 +1,6 @@
-import { Avatar, AvatarImage, AvatarIndicator } from "@/components/ui/avatar";
-
 import { useUploadThing } from "@/lib/uploadthing";
 import { IconCamera } from "@tabler/icons-react";
+import Image from "next/image";
 import { useCallback, useState } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
 import { toast } from "sonner";
@@ -74,19 +73,23 @@ export const UploadPhotoProfile = ({
 
   return (
     <div className="flex items-center flex-col space-y-3 my-5">
-      <div className="shadow-2xl p-1 rounded-full">
-        <Avatar className="size-[120px]">
-          <AvatarImage src={preview || value || ""} />
-          {!preview && (
-            <AvatarIndicator
-              className="shadow bg-blue-600 rounded-full text-background size-[36px] top-[80px] left-[80px]"
-              {...getRootProps()}
-            >
-              <input {...getInputProps()} />
-              <IconCamera size={20} />
-            </AvatarIndicator>
-          )}
-        </Avatar>
+      <div className="shadow-2xl p-1 rounded-full relative bg-card">
+        <Image
+          src={preview || value || ""}
+          alt=""
+          width={200}
+          height={200}
+          className="rounded-full size-[120px]"
+        />
+        {!preview && (
+          <div
+            className="flex items-center justify-center absolute shadow bg-secondary-600 rounded-full text-background size-[36px] top-[90px] left-[90px]"
+            {...getRootProps()}
+          >
+            <input {...getInputProps()} />
+            <IconCamera size={20} className="text-secondary-foreground" />
+          </div>
+        )}
       </div>
       <div className="flex flex-col items-center">
         <h3 className="text-[13px] leading-[19.5px] text-foreground/60 ">

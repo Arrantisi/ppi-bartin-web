@@ -297,7 +297,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                       value={field.state.value}
                       onValueChange={field.handleChange}
                     >
-                      <SelectTrigger className="rounded-xl">
+                      <SelectTrigger>
                         <SelectValue placeholder="jurusan" />
                       </SelectTrigger>
                       <SelectJurusan fakultas={isFakultas} />
@@ -355,7 +355,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                       value={field.state.value}
                       onValueChange={field.handleChange}
                     >
-                      <SelectTrigger className="rounded-xl">
+                      <SelectTrigger>
                         <SelectValue placeholder="status pelajar" />
                       </SelectTrigger>
                       <SelectStatusPelajar />
@@ -422,7 +422,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
                       value={field.state.value}
                       onValueChange={field.handleChange}
                     >
-                      <SelectTrigger className="rounded-xl">
+                      <SelectTrigger>
                         <SelectValue placeholder="Kelamin" />
                       </SelectTrigger>
                       <SelectContent>

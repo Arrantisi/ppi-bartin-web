@@ -31,7 +31,7 @@ const buttonVariants = cva(
       },
       variant: {
         default:
-          "border-primary-300 bg-primary text-primary-foreground shadow-primary/24 shadow-xs [:active,[data-pressed]]:inset-shadow-[0_1px_--theme(--color-black/8%)] [:disabled,:active,[data-pressed]]:shadow-none [:hover,[data-pressed]]:bg-primary/90 disabled:bg-primary/50 disabled:border-2 disabled:border-primary/50",
+          "border-primary-700 bg-primary text-primary-foreground shadow-primary/24 shadow-xs [:active,[data-pressed]]:inset-shadow-[0_1px_--theme(--color-black/8%)] [:disabled,:active,[data-pressed]]:shadow-none [:hover,[data-pressed]]:bg-primary/90 disabled:bg-primary/50 disabled:border-2 disabled:border-primary/50",
         destructive:
           "border-destructive bg-destructive/70 text-white shadow-destructive/24 shadow-xs [:active,[data-pressed]]:inset-shadow-[0_1px_--theme(--color-black/8%)] [:disabled,:active,[data-pressed]]:shadow-none [:hover,[data-pressed]]:bg-destructive/90",
         "destructive-outline":

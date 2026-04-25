@@ -37,7 +37,7 @@ const NavMainEvent = ({ show = true }: { show?: boolean }) => {
             href={e.url}
             key={e.title}
             className={cn(
-              "flex flex-col justify-center items-center p-2 min-w-[55px] m-1.5 dark:text-foreground text-foreground/40",
+              "flex flex-col justify-center items-center p-2 w-40 m-1.5 dark:text-foreground text-foreground/40",
               e.url === params &&
                 "text-primary bg-primary/20 dark:bg-primary/50 rounded-2xl",
             )}
