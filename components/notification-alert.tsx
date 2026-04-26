@@ -13,6 +13,7 @@ import {
 } from "@/components/animate-ui/components/base/alert-dialog"; // Pastikan path ini sesuai projectmu
 import { BellRing } from "lucide-react";
 import { registerPushSubscription } from "@/lib/notifications";
+import { toast } from "sonner";
 
 export function NotificationAlert() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +26,7 @@ export function NotificationAlert() {
     // Jika sudah 'granted' atau 'denied', jangan ganggu user lagi.
     if (Notification.permission === "default") {
       // Tambahkan sedikit delay agar tidak terlalu agresif saat web baru terbuka
-      const timer = setTimeout(() => setIsOpen(true), 2000);
+      const timer = setTimeout(() => setIsOpen(true), 500);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -47,7 +48,7 @@ export function NotificationAlert() {
       const result = await response.json();
 
       if (result.success) {
-        alert("Alhamdulillah, Notif Aktif!");
+        toast.success("Notifikasi telah aktif");
         setIsOpen(false);
       }
     } catch (error) {
@@ -60,8 +61,8 @@ export function NotificationAlert() {
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogPopup>
         <AlertDialogHeader className="flex flex-col items-center text-center">
-          <div className="bg-blue-100 p-3 rounded-full mb-2">
-            <BellRing className="h-6 w-6 text-blue-600" />
+          <div className="bg-primary-100 p-3 rounded-full mb-2">
+            <BellRing className="h-6 w-6 text-primary-600" />
           </div>
           <AlertDialogTitle>Aktifkan Notifikasi?</AlertDialogTitle>
           <AlertDialogDescription>
@@ -73,10 +74,7 @@ export function NotificationAlert() {
           <AlertDialogCancel onClick={() => setIsOpen(false)}>
             Nanti Saja
           </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleAllow}
-            className="bg-blue-600 hover:bg-blue-700"
-          >
+          <AlertDialogAction onClick={handleAllow}>
             Ya, Aktifkan
           </AlertDialogAction>
         </AlertDialogFooter>

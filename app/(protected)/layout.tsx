@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { checkNoSiswa } from "@/server/data/users";
+import { NotificationAlert } from "@/components/notification-alert";
 
 export default async function ProtectedLayout({
   children,
@@ -22,5 +23,10 @@ export default async function ProtectedLayout({
     redirect("/complite-profile");
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <NotificationAlert />
+      {children}
+    </>
+  );
 }

@@ -4,7 +4,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { NotificationAlert } from "@/components/notification-alert";
 import { Toaster } from "@/components/ui/sonner";
 
 const fontSans = Poppins({
@@ -49,7 +48,6 @@ export default function RootLayout({
             <TanstackProvider>
               <Toaster position="top-center" />
               <SpeedInsights />
-              <NotificationAlert />
               {children}
             </TanstackProvider>
           </ThemeProvider>

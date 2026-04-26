@@ -1,18 +1,18 @@
 import prisma from "@/lib/prisma";
+import { studentAccount } from "@/server/actions/account";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  // Debug log untuk melihat apakah prisma terbaca
-  console.log("Is Prisma Defined?", !!prisma);
-  if (prisma) {
-    console.log("Is Model Defined?", !!prisma.notificationSubscription);
-  }
-
   try {
+    const { user } = await studentAccount();
+
     const sub = await req.json();
 
-    if (!prisma) {
-      throw new Error("Objek Prisma tidak ditemukan. Cek file import!");
+    if (!sub?.endpoint || !sub?.keys?.auth || !sub?.keys?.p256dh) {
+      return NextResponse.json(
+        { success: false, error: "Data subscription tidak lengkap" },
+        { status: 400 },
+      );
     }
 
     const savedSub = await prisma.notificationSubscription.upsert({
@@ -20,11 +20,13 @@ export async function POST(req: Request) {
       update: {
         auth: sub.keys.auth,
         p256dh: sub.keys.p256dh,
+        userId: user.id,
       },
       create: {
         endpoint: sub.endpoint,
         auth: sub.keys.auth,
         p256dh: sub.keys.p256dh,
+        userId: user.id,
       },
     });
 
