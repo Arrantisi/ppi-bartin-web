@@ -12,20 +12,46 @@ export const cancelParticipant = async (
   eventId: string,
   participantsId: string, // Tetap kita terima untuk validasi extra
 ): Promise<TServerPrompt> => {
+  const MAX_CANCEL_PER_EVENT = 2;
+
   try {
-    const { user: session } = await studentAccount();
-    await prisma.participants.delete({
+    const { user } = await studentAccount();
+
+    // hitung log pembatalan per event
+    const cancelConut = await prisma.cancelLog.count({
       where: {
-        id: participantsId,
-        userId: session.id,
         eventId: eventId,
+        userId: user.id,
       },
     });
+
+    if (cancelConut > MAX_CANCEL_PER_EVENT - 1) {
+      return {
+        msg: `Kamu sudah mencapai batas maksimal pembatalan (${MAX_CANCEL_PER_EVENT}/${MAX_CANCEL_PER_EVENT}) untuk event ini.`,
+        status: "error",
+      };
+    }
+
+    await prisma.$transaction([
+      prisma.participants.delete({
+        where: {
+          id: participantsId,
+          userId: user.id,
+          eventId: eventId,
+        },
+      }),
+      prisma.cancelLog.create({
+        data: {
+          eventId,
+          userId: user.id,
+        },
+      }),
+    ]);
 
     revalidatePath("/home/events");
 
     return {
-      msg: "Kamu telah membatalkan ikut kegiatan",
+      msg: `Partisipasi berhasil dibatalkan (${cancelConut + 1}/${MAX_CANCEL_PER_EVENT})`,
       status: "success",
     };
   } catch (error) {

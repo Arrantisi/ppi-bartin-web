@@ -38,6 +38,7 @@ model User {
   accounts     Account[]
   participants Participants[]
   sessions     Session[]
+  cancelLogs   CancelLog[]
 
   @@map("user")
 }
@@ -138,6 +139,7 @@ model Events {
   creator User   @relation("createdEvent", fields: [userId], references: [id], onDelete: Cascade)
 
   participants Participants[]
+  cancelLogs   CancelLog[]
 
   @@map("events")
 }
@@ -145,9 +147,10 @@ model Events {
 model Participants {
   id String @id @default(uuid())
 
-  userId      String
-  eventId     String
-  cancelCount Int?
+  userId  String
+  eventId String
+
+  createdAt DateTime @default(now())
 
   event Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
   user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -178,4 +181,19 @@ model CustomerService {
   createdAt DateTime @default(now())
 
   @@map("customerService")
+}
+
+model CancelLog {
+  id String @id @default(uuid())
+
+  userId  String
+  eventId String
+
+  createdAt DateTime @default(now())
+
+  event Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, eventId])
+  @@map("cancelLog")
 }

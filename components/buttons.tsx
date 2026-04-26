@@ -38,9 +38,9 @@ export const HoldButtonCancel = ({
     setOnLoading(true);
     const respons = await cancelParticipant(eventId, participantId);
     if (respons.status === "error") {
-      toast.error(respons.msg);
+      toast.error("Gagal", { description: respons.msg });
     } else if (respons.status === "success") {
-      toast.success(respons.msg);
+      toast.warning("Peringatan", { description: respons.msg });
     }
     setOnLoading(false);
   };
@@ -49,7 +49,7 @@ export const HoldButtonCancel = ({
     <HoldButton
       holdDuration={1500}
       variant={"outline"}
-      className="w-full text-center text-sm rounded-full capitalize py-2.5 px-3 select-none"
+      className="w-full text-center text-sm rounded-full capitalize py-2.5 px-3 select-none text-destructive border-destructive"
       onComplete={() => handleCancelEvent()}
       disabled={onLoading}
     >

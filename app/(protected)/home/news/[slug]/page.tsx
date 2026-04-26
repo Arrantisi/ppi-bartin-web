@@ -7,8 +7,6 @@ const DetailBeritaPage = async ({
 }) => {
   const { slug } = await params;
 
-  console.log(slug);
-
   return (
     <div>
       <NewsDetailComponent slug={slug} />

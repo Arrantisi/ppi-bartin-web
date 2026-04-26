@@ -3,6 +3,9 @@
 import { TgetAllEvent } from "@/server/data/events";
 import { HoldButtonCancel, HoldButtonJoin } from "../buttons";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "../ui/button";
+import { TimerOff } from "lucide-react";
+import { IconUserOff } from "@tabler/icons-react";
 
 interface EventActionButtonProps {
   event: TgetAllEvent;
@@ -28,16 +31,18 @@ export const EventActionButton = ({
 
   if (isExpired) {
     return (
-      <StatusBadge className="bg-secondary text-secondary-foreground">
-        Pendaftaran Berakhir
+      <StatusBadge className="text-info border-info gap-1.5">
+        <TimerOff className="w-3.5 h-3.5" />
+        <span>Pendaftaran Berakhir</span>
       </StatusBadge>
     );
   }
 
   if (capacityFull) {
     return (
-      <StatusBadge className="bg-orange-100 text-orange-600 dark:bg-orange-950 dark:text-orange-400 border-orange-200 dark:border-orange-900">
-        Kapasitas Penuh
+      <StatusBadge className="text-warning border-warning gap-1.5">
+        <IconUserOff className="w-3.5 h-3.5" />
+        <span>Kapasitas Penuh</span>
       </StatusBadge>
     );
   }
@@ -55,7 +60,11 @@ const StatusBadge = ({
 }) => (
   <div
     className={cn(
-      "w-full text-center text-sm font-semibold rounded-full capitalize py-2.5 px-3 border",
+      buttonVariants({
+        variant: "outline",
+        className:
+          "w-full text-center text-sm rounded-full capitalize py-2.5 px-3",
+      }),
       className,
     )}
   >
