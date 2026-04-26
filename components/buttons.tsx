@@ -10,7 +10,6 @@ import {
   IconLogout,
   IconMoon,
   IconPlus,
-  IconShareplay,
   IconSun,
   IconTrash,
 } from "@tabler/icons-react";
@@ -313,17 +312,5 @@ export const ButtonPreviusePage = () => {
     <Button onClick={() => router.back()}>
       <IconArrowLeftDashed /> Kembali
     </Button>
-  );
-};
-
-export const AdminLink = () => {
-  return (
-    <Link
-      href={""}
-      className="font-sm text-sm flex items-center text-primary hover:underline underline-offset-4"
-    >
-      PPI Bartin
-      <IconShareplay className="size-4 mx-1" />
-    </Link>
   );
 };

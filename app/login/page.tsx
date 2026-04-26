@@ -1,5 +1,6 @@
 import { GoogleProvider } from "@/components/buttons";
 import Image from "next/image";
+import Link from "next/link";
 
 const RegisterPage = () => {
   return (
@@ -29,7 +30,7 @@ const RegisterPage = () => {
           <p className="text-center text-xs text-muted-foreground">
             Mengalami masalah saat lengkapi data diri? Hubungi Admin PPI di{" "}
             <span className="font-medium text-primary hover:underline underline-offset-4 cursor-pointer">
-              @ppi_bartin
+              <Link href={""}>@ppi_bartin</Link>
             </span>
           </p>
         </div>

@@ -32,7 +32,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
         <Link
           href={`/home/events/${props.slug}`}
           key={props.id}
-          className="w-full min-[500px] relative space-y-5"
+          className="w-full h-[480px] relative space-y-5"
         >
           <div className="relative h-60 w-full">
             <Image
@@ -110,7 +110,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
               }))}
             />
           </DialogTrigger>
-          <div className="w-full max-w-[218px]">
+          <div className="w-full max-w-[180px]">
             <EventActionButton event={props} sessionUserId={session?.user.id} />
           </div>
         </CardFooter>

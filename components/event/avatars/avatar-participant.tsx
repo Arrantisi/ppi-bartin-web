@@ -5,7 +5,7 @@ const AvatarParticipant = ({
 }: {
   participant: { image: string }[];
 }) => {
-  const showParticipant = 3;
+  const showParticipant = 2;
   const filteredParticipant = participant.slice(0, showParticipant);
 
   return (

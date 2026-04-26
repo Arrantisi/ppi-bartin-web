@@ -8,7 +8,6 @@ import { useState } from "react";
 import { ButtonField } from "../buttons";
 import { completeProfile } from "@/server/actions/setting-user";
 import { useRouter } from "next/navigation";
-import { Card } from "../ui/card";
 import { toast } from "sonner";
 
 const RegisterField = () => {
@@ -33,10 +32,10 @@ const RegisterField = () => {
         value.nama_siswa,
       );
       if (matched.status === "success") {
-        toast.success(matched.msg);
+        toast.success("Berhasil", { description: matched.msg });
         router.push("/home");
       } else {
-        toast.error(matched.msg);
+        toast.error("Gagal", { description: matched.msg });
       }
 
       setLoading(false);
@@ -45,78 +44,71 @@ const RegisterField = () => {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <Card className="p-6 shadow-sm border-zinc-200">
-        <div className="space-y-6">
-          <form
-            className="space-y-4"
-            id="register-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              form.handleSubmit();
+      <div className="space-y-6">
+        <form
+          className="space-y-4"
+          id="register-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+        >
+          <form.Field name="nama_siswa">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field className="space-y-2">
+                  <FieldLabel className="text-sm font-medium">
+                    Nama Lengkap
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    placeholder="Masukkan nama sesuai ijazah/paspor"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  <FieldDescription className="text-[12px] leading-tight">
+                    Nama lengkap membantu sinkronisasi database lebih akurat.
+                  </FieldDescription>
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
             }}
-          >
-            <form.Field name="nomor_siswa">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field className="space-y-2">
-                    <FieldLabel className="text-sm font-medium">
-                      Nomor Siswa (NIS)
-                    </FieldLabel>
-                    <div className="relative">
-                      <Input
-                        id={field.name}
-                        placeholder="Contoh: 12345678"
-                        className="focus-visible:ring-primary"
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                      />
-                    </div>
-                    <FieldDescription className="text-[12px] leading-tight">
-                      Gunakan nomor induk resmi yang terdaftar di **PPI
-                      Bartın**.
-                    </FieldDescription>
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
+          </form.Field>
 
-            <form.Field name="nama_siswa">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field className="space-y-2">
-                    <FieldLabel className="text-sm font-medium">
-                      Nama Lengkap
-                    </FieldLabel>
+          <form.Field name="nomor_siswa">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field className="space-y-2">
+                  <FieldLabel className="text-sm font-medium">
+                    Nomor Siswa (NIS)
+                  </FieldLabel>
+                  <div className="relative">
                     <Input
                       id={field.name}
-                      placeholder="Masukkan nama sesuai ijazah/paspor"
+                      placeholder="Contoh: 12345678"
+                      className="focus-visible:ring-primary"
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
-                    <FieldDescription className="text-[12px] leading-tight">
-                      Nama lengkap membantu sinkronisasi database lebih akurat.
-                    </FieldDescription>
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
-          </form>
+                  </div>
+                  <FieldDescription className="text-[12px] leading-tight">
+                    Gunakan nomor induk resmi yang terdaftar di **PPI Bartın**.
+                  </FieldDescription>
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+        </form>
 
-          <div className="pt-2">
-            <ButtonField formId="register-form" loading={loading} />
-          </div>
+        <div className="pt-2">
+          <ButtonField formId="register-form" loading={loading} />
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

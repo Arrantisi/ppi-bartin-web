@@ -83,7 +83,7 @@ export const completeProfile = async (
 
     return {
       status: "success",
-      msg: "Profil berhasil diperbarui!",
+      msg: "Profile kamu sudah cocok",
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

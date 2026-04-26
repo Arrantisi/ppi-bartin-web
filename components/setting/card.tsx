@@ -11,12 +11,7 @@ import {
   CardFooter,
 } from "../ui/card";
 import { Input } from "../ui/input";
-import {
-  AdminLink,
-  ButtonSettings,
-  DeleteAccount,
-  ThemeToggle,
-} from "../buttons";
+import { ButtonSettings, DeleteAccount, ThemeToggle } from "../buttons";
 import { useForm } from "@tanstack/react-form";
 import {
   GantiNamaSiswaSchema,
@@ -33,6 +28,7 @@ import { Field, FieldError } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export const GantiNamaSiswaCard = () => {
   const [loading, setLoading] = useState(false);
@@ -96,7 +92,9 @@ export const GantiNamaSiswaCard = () => {
         <div className="flex items-center">
           <p className="font-sm text-sm flex items-center">
             Ada masalah tanya admin &nbsp;
-            <AdminLink />
+            <span className="font-medium text-primary hover:underline underline-offset-4 cursor-pointer">
+              <Link href={""}>@ppi_bartin</Link>
+            </span>
           </p>{" "}
         </div>
         <ButtonSettings type="submit" form="ganti-nama-field">
@@ -175,7 +173,9 @@ export const GantiNomorSiswaCard = () => {
         <div className="flex items-center">
           <p className="font-sm text-sm flex items-center">
             Ada masalah tanya admin &nbsp;
-            <AdminLink />
+            <span className="font-medium text-primary hover:underline underline-offset-4 cursor-pointer">
+              <Link href={""}>@ppi_bartin</Link>
+            </span>
           </p>{" "}
         </div>
         <ButtonSettings type="submit" form="ganti-nomor-field">
@@ -201,7 +201,9 @@ export const GantiTema = () => {
         <div className="flex items-center">
           <p className="font-sm text-sm flex items-center">
             Ada masalah tanya admin &nbsp;
-            <AdminLink />
+            <span className="font-medium text-primary hover:underline underline-offset-4 cursor-pointer">
+              <Link href={""}>@ppi_bartin</Link>
+            </span>
           </p>{" "}
         </div>
       </CardFooter>
