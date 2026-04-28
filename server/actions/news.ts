@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { createNewsSchema, TcreateNewsSchema } from "@/schemas";
+import { TcreateNewsSchema } from "@/schemas";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
 import { revalidatePath } from "next/cache";
@@ -34,19 +34,7 @@ export const updateNews = async (
   { judul, catagory, desckripsi, fileKey, ringkasan }: TcreateNewsSchema,
 ): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
-  const validation = createNewsSchema.safeParse({
-    judul,
-    catagory,
-    desckripsi,
-    fileKey,
-    ringkasan,
-  });
-  if (!validation.success) {
-    return {
-      status: "error",
-      msg: "Data berita tidak valid",
-    };
-  }
+
   try {
     const updatedSlug = createSlug(judul);
     const ownedNews = await prisma.news.findFirst({
@@ -93,19 +81,6 @@ export const createNews = async ({
   ringkasan,
 }: TcreateNewsSchema): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
-  const validation = createNewsSchema.safeParse({
-    judul,
-    catagory,
-    desckripsi,
-    fileKey,
-    ringkasan,
-  });
-  if (!validation.success) {
-    return {
-      status: "error",
-      msg: "Data berita tidak valid",
-    };
-  }
 
   const slug = createSlug(judul);
 

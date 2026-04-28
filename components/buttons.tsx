@@ -132,12 +132,16 @@ export const ButtonHeaderField = ({
   );
 };
 
-export const ButtonCreate = ({ catagory }: { catagory: "news" | "events" }) => {
-  const page =
-    catagory === "events" ? "/home/events/create" : "/home/news/create";
-
+export const ButtonCreate = ({
+  catagory,
+}: {
+  catagory: "berita" | "acara";
+}) => {
   return (
-    <Link href={page} className={"rounded-full bg-primary p-1.5 text-white"}>
+    <Link
+      href={`/home/${catagory}/create`}
+      className={"rounded-full bg-primary p-1.5 text-white"}
+    >
       <IconPlus />
     </Link>
   );

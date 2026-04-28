@@ -2,7 +2,7 @@
 
 import { studentAccount } from "@/server/actions/account";
 import prisma from "@/lib/prisma";
-import { createEventSchema, TcreateEventSchema } from "@/schemas";
+import { TcreateEventSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
@@ -75,23 +75,6 @@ export const createAcara = async ({
   persyaratan,
 }: TcreateEventSchema): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
-  const validation = createEventSchema.safeParse({
-    judul,
-    deskripsi,
-    date,
-    lokasi,
-    maxCapacity,
-    batasDaftar,
-    fileKey,
-    catagory,
-    persyaratan,
-  });
-  if (!validation.success) {
-    return {
-      status: "error",
-      msg: "Data acara tidak valid",
-    };
-  }
 
   const slug = createSlug(judul);
 
@@ -139,7 +122,6 @@ export const updateAcara = async (
     date,
     lokasi,
     maxCapacity,
-
     batasDaftar,
     fileKey,
     catagory,
@@ -147,24 +129,6 @@ export const updateAcara = async (
   }: TcreateEventSchema,
 ): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
-  const validation = createEventSchema.safeParse({
-    judul,
-    deskripsi,
-    date,
-    lokasi,
-    maxCapacity,
-
-    batasDaftar,
-    fileKey,
-    catagory,
-    persyaratan,
-  });
-  if (!validation.success) {
-    return {
-      status: "error",
-      msg: "Data acara tidak valid",
-    };
-  }
 
   try {
     const updattedSlug = createSlug(judul);
@@ -232,7 +196,23 @@ export const deleteEvent = async (eventId: string): Promise<TServerPrompt> => {
 };
 
 export const joinEvent = async (eventId: string): Promise<TServerPrompt> => {
-  const session = await studentAccount();
+  const MAX_CANCEL_PER_EVENT = 2;
+
+  const { user } = await studentAccount();
+
+  const cancelCount = await prisma.cancelLog.count({
+    where: {
+      eventId,
+      userId: user.id,
+    },
+  });
+
+  if (cancelCount > MAX_CANCEL_PER_EVENT - 1) {
+    return {
+      status: "error",
+      msg: "Kamu sudah di blokir dari event ini",
+    };
+  }
 
   const event = await prisma.events.findUnique({
     where: { id: eventId },
@@ -243,7 +223,7 @@ export const joinEvent = async (eventId: string): Promise<TServerPrompt> => {
         },
       },
       participants: {
-        where: { userId: session.user.id },
+        where: { userId: user.id },
       },
     },
   });
@@ -273,7 +253,7 @@ export const joinEvent = async (eventId: string): Promise<TServerPrompt> => {
     await prisma.participants.create({
       data: {
         eventId,
-        userId: session.user.id,
+        userId: user.id,
       },
     });
 

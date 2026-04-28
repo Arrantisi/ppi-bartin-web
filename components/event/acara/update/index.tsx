@@ -18,7 +18,7 @@ export const UpdateEventComponent = ({ slug }: { slug: string }) => {
 
   return (
     <div>
-      <ButtonHeaderField href="/home/events" label="Edit Acara" />
+      <ButtonHeaderField href="/home/acara" label="Edit Acara" />
       <UpdateEventContent slug={slug} data={data} />
     </div>
   );

@@ -4,7 +4,7 @@ import { ButtonHeaderField } from "@/components/buttons";
 export const CreateNewsComponent = () => {
   return (
     <div>
-      <ButtonHeaderField href="/home/news" label="Buat Berita" />
+      <ButtonHeaderField href="/home/berita" label="Buat Berita" />
       <CreateNewsContent />
     </div>
   );

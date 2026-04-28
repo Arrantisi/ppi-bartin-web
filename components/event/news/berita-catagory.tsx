@@ -52,7 +52,7 @@ const BeritaCatagory = () => {
         </InputGroup> */}
         <div className="h-[42px] w-full bg-card rounded-full" />
 
-        <ButtonCreate catagory="news" />
+        <ButtonCreate catagory="berita" />
       </div>
       <Tabs defaultValue="all" className="w-full mt-3">
         {/* 1. Scrollable Tabs List */}

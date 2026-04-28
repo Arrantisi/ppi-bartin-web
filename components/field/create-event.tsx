@@ -12,7 +12,6 @@ import props from "@/props/create-acara-props.json";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
-
 import Link from "next/link";
 import { UploaderPhoto } from "../event/uploader/upload-event-news";
 import {
@@ -72,9 +71,8 @@ export const CreateEventField = () => {
         });
       } else if (matched.status === "success") {
         toast.success("Berhasil Membuat Acara");
-        router.push(`/home/events`);
+        router.push(`/home/acara`);
       }
-
       setIsLoading(false);
     },
   });
@@ -349,7 +347,7 @@ export const CreateEventField = () => {
       </div>
       <div className="flex flex-col-reverse items-center justify-center gap-2 mt-6">
         <Link
-          href={"/home/events"}
+          href={"/home/acara"}
           className={buttonVariants({
             variant: "outline",
             className: "text-sm px-4 py-3 w-full",

@@ -30,7 +30,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
     <Dialog>
       <Card className="py-0 ">
         <Link
-          href={`/home/events/${props.slug}`}
+          href={`/home/acara/${props.slug}`}
           key={props.id}
           className="w-full h-[480px] relative space-y-5"
         >

@@ -71,12 +71,11 @@ export const CreateNewsField = () => {
       setIsLoading(true);
       const data = await createNews(value);
       if (data.status === "error") {
-        toast.error("maaf terjadi kesalahan");
+        toast.error(data.msg);
       } else if (data.status === "success") {
         toast.success("Berahail Membuat Berita");
-        router.push("/home/news");
+        router.push("/home/berita");
       }
-      console.log(value);
       setIsLoading(false);
     },
   });
@@ -246,7 +245,7 @@ export const CreateNewsField = () => {
       </form>
       <div className="flex flex-col-reverse items-center justify-center gap-2 mt-6">
         <Link
-          href={"/home/news"}
+          href={"/home/berita"}
           className={buttonVariants({
             variant: "outline",
             className: "text-sm px-4 py-3 w-full",

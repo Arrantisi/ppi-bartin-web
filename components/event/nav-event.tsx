@@ -20,8 +20,8 @@ type EventProps = {
 const NavMainEvent = ({ show = true }: { show?: boolean }) => {
   const eventProps: EventProps = [
     { title: "Beranda", icon: IconSmartHome, url: "/home" },
-    { title: "Kegiatan", icon: IconCalendarWeek, url: "/home/events" },
-    { title: "Berita", icon: IconNews, url: "/home/news" },
+    { title: "Kegiatan", icon: IconCalendarWeek, url: "/home/acara" },
+    { title: "Berita", icon: IconNews, url: "/home/berita" },
     { title: "Profil", icon: IconUser, url: "/home/profile" },
   ];
 

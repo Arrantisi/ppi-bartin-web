@@ -1,14 +1,8 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  IconArrowLeft,
-  IconDots,
-  IconCopy,
-  IconEdit,
-  IconTrash,
-} from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
+import { IconArrowLeft, IconDots } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -16,42 +10,18 @@ import { formattedDate } from "@/utils/date-format";
 import { imageUrl } from "@/utils/image-url";
 import { useNewsBySlug } from "@/hooks/use-news";
 import { LoaderOneDemo } from "@/components/loader";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import Link from "next/link";
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-} from "@/components/animate-ui/components/base/alert-dialog";
+import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
+import { AlertDialog } from "@/components/animate-ui/components/base/alert-dialog";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 import { AlertDEelete } from "../../alert-delete";
-import { toast } from "sonner";
+import { DrawerOpsi } from "@/components/drawers/opsi";
 
 export const NewsDetailComponent = ({ slug }: { slug: string }) => {
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const router = useRouter();
 
   const { data: session } = authClient.useSession();
-  const handleCopyLink = () => {
-    const currentUrl = window.location.href; // Mengambil URL halaman detail saat ini
-
-    navigator.clipboard
-      .writeText(currentUrl)
-      .then(() => {
-        // Gunakan toast atau alert sederhana
-        toast.success("Link berhasil disalin ke clipboard!");
-        // Jika kamu punya library toast (seperti shadcn/ui toast), gunakan itu:
-        // toast({ title: "Tersalin!", description: "Link acara telah disalin." });
-      })
-      .catch((err) => {
-        console.error("Gagal menyalin link: ", err);
-      });
-  };
 
   const { data, isLoading } = useNewsBySlug({ slug });
   if (isLoading) {
@@ -70,7 +40,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
             variant="outline"
             size="icon-xl"
             className="rounded-full"
-            onClick={() => router.push("/home/news")}
+            onClick={() => router.push("/home/berita")}
           >
             <IconArrowLeft size={20} />
           </Button>
@@ -90,45 +60,12 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
                   <IconDots />
                 </Button>
               </DrawerTrigger>
-              <DrawerContent className="p-4">
-                <div className="flex flex-col gap-2 pb-6">
-                  <DrawerTitle className="text-center text-sm font-medium text-muted-foreground mb-4">
-                    Opsi Acara
-                  </DrawerTitle>
-
-                  <Button
-                    variant="ghost"
-                    className="justify-start gap-3 h-12 rounded-xl"
-                    onClick={() => handleCopyLink()}
-                  >
-                    <IconCopy size={20} /> Salin Link
-                  </Button>
-
-                  {session?.user.id === data.creator.id && (
-                    <>
-                      <Link href={`/home/events/update/${data.slug}`}>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start gap-3 rounded-xl"
-                        >
-                          <IconEdit size={20} /> Edit Berita
-                        </Button>
-                      </Link>
-
-                      <AlertDialogTrigger
-                        className={buttonVariants({
-                          variant: "ghost",
-                          className:
-                            "w-full justify-start gap-3 rounded-xl bg-destructive/45 ring ring-destructive text-foreground",
-                        })}
-                      >
-                        <IconTrash size={20} />
-                        <span>Hapus Berita</span>
-                      </AlertDialogTrigger>
-                    </>
-                  )}
-                </div>
-              </DrawerContent>
+              <DrawerOpsi
+                userId={session?.user.id || ""}
+                creatorId={data.creator.id}
+                slug={data.slug}
+                title="berita"
+              />
             </Drawer>
           </div>
         </div>

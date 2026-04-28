@@ -14,7 +14,7 @@ export const FrameNews = ({ ...news }: TgetNews) => {
 
   return (
     <Link
-      href={`/home/news/${news.slug}`}
+      href={`/home/berita/${news.slug}`}
       key={news.slug}
       className="w-full relative flex items-center p-[7px] box-border gap-[0.937rem] text-left text-[0.688rem] text-gray font-sf-pro bg-card shadow rounded-3xl "
     >

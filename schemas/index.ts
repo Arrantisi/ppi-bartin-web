@@ -19,6 +19,16 @@ const CATEGORY_VALUES = [
   "kaderisasi",
 ] as const;
 
+const CATAGORY_BERITA = [
+  "beasiswa",
+  "kegiatan",
+  "berita-utama",
+  "kabar-kampus",
+  "prestasi",
+  "artikel",
+  "pengumuman",
+] as const;
+
 export const customerServiceSchema = z.object({
   catagory: z.string().min(2, "catagory minimal 2 karakter"),
   subject: z.string().min(2, "subject minimal 2 karakter"),
@@ -35,7 +45,11 @@ export const createNewsSchema = z.object({
     .max(100, "Judul tidak boleh lebih dari 100 kata"),
   desckripsi: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
   fileKey: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
-  catagory: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
+  catagory: z
+    .string()
+    .refine((value) => CATAGORY_BERITA.includes(value as never), {
+      message: "Catagory tidak valid",
+    }),
   ringkasan: z
     .string()
     .min(8, "Deskripsi acara minimal 8 karakter")

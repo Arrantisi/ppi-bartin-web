@@ -18,7 +18,7 @@ export const UpdateNewsComponent = ({ slug }: { slug: string }) => {
 
   return (
     <div>
-      <ButtonHeaderField href="/home/news" label="Edit Berita" />
+      <ButtonHeaderField href="/home/berita" label="Edit Berita" />
       <UpdateNewsContent slug={slug} data={data} />
     </div>
   );

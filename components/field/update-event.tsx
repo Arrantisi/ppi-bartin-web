@@ -72,9 +72,8 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
         });
       } else if (matched.status === "success") {
         toast.success("Selamat Kamu Telah Berhasil Membuat Acara");
-        router.push(`/home/events`);
+        router.push(`/home/acara`);
       }
-
       setIsLoading(false);
     },
   });
@@ -349,7 +348,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
       </div>
       <div className="flex flex-col-reverse items-center justify-center gap-2 mt-6">
         <Link
-          href={"/home/events"}
+          href={"/home/acara"}
           className={buttonVariants({
             variant: "outline",
             className: "text-sm px-4 py-3 w-full",
