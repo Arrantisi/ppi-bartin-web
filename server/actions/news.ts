@@ -98,9 +98,9 @@ export const createNews = async ({
     });
 
     await sendPushToAll({
-      title: "📰 Kabar Bartin Hari Ini",
+      title: "Berita Bartin Hari Ini",
       message: `${judul}`,
-      url: `/home/news/${slug}`,
+      url: `/home/berita/${slug}`,
     });
 
     revalidatePath(`/home/news/uploader/${slug}`);
