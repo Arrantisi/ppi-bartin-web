@@ -2,8 +2,47 @@
 
 import { studentAccount } from "../actions/account";
 import prisma from "@/lib/prisma";
-import { FormUsername, TupdateProfileSchema } from "@/schemas";
+import {
+  FormPersonalSchema,
+  FormUsername,
+  TupdateProfileSchema,
+} from "@/schemas";
 import { TServerPrompt } from "@/types";
+
+export const compliteProfile = async ({
+  ...data
+}: FormPersonalSchema): Promise<TServerPrompt> => {
+  const { user } = await studentAccount();
+
+  try {
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        angkatan: data.angkatan,
+        fakultas: data.fakultas,
+        jenisKelamin: data.jenisKelamin,
+        jurusan: data.jurusan,
+        statusPelajar: data.statusPelajar,
+        tanggalLahir: data.tanggalLahir,
+        noTelephone: data.telpon,
+        username: data.username,
+      },
+    });
+
+    return {
+      msg: "Berhasil Memperbarui Profile",
+      status: "success",
+    };
+  } catch (error) {
+    console.error({ error });
+    return {
+      msg: "ada masalah di server mohon segera hubungi admin atau tulis pesan di umpan balik",
+      status: "error",
+    };
+  }
+};
 
 export const updateProfile = async ({
   noSiswa,

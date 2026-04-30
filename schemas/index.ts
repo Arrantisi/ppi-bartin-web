@@ -1,33 +1,41 @@
 import * as z from "zod";
+import {
+  ANGKATAN_OPTIONS,
+  CATAGORY_BERITA,
+  CATEGORY_VALUES,
+  JENIS_KELAMIN_OPTIONS,
+  STATUS_PELAJAR_OPTIONS,
+} from "./utils";
 
-const STATUS_PELAJAR_OPTIONS = ["TÖMER", "D2", "D3", "S1", "S2", "S3"] as const;
-const ANGKATAN_OPTIONS = [
-  "2020",
-  "2021",
-  "2022",
-  "2023",
-  "2024",
-  "2025",
-] as const;
-const JENIS_KELAMIN_OPTIONS = ["laki-laki", "perempuan"] as const;
-const CATEGORY_VALUES = [
-  "beasiswa",
-  "akademik",
-  "sosial",
-  "olahraga",
-  "pengumuman",
-  "kaderisasi",
-] as const;
+export const formPersonalSchema = z.object({
+  username: z
+    .string()
+    .min(2, "Username minimal 2 karakter")
+    .max(12, "Username maksimal 12 karakter"),
+  telpon: z.string().min(8),
+  jenisKelamin: z
+    .string()
+    .refine((value) => JENIS_KELAMIN_OPTIONS.includes(value as never), {
+      message: "Jenis kelamin harus laki-laki atau perempuan",
+    }),
+  tanggalLahir: z.date({
+    error: "Silakan tentukan tanggal lahir anda",
+  }),
+  statusPelajar: z
+    .string()
+    .refine((value) => STATUS_PELAJAR_OPTIONS.includes(value as never), {
+      message: "Status pelajar tidak valid",
+    }),
+  fakultas: z.string().min(3, "Fakultas minimal 3 karakter"),
+  jurusan: z.string().min(3, "Jurusan minimal 3 karakter"),
+  angkatan: z
+    .string()
+    .refine((value) => ANGKATAN_OPTIONS.includes(value as never), {
+      message: "Angkatan tidak valid",
+    }),
+});
 
-const CATAGORY_BERITA = [
-  "beasiswa",
-  "kegiatan",
-  "berita-utama",
-  "kabar-kampus",
-  "prestasi",
-  "artikel",
-  "pengumuman",
-] as const;
+export type FormPersonalSchema = z.infer<typeof formPersonalSchema>;
 
 export const customerServiceSchema = z.object({
   catagory: z.string().min(2, "catagory minimal 2 karakter"),

@@ -1,5 +1,5 @@
 import ButtonUser from "@/components/button-user";
-import RegisterField from "@/components/field/complite-profile-field";
+import RegisterField from "@/components/field/register-profile-field";
 import Image from "next/image";
 import Link from "next/link";
 

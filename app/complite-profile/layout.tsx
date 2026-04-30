@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { checkNoSiswa } from "@/server/data/users";
 import { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -18,6 +19,16 @@ const CompleteProfileLayout = async ({
   });
 
   if (!session) redirect("/login");
+
+  const student = await checkNoSiswa();
+
+  if (!student?.nomorSiswa) {
+    redirect("/register-profile");
+  }
+
+  if (student.username) {
+    redirect("/home");
+  }
 
   return <>{children}</>;
 };

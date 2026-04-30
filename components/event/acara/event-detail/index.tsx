@@ -42,7 +42,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
       <Drawer open={isOpen} onOpenChange={setIsOpen}>
         <div className="relative flex flex-col overflow-hidden ">
           {/* Gambar & Header Sticky */}
-          <div className="fixed w-full z-10 ">
+          <div className="absolute w-full z-10 ">
             <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
               <Button
                 variant="outline"
