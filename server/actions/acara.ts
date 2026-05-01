@@ -27,7 +27,7 @@ export const cancelParticipant = async (
 
     if (cancelConut > MAX_CANCEL_PER_EVENT - 1) {
       return {
-        msg: `Kamu sudah mencapai batas maksimal pembatalan (${MAX_CANCEL_PER_EVENT}/${MAX_CANCEL_PER_EVENT}) untuk event ini.`,
+        msg: `Kamu sudah mencapai batas maksimal pembatalan ${MAX_CANCEL_PER_EVENT}/${MAX_CANCEL_PER_EVENT} untuk event ini.`,
         status: "error",
       };
     }
@@ -51,7 +51,7 @@ export const cancelParticipant = async (
     revalidatePath("/home/events");
 
     return {
-      msg: `Partisipasi berhasil dibatalkan (${cancelConut + 1}/${MAX_CANCEL_PER_EVENT})`,
+      msg: `Kamu telah membatalkan sebanyak ${MAX_CANCEL_PER_EVENT}/${MAX_CANCEL_PER_EVENT}; setelah itu pendaftaran akan diblokir.`,
       status: "success",
     };
   } catch (error) {
@@ -71,8 +71,6 @@ export const createAcara = async ({
   maxCapacity,
   batasDaftar,
   fileKey,
-  catagory,
-  persyaratan,
 }: TcreateEventSchema): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
 
@@ -83,8 +81,6 @@ export const createAcara = async ({
       data: {
         batasDaftar,
         fileKey,
-        catagory,
-        persyaratan,
         slug,
         judul,
         userId: user.id,
@@ -124,8 +120,6 @@ export const updateAcara = async (
     maxCapacity,
     batasDaftar,
     fileKey,
-    catagory,
-    persyaratan,
   }: TcreateEventSchema,
 ): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
@@ -148,11 +142,8 @@ export const updateAcara = async (
       data: {
         batasDaftar,
         fileKey,
-        catagory,
-        persyaratan,
         slug: updattedSlug,
         judul,
-
         deskripsi,
         maxCapacity,
         date,

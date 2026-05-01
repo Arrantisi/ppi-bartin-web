@@ -5,7 +5,9 @@ import {
   IconArrowLeft,
   IconCalendarWeek,
   IconDots,
+  IconEye,
   IconMapPin,
+  IconX,
 } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -22,6 +24,12 @@ import { AlertDialog } from "@/components/animate-ui/components/base/alert-dialo
 import { AlertDEelete } from "../../alert-delete";
 import { EventActionButton } from "../../action-button-event";
 import { DrawerOpsi } from "@/components/drawers/opsi";
+import {
+  Dialog,
+  DialogClose,
+  DialogPopup,
+  DialogTrigger,
+} from "@/components/animate-ui/components/base/dialog";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -80,13 +88,39 @@ export const EventDetail = ({ slug }: { slug: string }) => {
           </div>
 
           <div className="flex flex-col h-full">
-            <Image
-              src={imageUrl(data.fileKey)}
-              alt={""}
-              height={200}
-              width={200}
-              className="object-cover z-0 w-full h-100"
-            />
+            <div className="relative">
+              <Image
+                src={imageUrl(data.fileKey)}
+                alt={""}
+                height={200}
+                width={200}
+                className="object-cover z-0 w-full h-100" // agar gambar terlihat lebih rapi dan kalau ingin gambar terlihat lebih besar ada buttonnya
+              />
+              <Dialog>
+                <DialogTrigger className="flex items-center justify-center gap-2 absolute bottom-10 left-3 p-2 bg-background rounded-xl shadow border-border text-center text-sm font-medium hover:bg-background/80 cursor-pointer transition-all duration-300">
+                  <IconEye size={16} />
+                  Lihat Gambar
+                </DialogTrigger>
+                <DialogPopup showCloseButton={false}>
+                  <Image
+                    src={imageUrl(data.fileKey)}
+                    alt={""}
+                    height={200}
+                    width={200}
+                    className="object-cover z-0 w-full"
+                  />
+                  <DialogClose>
+                    <Button
+                      variant="outline"
+                      size="icon-xl"
+                      className="rounded-full"
+                    >
+                      <IconX size={16} />
+                    </Button>
+                  </DialogClose>
+                </DialogPopup>
+              </Dialog>
+            </div>
 
             <div className="relative px-6 flex flex-col justify-between bg-background -mt-10 pt-4 pb-5">
               <div>

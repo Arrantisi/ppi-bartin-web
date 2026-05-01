@@ -39,7 +39,9 @@ export const HoldButtonCancel = ({
     if (respons.status === "error") {
       toast.error("Gagal", { description: respons.msg });
     } else if (respons.status === "success") {
-      toast.warning("Peringatan", { description: respons.msg });
+      toast.warning("Partisipasi anda telah dibatalkan!", {
+        description: respons.msg,
+      });
     }
     setOnLoading(false);
   };

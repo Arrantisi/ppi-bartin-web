@@ -22,24 +22,8 @@ import {
   IconUpload,
   IconUsers,
 } from "@tabler/icons-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { TupdateEventProps } from "@/types";
 import { toast } from "sonner";
-
-const catagoryTrigger = [
-  { ctg: "beasiswa", label: "Beasiswa & Finansial" },
-  { ctg: "akademik", label: "Seminar & Edukasi" },
-  { ctg: "sosial", label: "Gathering & Sosial" },
-  { ctg: "olahraga", label: "Olahraga & Hobi" },
-  { ctg: "pengumuman", label: "Info Penting" },
-  { ctg: "kaderisasi", label: "Internal PPI" },
-];
 
 export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -58,9 +42,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
       deskripsi: data?.deskripsi || "",
       maxCapacity: data?.maxCapacity || 0,
       batasDaftar: data?.batasDaftar || new Date(),
-      catagory: data?.catagory || "",
       fileKey: data?.fileKey || "",
-      persyaratan: data?.persyaratan || "",
     },
     validators: { onSubmit: createEventSchema },
     onSubmit: async ({ value }: { value: TcreateEventSchema }) => {
@@ -165,41 +147,25 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
                 );
               }}
             </form.Field>
-            <form.Field name="catagory">
+            <form.Field name="batasDaftar">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconFileText size={18} className="text-primary" />
-                      Catagory
-                      <span className="text-destructive">*</span>
+                      <IconCalendar size={18} className="text-primary" />
+                      Batas Daftar <span className="text-destructive">*</span>
                     </FieldLabel>
-                    <Select
-                      name={field.name}
+
+                    <DatePickerField
+                      onChange={(e) => {
+                        if (e) field.handleChange(e);
+                      }}
+                      disabled={[{ before: today }, { after: isDate }]}
                       value={field.state.value}
-                      onValueChange={field.handleChange}
-                    >
-                      <SelectTrigger
-                        id="select-catagory-news"
-                        data-invalid={isInvalid}
-                        className="rounded-2xl"
-                      >
-                        <SelectValue placeholder={"select catagory"} />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-2xl">
-                        {catagoryTrigger.map(({ ctg }) => (
-                          <SelectItem
-                            key={ctg}
-                            className="rounded-2xl"
-                            value={ctg}
-                          >
-                            {ctg}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    />
+
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
@@ -292,58 +258,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
                 );
               }}
             </form.Field>
-            <form.Field name="batasDaftar">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field>
-                    <FieldLabel>
-                      <IconCalendar size={18} className="text-primary" />
-                      Batas Daftar <span className="text-destructive">*</span>
-                    </FieldLabel>
-
-                    <DatePickerField
-                      onChange={(e) => {
-                        if (e) field.handleChange(e);
-                      }}
-                      disabled={[{ before: today }, { after: isDate }]}
-                      value={field.state.value}
-                    />
-
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
           </div>
-
-          <form.Field name="persyaratan">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field>
-                  <FieldLabel>
-                    <IconFileText size={18} className="text-primary" />
-                    Persyaratan Peserta{" "}
-                    <span className="text-destructive">*</span>
-                  </FieldLabel>
-
-                  <Textarea
-                    id={field.name}
-                    placeholder={props.textarea[3].placeholder}
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
         </form>
       </div>
       <div className="flex flex-col-reverse items-center justify-center gap-2 mt-6">

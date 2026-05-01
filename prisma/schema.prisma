@@ -125,9 +125,9 @@ model Events {
   date        DateTime
   deskripsi   String
   maxCapacity Int
-  catagory    String
+  catagory    String?
   batasDaftar DateTime
-  persyaratan String
+  persyaratan String?
   fileKey     String
 
   slug String @unique

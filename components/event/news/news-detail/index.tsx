@@ -104,9 +104,9 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
             <Image
               src={imageUrl(data.fileKey)}
               alt="Beasiswa Turki"
-              height={100}
               width={500}
-              className="object-cover h-[450px]"
+              height={1000}
+              className="object-cover"
               priority
             />
           </div>

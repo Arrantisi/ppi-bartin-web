@@ -2,7 +2,6 @@ import * as z from "zod";
 import {
   ANGKATAN_OPTIONS,
   CATAGORY_BERITA,
-  CATEGORY_VALUES,
   JENIS_KELAMIN_OPTIONS,
   STATUS_PELAJAR_OPTIONS,
 } from "./utils";
@@ -10,7 +9,7 @@ import {
 export const formPersonalSchema = z.object({
   username: z
     .string()
-    .min(2, "Username minimal 2 karakter")
+    .min(4, "Username minimal 2 karakter")
     .max(12, "Username maksimal 12 karakter"),
   telpon: z.string().min(8),
   jenisKelamin: z
@@ -124,14 +123,6 @@ export const createEventSchema = z
       error: "Silakan tentukan batas pendaftaran",
     }),
     fileKey: z.string().min(1, "Gambar/File wajib diunggah"),
-    // Validasi kategori agar sesuai dengan list
-
-    catagory: z
-      .string()
-      .refine((value) => CATEGORY_VALUES.includes(value as never), {
-        message: "Pilih kategori yang valid",
-      }),
-    persyaratan: z.string().min(8, "Persyaratan minimal 8 karakter"),
     maxCapacity: z
       .number({ error: "Kapasitas harus berupa angka" })
       .int("Harus berupa bilangan bulat")

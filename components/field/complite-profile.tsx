@@ -4,7 +4,7 @@
 import { formPersonalSchema, FormPersonalSchema } from "@/schemas";
 import "react-phone-number-input/style.css";
 import { useForm } from "@tanstack/react-form";
-import { Field, FieldError, FieldLabel } from "../ui/field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -315,7 +315,7 @@ export const UpdateProfileField = () => {
                           <Field>
                             <FieldLabel className="gap-1">
                               <IconPhone size={18} className="text-primary" />
-                              Nomor Telephone
+                              Nomor Whatsapp
                             </FieldLabel>
                             <PhoneInput
                               type="tel"
@@ -324,6 +324,9 @@ export const UpdateProfileField = () => {
                               value={field.state.value}
                               onChange={(e) => field.handleChange(e)}
                             />
+                            <FieldDescription className="text-[12px] leading-tight">
+                              Gunakan nomor whatsapp anda untuk komunikasi.
+                            </FieldDescription>
                             {isInvalid && (
                               <FieldError errors={field.state.meta.errors} />
                             )}

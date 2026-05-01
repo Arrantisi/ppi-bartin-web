@@ -84,7 +84,7 @@ const RegisterField = () => {
               return (
                 <Field className="space-y-2">
                   <FieldLabel className="text-sm font-medium">
-                    Nomor Siswa (NIS)
+                    Nomor Öğrenci
                   </FieldLabel>
                   <div className="relative">
                     <Input
@@ -96,7 +96,8 @@ const RegisterField = () => {
                     />
                   </div>
                   <FieldDescription className="text-[12px] leading-tight">
-                    Gunakan nomor induk resmi yang terdaftar di **PPI Bartın**.
+                    Gunakan nomor öğrenci yang anda daftarkan saat pendaftaran
+                    data diri di **PPI Bartın**.
                   </FieldDescription>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
