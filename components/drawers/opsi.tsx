@@ -4,18 +4,19 @@ import { Button, buttonVariants } from "../ui/button";
 import { IconCopy, IconEdit, IconTrash } from "@tabler/icons-react";
 import { handleCopyLink } from "@/utils/copy-link";
 import Link from "next/link";
-import { AlertDialogTrigger } from "../animate-ui/components/base/alert-dialog";
 
 export const DrawerOpsi = ({
   userId,
   creatorId,
   slug,
   title,
+  onDelete,
 }: {
   userId: string;
   creatorId: string;
   slug: string;
   title: "berita" | "acara";
+  onDelete?: () => void;
 }) => {
   const matchCreator = userId === creatorId;
 
@@ -41,20 +42,24 @@ export const DrawerOpsi = ({
                 variant="ghost"
                 className="w-full justify-start gap-3 h-10"
               >
-                <IconEdit size={20} className="text-info" /> Edit Acara
+                <IconEdit size={20} className="text-info" /> Edit{" "}
+                <span className="capitalize">{title}</span>
               </Button>
             </Link>
 
-            <AlertDialogTrigger
+            <Button
               className={buttonVariants({
                 variant: "destructive-outline",
                 className:
                   "w-full justify-start gap-3 h-10 border-none shadow-none not-disabled:not-active:not-data-pressed:before:shadow-none",
               })}
+              onClick={onDelete}
             >
               <IconTrash size={20} />
-              <span>Hapus Acara</span>
-            </AlertDialogTrigger>
+              <span>
+                Hapus <span className="capitalize">{title}</span>
+              </span>
+            </Button>
           </>
         )}
       </div>

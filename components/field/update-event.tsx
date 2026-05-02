@@ -243,6 +243,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
                     <Input
                       type="number"
                       id={field.name}
+                      inputMode="numeric"
                       placeholder={props.textarea[5].placeholder}
                       className="focus-visible:ring-primary"
                       value={field.state.value}

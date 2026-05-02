@@ -18,16 +18,16 @@ export const cancelParticipant = async (
     const { user } = await studentAccount();
 
     // hitung log pembatalan per event
-    const cancelConut = await prisma.cancelLog.count({
+    const cancelCount = await prisma.cancelLog.count({
       where: {
         eventId: eventId,
         userId: user.id,
       },
     });
 
-    if (cancelConut > MAX_CANCEL_PER_EVENT - 1) {
+    if (cancelCount > MAX_CANCEL_PER_EVENT) {
       return {
-        msg: `Kamu sudah mencapai batas maksimal pembatalan ${MAX_CANCEL_PER_EVENT}/${MAX_CANCEL_PER_EVENT} untuk event ini.`,
+        msg: `Kamu sudah mencapai batas maksimal pembatalan ${cancelCount + 1}/${MAX_CANCEL_PER_EVENT} untuk event ini.`,
         status: "error",
       };
     }
@@ -51,7 +51,7 @@ export const cancelParticipant = async (
     revalidatePath("/home/events");
 
     return {
-      msg: `Kamu telah membatalkan sebanyak ${MAX_CANCEL_PER_EVENT}/${MAX_CANCEL_PER_EVENT}; setelah itu pendaftaran akan diblokir.`,
+      msg: `Kamu telah membatalkan sebanyak ${cancelCount + 1}/${MAX_CANCEL_PER_EVENT}; setelah itu pendaftaran akan diblokir.`,
       status: "success",
     };
   } catch (error) {

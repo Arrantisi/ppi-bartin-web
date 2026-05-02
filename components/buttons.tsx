@@ -81,7 +81,7 @@ export const HoldButtonJoin = ({
     try {
       const fetch = await joinEvent(eventId);
       if (fetch.status === "error") {
-        toast.error(`maaf ${fetch.msg}`);
+        toast.error(`Maaf ${fetch.msg}`);
       } else {
         toast.success("Selamat, kamu sudah join event");
       }

@@ -10,8 +10,7 @@ import { formattedDate } from "@/utils/date-format";
 import { imageUrl } from "@/utils/image-url";
 import { useNewsBySlug } from "@/hooks/use-news";
 import { LoaderOneDemo } from "@/components/loader";
-import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
-import { AlertDialog } from "@/components/animate-ui/components/base/alert-dialog";
+import { Drawer } from "@/components/ui/drawer";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 import { AlertDEelete } from "../../alert-delete";
@@ -19,22 +18,24 @@ import { DrawerOpsi } from "@/components/drawers/opsi";
 
 export const NewsDetailComponent = ({ slug }: { slug: string }) => {
   const [isOpenAlert, setIsOpenAlert] = useState(false);
+  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const router = useRouter();
 
   const { data: session } = authClient.useSession();
 
   const { data, isLoading } = useNewsBySlug({ slug });
-  if (isLoading) {
-    return <LoaderOneDemo />;
-  }
-  if (!data) {
-    return <div>data tidak di temukan</div>;
-  }
+  if (isLoading) return <LoaderOneDemo />;
+  if (!data) return <div>data tidak di temukan</div>;
+
+  const handleOpenDelete = () => {
+    setIsOpenDrawer(false);
+    setTimeout(() => setIsOpenAlert(true), 300);
+  };
 
   return (
-    <AlertDialog open={isOpenAlert} onOpenChange={setIsOpenAlert}>
+    <>
       <div className="max-w-2xl mx-auto bg-background min-h-screen pb-10 pt-3">
-        {/* Sticky Top Navigation */}
+        {/* Top Navigation */}
         <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
           <Button
             variant="outline"
@@ -50,21 +51,23 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
           </h1>
 
           <div className="flex gap-2">
-            <Drawer>
-              <DrawerTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  size={"icon-xl"}
-                  className="rounded-full"
-                >
-                  <IconDots />
-                </Button>
-              </DrawerTrigger>
+            {/* Drawer dikontrol lewat state, bukan DrawerTrigger */}
+            <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
+              <Button
+                variant={"outline"}
+                size={"icon-xl"}
+                className="rounded-full"
+                onClick={() => setIsOpenDrawer(true)}
+              >
+                <IconDots />
+              </Button>
+
               <DrawerOpsi
                 userId={session?.user.id || ""}
                 creatorId={data.creator.id}
                 slug={data.slug}
                 title="berita"
+                onDelete={handleOpenDelete}
               />
             </Drawer>
           </div>
@@ -103,7 +106,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
           <div className="relative aspect-videomt-6 overflow-hidden rounded-3xl shadow-lg w-full mt-5">
             <Image
               src={imageUrl(data.fileKey)}
-              alt="Beasiswa Turki"
+              alt="Berita"
               width={500}
               height={1000}
               className="object-cover"
@@ -111,7 +114,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
             />
           </div>
 
-          {/* Bagian Article - Khusus Teks Beasiswa */}
+          {/* Article */}
           <article className="mt-8 mx-auto">
             <div className="max-w-full text-foreground/90 text-[13px] leading-relaxed whitespace-pre-line wrap-anywhere md:text-lg tracking-wide">
               {(data.desckripsi || "").trim()}
@@ -119,12 +122,16 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
           </article>
         </div>
       </div>
+
+      {/* AlertDEelete di luar semua portal — dikontrol via state */}
       <AlertDEelete
-        href="/home/news"
+        href="/home/berita"
         type="berita"
         id={data.id}
+        open={isOpenAlert}
+        onOpenChange={setIsOpenAlert}
         onClick={() => setIsOpenAlert(false)}
       />
-    </AlertDialog>
+    </>
   );
 };

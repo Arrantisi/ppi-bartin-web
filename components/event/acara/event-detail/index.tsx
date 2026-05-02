@@ -13,14 +13,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { formattedDate } from "@/utils/date-format";
 import { useState } from "react";
-import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
+import { Drawer } from "@/components/ui/drawer";
 import AvatarParticipant from "../../avatars/avatar-participant";
 import { authClient } from "@/lib/auth-client";
 import { imageUrl } from "@/utils/image-url";
 import { useEventBySlug } from "@/hooks/use-events";
 import { LoaderOneDemo } from "@/components/loader";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { AlertDialog } from "@/components/animate-ui/components/base/alert-dialog";
 import { AlertDEelete } from "../../alert-delete";
 import { EventActionButton } from "../../action-button-event";
 import { DrawerOpsi } from "@/components/drawers/opsi";
@@ -28,30 +27,34 @@ import {
   Dialog,
   DialogClose,
   DialogPopup,
-  DialogTrigger,
 } from "@/components/animate-ui/components/base/dialog";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
   const router = useRouter();
 
-  const [isOpen, setIsOpen] = useState(false);
   const [isOpenAlert, setIsOpenAlert] = useState(false);
+  const [isOpenImageDialog, setIsOpenImageDialog] = useState(false);
+  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
 
   const { data, isLoading } = useEventBySlug({ slug });
 
   if (isLoading) return <LoaderOneDemo />;
-
   if (!data)
     return <div className="p-10 text-center">Data tidak ditemukan.</div>;
 
+  const handleOpenDelete = () => {
+    setIsOpenDrawer(false);
+    setTimeout(() => setIsOpenAlert(true), 300);
+  };
+
   return (
-    <AlertDialog open={isOpenAlert} onOpenChange={setIsOpenAlert}>
-      <Dialog>
-        <Drawer open={isOpen} onOpenChange={setIsOpen}>
-          <div className="relative flex flex-col overflow-hidden ">
-            {/* Gambar & Header Sticky */}
-            <div className="absolute w-full z-10 ">
+    <>
+      <Dialog open={isOpenImageDialog} onOpenChange={setIsOpenImageDialog}>
+        <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
+          <div className="relative flex flex-col overflow-hidden">
+            {/* Header */}
+            <div className="absolute w-full z-10">
               <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
                 <Button
                   variant="outline"
@@ -66,28 +69,18 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                   Acara
                 </h1>
 
-                <div className="flex gap-2">
-                  <Drawer>
-                    <DrawerTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        size={"icon-xl"}
-                        className="rounded-full"
-                      >
-                        <IconDots />
-                      </Button>
-                    </DrawerTrigger>
-                    <DrawerOpsi
-                      userId={session?.user.id || ""}
-                      creatorId={data.creator.id}
-                      slug={data.slug}
-                      title="acara"
-                    />
-                  </Drawer>
-                </div>
+                <Button
+                  variant={"outline"}
+                  size={"icon-xl"}
+                  className="rounded-full"
+                  onClick={() => setIsOpenDrawer(true)}
+                >
+                  <IconDots />
+                </Button>
               </div>
             </div>
 
+            {/* Konten */}
             <div className="flex flex-col h-full">
               <div className="relative">
                 <Image
@@ -95,12 +88,14 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                   alt={""}
                   height={200}
                   width={200}
-                  className="object-cover z-0 w-full h-100" // agar gambar terlihat lebih rapi dan kalau ingin gambar terlihat lebih besar ada buttonnya
+                  className="object-cover z-0 w-full h-100"
                 />
-
-                <DialogTrigger className="flex items-center justify-center gap-2 absolute bottom-13 right-3 p-2 bg-background rounded-xl shadow border-border text-center text-sm font-medium hover:bg-background/80 cursor-pointer transition-all duration-300">
+                <button
+                  onClick={() => setIsOpenImageDialog(true)}
+                  className="flex items-center justify-center gap-2 absolute bottom-13 right-3 p-2 bg-background rounded-xl shadow border-border text-center text-sm font-medium hover:bg-background/80 cursor-pointer transition-all duration-300"
+                >
                   <IconEye size={16} />
-                </DialogTrigger>
+                </button>
               </div>
 
               <div className="relative px-6 flex flex-col justify-between bg-background -mt-10 pt-4 pb-5">
@@ -129,17 +124,16 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                     {(data.deskripsi || "").trim()}
                   </div>
 
-                  {/* Info Waktu & Tempat */}
                   <div className="space-y-4 mb-8">
                     <div className="flex items-start gap-3">
                       <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                        <IconCalendarWeek size={20} className="" />
+                        <IconCalendarWeek size={20} />
                       </div>
                       <div className="flex flex-col gap-0.5">
                         <span className="text-[13px] font-semibold">
                           Tanggal
                         </span>
-                        <span className="text-xs text-muted-foregroun">
+                        <span className="text-xs text-muted-foreground">
                           {formattedDate(data.date || new Date())}
                         </span>
                       </div>
@@ -171,29 +165,45 @@ export const EventDetail = ({ slug }: { slug: string }) => {
             </div>
           </div>
 
-          <DialogPopup showCloseButton={false}>
-            <Image
-              src={imageUrl(data.fileKey)}
-              alt={""}
-              height={200}
-              width={200}
-              className="object-cover z-0 w-full"
-            />
-            <DialogClose>
-              <Button variant="outline" size="icon-xl" className="rounded-full">
-                <IconX size={16} />
-              </Button>
-            </DialogClose>
-          </DialogPopup>
-
-          <AlertDEelete
-            type="acara"
-            id={data.id}
-            href="/home/events"
-            onClick={() => setIsOpenAlert(false)}
+          <DrawerOpsi
+            userId={session?.user.id || ""}
+            creatorId={data.creator.id}
+            slug={data.slug}
+            title="acara"
+            onDelete={handleOpenDelete}
           />
         </Drawer>
+
+        {/* DialogPopup di luar Drawer */}
+        <DialogPopup showCloseButton={false}>
+          <Image
+            src={imageUrl(data.fileKey)}
+            alt={""}
+            height={200}
+            width={200}
+            className="object-cover z-0 w-full"
+          />
+          <DialogClose>
+            <Button variant="outline" size="icon-xl" className="rounded-full">
+              <IconX size={16} />
+            </Button>
+          </DialogClose>
+        </DialogPopup>
       </Dialog>
-    </AlertDialog>
+
+      {/*
+        AlertDEelete ditaruh di LUAR semua portal (Drawer & Dialog).
+        Komponen ini sekarang pakai modal sendiri (motion + fixed positioning)
+        sehingga tidak bergantung pada AlertDialog context sama sekali.
+      */}
+      <AlertDEelete
+        type="acara"
+        id={data.id}
+        href="/home/acara"
+        open={isOpenAlert}
+        onOpenChange={setIsOpenAlert}
+        onClick={() => setIsOpenAlert(false)}
+      />
+    </>
   );
 };
