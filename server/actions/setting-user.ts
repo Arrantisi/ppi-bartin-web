@@ -18,6 +18,7 @@ export const student = async (
     const noSiswa = await prisma.dataSiswa.findUnique({
       where: { id_siswa: no_siswa },
     });
+
     if (!noSiswa)
       return {
         status: "error",
@@ -30,7 +31,7 @@ export const student = async (
     if (namaDiDb !== inputNama)
       return {
         status: "error",
-        msg: "nama siswa tidak cocok dengan nomor siswa",
+        msg: "nama siswa tidak cocok dengan nama di table nomor siswa",
       };
 
     return {

@@ -34,6 +34,10 @@ export const formPersonalSchema = z.object({
     }),
 });
 
+export const formPersonalSchemaPartial = formPersonalSchema.extend({
+  tanggalLahir: z.date().optional(),
+});
+
 export type FormPersonalSchema = z.infer<typeof formPersonalSchema>;
 
 export const customerServiceSchema = z.object({

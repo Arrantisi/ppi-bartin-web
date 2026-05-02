@@ -64,7 +64,7 @@ export function TanggalLahitField({
             "group/pick-date w-full justify-between rounded-xl text-[14px]",
         })}
       >
-        <span className={cn("truncate", value && "text-muted-foreground")}>
+        <span className={cn("truncate", !value && "text-muted-foreground")}>
           {value ? formattedDate(value) : "Pick a date"}
         </span>
         <CalendarBlankIcon

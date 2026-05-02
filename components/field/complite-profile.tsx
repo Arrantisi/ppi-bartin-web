@@ -127,7 +127,7 @@ export const UpdateProfileField = () => {
       jenisKelamin: "",
     },
     validators: {
-      onChange: formPersonalSchema,
+      onSubmit: formPersonalSchema,
     },
     onSubmit: async ({ value }: { value: FormPersonalSchema }) => {
       setIsLoading(true);
@@ -172,6 +172,17 @@ export const UpdateProfileField = () => {
   };
 
   const isLastStep = currentStep === STEPS.length - 1;
+
+  // ── date today ─────────────────────────────────────────────────────────────────
+  const isDateToday = (date: Date | undefined) => {
+    if (!date) return true; // kosong = tidak valid
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
@@ -496,7 +507,17 @@ export const UpdateProfileField = () => {
                 <div className="mx-3 space-y-5">
                   {/* Tanggal Lahir & Jenis Kelamin */}
                   <div className="flex items-center gap-2">
-                    <form.Field name="tanggalLahir">
+                    <form.Field
+                      name="tanggalLahir"
+                      validators={{
+                        onChange: ({ value }) => {
+                          if (!value) return "Tanggal lahir wajib diisi";
+                          if (isDateToday(value))
+                            return "Tanggal lahir tidak boleh hari ini";
+                          return undefined;
+                        },
+                      }}
+                    >
                       {(field) => {
                         const isInvalid =
                           field.state.meta.isTouched &&
@@ -515,10 +536,18 @@ export const UpdateProfileField = () => {
                               value={field.state.value}
                               onChange={(e) => {
                                 if (e) field.handleChange(e);
+                                else
+                                  field.handleChange(
+                                    undefined as unknown as Date,
+                                  );
                               }}
                             />
                             {isInvalid && (
-                              <FieldError errors={field.state.meta.errors} />
+                              <FieldError
+                                errors={field.state.meta.errors.map((e) =>
+                                  typeof e === "string" ? { message: e } : e,
+                                )}
+                              />
                             )}
                           </Field>
                         );

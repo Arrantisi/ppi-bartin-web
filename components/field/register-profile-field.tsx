@@ -9,6 +9,7 @@ import { ButtonField } from "../buttons";
 import { completeProfile } from "@/server/actions/setting-user";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { IconUserCircle } from "@tabler/icons-react";
 
 const RegisterField = () => {
   const [loading, setLoading] = useState(false);
@@ -46,49 +47,29 @@ const RegisterField = () => {
     <div className="w-full max-w-md mx-auto">
       <div className="space-y-6">
         <form
-          className="space-y-4"
+          className="space-y-6"
           id="register-form"
           onSubmit={(e) => {
             e.preventDefault();
             form.handleSubmit();
           }}
         >
-          <form.Field name="nama_siswa">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field className="space-y-2">
-                  <FieldLabel className="text-sm font-medium">
-                    Nama Lengkap
-                  </FieldLabel>
-                  <Input
-                    id={field.name}
-                    placeholder="Masukkan nama sesuai ijazah/paspor"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-                  <FieldDescription className="text-[12px] leading-tight">
-                    Nama lengkap membantu sinkronisasi database lebih akurat.
-                  </FieldDescription>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
           <form.Field name="nomor_siswa">
             {(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
-                <Field className="space-y-2">
-                  <FieldLabel className="text-sm font-medium">
+                <Field>
+                  <FieldLabel>
+                    <IconUserCircle size={18} className="text-primary" />
                     Nomor Öğrenci
+                    <span className="text-destructive">*</span>
                   </FieldLabel>
+
                   <div className="relative">
                     <Input
                       id={field.name}
+                      inputMode="numeric"
                       placeholder="Contoh: 12345678"
                       className="focus-visible:ring-primary"
                       value={field.state.value}
@@ -98,6 +79,31 @@ const RegisterField = () => {
                   <FieldDescription className="text-[12px] leading-tight">
                     Gunakan nomor öğrenci yang anda daftarkan saat pendaftaran
                     data diri di **PPI Bartın**.
+                  </FieldDescription>
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
+          <form.Field name="nama_siswa">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field>
+                  <FieldLabel>
+                    <IconUserCircle size={18} className="text-primary" /> Nama
+                    Lengkap
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    placeholder="Masukkan nama sesuai ijazah/paspor"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  <FieldDescription className="text-[12px] leading-tight">
+                    Nama lengkap membantu sinkronisasi database lebih akurat.
                   </FieldDescription>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
