@@ -36,7 +36,7 @@ export const useEventsPage = () => {
 
 export const useEventBySlug = ({ slug }: { slug: string }) => {
   return useQuery({
-    queryKey: ["events", slug],
+    queryKey: ["events_by_slug", slug],
     queryFn: () => getEventBySlug(slug),
     enabled: !!slug && slug !== "undefined",
   });

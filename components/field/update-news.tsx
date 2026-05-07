@@ -27,20 +27,13 @@ import {
 import Link from "next/link";
 import { TupdateNewsProps } from "@/types";
 import { toast } from "sonner";
+import { RichTextEditor } from "../ui/rich-text-editor";
 
 const catagoryTrigger = [
   { ctg: "beasiswa" },
   { ctg: "kegiatan" },
   { ctg: "pengumuman" },
 ];
-
-const desckripsiPlacholder = `Tulis isi berita secara lengkap dan detail...
-
-Tips menulis berita yang baik:
-• Gunakan bahasa yang jelas dan mudah dipahami
-• Sertakan fakta dan informasi yang akurat
-• Struktur: Pembukaan, Isi, Penutup
-• Gunakan paragraf untuk memudahkan pembacaan`;
 
 export const UpdateNewsField = ({ slug, data }: TupdateNewsProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -217,16 +210,12 @@ export const UpdateNewsField = ({ slug, data }: TupdateNewsProps) => {
                   Deskripsi Berita
                   <span className="text-destructive">*</span>
                 </FieldLabel>
-                <Textarea
-                  name={field.name}
-                  placeholder={desckripsiPlacholder.trim()}
-                  id={field.name}
-                  value={field.state.value}
+                <RichTextEditor
                   onChange={(e) => {
-                    field.handleChange(e.target.value);
-                    setLenghtOfDeskripsi(e.target.value.length);
+                    field.handleChange(e);
+                    setLenghtOfDeskripsi(e.length);
                   }}
-                  className="min-h-78.5"
+                  value={field.state.value}
                 />
                 <FieldDescription className="text-right">
                   {lenghtOfDeskripsi} kata

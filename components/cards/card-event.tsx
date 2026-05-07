@@ -32,7 +32,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
         <Link
           href={`/home/acara/${props.slug}`}
           key={props.id}
-          className="w-full h-[480px] relative space-y-5"
+          className="w-full h-[420px] relative space-y-5"
         >
           <div className="relative h-60 w-full">
             <Image
@@ -56,7 +56,9 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
           </div>
 
           <CardContent className="px-3 space-y-3">
-            <h1 className="judul-card-event line-clamp-2">{props.judul}</h1>
+            <h1 className="judul-card-event line-clamp-2">
+              {props.judul} Lorem ipsum
+            </h1>
             <div className="flex items-center justify-between mt-1">
               <div className="subtitle-card-event text-foreground flex items-center gap-2">
                 <Avatar className="size-5">
@@ -69,10 +71,6 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
                 </span>
               </div>
             </div>
-            <p className="line-clamp-2 text-foreground/60 text-sm">
-              {props.deskripsi}
-            </p>
-
             <div className="grid grid-cols-1 gap-2.5 text-muted-foreground/90 border-dotted border-t pt-2 my-2">
               <div className="flex items-center gap-2">
                 <IconCalendarWeek className="size-4 text-primary" />

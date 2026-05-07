@@ -25,6 +25,7 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
           queryClient.invalidateQueries({ queryKey: ["events"] });
           queryClient.invalidateQueries({ queryKey: ["events_home"] });
           queryClient.invalidateQueries({ queryKey: ["events_list"] });
+          queryClient.invalidateQueries({ queryKey: ["events_by_slug"] });
         },
       )
       .on(
@@ -35,6 +36,7 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
           queryClient.invalidateQueries({ queryKey: ["events"] });
           queryClient.invalidateQueries({ queryKey: ["events_home"] });
           queryClient.invalidateQueries({ queryKey: ["events_list"] });
+          queryClient.invalidateQueries({ queryKey: ["events_by_slug"] });
         },
       )
       .subscribe((status) => {

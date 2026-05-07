@@ -23,6 +23,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { RichTextEditor } from "../ui/rich-text-editor";
 
 export const CreateEventField = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -210,16 +211,15 @@ export const CreateEventField = () => {
                     <IconFileText size={18} className="text-primary" />
                     Deskripsi <span className="text-destructive">*</span>
                   </FieldLabel>
-                  <Textarea
-                    id={field.name}
-                    placeholder={props.textarea[0].placeholder}
-                    value={field.state.value}
-                    className="min-h-36"
+
+                  <RichTextEditor
                     onChange={(e) => {
-                      field.handleChange(e.target.value);
-                      setLengthOfDeskripsi(e.target.value.length);
+                      field.handleChange(e);
+                      setLengthOfDeskripsi(e.length);
                     }}
+                    value={field.state.value}
                   />
+
                   <FieldDescription className="text-right">
                     {lengthOfDeskripsi} kata
                   </FieldDescription>

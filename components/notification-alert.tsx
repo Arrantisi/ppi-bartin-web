@@ -14,6 +14,7 @@ import {
 import { BellRing } from "lucide-react";
 import { registerPushSubscription } from "@/lib/notifications";
 import { toast } from "sonner";
+import { saveNotificationSubscription } from "@/server/actions/subscribe-notification";
 
 export function NotificationAlert() {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,14 +39,16 @@ export function NotificationAlert() {
 
       if (!sub) return;
 
-      // B. Kirim ke API Route kita pake fetch
-      const response = await fetch("/api/subscribe", {
-        method: "POST",
-        body: JSON.stringify(sub.toJSON()),
-        headers: { "Content-Type": "application/json" },
-      });
+      const subJson = sub.toJSON();
 
-      const result = await response.json();
+      // B. Kirim ke API Route kita pake fetch
+      const result = await saveNotificationSubscription({
+        endpoint: subJson.endpoint!,
+        keys: {
+          auth: subJson.keys!.auth,
+          p256dh: subJson.keys!.p256dh,
+        },
+      });
 
       if (result.success) {
         toast.success("Notifikasi telah aktif");

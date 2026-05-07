@@ -26,6 +26,7 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { RichTextEditor } from "../ui/rich-text-editor";
 
 const catagoryTrigger = [
   // --- KATEGORI ACARA/KEGIATAN ---
@@ -41,14 +42,6 @@ const catagoryTrigger = [
   // --- KATEGORI UMUM ---
   { ctg: "pengumuman" }, // Urgent (Verifikasi, admin, dll)
 ];
-
-const desckripsiPlacholder = `Tulis isi berita secara lengkap dan detail...
-
-Tips menulis berita yang baik:
-• Gunakan bahasa yang jelas dan mudah dipahami
-• Sertakan fakta dan informasi yang akurat
-• Struktur: Pembukaan, Isi, Penutup
-• Gunakan paragraf untuk memudahkan pembacaan`;
 
 export const CreateNewsField = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -223,16 +216,12 @@ export const CreateNewsField = () => {
                   Deskripsi Berita
                   <span className="text-destructive">*</span>
                 </FieldLabel>
-                <Textarea
-                  name={field.name}
-                  placeholder={desckripsiPlacholder.trim()}
-                  id={field.name}
-                  value={field.state.value}
+                <RichTextEditor
                   onChange={(e) => {
-                    field.handleChange(e.target.value);
-                    setLenghtOfDeskripsi(e.target.value.length);
+                    field.handleChange(e);
+                    setLenghtOfDeskripsi(e.length);
                   }}
-                  className="min-h-78.5"
+                  value={field.state.value}
                 />
                 <FieldDescription className="text-right">
                   {lenghtOfDeskripsi} kata

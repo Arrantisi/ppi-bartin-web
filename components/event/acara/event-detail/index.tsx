@@ -28,6 +28,9 @@ import {
   DialogClose,
   DialogPopup,
 } from "@/components/animate-ui/components/base/dialog";
+import parse from "html-react-parser";
+import DOMPurify from "isomorphic-dompurify";
+import { toast } from "sonner";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -43,9 +46,20 @@ export const EventDetail = ({ slug }: { slug: string }) => {
   if (!data)
     return <div className="p-10 text-center">Data tidak ditemukan.</div>;
 
+  const myParticipation = data.participants.find(
+    (p) => p.user.id === session?.user.id,
+  );
+  const isJoined = !myParticipation;
+
   const handleOpenDelete = () => {
     setIsOpenDrawer(false);
     setTimeout(() => setIsOpenAlert(true), 300);
+  };
+
+  const handleToastLink = () => {
+    toast.info("Info", {
+      description: "Kamu Harus join dulu kalau ingin isi form event ini!!!",
+    });
   };
 
   return (
@@ -103,7 +117,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                   <h1 className="text-[24px] font-bold text-foreground">
                     {data.judul}
                   </h1>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-2 h-10 ">
                     <div className="text-[13px] text-muted-foreground flex items-center justify-between gap-1.5">
                       <Avatar className="size-5">
                         <AvatarImage src={data.creator.image || ""} />
@@ -113,6 +127,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                         {data.creator.username}
                       </span>
                     </div>
+
                     <AvatarParticipant
                       participant={data.participants.map((img) => ({
                         image: img.user.image || "",
@@ -120,8 +135,15 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                     />
                   </div>
 
-                  <div className="max-w-full text-foreground/90 text-[13px] leading-relaxed whitespace-pre-line wrap-anywhere md:text-lg tracking-wide">
-                    {(data.deskripsi || "").trim()}
+                  <div className="relative py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed whitespace-pre-line wrap-anywhere md:text-lg tracking-wide my-4">
+                    {isJoined && (
+                      <button
+                        className="h-full bg-transparent absolute w-full"
+                        onClick={handleToastLink}
+                      />
+                    )}
+
+                    {parse(DOMPurify.sanitize(data.deskripsi || ""))}
                   </div>
 
                   <div className="space-y-4 mb-8">

@@ -15,6 +15,8 @@ import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 import { AlertDEelete } from "../../alert-delete";
 import { DrawerOpsi } from "@/components/drawers/opsi";
+import parse from "html-react-parser";
+import DOMPurify from "isomorphic-dompurify";
 
 export const NewsDetailComponent = ({ slug }: { slug: string }) => {
   const [isOpenAlert, setIsOpenAlert] = useState(false);
@@ -117,7 +119,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
           {/* Article */}
           <article className="mt-8 mx-auto">
             <div className="max-w-full text-foreground/90 text-[13px] leading-relaxed whitespace-pre-line wrap-anywhere md:text-lg tracking-wide">
-              {(data.desckripsi || "").trim()}
+              {parse(DOMPurify.sanitize(data.desckripsi || ""))}
             </div>
           </article>
         </div>

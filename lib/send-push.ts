@@ -1,6 +1,7 @@
 // lib/send-push.ts
 import webpush from "web-push";
 import prisma from "@/lib/prisma";
+import { studentAccount } from "@/server/actions/account";
 
 export async function sendPushToAll({
   message,
@@ -11,6 +12,8 @@ export async function sendPushToAll({
   message: string;
   url: string;
 }) {
+  const { user } = await studentAccount();
+
   // 1. Inisialisasi VAPID
   webpush.setVapidDetails(
     "mailto:admin@ppibartin.com",
@@ -19,7 +22,9 @@ export async function sendPushToAll({
   );
 
   // 2. Ambil semua token dari database
-  const subscriptions = await prisma.notificationSubscription.findMany();
+  const subscriptions = await prisma.notificationSubscription.findMany({
+    where: { userId: { not: user.id } },
+  });
 
   if (subscriptions.length === 0) {
     console.log("Tidak ada user yang berlangganan.");

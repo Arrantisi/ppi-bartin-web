@@ -24,6 +24,7 @@ import {
 } from "@tabler/icons-react";
 import { TupdateEventProps } from "@/types";
 import { toast } from "sonner";
+import { RichTextEditor } from "../ui/rich-text-editor";
 
 export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -210,18 +211,15 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
                     <IconFileText size={18} className="text-primary" />
                     Deskripsi <span className="text-destructive">*</span>
                   </FieldLabel>
-                  <Textarea
-                    id={field.name}
-                    placeholder={props.textarea[0].placeholder}
-                    value={field.state.value}
-                    className="min-h-36"
+                  <RichTextEditor
                     onChange={(e) => {
-                      field.handleChange(e.target.value);
-                      setLengthOfDeskripsi(e.target.value.length);
+                      field.handleChange(e);
+                      setLengthOfDeskripsi(e.length);
                     }}
+                    value={field.state.value}
                   />
                   <FieldDescription className="text-right">
-                    {lengthOfDeskripsi}/200
+                    {lengthOfDeskripsi} Kata
                   </FieldDescription>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
