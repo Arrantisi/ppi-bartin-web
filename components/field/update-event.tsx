@@ -54,7 +54,7 @@ export const UpdateEventField = ({ slug, data }: TupdateEventProps) => {
           description: matched.msg,
         });
       } else if (matched.status === "success") {
-        toast.success("Selamat Kamu Telah Berhasil Membuat Acara");
+        toast.success("Selamat Kamu Telah Berhasil Memperbarui Acara");
         router.push(`/home/acara`);
       }
       setIsLoading(false);

@@ -151,7 +151,7 @@ export const updateAcara = async (
       },
     });
 
-    revalidatePath("/home/events");
+    revalidatePath("/home/acara");
     return {
       status: "success",
       msg: "Acara berhasil di update",

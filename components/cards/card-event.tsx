@@ -56,9 +56,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
           </div>
 
           <CardContent className="px-3 space-y-3">
-            <h1 className="judul-card-event line-clamp-2">
-              {props.judul} Lorem ipsum
-            </h1>
+            <h1 className="judul-card-event line-clamp-2">{props.judul}</h1>
             <div className="flex items-center justify-between mt-1">
               <div className="subtitle-card-event text-foreground flex items-center gap-2">
                 <Avatar className="size-5">
