@@ -62,6 +62,10 @@ export const EventDetail = ({ slug }: { slug: string }) => {
     });
   };
 
+  const clean = DOMPurify.sanitize(data.deskripsi, {
+    FORBID_ATTR: ["style", "font"], // ← strip style attribute
+  });
+
   return (
     <>
       <Dialog open={isOpenImageDialog} onOpenChange={setIsOpenImageDialog}>
@@ -135,7 +139,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                     />
                   </div>
 
-                  <div className="relative py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed whitespace-pre-line wrap-anywhere md:text-lg tracking-wide my-4">
+                  <div className="relative py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed wrap-anywhere md:text-lg tracking-wide my-4 [&_p]:block prose prose-sm">
                     {isJoined && (
                       <button
                         className="h-full bg-transparent absolute w-full"
@@ -143,7 +147,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                       />
                     )}
 
-                    {parse(DOMPurify.sanitize(data.deskripsi || ""))}
+                    {parse(clean)}
                   </div>
 
                   <div className="space-y-4 mb-8">

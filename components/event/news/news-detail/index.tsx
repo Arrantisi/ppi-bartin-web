@@ -34,6 +34,10 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
     setTimeout(() => setIsOpenAlert(true), 300);
   };
 
+  const clean = DOMPurify.sanitize(data.desckripsi, {
+    FORBID_ATTR: ["style", "font"], // ← strip style attribute
+  });
+
   return (
     <>
       <div className="max-w-2xl mx-auto bg-background min-h-screen pb-10 pt-3">
@@ -118,8 +122,8 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
 
           {/* Article */}
           <article className="mt-8 mx-auto">
-            <div className="max-w-full text-foreground/90 text-[13px] leading-relaxed whitespace-pre-line wrap-anywhere md:text-lg tracking-wide">
-              {parse(DOMPurify.sanitize(data.desckripsi || ""))}
+            <div className="relative py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed wrap-anywhere md:text-lg tracking-wide my-4 [&_p]:block prose prose-sm">
+              {parse(clean)}
             </div>
           </article>
         </div>

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -390,5 +391,5 @@ body[data-vaul-drawer-wrapper] {
 }
 
 html.vaul-circular-indicator {
-  scroll-behavior: auto !important;
+  scroll-behavior: auto !important
 }
