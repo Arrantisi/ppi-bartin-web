@@ -17,6 +17,7 @@ import { AlertDEelete } from "../../alert-delete";
 import { DrawerOpsi } from "@/components/drawers/opsi";
 import parse from "html-react-parser";
 import DOMPurify from "isomorphic-dompurify";
+import { getTwoWords } from "@/utils/get-twowords";
 
 export const NewsDetailComponent = ({ slug }: { slug: string }) => {
   const [isOpenAlert, setIsOpenAlert] = useState(false);
@@ -88,7 +89,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
             </Avatar>
             <div className="flex flex-col">
               <p className="text-sm font-semibold capitalize">
-                {data.creator.username || ""}
+                {getTwoWords(data.creator.name!)}
               </p>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <span>{formattedDate(data.createdAt)}</span>
@@ -122,7 +123,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
 
           {/* Article */}
           <article className="mt-8 mx-auto">
-            <div className="relative py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed wrap-anywhere md:text-lg tracking-wide my-4 [&_p]:block prose prose-sm">
+            <div className="relative [&_strong]:text-foreground py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed wrap-anywhere md:text-lg tracking-wide my-4 [&_p]:block prose prose-sm">
               {parse(clean)}
             </div>
           </article>

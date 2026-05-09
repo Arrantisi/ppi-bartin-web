@@ -8,6 +8,7 @@ import { imageUrl } from "@/utils/image-url";
 import { TgetNews } from "@/server/data/news";
 import { cn } from "@/lib/utils";
 import { categoryStyles } from "../event/color-catagory";
+import { getTwoWords } from "@/utils/get-twowords";
 
 export const FrameNews = ({ ...news }: TgetNews) => {
   const dotColor = categoryStyles[news.catagory] || "bg-gray-400";
@@ -43,7 +44,7 @@ export const FrameNews = ({ ...news }: TgetNews) => {
           </Avatar>
 
           <div className="flex items-center w-full text-[12px]">
-            <div className="w-full">{news.creator.username}</div>
+            <div className="w-full">{getTwoWords(news.creator.name!)}</div>
             <div className="w-full text-right">
               {formattedDateNews(news.createdAt)}
             </div>

@@ -31,6 +31,7 @@ import {
 import parse from "html-react-parser";
 import DOMPurify from "isomorphic-dompurify";
 import { toast } from "sonner";
+import { getTwoWords } from "@/utils/get-twowords";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -128,7 +129,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                       </Avatar>
                       Dibuat Oleh{" "}
                       <span className="font-medium text-foreground capitalize">
-                        {data.creator.username}
+                        {getTwoWords(data.creator.name!)}
                       </span>
                     </div>
 
@@ -139,7 +140,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                     />
                   </div>
 
-                  <div className="relative py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed wrap-anywhere md:text-lg tracking-wide my-4 [&_p]:block prose prose-sm">
+                  <div className="relative py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed wrap-anywhere md:text-lg tracking-wide my-4 [&_p]:block prose prose-sm [&_strong]:text-foreground">
                     {isJoined && (
                       <button
                         className="h-full bg-transparent absolute w-full"

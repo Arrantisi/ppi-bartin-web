@@ -18,6 +18,7 @@ export const getNewsBySlug = async (slug: string) => {
           id: true,
           image: true,
           username: true,
+          name: true,
         },
       },
       judul: true,
@@ -40,6 +41,7 @@ export const getNews = async () => {
         select: {
           image: true,
           username: true,
+          name: true,
         },
       },
       judul: true,
