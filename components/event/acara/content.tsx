@@ -20,7 +20,7 @@ const CardAcaras = () => {
   }
 
   if (!data || data.length === 0) {
-    return <DataKosong href="/home/events/create" catagory="Acara" />;
+    return <DataKosong href="/home/acara/create" catagory="Acara" />;
   }
 
   return (
