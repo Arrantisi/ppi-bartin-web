@@ -36,7 +36,7 @@ export const RenderAcara = () => {
         {data.slice(0, 3).map((event) => (
           <CarouselItem
             key={event.slug}
-            className="basis-[90%] md:basis-1/2 lg:basis-1/3 p-2"
+            className="basis-[90%] md:basis-1/2 p-2"
           >
             <CardEvent {...event} />
           </CarouselItem>

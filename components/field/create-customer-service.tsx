@@ -54,7 +54,7 @@ export const CustomerServiceCreate = () => {
         toast.error(fetch.msg);
       } else if (fetch.status === "success") {
         toast.success(fetch.msg);
-        router.refresh();
+        router.push("/home/profile");
         form.reset();
       }
       setIsLoading(false);

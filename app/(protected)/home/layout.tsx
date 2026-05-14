@@ -4,7 +4,7 @@ import { RealtimeProvider } from "@/components/providers/realtime-provider";
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="relative max-w-xl md:max-w-3xl xl:max-w-6xl mx-auto">
+    <div className="relative w-full px-0 md:px-5">
       <RealtimeProvider>{children}</RealtimeProvider>
     </div>
   );

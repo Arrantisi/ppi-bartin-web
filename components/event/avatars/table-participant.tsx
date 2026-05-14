@@ -96,8 +96,8 @@ export const DialogTableParticipant = ({
   };
 
   return (
-    <DialogPopup>
-      <DialogHeader className="items-start">
+    <DialogPopup showCloseButton={false}>
+      <DialogHeader className="items-start space-y-3">
         <DialogTitle>{judul}</DialogTitle>
         <DialogDescription>Orang yang mengikuti kegiatan</DialogDescription>
       </DialogHeader>
@@ -108,7 +108,7 @@ export const DialogTableParticipant = ({
           onChange={(e) =>
             table.getColumn("user")?.setFilterValue(e.target.value)
           }
-          className="max-w-sm"
+          className="w-full"
         />
 
         {userCreatorId === userId && (

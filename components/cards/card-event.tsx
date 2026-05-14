@@ -94,7 +94,7 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
           </CardContent>
         </Link>
 
-        <CardFooter className="p-3 justify-between w-full h-[95px] ">
+        <CardFooter className="p-3 justify-between w-full h-[95px] flex-row items-center md:flex-row">
           <DialogTrigger
             className={cn(
               "cursor-pointer px-2 rounded-2xl duration-300 transition-all",

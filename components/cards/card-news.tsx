@@ -33,7 +33,7 @@ export const FrameNews = ({ ...news }: TgetNews) => {
             <div className={cn("size-2 rounded-full", dotColor)} />{" "}
             {news.catagory}
           </h3>
-          <div className="max-w-52 self-stretch relative text-[15px] tracking-[-0.23px] leading-5 font-semibold text-foreground">
+          <div className="w-full self-stretch relative text-[15px] tracking-[-0.23px] leading-5 font-semibold text-foreground">
             {news.judul}
           </div>
         </div>

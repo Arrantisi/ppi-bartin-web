@@ -57,7 +57,7 @@ const BeritaCatagory = () => {
       <Tabs defaultValue="all" className="w-full mt-3">
         {/* 1. Scrollable Tabs List */}
         <div className="w-full overflow-x-auto overflow-y-hidden scrollbar-none">
-          <TabsList className="bg-transparent h-auto p-0 gap-3 flex justify-start w-max">
+          <TabsList className="bg-transparent h-auto p-0 gap-3 flex justify-start max-w-sm">
             {catagoryTrigger.map((item) => (
               <TabsTrigger
                 key={item.ctg}
@@ -79,7 +79,7 @@ const BeritaCatagory = () => {
           <TabsContent
             key={category.ctg}
             value={category.ctg}
-            className="mt-0 grid grid-cols-1 md:grid-cols-2 gap-3"
+            className="mt-0 grid grid-cols-1 xl:grid-cols-2 gap-3"
           >
             {data
               .filter((news) =>
