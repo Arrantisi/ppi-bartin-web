@@ -55,16 +55,18 @@ const CardEvent = ({ ...props }: TgetAllEvent) => {
             </div>
           </div>
 
-          <CardContent className="px-3 space-y-3">
-            <h1 className="judul-card-event line-clamp-2">{props.judul}</h1>
+          <CardContent className="px-3 space-y-3 prose-custom">
+            <h4 className="line-clamp-2">{props.judul}</h4>
             <div className="flex items-center justify-between mt-1">
               <div className="subtitle-card-event text-foreground flex items-center gap-2">
-                <Avatar className="size-5">
+                <Avatar className="size-6">
                   <AvatarImage src={props.creator.image || ""} />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-                Dibuat Oleh{" "}
-                <span className="capitalize font-semibold">
+                <span className="text-sm text-accent-foreground">
+                  Dibuat Oleh
+                </span>
+                <span className="text-base capitalize font-semibold">
                   {getTwoWords(props.creator.name || "")}
                 </span>
               </div>

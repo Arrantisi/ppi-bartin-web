@@ -63,9 +63,9 @@ const BeritaCatagory = () => {
                 key={item.ctg}
                 value={item.ctg}
                 className={cn(
-                  "rounded-full bg-muted px-6 py-2.5 capitalize transition-all",
-                  "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md",
-                  "dark:data-[state=active]:bg-accent-foreground dark:data-[state=active]:text-accent dark:data-[state=active]:shadow-md",
+                  "rounded-full bg-muted px-6 py-2.5 capitalize",
+                  "data-active:bg-primary data-active:text-primary-foreground data-active:shadow-md",
+                  "dark:data-active:bg-primary dark:data-active:text-primary-foreground dark:data-active:shadow-md",
                 )}
               >
                 {item.ctg}

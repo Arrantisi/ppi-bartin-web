@@ -1,13 +1,25 @@
+"use client";
+
 import { HomeContent } from "@/components/event/home/content";
 import ProfileHome from "@/components/event/home/header";
-import { HomeLayoutComponent } from "@/components/layouts/home-layout";
+import PWAInstallTour from "@/components/pwa-install-tour";
+import { usePWAInstallTour } from "@/hooks/use-pwainstalltour";
 
 const EventPage = () => {
+  const { showTour, dismissTour, completeTour, triggerInstall } =
+    usePWAInstallTour();
   return (
-    <HomeLayoutComponent>
+    <>
       <ProfileHome />
       <HomeContent />
-    </HomeLayoutComponent>
+      {showTour && (
+        <PWAInstallTour
+          onDismiss={dismissTour}
+          onComplete={completeTour}
+          onInstall={triggerInstall}
+        />
+      )}
+    </>
   );
 };
 

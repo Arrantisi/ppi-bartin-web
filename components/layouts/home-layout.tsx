@@ -8,8 +8,10 @@ import { usePathname } from "next/navigation";
 
 export const HomeLayoutComponent = ({
   children,
+  userRole,
 }: {
   children: React.ReactNode;
+  userRole: string;
 }) => {
   const isMobile = useIsMobile();
   const pathname = usePathname();
@@ -24,7 +26,7 @@ export const HomeLayoutComponent = ({
       }
     >
       {/* Sidebar — desktop only */}
-      {!isMobile && <NavMainEvent />}
+      {!isMobile && <NavMainEvent userRole={userRole} />}
 
       {/* Main content */}
       <SidebarInset>
@@ -43,7 +45,7 @@ export const HomeLayoutComponent = ({
       </SidebarInset>
 
       {/* Bottom nav — mobile only */}
-      {isMobile && <NavMainEvent />}
+      {isMobile && <NavMainEvent userRole={userRole} />}
     </SidebarProvider>
   );
 };

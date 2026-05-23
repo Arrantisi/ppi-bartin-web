@@ -298,77 +298,77 @@
 }
 
 @layer components {
-  .title-satu {
-    font-weight: 700;
-    font-style: Bold;
-    font-size: 28px;
-    line-height: 34px;
-    letter-spacing: 0.38px;
-  }
+  /* =========================
+   ARTICLE / BLOG TYPOGRAPHY
+========================= */
 
-  .title-tiga {
-    font-weight: 590;
-    font-style: Semibold;
-    font-size: 20px;
-    line-height: 25px;
-    letter-spacing: -0.45px;
-  }
+.prose-custom {
+  @apply text-foreground leading-8 text-[18px];
+}
 
-  .content-description {
-    font-weight: 400;
-    font-style: Regular;
-    font-size: 16px;
-    line-height: 21px;
-    letter-spacing: -0.31px;
-  }
+/* Main title */
+.prose-custom h1 {
+  @apply text-5xl md:text-6xl font-black tracking-tight leading-tight mb-6;
+}
 
-  .subheadline {
-    font-weight: 590;
-    font-style: Semibold;
-    font-size: 15px;
-    line-height: 20px;
-    letter-spacing: -0.23px;
-  }
+/* Section title */
+.prose-custom h2 {
+  @apply text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mt-20 mb-8;
+}
 
-  .body {
-    font-weight: 590;
-    font-style: Semibold;
-    font-size: 17px;
-    line-height: 22px;
-    letter-spacing: -0.43px;
-  }
+/* Small heading */
+.prose-custom h3 {
+  @apply text-2xl md:text-3xl font-bold mt-12 mb-4;
+}
 
-  .footnote {
-    font-weight: 400;
-    font-style: Regular;
-    font-size: 13px;
-    line-height: 18px;
-    letter-spacing: -0.08px;
-  }
+/* Smaller headind */
+.prose-custom h4 {
+  @apply text-xl font-bold mt-12 mb-4;
+}
 
-  .scrollbar-none {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+/* Paragraph */
+.prose-custom p {
+  @apply text-[13px] text-foreground mb-10;
+}
 
-  .scrollbar-none::-webkit-scrollbar {
-    display: none;
-  }
-  .judul-card-event {
-    @apply capitalize text-xl font-semibold;
-  }
+/* Bold text */
+.prose-custom strong {
+  @apply font-extrabold text-foreground;
+}
 
-  .subtitle-card-event {
-    @apply text-muted-foreground text-sm;
-  }
+/* Italic text */
+.prose-custom em {
+  @apply italic text-zinc-700;
+}
 
-  .description-card-event {
-    @apply text-xs/5 text-muted-foreground/80;
-  }
+/* Meta info (date, views, comments) */
+.prose-custom .meta {
+  @apply flex items-center gap-6 text-zinc-500 text-sm ;
+}
 
-  .tanggal-card-event {
-    @apply text-muted-foreground/80 font-semibold text-xs;
-  }
+/* Divider */
+.prose-custom hr {
+  @apply my-16 border-zinc-200;
+}
+
+/* Lists */
+.prose-custom ul {
+  @apply list-disc pl-8 mb-8 space-y-3;
+}
+
+.prose-custom ol {
+  @apply list-decimal pl-8 mb-8 space-y-3;
+}
+
+/* Links */
+.prose-custom a {
+  @apply underline underline-offset-4 hover:text-black transition-colors;
+}
+
+/* Blockquote */
+.prose-custom blockquote {
+  @apply border-l-4 border-black pl-6 italic text-zinc-600 my-10;
+}
 }
 
 .embla__viewport {

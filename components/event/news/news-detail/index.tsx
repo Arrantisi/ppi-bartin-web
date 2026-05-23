@@ -41,7 +41,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
 
   return (
     <>
-      <div className="max-w-2xl mx-auto bg-background min-h-screen pb-10 pt-3">
+      <div className="max-w-2xl mx-auto bg-background min-h-screen pb-10 pt-3 prose-custom">
         {/* Top Navigation */}
         <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
           <Button
@@ -88,9 +88,9 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
               <AvatarFallback>DP</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <p className="text-sm font-semibold capitalize">
+              <span className="text-sm font-semibold capitalize">
                 {getTwoWords(data.creator.name!)}
-              </p>
+              </span>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <span>{formattedDate(data.createdAt)}</span>
                 <div className="size-1 rounded-full bg-muted-foreground" />
@@ -110,7 +110,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
           </h1>
 
           {/* Hero Image */}
-          <div className="relative aspect-videomt-6 overflow-hidden rounded-3xl shadow-lg w-full mt-5">
+          <div className="relative aspect-videomt-6 overflow-hidden rounded-3x w-full mt-5 flex justify-center">
             <Image
               src={imageUrl(data.fileKey)}
               alt="Berita"

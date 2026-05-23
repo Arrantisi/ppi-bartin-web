@@ -23,18 +23,18 @@ export const EventActionButton = ({
   const capacityFull = event.participants.length >= event.maxCapacity;
   const isExpired = new Date(event.date) <= new Date();
 
-  if (isJoined) {
-    return (
-      <HoldButtonCancel eventId={event.id} participantId={myParticipation.id} />
-    );
-  }
-
   if (isExpired) {
     return (
       <StatusBadge className="text-info border-info gap-1.5">
         <TimerOff className="w-3.5 h-3.5" />
         <span>Pendaftaran Berakhir</span>
       </StatusBadge>
+    );
+  }
+
+  if (isJoined) {
+    return (
+      <HoldButtonCancel eventId={event.id} participantId={myParticipation.id} />
     );
   }
 

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "@/components/ui/sonner";
 
-const fontSans = Poppins({
+const fontSans = Geist({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
   variable: "--font-sans",
@@ -36,7 +36,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <meta name="theme-color" content="#2563eb" />
       <body
-        className={`${fontSans.variable} antialiased min-h-screen w-full relative`}
+        className={`${fontSans.variable} antialiased min-h-screen w-full relative font-sans`}
       >
         <main>
           <ThemeProvider

@@ -32,6 +32,10 @@ import parse from "html-react-parser";
 import DOMPurify from "isomorphic-dompurify";
 import { toast } from "sonner";
 import { getTwoWords } from "@/utils/get-twowords";
+import { cn } from "@/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BarChart3Icon, LayoutDashboardIcon, SettingsIcon } from "lucide-react";
+import { TableParticipants } from "@/components/tables/table-event-participants";
 
 export const EventDetail = ({ slug }: { slug: string }) => {
   const { data: session } = authClient.useSession();
@@ -67,6 +71,8 @@ export const EventDetail = ({ slug }: { slug: string }) => {
     FORBID_ATTR: ["style", "font"], // ← strip style attribute
   });
 
+  const isExpired = new Date(data.date) <= new Date();
+
   return (
     <>
       <Dialog open={isOpenImageDialog} onOpenChange={setIsOpenImageDialog}>
@@ -100,14 +106,20 @@ export const EventDetail = ({ slug }: { slug: string }) => {
             </div>
 
             {/* Konten */}
-            <div className="flex flex-col h-full">
-              <div className="relative">
+
+            <div
+              className={cn(
+                "flex flex-col h-full",
+                "xl:mt-18 xl:bg-card xl:border xl:shadow xl:rounded-2xl",
+              )}
+            >
+              <div className="relative rounded-2xl">
                 <Image
                   src={imageUrl(data.fileKey)}
                   alt={""}
-                  height={200}
-                  width={200}
-                  className="object-cover z-0 w-full h-100"
+                  height={500}
+                  width={500}
+                  className="object-cover z-0 w-full h-100 xl:h-[500px] rounded-t-2xl"
                 />
                 <button
                   onClick={() => setIsOpenImageDialog(true)}
@@ -115,18 +127,16 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                 >
                   <IconEye size={16} />
                 </button>
+                <Avatar className="size-12 absolute -bottom-5 left-5">
+                  <AvatarImage src={data.creator.image || ""} />
+                </Avatar>
               </div>
 
-              <div className="relative px-6 flex flex-col justify-between bg-background -mt-10 pt-4 pb-5">
-                <div>
-                  <h1 className="text-[24px] font-bold text-foreground">
-                    {data.judul}
-                  </h1>
+              <div className="relative px-6 flex flex-col justify-between pt-4 pb-5 bg-transparent rounded-2xl">
+                <div className="prose-custom">
+                  <h3 className="my-6">{data.judul}</h3>
                   <div className="flex items-center justify-between mb-2 h-10 ">
                     <div className="text-[13px] text-muted-foreground flex items-center justify-between gap-1.5">
-                      <Avatar className="size-5">
-                        <AvatarImage src={data.creator.image || ""} />
-                      </Avatar>
                       Dibuat Oleh{" "}
                       <span className="font-medium text-foreground capitalize">
                         {getTwoWords(data.creator.name!)}
@@ -140,23 +150,12 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                     />
                   </div>
 
-                  <div className="relative py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed wrap-anywhere md:text-lg tracking-wide my-4 [&_p]:block prose prose-sm [&_strong]:text-foreground">
-                    {isJoined && (
-                      <button
-                        className="h-full bg-transparent absolute w-full"
-                        onClick={handleToastLink}
-                      />
-                    )}
-
-                    {parse(clean)}
-                  </div>
-
                   <div className="space-y-4 mb-8">
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-center gap-3">
                       <div className="p-2 bg-primary/10 rounded-lg text-primary">
                         <IconCalendarWeek size={20} />
                       </div>
-                      <div className="flex flex-col gap-0.5">
+                      <div className="flex flex-col">
                         <span className="text-[13px] font-semibold">
                           Tanggal
                         </span>
@@ -166,11 +165,11 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-center gap-3">
                       <div className="p-2 bg-primary/10 rounded-lg text-primary">
                         <IconMapPin size={20} />
                       </div>
-                      <div className="flex flex-col gap-0.5">
+                      <div className="flex flex-col">
                         <span className="text-[13px] font-semibold">
                           Lokasi
                         </span>
@@ -180,6 +179,38 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                       </div>
                     </div>
                   </div>
+
+                  <Tabs defaultValue={"detail"}>
+                    <TabsList variant="line" className="mb-2 w-full max-w-sm">
+                      <TabsTrigger value="detail" className="gap-2 capitalize">
+                        details
+                      </TabsTrigger>
+                      <TabsTrigger value="peserta" className="gap-2 capitalize">
+                        peserta
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value={"detail"}>
+                      <div className="relative pb-3 border-b max-w-full text-foreground/90 text-[13px] leading-relaxed wrap-anywhere md:text-lg tracking-wide my-4 [&_p]:block prose prose-sm [&_strong]:text-foreground">
+                        {isJoined ||
+                          (isExpired && (
+                            <button
+                              className="h-full bg-transparent absolute w-full"
+                              onClick={handleToastLink}
+                            />
+                          ))}
+
+                        {parse(clean)}
+                      </div>
+                    </TabsContent>
+                    <TabsContent value={"peserta"}>
+                      <TableParticipants
+                        eventId={data.id}
+                        judul={data.judul}
+                        participants={data.participants}
+                        userCreatorId={data.creator.name || ""}
+                      />
+                    </TabsContent>
+                  </Tabs>
                 </div>
 
                 <div className="w-full">
