@@ -10,13 +10,27 @@ interface IServerPrompt {
   msg: string;
 }
 
+const normalizeToUsLayout = (value: string) =>
+  value
+    .trim()
+    .toLowerCase()
+    .replace(/[ıİ]/g, "i")
+    .replace(/[şŞ]/g, "s")
+    .replace(/[ğĞ]/g, "g")
+    .replace(/[üÜ]/g, "u")
+    .replace(/[öÖ]/g, "o")
+    .replace(/[çÇ]/g, "c");
+
 export const student = async (
   no_siswa: string,
   nama_siswa: string,
 ): Promise<IServerPrompt> => {
   try {
+    const inputNoSiswa = normalizeToUsLayout(no_siswa);
+    const inputNamaSiswa = normalizeToUsLayout(nama_siswa);
+
     const noSiswa = await prisma.dataSiswa.findUnique({
-      where: { id_siswa: no_siswa },
+      where: { id_siswa: inputNoSiswa },
     });
 
     if (!noSiswa)
@@ -25,13 +39,15 @@ export const student = async (
         msg: "nomor siswa tidak ada di database",
       };
 
-    const namaDiDb = noSiswa.nama_siswa?.toLowerCase().trim();
-    const inputNama = nama_siswa.toLocaleLowerCase().trim();
+    const dbNoSiswa = normalizeToUsLayout(noSiswa.id_siswa);
+    const dbNamaSiswa = noSiswa.nama_siswa
+      ? normalizeToUsLayout(noSiswa.nama_siswa)
+      : undefined;
 
-    if (namaDiDb !== inputNama)
+    if (dbNoSiswa !== inputNoSiswa || dbNamaSiswa !== inputNamaSiswa)
       return {
         status: "error",
-        msg: "nama siswa tidak cocok dengan nama di table nomor siswa",
+        msg: "data siswa tidak cocok dengan data di database",
       };
 
     return {
@@ -69,7 +85,7 @@ export const completeProfile = async (
     if (userExistNoSiswa) {
       return {
         status: "error",
-        msg: "no siswa sudah ada di database",
+        msg: "no siswa sudah ada di database, coba login menggunakan email yang telah terdaftar sebelumnya",
       };
     }
 
