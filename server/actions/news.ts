@@ -1,12 +1,12 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import { TcreateNewsSchema } from "@/schemas";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
 import { revalidatePath } from "next/cache";
 import { studentAccount } from "./account";
-import { sendPushToAll } from "@/lib/send-push";
+import { sendPushToAll } from "@/lib/push";
 
 export const deleteNews = async (newsId: string): Promise<TServerPrompt> => {
   const { user } = await studentAccount();

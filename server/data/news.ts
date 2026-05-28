@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 
 export const getNewsBySlug = async (slug: string) => {
   return await prisma.news.findUnique({

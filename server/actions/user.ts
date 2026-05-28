@@ -1,7 +1,7 @@
 "use server";
 
 import { studentAccount } from "../actions/account";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import {
   FormPersonalSchema,
   FormUsername,
@@ -9,7 +9,7 @@ import {
 } from "@/schemas";
 import { TServerPrompt } from "@/types";
 
-export const compliteProfile = async ({
+export const completeProfile = async ({
   ...data
 }: FormPersonalSchema): Promise<TServerPrompt> => {
   const { user } = await studentAccount();

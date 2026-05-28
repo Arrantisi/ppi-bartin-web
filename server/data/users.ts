@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { studentAccount } from "../actions/account";
 import { auth } from "@/lib/auth";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 
 export const userSession = async () => {
   return await auth.api.getSession({ headers: await headers() });

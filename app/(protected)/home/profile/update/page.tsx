@@ -1,12 +1,3 @@
-import { UpdateProfileComponent } from "@/components/event/profile/update";
-import React from "react";
+import ProfileUpdatePage from "@/features/profile/profile-update-page";
 
-const UpdateProfile = async () => {
-  return (
-    <div>
-      <UpdateProfileComponent />
-    </div>
-  );
-};
-
-export default UpdateProfile;
+export default ProfileUpdatePage;

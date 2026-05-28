@@ -188,7 +188,7 @@ pnpm install
 
 ## Variabel lingkungan
 
-Validasi runtime memakai `@t3-oss/env-core` di `lib/env.ts`. Pastikan nilai berikut terisi:
+Validasi runtime memakai `@t3-oss/env-core` di `lib/env/index.ts`. Pastikan nilai berikut terisi:
 
 ### Server
 
@@ -227,7 +227,7 @@ ppi-bartin-web/
 │   ├── loading.tsx              # UI loading global route
 │   ├── globals.css              # Design tokens & gaya global
 │   ├── login/                   # Halaman login
-│   ├── complite-profile/        # Lengkapi profil (redirect dari protected)
+│   ├── complete-profile/        # Lengkapi profil (redirect dari protected)
 │   ├── (protected)/             # Layout: auth + cek nomor siswa
 │   │   ├── layout.tsx
 │   │   ├── home/                # Beranda, events, news, profile
@@ -264,7 +264,7 @@ ppi-bartin-web/
 ## Arsitektur singkat
 
 1. **Routing** — File-based routing Next.js; grup `(protected)` membungkus halaman yang membutuhkan sesi.
-2. **Protected layout** — Memanggil `auth.api.getSession`, redirect ke `/login` atau `/complite-profile` jika syarat profil belum terpenuhi (`app/(protected)/layout.tsx`).
+2. **Protected layout** — Memanggil `auth.api.getSession`, redirect ke `/login` atau `/complete-profile` jika syarat profil belum terpenuhi (`app/(protected)/layout.tsx`).
 3. **Data** — Pola umum: `server/data/*` untuk fungsi akses data; `server/actions/*` untuk mutasi; hook TanStack Query di `hooks/*` untuk klien.
 4. **Path alias** — Import dengan `@/...` mengacu ke root repository (`tsconfig.json`).
 
@@ -352,7 +352,7 @@ Ringkasan praktik yang relevan dengan codebase ini — bukan pengganti audit kea
 - **Jangan commit** file `.env`, `.env.local`, atau kredensial ke repositori. Gunakan `.env.example` hanya sebagai nama variabel tanpa nilai sensitif.
 - **`BETTER_AUTH_SECRET`** harus panjang dan acak (mis. `openssl rand -base64 32`). Ganti jika pernah bocor; secret lemah berarti risiko pemalsuan sesi.
 - **`GOOGLE_CLIENT_SECRET`**, **`UPLOADTHING_TOKEN`**, **`DATABASE_URL`**, dan kunci server lainnya hanya boleh ada di **variabel server** / platform hosting, bukan di kode atau di variabel `NEXT_PUBLIC_*`.
-- Validasi env di **`lib/env.ts`** membantu mencegah aplikasi jalan dengan konfigurasi kosong atau salah di build/runtime — tetap periksa pesan error saat deploy.
+- Validasi env di **`lib/env/index.ts`** membantu mencegah aplikasi jalan dengan konfigurasi kosong atau salah di build/runtime — tetap periksa pesan error saat deploy.
 
 ### Variabel `NEXT_PUBLIC_*`
 

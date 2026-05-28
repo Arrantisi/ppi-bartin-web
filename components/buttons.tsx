@@ -13,7 +13,7 @@ import {
   IconSun,
   IconTrash,
 } from "@tabler/icons-react";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { deleteAccount } from "@/server/actions/setting-user";

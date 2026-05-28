@@ -1,14 +1,3 @@
-import { HomeContent } from "@/components/event/home/content";
-import ProfileHome from "@/components/event/home/header";
-import { HomeLayoutComponent } from "@/components/layouts/home-layout";
+import HomePage from "@/features/home/home-page";
 
-const EventPage = () => {
-  return (
-    <HomeLayoutComponent>
-      <ProfileHome />
-      <HomeContent />
-    </HomeLayoutComponent>
-  );
-};
-
-export default EventPage;
+export default HomePage;

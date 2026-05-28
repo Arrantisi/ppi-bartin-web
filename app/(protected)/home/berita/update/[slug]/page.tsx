@@ -1,4 +1,4 @@
-import { UpdateNewsComponent } from "@/components/event/news/update";
+import NewsUpdatePage from "@/features/news/news-update-page";
 
 const UpdateNewsPage = async ({
   params,
@@ -7,11 +7,7 @@ const UpdateNewsPage = async ({
 }) => {
   const { slug } = await params;
 
-  return (
-    <div>
-      <UpdateNewsComponent slug={slug} />
-    </div>
-  );
+  return <NewsUpdatePage slug={slug} />;
 };
 
 export default UpdateNewsPage;

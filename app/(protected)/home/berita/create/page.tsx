@@ -1,11 +1,3 @@
-import { CreateNewsComponent } from "@/components/event/news/create";
+import NewsCreatePage from "@/features/news/news-create-page";
 
-const CreateNewsPage = () => {
-  return (
-    <div>
-      <CreateNewsComponent />
-    </div>
-  );
-};
-
-export default CreateNewsPage;
+export default NewsCreatePage;

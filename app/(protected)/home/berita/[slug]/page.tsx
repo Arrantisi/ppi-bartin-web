@@ -1,4 +1,4 @@
-import { NewsDetailComponent } from "@/components/event/news/news-detail";
+import NewsDetailPage from "@/features/news/news-detail-page";
 
 const DetailBeritaPage = async ({
   params,
@@ -7,11 +7,7 @@ const DetailBeritaPage = async ({
 }) => {
   const { slug } = await params;
 
-  return (
-    <div>
-      <NewsDetailComponent slug={slug} />
-    </div>
-  );
+  return <NewsDetailPage slug={slug} />;
 };
 
 export default DetailBeritaPage;

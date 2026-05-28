@@ -20,7 +20,7 @@ export default async function ProtectedLayout({
   }
 
   if (!student.username) {
-    redirect("/complite-profile");
+    redirect("/complete-profile");
   }
 
   return (

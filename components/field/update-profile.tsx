@@ -46,7 +46,7 @@ import { toast } from "sonner";
 
 const jenisKelaminItems = ["laki-laki", "perempuan"];
 
-export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
+export const UpdateProfileField = ({ ...props }: Partial<TgetProfileUser> = {}) => {
   const [isFakultas, setIsFakultas] = useState(props.fakultas || "");
   const [lenghtOfBio, setLengthOfBio] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,7 +60,7 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
       angkatan: props.angkatan || "",
       jurusan: props.jurusan || "",
       fileKey: props.image || "",
-      email: props.email,
+      email: props.email ?? "",
       fullname: props.name || "",
       noSiswa: props.nomorSiswa || "",
       username: props.username || "",
@@ -520,3 +520,5 @@ export const UpdateProfileField = ({ ...props }: TgetProfileUser) => {
     </div>
   );
 };
+
+export default UpdateProfileField;
