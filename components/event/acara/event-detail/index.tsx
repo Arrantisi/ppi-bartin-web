@@ -15,7 +15,7 @@ import { formattedDate } from "@/utils/date-format";
 import { useState } from "react";
 import { Drawer } from "@/components/ui/drawer";
 import AvatarParticipant from "../../avatars/avatar-participant";
-import { authClient } from "@/lib/auth";
+import { authClient } from "@/lib/auth/client";
 import { imageUrl } from "@/utils/image-url";
 import { useEventBySlug } from "@/hooks/use-events";
 import { LoaderOneDemo } from "@/components/loader";

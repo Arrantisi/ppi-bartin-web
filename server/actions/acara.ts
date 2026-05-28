@@ -6,7 +6,7 @@ import { TcreateEventSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
-import { sendPushToAll } from "@/lib/push";
+import { sendPushToAll } from "@/lib/push/server";
 
 export const cancelParticipant = async (
   eventId: string,

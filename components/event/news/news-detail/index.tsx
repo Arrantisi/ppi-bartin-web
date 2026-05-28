@@ -11,7 +11,7 @@ import { imageUrl } from "@/utils/image-url";
 import { useNewsBySlug } from "@/hooks/use-news";
 import { LoaderOneDemo } from "@/components/loader";
 import { Drawer } from "@/components/ui/drawer";
-import { authClient } from "@/lib/auth";
+import { authClient } from "@/lib/auth/client";
 import { useState } from "react";
 import { AlertDEelete } from "../../alert-delete";
 import { DrawerOpsi } from "@/components/drawers/opsi";

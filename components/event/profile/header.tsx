@@ -1,6 +1,6 @@
 "use client";
 
-import { authClient } from "@/lib/auth";
+import { authClient } from "@/lib/auth/client";
 import { useRouter } from "next/navigation";
 
 export const HeaderProfile = () => {

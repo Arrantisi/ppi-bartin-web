@@ -4,8 +4,8 @@ import { ProfileShell } from "@/features/profile/profile-shell";
 const CompleteProfilePage = () => {
   return (
     <ProfileShell
-      title="Lengkapi Profil"
-      description="Verifikasi status keanggotaan PPI Bartın kamu."
+      title="Buat Username"
+      description="Lengkapi profil kamu dengan username yang unik dan mudah dikenali."
     >
       <UpdateProfileField />
     </ProfileShell>

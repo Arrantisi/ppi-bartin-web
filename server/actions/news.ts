@@ -6,7 +6,7 @@ import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
 import { revalidatePath } from "next/cache";
 import { studentAccount } from "./account";
-import { sendPushToAll } from "@/lib/push";
+import { sendPushToAll } from "@/lib/push/server";
 
 export const deleteNews = async (newsId: string): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
