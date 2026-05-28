@@ -36,7 +36,7 @@ export const student = async (
     if (!noSiswa)
       return {
         status: "error",
-        msg: "nomor siswa tidak ada di database",
+        msg: "nomor siswa tidak ada di database, cek kembali atau hubungi ADK PPI Bartin",
       };
 
     const dbNoSiswa = normalizeToUsLayout(noSiswa.id_siswa);
@@ -47,7 +47,7 @@ export const student = async (
     if (dbNoSiswa !== inputNoSiswa || dbNamaSiswa !== inputNamaSiswa)
       return {
         status: "error",
-        msg: "data siswa tidak cocok dengan data di database",
+        msg: "data siswa tidak cocok dengan data di database, cek kembali atau hubungi ADK PPI Bartin",
       };
 
     return {
@@ -85,7 +85,7 @@ export const completeProfile = async (
     if (userExistNoSiswa) {
       return {
         status: "error",
-        msg: "no siswa sudah ada di database, coba login menggunakan email yang telah terdaftar sebelumnya",
+        msg: "no siswa sudah terdaftar, coba login menggunakan email yang digunakan sebelumnya",
       };
     }
 
@@ -135,7 +135,7 @@ export const deleteAccount = async (): Promise<IServerPrompt> => {
 
     return {
       status: "success",
-      msg: "account berhasil hapus diperbarui!",
+      msg: "account berhasil dihapus!",
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -203,7 +203,7 @@ export const gantiNomorSiswaAction = async (
 
     return {
       status: "success",
-      msg: "account berhasil hapus diperbarui!",
+      msg: "account berhasil diperbarui!",
     };
   } catch (error) {
     console.error(error);
