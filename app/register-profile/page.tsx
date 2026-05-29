@@ -12,7 +12,24 @@ export default async function RegisterProfileRoute() {
 	const student = await checkNoSiswa();
 
 	if (student?.nomorSiswa) {
-		if (!student.username) redirect("/complete-profile");
+		// If no username yet, go to the username step under register-profile
+		if (!student.username) redirect("/register-profile/username");
+
+		// if username exists but profile incomplete, send to complete-profile (full profile)
+		if (
+			student.username &&
+			!(
+				student.fakultas &&
+				student.jurusan &&
+				student.angkatan &&
+				student.statusPelajar &&
+				student.jenisKelamin &&
+				student.image
+			)
+		) {
+			redirect("/complete-profile");
+		}
+
 		redirect("/home");
 	}
 

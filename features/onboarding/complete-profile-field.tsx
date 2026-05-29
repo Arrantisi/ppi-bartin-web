@@ -31,7 +31,7 @@ const CompleteProfileField = () => {
 
 				if (result.status === "success") {
 					toast.success("Username tersimpan", { description: result.msg });
-					router.push("/home");
+					router.push("/complete-profile");
 				} else {
 					toast.error("Gagal menyimpan username", { description: result.msg });
 				}

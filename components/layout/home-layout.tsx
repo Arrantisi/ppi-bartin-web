@@ -33,7 +33,7 @@ export const HomeLayoutComponent = ({
 						animate={{ opacity: 1, y: 0 }}
 						exit={{ opacity: 0, y: -8 }}
 						transition={{ duration: 0.2, ease: "easeInOut" }}
-						className={isMobile ? "mt-4 mx-3 mb-28" : "mt-4 mb-6"}
+						className={isMobile ? "mt-4 mx-3 mb-28" : "mt-4 mb-6 mx-auto max-w-4xl px-6"}
 					>
 						{children}
 					</motion.div>
