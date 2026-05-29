@@ -1,10 +1,5 @@
 import { ButtonPreviusePage } from "@/components/buttons";
-import {
-  GantiNamaSiswaCard,
-  GantiNomorSiswaCard,
-  GantiTema,
-  HapusAccount,
-} from "@/components/setting/card";
+import { GantiTema } from "@/components/setting/card";
 
 const SettingsPage = () => {
   return (
@@ -16,14 +11,11 @@ const SettingsPage = () => {
         <div className="space-y-3 py-5 hidden md:flex flex-col items-end">
           <h1 className="text-4xl">Pengaturan Akun</h1>
           <p className="text-sm text-foreground">
-            Kamu bisa atur kamu disini dan juga hapus akun kamu disini
+            Kamu bisa atur tampilan dan preferensi akun kamu disini
           </p>
         </div>
       </div>
-      <GantiNamaSiswaCard />
-      <GantiNomorSiswaCard />
       <GantiTema />
-      <HapusAccount />
     </div>
   );
 };
