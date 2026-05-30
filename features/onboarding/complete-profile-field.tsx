@@ -65,7 +65,7 @@ const CompleteProfileField = () => {
 								<Input
 									id={field.name}
 									name={field.name}
-									placeholder="contoh: naufalr"
+									placeholder="contoh: ppibartin01"
 									value={field.state.value}
 									onChange={(event) => field.handleChange(event.target.value)}
 								/>

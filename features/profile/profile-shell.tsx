@@ -6,16 +6,18 @@ type ProfileShellProps = {
   title: string;
   description: string;
   children: React.ReactNode;
+  formClassName?: string;
 };
 
 export const ProfileShell = ({
   title,
   description,
   children,
+  formClassName = "flex flex-col w-full md:max-w-md max-w-xs items-center",
 }: ProfileShellProps) => {
   return (
     <div className="w-full h-screen max-w-xl md:max-w-3xl xl:max-w-6xl mx-auto flex items-center justify-center">
-      <div className="flex flex-col w-full md:max-w-md max-w-xs items-center">
+      <div className={formClassName}>
         <div className="flex flex-col w-full items-start">
           <div className="mb-6 space-y-1">
             <div className="rounded-full shadow p-2 w-fit">
@@ -32,7 +34,7 @@ export const ProfileShell = ({
           </div>
         </div>
 
-        {children}
+        <div className="w-full">{children}</div>
 
         <div className="mt-6 border-t pt-4 w-full max-w-xs">
           <p className="text-center text-xs text-muted-foreground">

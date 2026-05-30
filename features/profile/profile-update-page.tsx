@@ -1,7 +1,12 @@
 import { UpdateProfileComponent } from "./components";
+import { HomeLayoutComponent } from "@/components/layout/home-layout";
 
 const ProfileUpdatePage = async () => {
-  return <UpdateProfileComponent />;
+  return (
+    <HomeLayoutComponent>
+      <UpdateProfileComponent />
+    </HomeLayoutComponent>
+  );
 };
 
 export default ProfileUpdatePage;

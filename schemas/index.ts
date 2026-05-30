@@ -6,32 +6,78 @@ import {
   STATUS_PELAJAR_OPTIONS,
 } from "./utils";
 
+const usernameSchema = z
+  .string()
+  .min(4, "Username minimal 4 karakter")
+  .max(16, "Username maksimal 16 karakter");
+
+const telponSchema = z
+  .string()
+  .min(8, "Nomor telepon minimal 8 digit");
+
+const jenisKelaminSchema = z
+  .string()
+  .refine((value) => JENIS_KELAMIN_OPTIONS.includes(value as never), {
+    message: "Jenis kelamin wajib diisi",
+  });
+
+const statusPelajarSchema = z
+  .string()
+  .refine((value) => STATUS_PELAJAR_OPTIONS.includes(value as never), {
+    message: "Status pelajar tidak valid",
+  });
+
+const fakultasSchema = z.string().min(3, "Fakultas minimal 3 karakter");
+
+const jurusanSchema = z.string().min(3, "Jurusan minimal 3 karakter");
+
+const angkatanSchema = z
+  .string()
+  .refine((value) => ANGKATAN_OPTIONS.includes(value as never), {
+    message: "Angkatan tidak valid",
+  });
+
+const tanggalLahirSchema = z.date({
+  error: "Silakan tentukan tanggal lahir anda",
+});
+
+const eventJudulSchema = z
+  .string()
+  .min(8, "Nama agenda minimal 8 karakter")
+  .max(100, "Judul terlalu panjang");
+
+const eventLokasiSchema = z.string().min(1, "Lokasi acara wajib diisi");
+
+const eventDateSchema = z.date({
+  error: "Silakan tentukan tanggal acara",
+});
+
+const eventDeskripsiSchema = z
+  .string()
+  .min(8, "Deskripsi acara minimal 8 karakter");
+
+const eventMaxCapacitySchema = z
+  .number({ error: "Kapasitas harus berupa angka" })
+  .int("Harus berupa bilangan bulat")
+  .min(1, "Kapasitas minimal 1 orang");
+
+const eventBaseSchema = z.object({
+  judul: eventJudulSchema,
+  lokasi: eventLokasiSchema,
+  date: eventDateSchema,
+  deskripsi: eventDeskripsiSchema,
+  maxCapacity: eventMaxCapacitySchema,
+});
+
 export const formPersonalSchema = z.object({
-  username: z
-    .string()
-    .min(4, "Username minimal 2 karakter")
-    .max(12, "Username maksimal 12 karakter"),
-  telpon: z.string().min(8),
-  jenisKelamin: z
-    .string()
-    .refine((value) => JENIS_KELAMIN_OPTIONS.includes(value as never), {
-      message: "Jenis kelamin harus laki-laki atau perempuan",
-    }),
-  tanggalLahir: z.date({
-    error: "Silakan tentukan tanggal lahir anda",
-  }),
-  statusPelajar: z
-    .string()
-    .refine((value) => STATUS_PELAJAR_OPTIONS.includes(value as never), {
-      message: "Status pelajar tidak valid",
-    }),
-  fakultas: z.string().min(3, "Fakultas minimal 3 karakter"),
-  jurusan: z.string().min(3, "Jurusan minimal 3 karakter"),
-  angkatan: z
-    .string()
-    .refine((value) => ANGKATAN_OPTIONS.includes(value as never), {
-      message: "Angkatan tidak valid",
-    }),
+  username: usernameSchema,
+  telpon: telponSchema,
+  jenisKelamin: jenisKelaminSchema,
+  tanggalLahir: tanggalLahirSchema,
+  statusPelajar: statusPelajarSchema,
+  fakultas: fakultasSchema,
+  jurusan: jurusanSchema,
+  angkatan: angkatanSchema,
 });
 
 export const formPersonalSchemaPartial = formPersonalSchema.extend({
@@ -70,67 +116,37 @@ export const createNewsSchema = z.object({
 export type TcreateNewsSchema = z.infer<typeof createNewsSchema>;
 
 export const updateProfileSchema = z.object({
-  statusPelajar: z
-    .string()
-    .refine((value) => STATUS_PELAJAR_OPTIONS.includes(value as never), {
-      message: "Status pelajar tidak valid",
-    }),
-  fakultas: z.string().min(3, "Fakultas minimal 3 karakter"),
+  statusPelajar: statusPelajarSchema,
+  fakultas: fakultasSchema,
   fileKey: z.string().min(1, "Foto profil wajib diisi"),
   fullname: z.string().min(1, "Nama lengkap wajib diisi"),
-  username: z
-    .string()
-    .min(2, "Username minimal 2 karakter")
-    .max(12, "Username maksimal 12 karakter"),
-  jurusan: z.string().min(3, "Jurusan minimal 3 karakter"),
-  angkatan: z
-    .string()
-    .refine((value) => ANGKATAN_OPTIONS.includes(value as never), {
-      message: "Angkatan tidak valid",
-    }),
+  username: usernameSchema,
+  jurusan: jurusanSchema,
+  angkatan: angkatanSchema,
   email: z.email("Format email tidak valid"),
-  telpon: z.string().or(z.undefined()),
+    telpon: telponSchema,
   noSiswa: z.string().min(1, "Nomor siswa wajib diisi"),
   Bio: z.string().or(z.undefined()),
-  tanggalLahir: z.date().or(z.undefined()),
-  jenisKelamin: z
-    .string()
-    .refine((value) => JENIS_KELAMIN_OPTIONS.includes(value as never), {
-      message: "Jenis kelamin harus laki-laki atau perempuan",
-    }),
+  tanggalLahir: z.date(),
+  jenisKelamin: jenisKelaminSchema,
   alamat: z.string().or(z.undefined()),
 });
 
 export type TupdateProfileSchema = z.infer<typeof updateProfileSchema>;
 
 export const formUsername = z.object({
-  username: z
-    .string()
-    .min(2, "Username minimal 2 karakter")
-    .max(12, "Username maksimal 12 karakter"),
+  username: usernameSchema,
 });
 
 export type FormUsername = z.infer<typeof formUsername>;
 
 export const createEventSchema = z
   .object({
-    judul: z
-      .string()
-      .min(8, "Nama agenda minimal 8 karakter")
-      .max(100, "Judul terlalu panjang"),
-    lokasi: z.string().min(1, "Lokasi acara wajib diisi"),
-    date: z.date({
-      error: "Silakan tentukan tanggal acara",
-    }),
-    deskripsi: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
+    ...eventBaseSchema.shape,
     batasDaftar: z.date({
       error: "Silakan tentukan batas pendaftaran",
     }),
     fileKey: z.string().min(1, "Gambar/File wajib diunggah"),
-    maxCapacity: z
-      .number({ error: "Kapasitas harus berupa angka" })
-      .int("Harus berupa bilangan bulat")
-      .min(1, "Kapasitas minimal 1 orang"),
   })
   .refine((data) => data.batasDaftar <= data.date, {
     message: "Batas pendaftaran tidak boleh melewati tanggal acara",
@@ -139,16 +155,7 @@ export const createEventSchema = z
 
 export type TcreateEventSchema = z.infer<typeof createEventSchema>;
 
-export const updateEventField = z.object({
-  judul: z.string().min(8, "Nama agenda minimal 8 karakter"),
-  lokasi: z.string().min(1, "Lokasi acara wajib diisi"),
-  date: z.date({ error: "Silakan tentukan tanggal acara" }),
-  deskripsi: z.string().min(8, "Deskripsi acara minimal 8 karakter"),
-  maxCapacity: z
-    .number({ error: "Kapasitas harus berupa angka" })
-    .int("Harus berupa bilangan bulat")
-    .min(1, "Kapasitas minimal 1 orang"),
-});
+export const updateEventField = eventBaseSchema;
 
 export type TUpdateEventField = z.infer<typeof updateEventField>;
 

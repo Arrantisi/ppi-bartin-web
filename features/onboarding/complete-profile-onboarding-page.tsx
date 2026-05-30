@@ -9,6 +9,7 @@ const CompleteProfileOnboardingPage = async () => {
     <ProfileShell
       title="Lengkapi Profil Kamu"
       description="Isi semua data profil untuk menyelesaikan registrasi dan mengakses platform."
+      formClassName="flex flex-col w-full md:max-w-2xl max-w-md items-center"
     >
       <CompleteProfileOnboardingField {...user} />
     </ProfileShell>

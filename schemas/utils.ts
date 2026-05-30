@@ -6,14 +6,15 @@ export const STATUS_PELAJAR_OPTIONS = [
   "S2",
   "S3",
 ] as const;
-export const ANGKATAN_OPTIONS = [
-  "2020",
-  "2021",
-  "2022",
-  "2023",
-  "2024",
-  "2025",
-] as const;
+
+const currentYear = new Date().getFullYear();
+const angkatanStartYear = 2021;
+
+export const ANGKATAN_OPTIONS = Array.from(
+  { length: currentYear - angkatanStartYear + 2 },
+  (_, index) => String(angkatanStartYear + index),
+) as [string, ...string[]];
+
 export const JENIS_KELAMIN_OPTIONS = ["laki-laki", "perempuan"] as const;
 export const CATEGORY_VALUES = [
   "beasiswa",
