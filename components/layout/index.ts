@@ -1,2 +1,2 @@
 export { HomeLayoutComponent } from "@/components/layout/home-layout";
-export { HeaderFieldLayout } from "@/components/layouts/header-field";
+export { HeaderFieldLayout } from "@/components/layout/header-field";

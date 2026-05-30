@@ -1,5 +1,5 @@
 import { getProfileUser } from "@/server/data/users";
-import CompleteProfileOnboardingField from "@/features/onboarding/complete-profile-onboarding-field";
+import CompleteProfileField from "@/features/onboarding/03-complete-profile-field";
 import { OnboardingShell } from "@/features/onboarding/onboarding-shell";
 
 const CompleteProfileOnboardingPage = async (): Promise<React.JSX.Element> => {
@@ -11,7 +11,7 @@ const CompleteProfileOnboardingPage = async (): Promise<React.JSX.Element> => {
       description="Isi semua data profil untuk menyelesaikan registrasi dan mengakses platform."
       formClassName="flex w-full flex-col items-stretch gap-6 md:max-w-2xl max-w-md"
     >
-      <CompleteProfileOnboardingField {...user} />
+      <CompleteProfileField {...user} />
     </OnboardingShell>
   );
 };

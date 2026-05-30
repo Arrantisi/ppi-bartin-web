@@ -1,16 +1,16 @@
-import RegisterField from "./register-profile-field";
+import ValidateNameField from "./01-validate-name-field";
 import { OnboardingShell } from "@/features/onboarding/onboarding-shell";
 
-const RegisterProfilePage = () => {
+const ValidateNamePage = () => {
   return (
     <OnboardingShell
       title="Lengkapi Profil"
       description="Verifikasi status keanggotaan PPI Bartın kamu."
       formClassName="flex w-full flex-col items-stretch gap-6 md:max-w-md max-w-xs"
     >
-      <RegisterField />
+      <ValidateNameField />
     </OnboardingShell>
   );
 };
 
-export default RegisterProfilePage;
+export default ValidateNamePage;

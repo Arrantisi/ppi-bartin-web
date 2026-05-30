@@ -1,7 +1,7 @@
-import UpdateProfileField from "./complete-profile-field";
+import UpdateProfileField from "./02-username-field";
 import { OnboardingShell } from "@/features/onboarding/onboarding-shell";
 
-const CompleteProfilePage = () => {
+const UsernamePage = () => {
   return (
     <OnboardingShell
       title="Buat Username"
@@ -13,4 +13,4 @@ const CompleteProfilePage = () => {
   );
 };
 
-export default CompleteProfilePage;
+export default UsernamePage;

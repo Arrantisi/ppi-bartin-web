@@ -3,9 +3,7 @@
 import UpdateProfileField from "@/components/field/update-profile";
 import { TgetProfileUser } from "@/server/data/users";
 
-export default function CompleteProfileOnboardingField(
-  props: Partial<TgetProfileUser> = {}
-) {
+export default function CompleteProfileField(props: Partial<TgetProfileUser> = {}) {
   return (
     <div className="w-full">
       <div className="space-y-6">
