@@ -3,7 +3,7 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
-import { FrameNews } from "../../cards/card-news";
+import { FrameNews } from "@/components/cards/card-news";
 import { useNews } from "@/hooks/use-news";
 import { DataKosong } from "@/components/data-kosong";
 import { ButtonCreate } from "@/components/buttons";

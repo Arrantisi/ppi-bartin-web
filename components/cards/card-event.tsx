@@ -8,18 +8,18 @@ import {
   IconMapPin,
   IconUsers,
 } from "@tabler/icons-react";
-import AvatarParticipant from "../event/avatars/avatar-participant";
+import AvatarParticipant from "@/features/events/acara/avatars/avatar-participant";
 import { authClient } from "@/lib/auth/client";
 import { Dialog, DialogTrigger } from "../animate-ui/components/base/dialog";
 import { cn } from "@/lib/utils";
 import { TgetAllEvent } from "@/server/data/events";
 import { imageUrl } from "@/utils/image-url";
 import { formattedDate } from "@/utils/date-format";
-import { DialogTableParticipant } from "../event/avatars/table-participant";
+import { DialogTableParticipant } from "@/features/events/acara/avatars/table-participant";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { getTwoWords } from "@/utils/get-twowords";
-import { EventActionButton } from "../event/action-button-event";
+import { EventActionButton } from "@/features/events/acara/action-button-event";
 
 const CardEvent = ({ ...props }: TgetAllEvent) => {
   const { data: session } = authClient.useSession();

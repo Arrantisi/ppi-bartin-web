@@ -1,8 +1,8 @@
 "use client";
 
 import { DataKosong } from "@/components/data-kosong";
-import CardEvent from "../../cards/card-event";
-import { SkeletonCardAcara } from "../../skeletons/card-event-skeleton";
+import CardEvent from "@/components/cards/card-event";
+import { SkeletonCardAcara } from "@/components/skeletons/card-event-skeleton";
 import { useEventsPage } from "@/hooks/use-events";
 import { ButtonCreate } from "@/components/buttons";
 

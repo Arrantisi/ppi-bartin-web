@@ -1,6 +1,6 @@
 "use client";
 
-import { IconHome } from "../icon-home";
+import { IconHome } from "@/components/shared/icon-home";
 
 const HeaderAcara = () => {
   return (
@@ -19,3 +19,4 @@ const HeaderAcara = () => {
 };
 
 export default HeaderAcara;
+

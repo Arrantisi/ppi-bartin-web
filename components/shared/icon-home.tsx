@@ -3,11 +3,11 @@ import Link from "next/link";
 
 export const IconHome = () => {
   return (
-    <Link href={"/home"}>
+    <Link href="/home" aria-label="Beranda">
       <div className="bg-card rounded-full p-1.5 mx-2 flex items-center justify-center md:hidden">
         <Image
-          src={"/logo-ppi.png"}
-          alt=""
+          src="/logo-ppi.png"
+          alt="PPI Bartin"
           width={200}
           height={200}
           className="size-6"

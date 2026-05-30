@@ -13,8 +13,8 @@ import { LoaderOneDemo } from "@/components/loader";
 import { Drawer } from "@/components/ui/drawer";
 import { authClient } from "@/lib/auth/client";
 import { useState } from "react";
-import { AlertDEelete } from "../../alert-delete";
-import { DrawerOpsi } from "@/components/drawers/opsi";
+import { AlertDEelete } from "@/components/shared/confirm-delete-dialog";
+import { DrawerOpsi } from "@/components/shared/content-actions-drawer";
 import parse from "html-react-parser";
 import DOMPurify from "isomorphic-dompurify";
 import { getTwoWords } from "@/utils/get-twowords";
@@ -142,3 +142,4 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
     </>
   );
 };
+

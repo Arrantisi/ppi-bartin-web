@@ -10,7 +10,7 @@ export const CreateContentHeader = () => {
   return (
     <div className="relative flex items-center justify-center my-5">
       <Button
-        onClick={() => router.push("/home/events")}
+        onClick={() => router.push("/home/acara")}
         variant={"outline"}
         className="absolute left-2 rounded-full border-none"
       >

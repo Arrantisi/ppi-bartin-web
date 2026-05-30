@@ -21,7 +21,7 @@ import {
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { TanggalLahitField } from "../event/profile/update/tanggal-lahir";
+import { TanggalLahitField } from "@/features/profile/update/tanggal-lahir";
 import {
   Select,
   SelectContent,
@@ -35,7 +35,7 @@ import { updateProfile } from "@/server/actions/user";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
-import { UploadPhotoProfile } from "../event/uploader/upload-photo-profile";
+import { UploadPhotoProfile } from "@/features/uploads/upload-photo-profile";
 import {
   SelectAngkatan,
   SelectFakultas,

@@ -14,15 +14,15 @@ import { useRouter } from "next/navigation";
 import { formattedDate } from "@/utils/date-format";
 import { useState } from "react";
 import { Drawer } from "@/components/ui/drawer";
-import AvatarParticipant from "../../avatars/avatar-participant";
+import AvatarParticipant from "@/features/events/acara/avatars/avatar-participant";
 import { authClient } from "@/lib/auth/client";
 import { imageUrl } from "@/utils/image-url";
 import { useEventBySlug } from "@/hooks/use-events";
 import { LoaderOneDemo } from "@/components/loader";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { AlertDEelete } from "../../alert-delete";
-import { EventActionButton } from "../../action-button-event";
-import { DrawerOpsi } from "@/components/drawers/opsi";
+import { AlertDEelete } from "@/components/shared/confirm-delete-dialog";
+import { EventActionButton } from "@/features/events/acara/action-button-event";
+import { DrawerOpsi } from "@/components/shared/content-actions-drawer";
 import {
   Dialog,
   DialogClose,
@@ -234,3 +234,4 @@ export const EventDetail = ({ slug }: { slug: string }) => {
     </>
   );
 };
+

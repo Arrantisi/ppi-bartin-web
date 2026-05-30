@@ -112,11 +112,7 @@ export const DialogTableParticipant = ({
         />
 
         {userCreatorId === userId && (
-          <Button
-            variant={"outline"}
-            onClick={handleDownload}
-            className="text-sm"
-          >
+          <Button variant={"outline"} onClick={handleDownload} className="text-sm">
             Export (.csv)
           </Button>
         )}
@@ -133,10 +129,7 @@ export const DialogTableParticipant = ({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>

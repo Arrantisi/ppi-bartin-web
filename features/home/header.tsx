@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useProfileUser } from "@/hooks/use-users";
-import { IconHome } from "../icon-home";
+import { IconHome } from "@/components/shared/icon-home";
 
 const ProfileHome = () => {
   const { data: session } = useProfileUser();
@@ -29,3 +29,4 @@ const ProfileHome = () => {
 };
 
 export default ProfileHome;
+

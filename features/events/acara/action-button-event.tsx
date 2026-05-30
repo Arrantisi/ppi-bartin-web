@@ -1,9 +1,9 @@
 "use client";
 
 import { TgetAllEvent } from "@/server/data/events";
-import { HoldButtonCancel, HoldButtonJoin } from "../buttons";
+import { HoldButtonCancel, HoldButtonJoin } from "@/components/buttons";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "../ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { TimerOff } from "lucide-react";
 import { IconUserOff } from "@tabler/icons-react";
 
@@ -50,7 +50,6 @@ export const EventActionButton = ({
   return <HoldButtonJoin eventId={event.id}>Tahan Untuk Ikuti</HoldButtonJoin>;
 };
 
-// Sub-komponen kecil untuk status teks agar konsisten
 const StatusBadge = ({
   children,
   className,

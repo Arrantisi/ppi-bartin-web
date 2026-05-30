@@ -7,7 +7,7 @@ import { formattedDateNews } from "@/utils/date-format";
 import { imageUrl } from "@/utils/image-url";
 import { TgetNews } from "@/server/data/news";
 import { cn } from "@/lib/utils";
-import { categoryStyles } from "../event/color-catagory";
+import { categoryStyles } from "@/components/shared/category-styles";
 import { getTwoWords } from "@/utils/get-twowords";
 
 export const FrameNews = ({ ...news }: TgetNews) => {
