@@ -25,7 +25,7 @@ export const HomeLayoutComponent = ({
 		>
 			{!isMobile && <NavMainEvent />}
 
-			<SidebarInset>
+			<SidebarInset className="min-h-svh">
 				<AnimatePresence mode="wait">
 					<motion.div
 						key={pathname}
@@ -33,7 +33,11 @@ export const HomeLayoutComponent = ({
 						animate={{ opacity: 1, y: 0 }}
 						exit={{ opacity: 0, y: -8 }}
 						transition={{ duration: 0.2, ease: "easeInOut" }}
-						className={isMobile ? "mt-4 mx-3 mb-28" : "mt-4 mb-6 mx-auto max-w-4xl px-6"}
+						className={
+							isMobile
+								? "mt-4 mb-28 flex min-h-[calc(100svh-8rem)] w-full flex-col px-3"
+								: "mt-4 mb-6 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-4xl flex-col px-6"
+						}
 					>
 						{children}
 					</motion.div>
