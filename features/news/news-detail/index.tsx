@@ -19,12 +19,19 @@ import parse from "html-react-parser";
 import DOMPurify from "isomorphic-dompurify";
 import { getTwoWords } from "@/utils/get-twowords";
 
-export const NewsDetailComponent = ({ slug }: { slug: string }) => {
+export const NewsDetailComponent = ({
+  slug,
+  readOnly = false,
+}: {
+  slug: string;
+  readOnly?: boolean;
+}) => {
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const router = useRouter();
 
   const { data: session } = authClient.useSession();
+  const isReadOnly = readOnly || !session;
 
   const { data, isLoading } = useNewsBySlug({ slug });
   if (isLoading) return <LoaderOneDemo />;
@@ -48,7 +55,7 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
             variant="outline"
             size="icon-xl"
             className="rounded-full"
-            onClick={() => router.push("/home/berita")}
+            onClick={() => router.back()}
           >
             <IconArrowLeft size={20} />
           </Button>
@@ -57,27 +64,28 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
             Berita
           </h1>
 
-          <div className="flex gap-2">
-            {/* Drawer dikontrol lewat state, bukan DrawerTrigger */}
-            <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
-              <Button
-                variant={"outline"}
-                size={"icon-xl"}
-                className="rounded-full"
-                onClick={() => setIsOpenDrawer(true)}
-              >
-                <IconDots />
-              </Button>
+          {!isReadOnly && (
+            <div className="flex gap-2">
+              <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
+                <Button
+                  variant={"outline"}
+                  size={"icon-xl"}
+                  className="rounded-full"
+                  onClick={() => setIsOpenDrawer(true)}
+                >
+                  <IconDots />
+                </Button>
 
-              <DrawerOpsi
-                userId={session?.user.id || ""}
-                creatorId={data.creator.id}
-                slug={data.slug}
-                title="berita"
-                onDelete={handleOpenDelete}
-              />
-            </Drawer>
-          </div>
+                <DrawerOpsi
+                  userId={session?.user.id || ""}
+                  creatorId={data.creator.id}
+                  slug={data.slug}
+                  title="berita"
+                  onDelete={handleOpenDelete}
+                />
+              </Drawer>
+            </div>
+          )}
         </div>
 
         <div className="px-5">
@@ -131,14 +139,16 @@ export const NewsDetailComponent = ({ slug }: { slug: string }) => {
       </div>
 
       {/* AlertDEelete di luar semua portal — dikontrol via state */}
-      <AlertDEelete
-        href="/home/berita"
-        type="berita"
-        id={data.id}
-        open={isOpenAlert}
-        onOpenChange={setIsOpenAlert}
-        onClick={() => setIsOpenAlert(false)}
-      />
+      {!isReadOnly && (
+        <AlertDEelete
+          href="/berita"
+          type="berita"
+          id={data.id}
+          open={isOpenAlert}
+          onOpenChange={setIsOpenAlert}
+          onClick={() => setIsOpenAlert(false)}
+        />
+      )}
     </>
   );
 };

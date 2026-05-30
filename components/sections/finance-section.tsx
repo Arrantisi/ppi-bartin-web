@@ -1,104 +1,89 @@
-import { CheckCircle2, ArrowDownLeft, ShoppingCart } from "lucide-react";
+import { Clock3, FileText, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 export const FinanceSection = () => {
   return (
-    <section className="py-20 bg-background">
+    <section id="finance" className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-12 items-center">
-          {/* Teks Deskripsi */}
           <div className="lg:w-1/2">
+            <Badge className="mb-4 rounded-full bg-amber-500/10 text-amber-700 hover:bg-amber-500/10 dark:text-amber-400">
+              Upcoming
+            </Badge>
             <h2 className="text-3xl font-extrabold text-foreground mb-6">
-              Transparansi Keuangan Tanpa Batas
+              Transparansi Keuangan
             </h2>
-            <p className="text-muted-foreground mb-8 text-lg">
-              Setiap rupiah yang masuk dan keluar dicatat secara otomatis dan
-              dapat dipantau oleh seluruh anggota secara realtime.
+            <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
+              Fitur ini masih disiapkan. Saat peluncuran, anggota akan melihat
+              ringkasan pemasukan, pengeluaran, dan laporan yang lebih mudah
+              dipahami.
             </p>
             <ul className="space-y-4">
               {[
-                "Laporan Kas Bulanan Otomatis",
-                "Bukti Transaksi Digital Terverifikasi",
-                "Visualisasi Arus Kas Interaktif",
-              ].map((item, i) => (
+                "Ringkasan keuangan yang lebih mudah dibaca",
+                "Catatan pemasukan dan pengeluaran yang rapi",
+                "Akses laporan untuk kebutuhan organisasi",
+              ].map((item) => (
                 <li
-                  key={i}
+                  key={item}
                   className="flex items-center gap-3 text-foreground font-medium"
                 >
-                  <CheckCircle2 className="text-green-500 w-5 h-5" /> {item}
+                  <Clock3 className="text-amber-600 w-5 h-5" /> {item}
                 </li>
               ))}
             </ul>
             <Button className="mt-8 rounded-xl px-6 h-12 font-semibold shadow-lg shadow-primary/20">
-              Buka Laporan Keuangan
+              Menunggu Peluncuran
             </Button>
           </div>
 
-          {/* Visual Live Arus Kas */}
           <div className="lg:w-1/2 w-full bg-background">
-            <div className="bg-background p-6 rounded-3xl border border-border shadow-xl">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="font-bold text-foreground">Live Arus Kas</h3>
+            <div className="bg-background p-6 rounded-3xl border border-dashed border-border shadow-xl">
+              <div className="flex justify-between items-start mb-6 gap-4">
+                <div>
+                  <h3 className="font-bold text-foreground">
+                    Status fitur keuangan
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Belum aktif di versi sekarang.
+                  </p>
+                </div>
                 <Badge
                   variant="secondary"
-                  className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-bold"
+                  className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-[10px] font-bold"
                 >
-                  UPDATE: 12 MENIT LALU
+                  SEGERA HADIR
                 </Badge>
               </div>
 
               <div className="space-y-4">
-                {/* Item Masuk */}
-                <div className="p-4 bg-muted/30 rounded-2xl border border-border flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600">
-                      <ArrowDownLeft className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground">
-                        Iuran Anggota Okt
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        15 Okt 2023
-                      </p>
-                    </div>
+                <div className="p-4 bg-muted/30 rounded-2xl border border-border flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600">
+                    <ShieldAlert className="w-5 h-5" />
                   </div>
-                  <p className="font-bold text-green-600 text-lg">+₺800</p>
+                  <div>
+                    <p className="font-bold text-foreground">
+                      Transparansi Keuangan
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Masih dalam pengerjaan dan belum tersedia untuk anggota.
+                    </p>
+                  </div>
                 </div>
 
-                {/* Item Keluar */}
-                <div className="p-4 bg-muted/30 rounded-2xl border border-border flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600">
-                      <ShoppingCart className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground">
-                        Sewa Aula Futsal
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        12 Okt 2023
-                      </p>
-                    </div>
+                <div className="p-4 bg-muted/30 rounded-2xl border border-border flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-foreground">
+                    <FileText className="w-5 h-5" />
                   </div>
-                  <p className="font-bold text-red-600 text-lg">-₺250</p>
-                </div>
-              </div>
-
-              {/* Total Card */}
-              <div className="mt-6 p-6 bg-foreground text-background rounded-2xl flex justify-between items-center shadow-inner">
-                <div>
-                  <p className="text-xs opacity-70 font-bold uppercase mb-1">
-                    Total Kas Saat Ini
-                  </p>
-                  <p className="text-2xl font-extrabold tracking-tight">
-                    ₺4.150,00
-                  </p>
-                </div>
-                <div className="text-right text-[10px] opacity-60 font-medium leading-tight">
-                  <p>Dana Aman</p>
-                  <p>Audited 2026</p>
+                  <div>
+                    <p className="font-bold text-foreground">
+                      Laporan yang lebih mudah dibaca
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Akan dibuat lebih ringkas untuk kebutuhan harian.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

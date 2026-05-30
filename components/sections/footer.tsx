@@ -15,7 +15,7 @@ export const Footer = () => {
               </span>
             </div>
             <p className="text-muted-foreground max-w-sm leading-relaxed">
-              Platform resmi digital Persatuan Pelajar Indonesia di Bartın,
+              Platform digital Persatuan Pelajar Indonesia di Bartın,
               Turki. Berdedikasi untuk transparansi dan kemudahan akses data
               anggota.
             </p>
@@ -27,19 +27,19 @@ export const Footer = () => {
             </h5>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  Verifikasi Data
+                <Link href="/berita" className="hover:text-primary transition-colors">
+                  Berita Organisasi
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  Portal Anggota
+                <Link href="/acara" className="hover:text-primary transition-colors">
+                  Acara dan Kegiatan
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  Laporan Keuangan
-                </Link>
+                <span className="text-muted-foreground">
+                  Transparansi Keuangan <span className="text-amber-600">(segera hadir)</span>
+                </span>
               </li>
             </ul>
           </div>
@@ -50,18 +50,18 @@ export const Footer = () => {
             </h5>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link href="/#about" className="hover:text-primary transition-colors">
                   Tentang Kami
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  Struktur Kepengurusan
+                <Link href="/login" className="hover:text-primary transition-colors">
+                  Portal Anggota
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  AD/ART
+                <Link href="/home" className="hover:text-primary transition-colors">
+                  Masuk
                 </Link>
               </li>
             </ul>

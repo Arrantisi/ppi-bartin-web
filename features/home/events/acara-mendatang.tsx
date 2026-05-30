@@ -9,7 +9,7 @@ const AcaraMendatang = () => {
           Kegiatan Tebaru
         </h1>
         <Link
-          href={"/home/acara"}
+          href={"/acara"}
           className="text-secondary font-semibold text-sm"
         >
           selengkapnya

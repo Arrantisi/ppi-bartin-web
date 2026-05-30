@@ -10,7 +10,7 @@ export const UpdateEventHeader = () => {
   return (
     <div className="relative flex items-center justify-center my-5">
       <Button
-        onClick={() => router.push("/home/acara")}
+        onClick={() => router.back()}
         variant={"outline"}
         className="absolute left-2 rounded-full border-none"
       >

@@ -33,9 +33,16 @@ import DOMPurify from "isomorphic-dompurify";
 import { toast } from "sonner";
 import { getTwoWords } from "@/utils/get-twowords";
 
-export const EventDetail = ({ slug }: { slug: string }) => {
+export const EventDetail = ({
+  slug,
+  readOnly = false,
+}: {
+  slug: string;
+  readOnly?: boolean;
+}) => {
   const { data: session } = authClient.useSession();
   const router = useRouter();
+  const isReadOnly = readOnly || !session;
 
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const [isOpenImageDialog, setIsOpenImageDialog] = useState(false);
@@ -59,7 +66,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
 
   const handleToastLink = () => {
     toast.info("Info", {
-      description: "Kamu Harus join dulu kalau ingin isi form event ini!!!",
+      description: "Kamu harus join dulu kalau ingin isi form event ini!!!",
     });
   };
 
@@ -71,7 +78,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
     <>
       <Dialog open={isOpenImageDialog} onOpenChange={setIsOpenImageDialog}>
         <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
-          <div className="relative flex flex-col overflow-hidden">
+          <div className="max-w-2xl mx-auto bg-background min-h-screen pb-10 pt-3 relative flex flex-col overflow-hidden">
             {/* Header */}
             <div className="absolute w-full z-10">
               <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
@@ -79,7 +86,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                   variant="outline"
                   size="icon-xl"
                   className="rounded-full"
-                  onClick={() => router.push("/home/acara")}
+                  onClick={() => router.back()}
                 >
                   <IconArrowLeft size={20} />
                 </Button>
@@ -88,14 +95,16 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                   Acara
                 </h1>
 
-                <Button
-                  variant={"outline"}
-                  size={"icon-xl"}
-                  className="rounded-full"
-                  onClick={() => setIsOpenDrawer(true)}
-                >
-                  <IconDots />
-                </Button>
+                {!isReadOnly && (
+                  <Button
+                    variant={"outline"}
+                    size={"icon-xl"}
+                    className="rounded-full"
+                    onClick={() => setIsOpenDrawer(true)}
+                  >
+                    <IconDots />
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -141,7 +150,7 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                   </div>
 
                   <div className="relative py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed wrap-anywhere md:text-lg tracking-wide my-4 [&_p]:block prose prose-sm [&_strong]:text-foreground">
-                    {isJoined && (
+                    {!isReadOnly && isJoined && (
                       <button
                         className="h-full bg-transparent absolute w-full"
                         onClick={handleToastLink}
@@ -182,23 +191,34 @@ export const EventDetail = ({ slug }: { slug: string }) => {
                   </div>
                 </div>
 
-                <div className="w-full">
-                  <EventActionButton
-                    event={data}
-                    sessionUserId={session?.user.id}
-                  />
-                </div>
+                {!isReadOnly ? (
+                  <div className="w-full">
+                    <EventActionButton
+                      event={data}
+                      sessionUserId={session?.user.id}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full rounded-2xl border border-dashed border-border bg-muted/20 px-4 py-3 text-sm text-muted-foreground">
+                    Konten ini hanya bisa dibaca publik. <a href="/login" className="text-primary hover:underline">
+                      Masuk
+                    </a>{" "}
+                    untuk lebih lanjut.
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
-          <DrawerOpsi
-            userId={session?.user.id || ""}
-            creatorId={data.creator.id}
-            slug={data.slug}
-            title="acara"
-            onDelete={handleOpenDelete}
-          />
+          {!isReadOnly && (
+            <DrawerOpsi
+              userId={session?.user.id || ""}
+              creatorId={data.creator.id}
+              slug={data.slug}
+              title="acara"
+              onDelete={handleOpenDelete}
+            />
+          )}
         </Drawer>
 
         {/* DialogPopup di luar Drawer */}
@@ -223,14 +243,16 @@ export const EventDetail = ({ slug }: { slug: string }) => {
         Komponen ini sekarang pakai modal sendiri (motion + fixed positioning)
         sehingga tidak bergantung pada AlertDialog context sama sekali.
       */}
-      <AlertDEelete
-        type="acara"
-        id={data.id}
-        href="/home/acara"
-        open={isOpenAlert}
-        onOpenChange={setIsOpenAlert}
-        onClick={() => setIsOpenAlert(false)}
-      />
+      {!isReadOnly && (
+        <AlertDEelete
+          type="acara"
+          id={data.id}
+          href="/acara"
+          open={isOpenAlert}
+          onOpenChange={setIsOpenAlert}
+          onClick={() => setIsOpenAlert(false)}
+        />
+      )}
     </>
   );
 };

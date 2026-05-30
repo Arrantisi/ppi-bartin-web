@@ -10,12 +10,15 @@ import { cn } from "@/lib/utils";
 import { categoryStyles } from "@/components/shared/category-styles";
 import { getTwoWords } from "@/utils/get-twowords";
 
-export const FrameNews = ({ ...news }: TgetNews) => {
+export const FrameNews = ({
+  hrefBase = "/berita",
+  ...news
+}: TgetNews & { hrefBase?: string }) => {
   const dotColor = categoryStyles[news.catagory] || "bg-gray-400";
 
   return (
     <Link
-      href={`/home/berita/${news.slug}`}
+      href={`${hrefBase}/${news.slug}`}
       key={news.slug}
       className="w-full relative flex items-center p-[7px] box-border gap-[0.937rem] text-left text-[0.688rem] text-gray font-sf-pro bg-card shadow rounded-3xl "
     >
