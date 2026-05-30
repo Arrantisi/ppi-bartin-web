@@ -23,10 +23,13 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { AlertDEelete } from "@/components/shared/confirm-delete-dialog";
 import { EventActionButton } from "@/features/events/acara/action-button-event";
 import { DrawerOpsi } from "@/components/shared/content-actions-drawer";
+import { DialogTableParticipant } from "@/features/events/acara/avatars/table-participant";
+import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogClose,
   DialogPopup,
+  DialogTrigger,
 } from "@/components/animate-ui/components/base/dialog";
 import parse from "html-react-parser";
 import DOMPurify from "isomorphic-dompurify";
@@ -66,7 +69,9 @@ export const EventDetail = ({
 
   const handleToastLink = () => {
     toast.info("Info", {
-      description: "Kamu harus join dulu kalau ingin isi form event ini!!!",
+      description: isReadOnly
+        ? "Masuk ke portal untuk berinteraksi"
+        : "Tekan dan tahan tombol daftar dibawah!",
     });
   };
 
@@ -142,15 +147,32 @@ export const EventDetail = ({
                       </span>
                     </div>
 
-                    <AvatarParticipant
-                      participant={data.participants.map((img) => ({
-                        image: img.user.image || "",
-                      }))}
-                    />
+                    {!isReadOnly && (
+                      <Dialog>
+                        <DialogTrigger
+                          className={cn(
+                            "cursor-pointer px-2 rounded-2xl duration-300 transition-all",
+                          )}
+                        >
+                          <AvatarParticipant
+                            participant={data.participants.map((participant) => ({
+                              image: participant.user.image || "",
+                            }))}
+                          />
+                        </DialogTrigger>
+
+                        <DialogTableParticipant
+                          userCreatorId={data.creator.id}
+                          judul={data.judul}
+                          participants={data.participants}
+                          eventId={data.id}
+                        />
+                      </Dialog>
+                    )}
                   </div>
 
                   <div className="relative py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed wrap-anywhere md:text-lg tracking-wide my-4 [&_p]:block prose prose-sm [&_strong]:text-foreground">
-                    {!isReadOnly && isJoined && (
+                    { isJoined && (
                       <button
                         className="h-full bg-transparent absolute w-full"
                         onClick={handleToastLink}
