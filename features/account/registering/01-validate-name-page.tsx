@@ -1,5 +1,5 @@
 import ValidateNameField from "./01-validate-name-field";
-import { OnboardingShell } from "@/features/onboarding/onboarding-shell";
+import { OnboardingShell } from "./onboarding-shell";
 
 const ValidateNamePage = () => {
   return (

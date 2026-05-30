@@ -1,5 +1,5 @@
 import UpdateProfileField from "./02-username-field";
-import { OnboardingShell } from "@/features/onboarding/onboarding-shell";
+import { OnboardingShell } from "./onboarding-shell";
 
 const UsernamePage = () => {
   return (

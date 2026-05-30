@@ -1,3 +1,3 @@
-import ProfilePage from "@/features/profile/profile-page";
+import ProfilePage from "@/features/account/profile/profile-page";
 
 export default ProfilePage;

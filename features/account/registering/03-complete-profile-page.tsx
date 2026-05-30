@@ -1,6 +1,6 @@
 import { getProfileUser } from "@/server/data/users";
-import CompleteProfileField from "@/features/onboarding/03-complete-profile-field";
-import { OnboardingShell } from "@/features/onboarding/onboarding-shell";
+import CompleteProfileField from "./03-complete-profile-field";
+import { OnboardingShell } from "./onboarding-shell";
 
 const CompleteProfileOnboardingPage = async (): Promise<React.JSX.Element> => {
   const user = await getProfileUser();

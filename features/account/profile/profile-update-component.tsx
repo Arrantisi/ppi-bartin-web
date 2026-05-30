@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { UpdateProfileField } from "@/components/field/update-profile";
+import { UpdateProfileField } from "@/components/field/account-related/update-profile";
 import { getProfileUser } from "@/server/data/users";
 import { useQuery } from "@tanstack/react-query";
 import { IconArrowNarrowLeft, IconShieldLock } from "@tabler/icons-react";

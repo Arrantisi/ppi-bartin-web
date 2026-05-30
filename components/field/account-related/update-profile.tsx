@@ -4,7 +4,7 @@ import { TupdateProfileSchema, updateProfileSchema } from "@/schemas";
 import "react-phone-number-input/style.css";
 import { TgetProfileUser } from "@/server/data/users";
 import { useForm } from "@tanstack/react-form";
-import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import {
   IconBook2,
   IconBuilding,
@@ -18,10 +18,10 @@ import {
   IconUser,
   IconUsers,
 } from "@tabler/icons-react";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
-import { TanggalLahitField } from "@/features/profile/update/tanggal-lahir";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { TanggalLahitField } from "@/components/field/account-related/tanggal-lahir";
 import {
   Select,
   SelectContent,
@@ -29,11 +29,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { PhoneInput } from "../ui/phone-input";
+} from "@/components/ui/select";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { updateProfile } from "@/server/actions/user";
 import { useState } from "react";
-import { Spinner } from "../ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "next/navigation";
 import { UploadPhotoProfile } from "@/features/uploads/upload-photo-profile";
 import {
@@ -41,7 +41,7 @@ import {
   SelectFakultas,
   SelectJurusan,
   SelectStatusPelajar,
-} from "../selects";
+} from "@/components/selects";
 import { toast } from "sonner";
 
 const jenisKelaminItems = ["laki-laki", "perempuan"];

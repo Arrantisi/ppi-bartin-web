@@ -1,6 +1,6 @@
 "use client";
 
-import UpdateProfileField from "@/components/field/update-profile";
+import UpdateProfileField from "@/components/field/account-related/update-profile";
 import { TgetProfileUser } from "@/server/data/users";
 
 export default function CompleteProfileField(props: Partial<TgetProfileUser> = {}) {

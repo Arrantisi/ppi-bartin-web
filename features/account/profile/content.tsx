@@ -170,7 +170,7 @@ export const ContentProfile = () => {
         >
           <div className="h-6 w-full flex items-center gap-4">
             <IconHeadset className="h-6 w-6" width={24} />
-            <p>Umpan Balik</p>
+            <p>Bantuan</p>
           </div>
           <div
             className={buttonVariants({

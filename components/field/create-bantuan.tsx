@@ -5,23 +5,23 @@ import { customerService } from "@/server/actions/customer-service";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { Spinner } from "../ui/spinner";
-import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
 import {
   IconChartDots3,
   IconFileText,
   IconTag,
   IconTypography,
 } from "@tabler/icons-react";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 const catagoryTrigger = [
@@ -39,7 +39,7 @@ const levelTrigger = [
   { ctg: "darurat", label: "Darurat (Penting Sekali)" },
 ];
 
-export const CustomerServiceCreate = () => {
+export const BantuanCreate = () => {
   const [lengthOfDeskripsi, setLengthOfDeskripsi] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -70,7 +70,7 @@ export const CustomerServiceCreate = () => {
   return (
     <div>
       <form
-        id="custumor-service-create"
+        id="bantuan-create"
         onSubmit={(e) => {
           e.preventDefault();
           form.handleSubmit(e);
@@ -217,7 +217,7 @@ export const CustomerServiceCreate = () => {
       </form>
 
       <Button
-        form="custumor-service-create"
+        form="bantuan-create"
         disabled={isLoading}
         className="w-full"
         type="submit"
