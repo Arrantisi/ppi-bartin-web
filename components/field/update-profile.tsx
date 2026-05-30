@@ -67,7 +67,6 @@ export const UpdateProfileField = ({
   const addressPlaceholder = "Masukkan alamat lengkap anda";
   const genderLabel = "Jenis Kelamin";
   const telponFallback = "";
-  const tanggalLahirFallback = new Date();
   const [isFakultas, setIsFakultas] = useState(props.fakultas || "");
   const [lenghtOfBio, setLengthOfBio] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -89,7 +88,9 @@ export const UpdateProfileField = ({
       alamat: props.alamat ?? undefined,
       jenisKelamin: props.jenisKelamin || "",
       telpon: props.noTelephone ?? telponFallback,
-      tanggalLahir: props.tanggalLahir ? new Date(props.tanggalLahir) : tanggalLahirFallback,
+      tanggalLahir: (props.tanggalLahir
+        ? new Date(props.tanggalLahir)
+        : (undefined as unknown as Date)) as Date,
     },
     validators: {
       onChange: updateProfileSchema,
@@ -113,8 +114,8 @@ export const UpdateProfileField = ({
   return (
     <div className="w-full">
       <form
+        className="space-y-6"
         id="update-profile-field"
-        className="w-full"
         onSubmit={(e) => {
           e.preventDefault();
           form.handleSubmit();
@@ -145,7 +146,7 @@ export const UpdateProfileField = ({
           </p>
         </div>
 
-        <div className="mx-3 space-y-5">
+        <div className="w-full px-4 sm:px-6 space-y-5">
           <form.Field name="noSiswa">
             {(field) => {
               const isInvalid =
@@ -275,8 +276,8 @@ export const UpdateProfileField = ({
             Informasi tambahan untuk akademik
           </p>
         </div>
-        <div className="mx-3 space-y-5">
-          <div className="grid grid-cols-2 items-center gap-2">
+        <div className="w-full px-4 sm:px-6 space-y-5">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:items-center md:gap-4">
             <form.Field name="fakultas">
               {(field) => {
                 const isInvalid =
@@ -338,7 +339,7 @@ export const UpdateProfileField = ({
               }}
             </form.Field>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:items-center md:gap-4">
             <form.Field name="angkatan">
               {(field) => {
                 const isInvalid =
@@ -408,8 +409,8 @@ export const UpdateProfileField = ({
           </p>
         </div>
 
-        <div className="mx-3 space-y-5">
-          <div className="flex items-center gap-2">
+        <div className="w-full px-4 sm:px-6 space-y-5">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:items-center md:gap-4">
             <form.Field name="tanggalLahir">
               {(field) => {
                 const isInvalid =
@@ -534,7 +535,7 @@ export const UpdateProfileField = ({
           </form.Field>
         </div>
       </form>
-      <div className="mx-3 mt-5">
+      <div className="w-full px-4 sm:px-6 mt-5">
         <Button
           type="submit"
           form="update-profile-field"

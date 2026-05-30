@@ -2,21 +2,21 @@ import ButtonUser from "@/components/button-user";
 import Image from "next/image";
 import Link from "next/link";
 
-type ProfileShellProps = {
+type OnboardingShellProps = {
   title: string;
   description: string;
   children: React.ReactNode;
   formClassName?: string;
 };
 
-export const ProfileShell = ({
+export const OnboardingShell = ({
   title,
   description,
   children,
-  formClassName = "flex flex-col w-full md:max-w-md max-w-xs items-center",
-}: ProfileShellProps) => {
+  formClassName = "flex w-full flex-col items-stretch gap-6 md:max-w-md max-w-xs",
+}: OnboardingShellProps) => {
   return (
-    <div className="w-full h-screen max-w-xl md:max-w-3xl xl:max-w-6xl mx-auto flex items-center justify-center">
+    <div className="relative flex min-h-screen w-full max-w-xl items-start justify-center overflow-y-auto px-4 py-8 mx-auto md:max-w-3xl md:items-center xl:max-w-6xl sm:px-6 sm:py-10">
       <div className={formClassName}>
         <div className="flex flex-col w-full items-start">
           <div className="mb-6 space-y-1">
@@ -36,7 +36,7 @@ export const ProfileShell = ({
 
         <div className="w-full">{children}</div>
 
-        <div className="mt-6 border-t pt-4 w-full max-w-xs">
+        <div className="mt-6 border-t pt-4 w-full">
           <p className="text-center text-xs text-muted-foreground">
             Mengalami masalah saat lengkapi data diri? Hubungi Admin PPI di{" "}
             <span className="font-medium text-primary hover:underline underline-offset-4 cursor-pointer">

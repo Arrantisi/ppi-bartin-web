@@ -8,7 +8,7 @@ export const STATUS_PELAJAR_OPTIONS = [
 ] as const;
 
 const currentYear = new Date().getFullYear();
-const angkatanStartYear = 2021;
+const angkatanStartYear = currentYear - 7; // angkatan dimulai dari 10 tahun yang lalu
 
 export const ANGKATAN_OPTIONS = Array.from(
   { length: currentYear - angkatanStartYear + 2 },

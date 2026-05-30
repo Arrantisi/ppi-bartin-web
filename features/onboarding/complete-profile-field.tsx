@@ -42,7 +42,7 @@ const CompleteProfileField = () => {
 	});
 
 	return (
-		<div className="w-full max-w-md mx-auto">
+		<div className="w-full">
 			<form
 				id="complete-profile-form"
 				className="space-y-5"

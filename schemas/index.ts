@@ -9,7 +9,8 @@ import {
 const usernameSchema = z
   .string()
   .min(4, "Username minimal 4 karakter")
-  .max(16, "Username maksimal 16 karakter");
+  .max(16, "Username maksimal 16 karakter")
+  .regex(/^[a-zA-Z0-9_.-]+$/, "Gunakan hanya huruf, angka, dan karakter ._-, tanpa spasi");
 
 const telponSchema = z
   .string()
@@ -37,9 +38,14 @@ const angkatanSchema = z
     message: "Angkatan tidak valid",
   });
 
-const tanggalLahirSchema = z.date({
-  error: "Silakan tentukan tanggal lahir anda",
-});
+const tanggalLahirSchema = z
+  .date({
+    error: "Silakan tentukan tanggal lahir anda",
+  })
+  .max(
+    new Date(new Date().setFullYear(new Date().getFullYear() - 16)), 
+    "Usia minimal 16 tahun"
+  );
 
 const eventJudulSchema = z
   .string()
@@ -81,7 +87,7 @@ export const formPersonalSchema = z.object({
 });
 
 export const formPersonalSchemaPartial = formPersonalSchema.extend({
-  tanggalLahir: z.date().optional(),
+  tanggalLahir: tanggalLahirSchema,
 });
 
 export type FormPersonalSchema = z.infer<typeof formPersonalSchema>;
@@ -127,7 +133,7 @@ export const updateProfileSchema = z.object({
     telpon: telponSchema,
   noSiswa: z.string().min(1, "Nomor siswa wajib diisi"),
   Bio: z.string().or(z.undefined()),
-  tanggalLahir: z.date(),
+  tanggalLahir: tanggalLahirSchema,
   jenisKelamin: jenisKelaminSchema,
   alamat: z.string().or(z.undefined()),
 });
