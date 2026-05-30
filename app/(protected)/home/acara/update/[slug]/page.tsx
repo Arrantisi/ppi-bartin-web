@@ -1,4 +1,4 @@
-import { UpdateEventComponent } from "@/components/event/acara/update";
+import EventUpdatePage from "@/features/events/event-update-page";
 
 const UpdateEventPage = async ({
   params,
@@ -7,11 +7,7 @@ const UpdateEventPage = async ({
 }) => {
   const { slug } = await params;
 
-  return (
-    <div>
-      <UpdateEventComponent slug={slug} />
-    </div>
-  );
+  return <EventUpdatePage slug={slug} />;
 };
 
 export default UpdateEventPage;

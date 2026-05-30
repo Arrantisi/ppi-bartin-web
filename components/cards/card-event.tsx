@@ -9,7 +9,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import AvatarParticipant from "../event/avatars/avatar-participant";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/client";
 import { Dialog, DialogTrigger } from "../animate-ui/components/base/dialog";
 import { cn } from "@/lib/utils";
 import { TgetAllEvent } from "@/server/data/events";

@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import { studentAccount } from "@/server/actions/account";
 
 export async function saveNotificationSubscription(sub: {

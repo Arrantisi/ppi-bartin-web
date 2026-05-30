@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import { TcustomerServiceSchema } from "@/schemas";
 import { TServerPrompt } from "@/types";
 import { studentAccount } from "./account";

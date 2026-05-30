@@ -1,8 +1,8 @@
 import { SelectContent, SelectGroup, SelectItem } from "./ui/select";
 import dataKampus from "@/server/data/bartin-university-jurusan.json";
+import { ANGKATAN_OPTIONS } from "@/schemas/utils";
 
 const statusPelajarItems = ["TÖMER", "D2", "D3", "S1", "S2", "S3"];
-const angkatanItems = ["2020", "2021", "2022", "2023", "2024", "2025"];
 const jenisKelaminItems = ["laki-laki", "perempuan"];
 
 export const SelectFakultas = () => {
@@ -54,7 +54,7 @@ export const SelectAngkatan = () => {
   return (
     <SelectContent>
       <SelectGroup>
-        {angkatanItems.map((item) => (
+        {ANGKATAN_OPTIONS.map((item) => (
           <SelectItem key={item} value={item || ""}>
             {item}
           </SelectItem>

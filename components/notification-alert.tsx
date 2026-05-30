@@ -12,7 +12,7 @@ import {
   AlertDialogTitle,
 } from "@/components/animate-ui/components/base/alert-dialog"; // Pastikan path ini sesuai projectmu
 import { BellRing } from "lucide-react";
-import { registerPushSubscription } from "@/lib/notifications";
+import { registerPushSubscription } from "@/lib/push/client";
 import { toast } from "sonner";
 import { saveNotificationSubscription } from "@/server/actions/subscribe-notification";
 

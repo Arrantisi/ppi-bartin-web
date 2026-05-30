@@ -1,11 +1,3 @@
-import { CreateEventComponent } from "@/components/event/acara/create";
+import EventCreatePage from "@/features/events/event-create-page";
 
-const CreateEventPage = () => {
-  return (
-    <div>
-      <CreateEventComponent />
-    </div>
-  );
-};
-
-export default CreateEventPage;
+export default EventCreatePage;

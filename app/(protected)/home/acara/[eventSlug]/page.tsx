@@ -1,4 +1,4 @@
-import { EventDetail } from "@/components/event/acara/event-detail";
+import EventDetailPage from "@/features/events/event-detail-page";
 
 const DetailEventPage = async ({
   params,
@@ -7,11 +7,7 @@ const DetailEventPage = async ({
 }) => {
   const { eventSlug } = await params;
 
-  return (
-    <div>
-      <EventDetail slug={eventSlug} />
-    </div>
-  );
+  return <EventDetailPage eventSlug={eventSlug} />;
 };
 
 export default DetailEventPage;

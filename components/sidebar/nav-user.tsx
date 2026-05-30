@@ -19,7 +19,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { SignOutSessionButton } from "../buttons";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/client";
 import Link from "next/link";
 
 const NavUser = () => {

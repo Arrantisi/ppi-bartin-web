@@ -1,14 +1,3 @@
-import CardAcaras from "@/components/event/acara/content";
-import HeaderAcara from "@/components/event/acara/header";
-import { HomeLayoutComponent } from "@/components/layouts/home-layout";
+import EventsPage from "@/features/events/events-page";
 
-const AcaraPage = () => {
-  return (
-    <HomeLayoutComponent>
-      <HeaderAcara />
-      <CardAcaras />
-    </HomeLayoutComponent>
-  );
-};
-
-export default AcaraPage;
+export default EventsPage;

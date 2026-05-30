@@ -11,12 +11,10 @@ import {
   IconMoon,
   IconPlus,
   IconSun,
-  IconTrash,
 } from "@tabler/icons-react";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/client";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { deleteAccount } from "@/server/actions/setting-user";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -252,28 +250,6 @@ export const SignOutSessionButton = () => {
       <IconLogout />
       Keluar
     </DropdownMenuItem>
-  );
-};
-
-export const DeleteAccount = () => {
-  const router = useRouter();
-
-  const handleDeleteAccount = async () => {
-    const fetch = await deleteAccount();
-    if (fetch.status === "success") {
-      toast.success(fetch.msg);
-      // Gunakan router.push atau refresh setelah berhasil
-      router.refresh();
-    } else {
-      toast.error(fetch.msg);
-    }
-  };
-
-  return (
-    <Button onClick={handleDeleteAccount} variant="destructive">
-      <IconTrash />
-      Hapus account
-    </Button>
   );
 };
 

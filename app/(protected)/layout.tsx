@@ -14,13 +14,26 @@ export default async function ProtectedLayout({
   if (!session) redirect("/login");
 
   const student = await checkNoSiswa();
-
   if (!student?.nomorSiswa) {
     redirect("/register-profile");
   }
 
   if (!student.username) {
-    redirect("/complite-profile");
+    redirect("/complete-profile");
+  }
+
+  const isProfileComplete =
+    Boolean(
+      student.fakultas &&
+        student.jurusan &&
+        student.angkatan &&
+        student.statusPelajar &&
+        student.jenisKelamin &&
+        student.image,
+    );
+
+  if (!isProfileComplete) {
+    redirect("/complete-profile");
   }
 
   return (

@@ -1,12 +1,12 @@
 "use server";
 
 import { studentAccount } from "@/server/actions/account";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import { TcreateEventSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
-import { sendPushToAll } from "@/lib/send-push";
+import { sendPushToAll } from "@/lib/push/server";
 
 export const cancelParticipant = async (
   eventId: string,

@@ -52,7 +52,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 const fieldVariants = cva(
-  "group/field flex w-full gap-3 data-[invalid=true]:text-destructive",
+  "group/field flex min-w-0 w-full flex-1 gap-3 data-[invalid=true]:text-destructive",
   {
     variants: {
       orientation: {
@@ -90,7 +90,7 @@ function FieldContent({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-content"
       className={cn(
-        "group/field-content flex flex-1 flex-col gap-1 leading-snug",
+        "group/field-content flex min-w-0 flex-1 flex-col gap-1 leading-snug",
         className
       )}
       {...props}
