@@ -16,7 +16,7 @@ import { updateNews } from "@/server/actions/news";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
-import { UploaderPhoto } from "@/features/uploads/upload-event-news";
+import { UploaderPhoto } from "../event/uploader/upload-event-news";
 import {
   IconClipboardText,
   IconFileText,

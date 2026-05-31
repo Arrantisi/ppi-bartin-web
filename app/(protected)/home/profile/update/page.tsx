@@ -1,3 +1,3 @@
-import ProfileUpdatePage from "@/features/account/profile/profile-update-page";
+import ProfileUpdatePage from "@/features/profile/profile-update-page";
 
 export default ProfileUpdatePage;

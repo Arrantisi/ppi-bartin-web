@@ -1,8 +1,8 @@
-# Portal PPI Bartın
+# PPI Bartın Dashboard
 
 ### Ringkasan singkat
 
-Dashboard PPI Bartın adalah platform organisasi untuk mahasiswa Indonesia di Bartın, Turki. Pengguna dapat masuk (login), melengkapi profil, melihat dan mendaftar acara, serta membaca berita organisasi. Aplikasi ini juga mendukung notifikasi web dan unggah gambar untuk acara/berita.
+Dashboard PPI Bartın adalah website komunitas untuk mahasiswa Indonesia di Bartın, Turki. Pengguna dapat masuk (login), melengkapi profil, melihat dan mendaftar acara, serta membaca berita komunitas. Aplikasi ini juga mendukung notifikasi web dan unggah gambar untuk acara/berita.
 
 >💡 Untuk petunjuk menggunakan dashboard ini, silahkan lompat ke [Persiapan sebelum mulai](#persiapan-sebelum-mulai)
 
@@ -29,7 +29,7 @@ Dashboard PPI Bartın adalah platform organisasi untuk mahasiswa Indonesia di Ba
 - Login dengan akun Google (via Google OAuth)
 - Onboarding profil bertahap (nomor siswa → username)
 - Manajemen acara: lihat, daftar, batalkan
-- Berita dan artikel organisasi
+- Berita komunitas
 - Notifikasi web (browser push notifications)
 - Upload gambar untuk acara dan berita
 - Ekspor data peserta (CSV)
@@ -166,7 +166,7 @@ graph TD
     Supabase --> Prisma["Prisma ORM\n(query layer)"]
 ```
 
-Semua layanan eksternal tersedia dengan tier gratis untuk penggunaan organisasi skala kecil-menengah.
+Semua layanan eksternal tersedia dengan tier gratis untuk penggunaan komunitas skala kecil-menengah.
 
 ---
 

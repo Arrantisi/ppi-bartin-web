@@ -1,6 +1,5 @@
-export { default as CardAcaras } from "@/features/events/acara/content";
-export { default as HeaderAcara } from "@/features/events/acara/header";
-export { CreateEventComponent } from "@/features/events/acara/create";
-export { UpdateEventComponent } from "@/features/events/acara/update";
-export { EventDetail } from "@/features/events/acara/event-detail";
-
+export { default as CardAcaras } from "@/components/event/acara/content";
+export { default as HeaderAcara } from "@/components/event/acara/header";
+export { CreateEventComponent } from "@/components/event/acara/create";
+export { UpdateEventComponent } from "@/components/event/acara/update";
+export { EventDetail } from "@/components/event/acara/event-detail";

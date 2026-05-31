@@ -1,6 +1,5 @@
-export { default as BeritaCatagory } from "@/features/news/berita-catagory";
-export { default as HeaderBerita } from "@/features/news/header";
-export { CreateNewsComponent } from "@/features/news/create";
-export { UpdateNewsComponent } from "@/features/news/update";
-export { NewsDetailComponent } from "@/features/news/news-detail";
-
+export { default as BeritaCatagory } from "@/components/event/news/berita-catagory";
+export { default as HeaderBerita } from "@/components/event/news/header";
+export { CreateNewsComponent } from "@/components/event/news/create";
+export { UpdateNewsComponent } from "@/components/event/news/update";
+export { NewsDetailComponent } from "@/components/event/news/news-detail";

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { BookOpen, Bot, Settings2 } from "lucide-react";
+import { BookOpen, Bot, LayoutDashboard, Settings2 } from "lucide-react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
 
@@ -27,6 +27,26 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
+      isActive: true,
+      items: [
+        {
+          title: "History",
+          url: "#",
+        },
+        {
+          title: "Starred",
+          url: "#",
+        },
+        {
+          title: "Settings",
+          url: "#",
+        },
+      ],
+    },
     {
       title: "Models",
       url: "#",

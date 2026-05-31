@@ -33,7 +33,7 @@ export const RichTextEditor = ({
       },
       attributes: {
         class: cn(
-          "input-editable field-sizing-content min-h-16 w-full resize-none rounded-2xl px-3 py-3 text-base transition-[color,box-shadow,background-color] outline-none placeholder:text-text-disabled/70 focus-visible:ring-3 focus-visible:ring-accent/10 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+          "field-sizing-content min-h-16 w-full resize-none rounded-2xl border border-transparent bg-input/50 px-3 py-3 text-base transition-[color,box-shadow,background-color] outline-none placeholder:text-muted-foreground/50 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
           "[&_p]:min-h-[1.5rem] [&_p+p]:mt-2",
           "[&_strong]:text-foreground",
           className,

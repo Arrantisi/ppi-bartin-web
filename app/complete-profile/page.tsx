@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { checkNoSiswa } from "@/server/data/users";
-import CompleteProfileOnboardingPage from "@/features/account/registering/03-complete-profile-page";
+import CompleteProfileOnboardingPage from "@/features/onboarding/03-complete-profile-page";
 
 export default async function CompleteProfileRoute() {
   const session = await auth.api.getSession({ headers: await headers() });

@@ -8,15 +8,5 @@ export const formattedDate = (tanggal: Date) => {
 
 export const formattedDateNews = (tanggal: Date) => {
   const date = new Date(tanggal);
-  return format(date, "EEE, LLL d", { locale: id });
-};
-
-export const formattedDateMeta = (tanggal: Date) => {
-  const date = new Date(tanggal);
-  return format(date, "EEE, d LLL", { locale: id });
-};
-
-export const formattedDeadlineMeta = (tanggal: Date) => {
-  const date = new Date(tanggal);
-  return format(date, "d LLL", { locale: id });
+  return format(date, "E, LLL dd", { locale: id });
 };

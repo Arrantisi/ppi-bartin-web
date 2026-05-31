@@ -1,23 +1,15 @@
 import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "@/components/ui/sonner";
-import { Inter, JetBrains_Mono } from "next/font/google";
 
-const inter = Inter({
+const fontSans = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  variable: "--font-inter",
-});
-
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  display: "swap",
-  variable: "--font-mono",
+  variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
@@ -41,12 +33,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <meta name="theme-color" content="#2563eb" />
-      <body className={`antialiased min-h-screen w-full relative`}>
+      <body
+        className={`${fontSans.variable} antialiased min-h-screen w-full relative`}
+      >
         <main>
           <ThemeProvider
-            attribute="data-theme"
+            attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
