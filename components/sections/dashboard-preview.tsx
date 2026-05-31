@@ -12,7 +12,7 @@ export const DashboardPreview = () => {
           <div className="w-3 h-3 rounded-full bg-muted-foreground/30" />
           <div className="w-3 h-3 rounded-full bg-muted-foreground/30" />
           <div className="w-3 h-3 rounded-full bg-muted-foreground/30" />
-          <div className="ml-4 text-[10px] text-muted-foreground font-medium uppercase tracking-widest">
+          <div className="ml-4 subheadline">
             dashboard.ppibartin.org
           </div>
         </div>
@@ -20,8 +20,8 @@ export const DashboardPreview = () => {
         <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-foreground">Ringkasan Anggota</h3>
-              <span className="text-xs text-primary font-bold">
+              <h3 className="title-tiga">Ringkasan Anggota</h3>
+              <span className="footnote text-primary font-semibold">
                 LIVE UPDATES
               </span>
             </div>
@@ -32,11 +32,11 @@ export const DashboardPreview = () => {
                   key={label}
                   className="p-4 rounded-xl bg-muted/30 border border-border"
                 >
-                  <p className="text-[10px] text-muted-foreground font-bold uppercase mb-1">
+                  <p className="subheadline mb-1">
                     {label}
                   </p>
                   <p
-                    className={`text-2xl font-extrabold ${i === 2 ? "text-brand-red" : "text-foreground"}`}
+                    className={`title-satu ${i === 2 ? "text-danger" : "text-text-primary"}`}
                   >
                     {i === 0 ? "142" : i === 1 ? "89" : "98%"}
                   </p>
@@ -57,28 +57,28 @@ export const DashboardPreview = () => {
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-bold text-foreground">Aliran Dana</h3>
+            <h3 className="title-tiga">Aliran Dana</h3>
             <div className="space-y-3">
               <FinanceItem
-                icon={<ArrowDownLeft className="text-green-600" />}
+                icon={<ArrowDownLeft className="text-success" />}
                 label="Kas Masuk"
                 date="12 Okt"
                 amount="+₺450"
-                color="text-green-600"
+                color="text-success"
               />
               <FinanceItem
-                icon={<ArrowUpRight className="text-brand-red" />}
+                icon={<ArrowUpRight className="text-danger" />}
                 label="Logistik"
                 date="10 Okt"
                 amount="-₺120"
-                color="text-brand-red"
+                color="text-danger"
               />
             </div>
             <div className="mt-4 p-4 rounded-xl bg-primary text-primary-foreground">
-              <p className="text-[10px] opacity-80 font-bold uppercase mb-1">
+              <p className="subheadline opacity-80 mb-1">
                 Saldo Tersedia
               </p>
-              <p className="text-xl font-bold">₺3.240,50</p>
+              <p className="title-tiga text-primary-foreground">₺3.240,50</p>
             </div>
           </div>
         </div>
@@ -95,10 +95,10 @@ const FinanceItem = ({ icon, label, date, amount, color }: any) => (
         {icon}
       </div>
       <div>
-        <p className="text-xs font-bold">{label}</p>
-        <p className="text-[10px] text-muted-foreground">{date}</p>
+        <p className="footnote text-text-primary font-semibold">{label}</p>
+        <p className="subheadline text-text-disabled">{date}</p>
       </div>
     </div>
-    <p className={`text-xs font-bold ${color}`}>{amount}</p>
+    <p className={`footnote font-semibold ${color}`}>{amount}</p>
   </div>
 );

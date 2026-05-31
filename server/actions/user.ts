@@ -104,7 +104,7 @@ export const postUsername = async ({
     });
     return {
       status: "success",
-      msg: "kamu sudah berhasil join acara",
+      msg: `anda terdaftar sebagai ${username}`,
     };
   } catch (error) {
     console.error(error);

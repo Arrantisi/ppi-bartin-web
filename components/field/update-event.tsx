@@ -13,7 +13,7 @@ import { Input } from "../ui/input";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
 import Link from "next/link";
-import { UploaderPhoto } from "../event/uploader/upload-event-news";
+import { UploaderPhoto } from "@/features/uploads/upload-event-news";
 import {
   IconCalendar,
   IconFileText,

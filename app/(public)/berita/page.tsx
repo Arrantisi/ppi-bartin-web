@@ -1,0 +1,37 @@
+"use client";
+
+import { useNews } from "@/hooks/use-news";
+import { FrameNews } from "@/components/cards/card-news";
+import { NewsCaratogorySkeleton } from "@/components/skeletons/news-catagory-skeleton";
+import { DataKosong } from "@/components/data-kosong";
+
+export default function PublicNewsPage() {
+  const { data, isLoading } = useNews();
+
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-8 md:py-12 space-y-6">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Berita</h1>
+        <p className="text-muted-foreground">
+          Artikel dan berita terbaru tentang PPI Bartin.
+        </p>
+      </div>
+
+      {isLoading ? (
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+          {Array.from({ length: 4 }).map((_, idx) => (
+            <NewsCaratogorySkeleton key={idx} />
+          ))}
+        </div>
+      ) : !data || data.length === 0 ? (
+        <DataKosong href="/login" catagory="Berita" />
+      ) : (
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+          {data.map((news) => (
+            <FrameNews key={news.slug} {...news} hrefBase="/berita" />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
