@@ -28,9 +28,17 @@ const statusPelajarSchema = z
     message: "Status pelajar tidak valid",
   });
 
-const fakultasSchema = z.string().min(3, "Fakultas minimal 3 karakter");
+const fakultasSchema = z
+  .string()
+  .refine((value) => value.trim() !== "", {
+    message: "Fakultas wajib diisi",
+  });
 
-const jurusanSchema = z.string().min(3, "Jurusan minimal 3 karakter");
+const jurusanSchema = z
+  .string()
+  .refine((value) => value.trim() !== "", {
+    message: "Jurusan wajib diisi",
+  });
 
 const angkatanSchema = z
   .string()

@@ -30,7 +30,9 @@ const LoginPage = () => {
           <p className="text-center text-xs text-muted-foreground">
             Mengalami masalah saat lengkapi data diri? Hubungi Admin PPI di{" "}
             <span className="font-medium text-primary hover:underline underline-offset-4 cursor-pointer">
-              <Link href="">@ppibartin</Link>
+              <Link href="https://www.instagram.com/ppibartin/" target="_blank">
+                @ppibartin
+              </Link>
             </span>
           </p>
         </div>

@@ -43,12 +43,12 @@ export const DatePickerField = ({
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          className="group/pick-date w-60 justify-between text-sm rounded-xl"
+          className="group/pick-date w-60 justify-between rounded-xl text-sm"
           variant={"outline"}
         >
           <span
             className={cn(
-              "text-muted-foreground/70 text-sm",
+              "text-muted-foreground text-sm",
               "truncate",
               value && "",
             )}
@@ -72,7 +72,7 @@ export const DatePickerField = ({
                     {presents.map((present) => (
                       <Button
                         key={present.label}
-                        className="w-full justify-start capitalize text-xs"
+                        className="w-full justify-start capitalize text-sm"
                         onClick={() => {
                           onChange(present.date);
                           setMonth(present.date);
@@ -93,7 +93,7 @@ export const DatePickerField = ({
                 onMonthChange={setMonth}
                 onSelect={onChange}
                 selected={value}
-                className="text-xs"
+                className="text-sm"
               />
             </div>
           </CardContent>

@@ -232,11 +232,14 @@ export const UpdateProfileField = ({
                   </FieldLabel>
                   <PhoneInput
                     type="tel"
-                    placeholder="masukkan whatsapp yang anda gunakan untuk grup PPI Bartin"
+                    placeholder="+62xxx atau +90xxx"
                     defaultCountry="TR"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e)}
                   />
+                  <FieldDescription className="field-helper">
+                    Masukkan nomor Whatsapp yang anda gunakan untuk grup PPI Bartin
+                  </FieldDescription>
 
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
@@ -273,7 +276,7 @@ export const UpdateProfileField = ({
             Data Akademik
           </h3>
           <p className="form-section-subtitle">
-            Informasi tambahan untuk akademik
+            Informasi tambahan terkait akademik
           </p>
         </div>
         <div className="w-full px-4 sm:px-6 space-y-5">
@@ -298,7 +301,7 @@ export const UpdateProfileField = ({
                       }}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Fakultas" />
+                        <SelectValue placeholder="Pilih fakultas dari menu" />
                       </SelectTrigger>
                       <SelectFakultas />
                     </Select>
@@ -326,7 +329,7 @@ export const UpdateProfileField = ({
                       onValueChange={field.handleChange}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="jurusan" />
+                        <SelectValue placeholder="Pilih jurusan dari menu" />
                       </SelectTrigger>
                       <SelectJurusan fakultas={isFakultas} />
                     </Select>
@@ -356,7 +359,7 @@ export const UpdateProfileField = ({
                       onValueChange={(e) => field.handleChange(e)}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="angkatan" />
+                        <SelectValue placeholder="Pilih tahun kedatangan" />
                       </SelectTrigger>
                       <SelectAngkatan />
                     </Select>
@@ -384,7 +387,7 @@ export const UpdateProfileField = ({
                       onValueChange={field.handleChange}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="status pelajar" />
+                        <SelectValue placeholder="Pilih status pelajar" />
                       </SelectTrigger>
                       <SelectStatusPelajar />
                     </Select>
@@ -451,7 +454,7 @@ export const UpdateProfileField = ({
                       onValueChange={field.handleChange}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Kelamin" />
+                        <SelectValue placeholder="Pilih" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>

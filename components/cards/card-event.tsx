@@ -29,7 +29,7 @@ const CardEvent = ({
   const isClosed = isFull || daysLeft < 0;
   const metaDate = format(new Date(props.date), "E, d LLL", { locale: id });
   const deadlineCopy = isClosed
-    ? "Pendaftaran Ditutup"
+    ? "Pendaftaran Berakhir"
     : daysLeft <= 1
       ? `Pendaftaran ditutup hari ini!!`
       :daysLeft <= 3
@@ -66,14 +66,18 @@ const CardEvent = ({
         </div>
 
         <CardContent className="space-y-2.5 px-3 py-3 flex flex-col grow">
-          <div className="card-kicker uppercase">Acara</div>
+          <div className="card-meta uppercase font-mono">Acara</div>
+
           <div className="card-title line-clamp-2 mb-auto">{props.judul}</div>
+
           <div className="card-meta line-clamp-1 text-text-secondary">
             {metaDate} · {showActions ? props.lokasi : "Masuk untuk detail lokasi"}
           </div>
+
           <div className={cn("card-meta line-clamp-1", deadlineTone)}>
             {deadlineCopy}
           </div>
+
         </CardContent>
       </Link>
 
