@@ -48,8 +48,8 @@ const CardEvent = ({
             <IconUsers className="size-3.5 text-primary" />
             <span
               className={cn(
-                "text-[10px] font-bold",
-                isFull ? "text-destructive" : "text-foreground",
+                "subheadline",
+                isFull ? "text-danger" : "text-text-primary",
               )}
             >
               {props.participants.length} / {props.maxCapacity} Peserta
@@ -58,37 +58,37 @@ const CardEvent = ({
         </div>
 
         <CardContent className="px-3 space-y-3">
-          <h1 className="judul-card-event line-clamp-2">{props.judul}</h1>
+          <h1 className="title-tiga line-clamp-2">{props.judul}</h1>
           <div className="flex items-center justify-between mt-1">
-            <div className="subtitle-card-event text-foreground flex items-center gap-2">
+            <div className="footnote flex items-center gap-2">
               <Avatar className="size-5">
                 <AvatarImage src={props.creator.image || ""} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               Dibuat Oleh{" "}
-              <span className="capitalize font-semibold">
+              <span className="footnote text-text-primary font-semibold capitalize">
                 {getTwoWords(props.creator.name || "")}
               </span>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-2.5 text-muted-foreground/90 border-dotted border-t pt-2 my-2">
+          <div className="grid grid-cols-1 gap-2.5 footnote border-dotted border-t pt-2 my-2">
             <div className="flex items-center gap-2">
               <IconCalendarWeek className="size-4 text-primary" />
-              <span className="text-xs font-medium">
+              <span className="footnote text-text-primary">
                 {formattedDate(props.date)}
               </span>
             </div>
 
-            <div className="flex items-center gap-2 text-rose-600">
-              <IconClockHour4 className="size-4" />
-              <span className="text-xs font-bold">
+            <div className="flex items-center gap-2">
+              <IconClockHour4 className="size-4 text-danger" />
+              <span className="footnote text-danger">
                 Batas Daftar: {formattedDate(props.batasDaftar)}
               </span>
             </div>
 
             <div className="flex items-start gap-2">
               <IconMapPin className="size-4 text-primary shrink-0" />
-              <span className="text-xs font-medium line-clamp-1">
+              <span className="footnote text-text-primary line-clamp-1">
                 {props.lokasi}
               </span>
             </div>
@@ -115,7 +115,7 @@ const CardEvent = ({
         </CardFooter>
       ) : (
         <CardFooter className="p-3 justify-between w-full h-[95px] flex-row items-center md:flex-row">
-          <div className="text-xs text-muted-foreground">
+          <div className="footnote">
             Baca detail acara untuk informasi lengkap.
           </div>
         </CardFooter>

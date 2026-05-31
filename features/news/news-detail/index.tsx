@@ -96,15 +96,15 @@ export const NewsDetailComponent = ({
               <AvatarFallback>DP</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <p className="text-sm font-semibold capitalize">
+              <p className="body text-text-primary font-semibold capitalize">
                 {getTwoWords(data.creator.name!)}
               </p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="flex items-center gap-2 footnote text-text-secondary">
                 <span>{formattedDate(data.createdAt)}</span>
                 <div className="size-1 rounded-full bg-muted-foreground" />
                 <Badge
                   variant="secondary"
-                  className="text-[10px] h-4 leading-none"
+                  className="subheadline h-4 leading-none"
                 >
                   {data.catagory}
                 </Badge>
@@ -113,7 +113,7 @@ export const NewsDetailComponent = ({
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl md:text-3xl font-bold mt-4 leading-tight">
+          <h1 className="title-satu mt-4">
             {data.judul}
           </h1>
 
@@ -131,7 +131,7 @@ export const NewsDetailComponent = ({
 
           {/* Article */}
           <article className="mt-8 mx-auto">
-            <div className="relative [&_strong]:text-foreground py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed wrap-anywhere md:text-lg tracking-wide my-4 [&_p]:block prose prose-sm">
+            <div className="relative [&_strong]:text-foreground py-3 border-y max-w-full body wrap-anywhere my-4 [&_p]:block prose prose-sm">
               {parse(clean)}
             </div>
           </article>

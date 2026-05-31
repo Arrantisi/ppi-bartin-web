@@ -133,16 +133,16 @@ export const EventDetail = ({
 
               <div className="relative px-6 flex flex-col justify-between bg-background -mt-10 pt-4 pb-5">
                 <div>
-                  <h1 className="text-[24px] font-bold text-foreground">
+                  <h1 className="title-satu text-text-primary">
                     {data.judul}
                   </h1>
                   <div className="flex items-center justify-between mb-2 h-10 ">
-                    <div className="text-[13px] text-muted-foreground flex items-center justify-between gap-1.5">
+                    <div className="footnote text-text-secondary flex items-center justify-between gap-1.5">
                       <Avatar className="size-5">
                         <AvatarImage src={data.creator.image || ""} />
                       </Avatar>
                       Dibuat Oleh{" "}
-                      <span className="font-medium text-foreground capitalize">
+                      <span className="text-text-primary font-medium capitalize">
                         {getTwoWords(data.creator.name!)}
                       </span>
                     </div>
@@ -171,7 +171,7 @@ export const EventDetail = ({
                     )}
                   </div>
 
-                  <div className="relative py-3 border-y max-w-full text-foreground/90 text-[13px] leading-relaxed wrap-anywhere md:text-lg tracking-wide my-4 [&_p]:block prose prose-sm [&_strong]:text-foreground">
+                  <div className="relative py-3 border-y max-w-full body wrap-anywhere my-4 [&_p]:block prose prose-sm [&_strong]:text-foreground">
                     { isJoined && (
                       <button
                         className="h-full bg-transparent absolute w-full"
@@ -188,10 +188,10 @@ export const EventDetail = ({
                         <IconCalendarWeek size={20} />
                       </div>
                       <div className="flex flex-col gap-0.5">
-                        <span className="text-[13px] font-semibold">
+                        <span className="subheadline text-text-primary">
                           Tanggal
                         </span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="footnote">
                           {formattedDate(data.date || new Date())}
                         </span>
                       </div>
@@ -202,10 +202,10 @@ export const EventDetail = ({
                         <IconMapPin size={20} />
                       </div>
                       <div className="flex flex-col gap-0.5">
-                        <span className="text-[13px] font-semibold">
+                        <span className="subheadline text-text-primary">
                           Lokasi
                         </span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="footnote">
                           {data.lokasi}
                         </span>
                       </div>

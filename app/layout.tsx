@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "@/components/ui/sonner";
-
-const fontSans = Poppins({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
 
 export const metadata: Metadata = {
   title: "PPI Bartin App",
@@ -35,9 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <meta name="theme-color" content="#2563eb" />
-      <body
-        className={`${fontSans.variable} antialiased min-h-screen w-full relative`}
-      >
+      <body className="antialiased min-h-screen w-full relative">
         <main>
           <ThemeProvider
             attribute="class"

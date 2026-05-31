@@ -138,10 +138,10 @@ export const UpdateProfileField = ({
         </form.Field>
 
         <div className="bg-accent/50 py-6 px-5 space-y-1 my-3">
-          <h3 className="text-[15px] leading-3.75 font-semibold">
+          <h3 className="title-tiga">
             Informasi Pribadi
           </h3>
-          <p className="text-[12px] leading-4.5 text-foreground/40">
+          <p className="footnote text-text-disabled">
             Data diri yang akan ditampilkan di profil
           </p>
         </div>
@@ -269,10 +269,10 @@ export const UpdateProfileField = ({
 
         {/* data akademik stage */}
         <div className="bg-accent/50 py-6 px-5 space-y-1 my-6">
-          <h3 className="text-[15px] leading-3.75 font-semibold">
+          <h3 className="title-tiga">
             Data Akademik
           </h3>
-          <p className="text-[12px] leading-4.5 text-foreground/40">
+          <p className="footnote text-text-disabled">
             Informasi tambahan untuk akademik
           </p>
         </div>
@@ -401,10 +401,10 @@ export const UpdateProfileField = ({
 
         {/* detail pribadi stage */}
         <div className="bg-accent/50 py-6 px-5 space-y-1 my-6">
-          <h3 className="text-[15px] leading-3.75 font-semibold">
+          <h3 className="title-tiga">
             Detail Pribadi
           </h3>
-          <p className="text-[12px] leading-4.5 text-foreground/40">
+          <p className="footnote text-text-disabled">
             Informasi tambahan untuk profil
           </p>
         </div>
@@ -539,7 +539,7 @@ export const UpdateProfileField = ({
         <Button
           type="submit"
           form="update-profile-field"
-          className={isOnboarding ? "w-full rounded-full" : "text-[14px] leading-6 w-full rounded-xl"}
+          className={isOnboarding ? "w-full rounded-full" : "w-full rounded-xl"}
           disabled={isLoading}
         >
           {isLoading ? (

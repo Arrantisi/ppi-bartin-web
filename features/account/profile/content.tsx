@@ -26,10 +26,10 @@ export const ContentProfile = () => {
   }
 
   return (
-    <div className="w-full relative flex flex-col items-start py-0 box-border gap-3 text-left text-[0.75rem] text-slategray font-inter">
+    <div className="w-full relative flex flex-col items-start py-0 box-border gap-3 text-left">
       {/* untuk 2 informasi */}
-      <div className="self-stretch h-7 relative text-[1.125rem]">
-        <div className="absolute top-[-0.062rem] left-0 leading-7 font-semibold">
+      <div className="self-stretch h-7 relative">
+        <div className="absolute top-[-0.062rem] left-0 title-tiga">
           Informasi
         </div>
       </div>
@@ -48,10 +48,10 @@ export const ContentProfile = () => {
             <div>
               <div className="h-13.5 flex-1 flex flex-col items-start">
                 <div className="w-full flex items-start mb-1 pr-5">
-                  <h1 className="relative leading-4">Tahun Kedatangan</h1>
+                  <h1 className="footnote">Tahun Kedatangan</h1>
                 </div>
-                <div className="self-stretch h-5 flex items-start shrink-0 text-[0.875rem] text-gray">
-                  <h3 className="flex-1 relative leading-5 font-semibold">
+                <div className="self-stretch h-5 flex items-start shrink-0 body text-text-primary">
+                  <h3 className="flex-1 relative font-semibold">
                     {data?.angkatan}
                   </h3>
                 </div>
@@ -73,10 +73,10 @@ export const ContentProfile = () => {
             <div>
               <div className="h-13.5 flex-1 flex flex-col items-start">
                 <div className="w-26.5 flex items-start">
-                  <h1 className="relative leading-4">Jurusan</h1>
+                  <h1 className="footnote">Jurusan</h1>
                 </div>
-                <div className="self-stretch h-5 flex items-start shrink-0 text-[0.875rem] text-gray">
-                  <h3 className="flex-1 relative leading-5 font-semibold line-clamp-2">
+                <div className="self-stretch h-5 flex items-start shrink-0 body text-text-primary">
+                  <h3 className="flex-1 relative font-semibold line-clamp-2">
                     {data?.jurusan}
                   </h3>
                 </div>
@@ -102,10 +102,10 @@ export const ContentProfile = () => {
           <div>
             <div className="h-13.5 flex-1 flex flex-col items-start">
               <div className="w-full flex items-start mb-1 pr-5">
-                <h1 className="relative leading-4">Kegiatan yang Diikuti</h1>
+                <h1 className="footnote">Kegiatan yang Diikuti</h1>
               </div>
-              <div className="self-stretch h-5 flex items-start shrink-0 text-[0.875rem] text-gray">
-                <h3 className="flex-1 relative leading-5 font-semibold">
+              <div className="self-stretch h-5 flex items-start shrink-0 body text-text-primary">
+                <h3 className="flex-1 relative font-semibold">
                   {data?.participants.length > 0
                     ? `${data.participants.length} Kegiatan`
                     : "Belum Mengikuti Acara"}
@@ -114,13 +114,13 @@ export const ContentProfile = () => {
             </div>
           </div>
         </div>
-        <div className="max-h-20.5 flex flex-col items-start py-0 pl-2 pr-0 gap-2 text-[0.875rem] overflow-y-auto">
+        <div className="max-h-20.5 flex flex-col items-start py-0 pl-2 pr-0 gap-2 body overflow-y-auto">
           {data.participants.map((participant) => (
             <div className="flex items-center gap-3" key={participant.id}>
               <div className="size-1.5 bg-primary rounded-full" />
               <div
                 className={cn(
-                  "text-[15px] text-foreground",
+                  "title-tiga text-text-primary",
                   participant.event.date <= today && "text-foreground/10",
                 )}
               >
@@ -131,17 +131,17 @@ export const ContentProfile = () => {
         </div>
       </Card>
 
-      <div className="self-stretch h-7 relative text-[1.125rem] ">
-        <div className="absolute top-[-0.062rem] left-0 leading-7 font-semibold">
+      <div className="self-stretch h-7 relative ">
+        <div className="absolute top-[-0.062rem] left-0 title-tiga">
           Setting
         </div>
       </div>
-      <div className="self-stretch shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-2xl bg-card border-whitesmoke border-solid border box-border overflow-hidden shrink-0 flex flex-col items-start p-[0.062rem] text-center text-[1rem] text-gray">
-        <div className="self-stretch h-[3.563rem] bg-card border-whitesmoke border-solid border-b box-border flex items-center justify-between py-0 px-5 gap-5 text-left font-sf-pro">
+      <div className="self-stretch rounded-2xl bg-card border border-border box-border overflow-hidden shrink-0 flex flex-col items-start p-0 text-center body text-text-secondary">
+        <div className="self-stretch h-14 bg-card border-b border-border box-border flex items-center justify-between py-0 px-5 gap-5 text-left">
           <div className="h-6 flex items-center gap-4">
             <IconSun className="h-6 w-6" />
             <div className="h-5.5 flex-1 relative">
-              <div className="absolute top-[-0.062rem] left-0 tracking-[-0.31px] leading-5.5">
+              <div className="absolute top-[-0.062rem] left-0 body text-text-primary">
                 Tema
               </div>
             </div>

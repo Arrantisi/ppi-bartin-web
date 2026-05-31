@@ -20,7 +20,7 @@ export const FrameNews = ({
     <Link
       href={`${hrefBase}/${news.slug}`}
       key={news.slug}
-      className="w-full relative flex items-center p-[7px] box-border gap-[0.937rem] text-left text-[0.688rem] text-gray font-sf-pro bg-card shadow rounded-3xl "
+      className="w-full relative flex items-center p-2 box-border gap-4 text-left bg-card rounded-2xl border border-border"
     >
       <Image
         src={imageUrl(news.fileKey)}
@@ -32,23 +32,23 @@ export const FrameNews = ({
       />
       <div className="w-full flex flex-col items-start gap-1.5 justify-between h-full pb-2 pr-2">
         <div className="flex flex-col gap-1.5 w-full">
-          <h3 className="text-[11px] text-foreground/70 uppercase flex items-center gap-2">
+          <h3 className="subheadline flex items-center gap-2 text-text-disabled">
             <div className={cn("size-2 rounded-full", dotColor)} />{" "}
             {news.catagory}
           </h3>
-          <div className="w-full self-stretch relative text-[15px] tracking-[-0.23px] leading-5 font-semibold text-foreground">
+          <div className="w-full self-stretch relative title-tiga">
             {news.judul}
           </div>
         </div>
-        <div className="flex items-center gap-2 text-[0.75rem] w-full">
+        <div className="flex items-center gap-2 w-full">
           <Avatar className="size-6 ">
             <AvatarImage src={news.creator.image || ""} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
 
-          <div className="flex items-center w-full text-[12px]">
-            <div className="w-full">{getTwoWords(news.creator.name!)}</div>
-            <div className="w-full text-right">
+          <div className="flex items-center w-full footnote">
+            <div className="w-full text-text-primary font-medium">{getTwoWords(news.creator.name!)}</div>
+            <div className="w-full text-right text-text-disabled">
               {formattedDateNews(news.createdAt)}
             </div>
           </div>

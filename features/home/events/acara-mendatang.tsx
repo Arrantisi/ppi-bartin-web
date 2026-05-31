@@ -5,12 +5,12 @@ const AcaraMendatang = () => {
   return (
     <div className="mt-7 space-y-2">
       <div className="flex justify-between items-center">
-        <h1 className="font-semibold text-[22px] tracking-tight">
-          Kegiatan Tebaru
+        <h1 className="title-satu">
+          Kegiatan Terbaru
         </h1>
         <Link
           href={"/acara"}
-          className="text-secondary font-semibold text-sm"
+          className="title-tiga text-text-secondary"
         >
           selengkapnya
         </Link>

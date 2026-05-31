@@ -21,7 +21,7 @@ export const HeaderProfile = () => {
       {/* logOut */}
       <button
         onClick={() => signout()}
-        className="text-[16px] leading-[21px] tracking-[-0,31px] rounded-2xl px-2 text-destructive capitalize hover:bg-destructive/10 hover:ring active:bg-destructive/20 active:ring ring-destructive "
+        className="title-tiga rounded-xl px-2 text-danger capitalize hover:bg-danger/10 active:bg-danger/20"
       >
         logout
       </button>

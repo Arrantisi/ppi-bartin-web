@@ -8,13 +8,13 @@ export const FinanceSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-12 items-center">
           <div className="lg:w-1/2">
-            <Badge className="mb-4 rounded-full bg-amber-500/10 text-amber-700 hover:bg-amber-500/10 dark:text-amber-400">
+            <Badge className="mb-4 rounded-full bg-warning/10 text-warning hover:bg-warning/10">
               Upcoming
             </Badge>
-            <h2 className="text-3xl font-extrabold text-foreground mb-6">
+            <h2 className="title-satu mb-6">
               Transparansi Keuangan
             </h2>
-            <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
+            <p className="body mb-8">
               Fitur ini masih disiapkan. Saat peluncuran, anggota akan melihat
               ringkasan pemasukan, pengeluaran, dan laporan yang lebih mudah
               dipahami.
@@ -27,13 +27,13 @@ export const FinanceSection = () => {
               ].map((item) => (
                 <li
                   key={item}
-                  className="flex items-center gap-3 text-foreground font-medium"
+                  className="flex items-center gap-3 body text-text-primary"
                 >
-                  <Clock3 className="text-amber-600 w-5 h-5" /> {item}
+                  <Clock3 className="text-warning w-5 h-5" /> {item}
                 </li>
               ))}
             </ul>
-            <Button className="mt-8 rounded-xl px-6 h-12 font-semibold shadow-lg shadow-primary/20">
+            <Button className="mt-8 rounded-xl px-6 h-12 font-semibold">
               Menunggu Peluncuran
             </Button>
           </div>
@@ -42,16 +42,16 @@ export const FinanceSection = () => {
             <div className="bg-background p-6 rounded-3xl border border-dashed border-border shadow-xl">
               <div className="flex justify-between items-start mb-6 gap-4">
                 <div>
-                  <h3 className="font-bold text-foreground">
+                  <h3 className="title-tiga">
                     Status fitur keuangan
                   </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="footnote mt-1">
                     Belum aktif di versi sekarang.
                   </p>
                 </div>
                 <Badge
                   variant="secondary"
-                  className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-[10px] font-bold"
+                  className="bg-warning/10 text-warning subheadline"
                 >
                   SEGERA HADIR
                 </Badge>
@@ -59,14 +59,14 @@ export const FinanceSection = () => {
 
               <div className="space-y-4">
                 <div className="p-4 bg-muted/30 rounded-2xl border border-border flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600">
+                  <div className="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center text-warning">
                     <ShieldAlert className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="font-bold text-foreground">
+                    <p className="body text-text-primary font-semibold">
                       Transparansi Keuangan
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="footnote">
                       Masih dalam pengerjaan dan belum tersedia untuk anggota.
                     </p>
                   </div>
@@ -77,10 +77,10 @@ export const FinanceSection = () => {
                     <FileText className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="font-bold text-foreground">
+                    <p className="body text-text-primary font-semibold">
                       Laporan yang lebih mudah dibaca
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="footnote">
                       Akan dibuat lebih ringkas untuk kebutuhan harian.
                     </p>
                   </div>

@@ -69,7 +69,7 @@ const UsernameField = () => {
                   value={field.state.value}
                   onChange={(event) => field.handleChange(event.target.value)}
                 />
-                <FieldDescription className="text-[12px] leading-tight">
+                <FieldDescription className="footnote">
                   Username ini akan tampil di profil dan dipakai untuk identitas akun kamu.
                 </FieldDescription>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -78,7 +78,7 @@ const UsernameField = () => {
           }}
         </form.Field>
 
-        <Button type="submit" disabled={loading} className="w-full rounded-full text-sm capitalize">
+        <Button type="submit" disabled={loading} className="w-full rounded-full capitalize">
           {loading ? (
             <>
               <Spinner className="size-4" />

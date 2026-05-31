@@ -51,10 +51,10 @@ const columns: ColumnDef<TparticipantRow>[] = [
             <AvatarFallback>BA</AvatarFallback>
           </Avatar>
           <div className="flex flex-col items-start space-y-0.5">
-            <h1 className="font-semibold text-sm tracking-[0.25px]">
+            <h1 className="body text-text-primary font-semibold">
               {username}
             </h1>
-            <p className="font-light text-xs text-muted-foreground">{name}</p>
+            <p className="footnote">{name}</p>
           </div>
         </div>
       );
@@ -112,7 +112,7 @@ export const DialogTableParticipant = ({
         />
 
         {userCreatorId === userId && (
-          <Button variant={"outline"} onClick={handleDownload} className="text-sm">
+          <Button variant={"outline"} onClick={handleDownload}>
             Export (.csv)
           </Button>
         )}
