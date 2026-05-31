@@ -11,11 +11,9 @@ import { cn } from "@/lib/utils";
 import { TgetAllEvent } from "@/server/data/events";
 import { imageUrl } from "@/utils/image-url";
 import { DialogTableParticipant } from "@/features/events/acara/avatars/table-participant";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { authClient } from "@/lib/auth/client";
 import { EventActionButton } from "@/features/events/acara/action-button-event";
-
 
 const CardEvent = ({
   hrefBase = "/acara",
@@ -32,7 +30,7 @@ const CardEvent = ({
     ? "Pendaftaran Ditutup"
     : daysLeft <= 1
       ? `Pendaftaran ditutup hari ini!!`
-      :daysLeft <= 3
+      : daysLeft <= 3
         ? `Daftar sebelum ${format(deadlineDate, "E, d LLL", { locale: id })} (${daysLeft} hari lagi)`
         : `Daftar sebelum ${format(deadlineDate, "E, d LLL", { locale: id })}`;
   const deadlineTone = isClosed
@@ -57,7 +55,7 @@ const CardEvent = ({
             fill
             className="object-cover"
           />
-          <div className="absolute right-[10px] top-[10px] inline-flex items-center gap-1.5 rounded-[4px] bg-bg px-2 py-[3px] backdrop-blur-[4px]">
+          <div className="absolute right-2.5 top-2.5 inline-flex items-center gap-1.5 rounded-[4px] bg-bg px-2 py-0.75 backdrop-blur-xs">
             <IconUsers className="size-3.5 text-text-primary" />
             <span className="font-mono text-[0.6875rem] font-medium leading-[1.4] text-text-primary">
               {props.participants.length} / {props.maxCapacity} Peserta
@@ -79,7 +77,11 @@ const CardEvent = ({
 
       {showActions ? (
         <CardFooter className="flex items-center justify-between gap-3 px-3 pb-3 pt-0">
-          <DialogTrigger className={cn("cursor-pointer rounded-2xl px-1 transition-all duration-300")}>
+          <DialogTrigger
+            className={cn(
+              "cursor-pointer rounded-2xl px-1 transition-all duration-300",
+            )}
+          >
             <AvatarParticipant
               participant={props.participants.map((data) => ({
                 image: data.user.image || "",
@@ -91,8 +93,11 @@ const CardEvent = ({
               Ditutup
             </div>
           ) : (
-            <div className="w-full max-w-[180px]">
-              <EventActionButton event={props} sessionUserId={session?.user.id} />
+            <div className="w-full max-w-45">
+              <EventActionButton
+                event={props}
+                sessionUserId={session?.user.id}
+              />
             </div>
           )}
         </CardFooter>

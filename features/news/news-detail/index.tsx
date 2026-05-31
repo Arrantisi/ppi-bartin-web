@@ -35,7 +35,8 @@ export const NewsDetailComponent = ({
 
   const { data, isLoading } = useNewsBySlug({ slug });
   if (isLoading) return <LoaderOneDemo />;
-  if (!data) return <div className="p-10 text-center">data tidak di temukan</div>;
+  if (!data)
+    return <div className="p-10 text-center">data tidak di temukan</div>;
 
   const handleOpenDelete = () => {
     setIsOpenDrawer(false);
@@ -64,8 +65,8 @@ export const NewsDetailComponent = ({
             Berita
           </h1>
 
-          {!isReadOnly && (
-            <div className="flex gap-2">
+          <div className="flex gap-2">
+            {!isReadOnly && (
               <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
                 <Button
                   variant={"outline"}
@@ -84,8 +85,8 @@ export const NewsDetailComponent = ({
                   onDelete={handleOpenDelete}
                 />
               </Drawer>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <div className="px-5">
@@ -113,9 +114,7 @@ export const NewsDetailComponent = ({
           </div>
 
           {/* Title */}
-          <h1 className="title-satu mt-4 text-text-primary">
-            {data.judul}
-          </h1>
+          <h1 className="title-satu mt-4 text-text-primary">{data.judul}</h1>
 
           {/* Hero Image */}
           <div className="w-full mt-5 overflow-hidden rounded-3xl border border-border shadow-sm">
@@ -132,7 +131,7 @@ export const NewsDetailComponent = ({
 
           {/* Article */}
           <article className="mt-8 mx-auto">
-            <div className="detail-page relative py-3 border-y border-border max-w-full body wrap-anywhere my-4 prose prose-sm dark:prose-invert prose-neutral prose-headings:font-semibold prose-p:text-[--text-secondary] prose-strong:text-[--text-primary] prose-a:text-[--accent] prose-img:rounded-[10px] max-w-none [&_p]:block [&_strong]:text-text-primary">
+            <div className="detail-page relative py-3 border-y border-border max-w-full body wrap-anywhere my-4 prose prose-sm dark:prose-invert prose-neutral prose-headings:font-semibold prose-p:text-[--text-secondary] prose-strong:text-[--text-primary] prose-a:text-[--accent] prose-img:rounded-[10px] [&_p]:block [&_strong]:text-text-primary">
               {parse(clean)}
             </div>
           </article>
@@ -153,4 +152,3 @@ export const NewsDetailComponent = ({
     </>
   );
 };
-

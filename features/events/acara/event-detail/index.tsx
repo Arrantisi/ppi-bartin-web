@@ -82,14 +82,24 @@ export const EventDetail = ({
       if (part.match(/^https?:\/\/|^www\./)) {
         const href = part.startsWith("www.") ? `https://${part}` : part;
         return !JoinStatus ? (
-          <a key={index} href={href} target="_blank" rel="noopener noreferrer"
-            className="text-primary hover:underline font-semibold break-all">
+          <a
+            key={index}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline font-semibold break-all"
+          >
             {part}
           </a>
         ) : (
           <span key={index} className="break-all">
-            <span className="text-text-disabled line-through font-medium">{part}</span>
-            <span className="text-text-disabled text-xs"> (daftar terlebih dahulu untuk mengakses)</span>
+            <span className="text-text-disabled line-through font-medium">
+              {part}
+            </span>
+            <span className="text-text-disabled text-xs">
+              {" "}
+              (daftar terlebih dahulu untuk mengakses)
+            </span>
           </span>
         );
       }
@@ -122,16 +132,18 @@ export const EventDetail = ({
                   Acara
                 </h1>
 
-                {!isReadOnly && (
-                  <Button
-                    variant={"outline"}
-                    size={"icon-xl"}
-                    className="rounded-full"
-                    onClick={() => setIsOpenDrawer(true)}
-                  >
-                    <IconDots />
-                  </Button>
-                )}
+                <div className="flex gap-2">
+                  {!isReadOnly && (
+                    <Button
+                      variant={"outline"}
+                      size={"icon-xl"}
+                      className="rounded-full"
+                      onClick={() => setIsOpenDrawer(true)}
+                    >
+                      <IconDots />
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -155,9 +167,7 @@ export const EventDetail = ({
 
               <div className="relative px-6 flex flex-col justify-between bg-background -mt-10 pt-4 pb-5">
                 <div>
-                  <h1 className="title-satu text-text-primary">
-                    {data.judul}
-                  </h1>
+                  <h1 className="title-satu text-text-primary">{data.judul}</h1>
                   <div className="flex items-center justify-between mb-2 h-10 ">
                     <div className="footnote text-text-secondary flex items-center justify-between gap-1.5">
                       <Avatar className="size-5">
@@ -177,9 +187,11 @@ export const EventDetail = ({
                           )}
                         >
                           <AvatarParticipant
-                            participant={data.participants.map((participant) => ({
-                              image: participant.user.image || "",
-                            }))}
+                            participant={data.participants.map(
+                              (participant) => ({
+                                image: participant.user.image || "",
+                              }),
+                            )}
                           />
                         </DialogTrigger>
 
@@ -193,8 +205,8 @@ export const EventDetail = ({
                     )}
                   </div>
 
-                  <div className="detail-page relative py-3 border-y border-border max-w-full body wrap-anywhere my-4 prose prose-sm dark:prose-invert prose-neutral prose-headings:font-semibold prose-p:text-[--text-secondary] prose-strong:text-[--text-primary] prose-a:text-[--accent] prose-img:rounded-[10px] max-w-none [&_p]:block [&_strong]:text-text-primary">
-                    { isJoined && (
+                  <div className="detail-page relative py-3 border-y border-border max-w-full body wrap-anywhere my-4 prose prose-sm dark:prose-invert prose-neutral prose-headings:font-semibold prose-p:text-[--text-secondary] prose-strong:text-[--text-primary] prose-a:text-[--accent] prose-img:rounded-[10px] [&_p]:block [&_strong]:text-text-primary">
+                    {isJoined && (
                       <button
                         className="h-full bg-transparent absolute w-full"
                         onClick={handleToastLink}
@@ -207,12 +219,13 @@ export const EventDetail = ({
                   <div className="detail-meta mb-8">
                     <div className="detail-meta-row">
                       <div className="rounded-full border border-border bg-background p-2 text-text-disabled">
-                        <IconCalendarWeek className="detail-meta-icon" size={16} />
+                        <IconCalendarWeek
+                          className="detail-meta-icon"
+                          size={16}
+                        />
                       </div>
                       <div className="flex flex-col gap-0.5">
-                        <span className="detail-meta-label">
-                          Tanggal
-                        </span>
+                        <span className="detail-meta-label">Tanggal</span>
                         <span className="detail-meta-value">
                           {formattedDate(data.date || new Date())}
                         </span>
@@ -224,11 +237,11 @@ export const EventDetail = ({
                         <IconMapPin className="detail-meta-icon" size={16} />
                       </div>
                       <div className="flex flex-col gap-0.5">
-                        <span className="detail-meta-label">
-                          Lokasi
-                        </span>
+                        <span className="detail-meta-label">Lokasi</span>
                         <span className="detail-meta-value">
-                          {!isReadOnly ? renderLokasi(data.lokasi || "", isJoined) : "Masuk untuk melihat lokasi"}
+                          {!isReadOnly
+                            ? renderLokasi(data.lokasi || "", isJoined)
+                            : "Masuk untuk melihat lokasi"}
                         </span>
                       </div>
                     </div>
@@ -244,7 +257,8 @@ export const EventDetail = ({
                   </div>
                 ) : (
                   <div className="w-full rounded-2xl border border-dashed border-border bg-muted/20 px-4 py-3 text-sm text-muted-foreground">
-                    Konten ini hanya bisa dibaca publik. <a href="/login" className="text-primary hover:underline">
+                    Konten ini hanya bisa dibaca publik.{" "}
+                    <a href="/login" className="text-primary hover:underline">
                       Masuk
                     </a>{" "}
                     untuk lebih lanjut.
@@ -300,4 +314,3 @@ export const EventDetail = ({
     </>
   );
 };
-

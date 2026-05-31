@@ -1,15 +1,30 @@
 import { toast } from "sonner";
 
+export const handleShare = (title?: string, text?: string) => {
+  const url = window.location.href;
+  const shareData: ShareData = { title: title || "", text: text || "", url };
+
+  if (navigator.share) {
+    navigator.share(shareData).catch(() => {});
+  } else {
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        toast.success("Link berhasil disalin ke clipboard!");
+      })
+      .catch((err) => {
+        console.error("Gagal menyalin link: ", err);
+      });
+  }
+};
+
 export const handleCopyLink = () => {
-  const currentUrl = window.location.href; // Mengambil URL halaman detail saat ini
+  const currentUrl = window.location.href;
 
   navigator.clipboard
     .writeText(currentUrl)
     .then(() => {
-      // Gunakan toast atau alert sederhana
       toast.success("Link berhasil disalin ke clipboard!");
-      // Jika kamu punya library toast (seperti shadcn/ui toast), gunakan itu:
-      // toast({ title: "Tersalin!", description: "Link acara telah disalin." });
     })
     .catch((err) => {
       console.error("Gagal menyalin link: ", err);

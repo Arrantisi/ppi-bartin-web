@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
-import { IconCopy, IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconCopy, IconEdit, IconShare, IconTrash } from "@tabler/icons-react";
 
-import { handleCopyLink } from "@/utils/copy-link";
+import { handleCopyLink, handleShare } from "@/utils/copy-link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 
@@ -35,12 +35,23 @@ export const DrawerOpsi = ({
         >
           <IconCopy size={20} className="text-success" /> Salin Link
         </Button>
+        <Button
+          variant="ghost"
+          className="h-10 justify-start gap-3 capitalize"
+          onClick={() => handleShare(slug)}
+        >
+          <IconShare size={20} className="text-info" /> Share {title}
+        </Button>
 
         {matchCreator && (
           <>
             <Link href={`/home/${title}/update/${slug}`}>
-              <Button variant="ghost" className="h-10 w-full justify-start gap-3">
-                <IconEdit size={20} className="text-info" /> Edit <span className="capitalize">{title}</span>
+              <Button
+                variant="ghost"
+                className="h-10 w-full justify-start gap-3"
+              >
+                <IconEdit size={20} className="text-info" /> Edit{" "}
+                <span className="capitalize">{title}</span>
               </Button>
             </Link>
 
