@@ -15,7 +15,7 @@ export const DeleteAccountButton = () => {
 
 	const handleDelete = async () => {
 		const confirmed = window.confirm(
-			"Akun kamu akan dihapus permanen. Lanjutkan?",
+			"Akun kamu akan dihapus permanen. Data yang hilang tidak dapat dipulihkan. Lanjutkan?",
 		);
 
 		if (!confirmed) return;
@@ -43,11 +43,10 @@ export const DeleteAccountButton = () => {
 
 	return (
 		<Button
-			type="button"
 			variant="destructive"
 			onClick={handleDelete}
 			disabled={loading}
-			className="w-full rounded-full"
+			className="w-full rounded-full border-transparent bg-danger text-bg hover:bg-danger/90"
 		>
 			{loading ? <Spinner className="size-4" /> : <IconTrash className="size-4" />}
 			Hapus Akun

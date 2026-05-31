@@ -31,24 +31,23 @@ export const Hero = () => {
   return (
     <section
       id="about"
-      className="relative overflow-hidden bg-gradient-to-b from-background via-background to-muted/30 pt-28 pb-16 lg:pt-36 lg:pb-24"
+      className="relative overflow-hidden bg-background pt-28 pb-16 lg:pt-36 lg:pb-24"
     >
-      {/* Grid Pattern Overlay */}
-      <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
-      <div className="absolute left-1/2 top-[-8rem] z-0 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
+      {/* Improvise: keep the hero quiet and editorial instead of decorative. */}
+      <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(15,125,219,0.04),transparent_48%)]" />
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div className="max-w-3xl mx-auto lg:mx-0 text-center lg:text-left space-y-8">
-            <Badge className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            <Badge className="rounded-full border border-border bg-accent-subtle px-3 py-1 subheadline text-accent">
               Portal resmi organisasi PPI Bartın
             </Badge>
 
             <div className="space-y-5">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground">
+              <h1 className="title-satu md:text-[2rem] lg:text-[2rem]">
                 Tentang Portal PPI Bartın
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+              <p className="body md:text-[0.9375rem] leading-[1.7]">
                 Portal ini adalah tempat anggota PPI Bartın untuk membaca
                 berita, melihat agenda, dan mengikuti informasi organisasi dalam
                 satu ruang yang rapi dan mudah dipakai.
@@ -59,7 +58,7 @@ export const Hero = () => {
               <Link href="/berita">
                 <Button
                   size="lg"
-                  className="rounded-xl px-8 h-14 font-semibold gap-2 shadow-lg shadow-primary/20"
+                  className="rounded-xl px-8 h-14 font-semibold gap-2"
                 >
                   Baca Berita <ArrowRight className="w-5 h-5" />
                 </Button>
@@ -68,7 +67,7 @@ export const Hero = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="rounded-xl px-8 h-14 font-semibold border-border"
+                  className="rounded-xl px-8 h-14 font-semibold"
                 >
                   Masuk ke Portal
                 </Button>
@@ -83,7 +82,7 @@ export const Hero = () => {
               ].map((item) => (
                 <span
                   key={item}
-                  className="rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm"
+                  className="rounded-full border border-border bg-surface px-3 py-1 subheadline text-text-secondary"
                 >
                   {item}
                 </span>
@@ -91,17 +90,17 @@ export const Hero = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-border bg-card/80 p-6 shadow-sm backdrop-blur">
+          <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center justify-between gap-4 mb-5">
               <div>
-                <p className="text-sm font-semibold text-foreground">
+                <p className="title-tiga">
                   Ringkasan singkat
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="footnote">
                   Satu pandangan cepat sebelum masuk ke detail.
                 </p>
               </div>
-              <Badge className="rounded-full bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400">
+              <Badge className="rounded-full bg-success-subtle text-success hover:bg-success-subtle">
                 Aktif
               </Badge>
             </div>
@@ -110,17 +109,17 @@ export const Hero = () => {
               {highlights.map((item) => (
                 <div
                   key={item.label}
-                  className="rounded-2xl border border-border bg-background/80 p-4"
+                  className="rounded-2xl border border-border bg-surface p-4"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl bg-accent-subtle text-accent">
                       {item.icon}
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm font-semibold text-foreground">
+                      <p className="title-tiga">
                         {item.label}
                       </p>
-                      <p className="text-xs leading-relaxed text-muted-foreground">
+                      <p className="footnote leading-[1.6]">
                         {item.text}
                       </p>
                     </div>
@@ -129,10 +128,10 @@ export const Hero = () => {
               ))}
             </div>
 
-            <div className="mt-5 rounded-2xl border border-dashed border-border bg-muted/20 p-4 text-sm">
+            <div className="mt-5 rounded-2xl border border-dashed border-border bg-surface-hover p-4 body">
               <div className="flex items-start gap-3">
-                <BadgeCheck className="mt-0.5 size-4 shrink-0 text-primary" />
-                <p className="leading-relaxed text-muted-foreground">
+                <BadgeCheck className="mt-0.5 size-4 shrink-0 text-accent" />
+                <p className="leading-[1.6]">
                   Semua informasi penting dikumpulkan agar anggota tidak perlu
                   mencari ke banyak tempat.
                 </p>

@@ -7,8 +7,8 @@ const HeaderBerita = () => {
     <div>
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-[24px] font-semibold">Berita</h1>
-          <p className="text-[13px] text-muted-foreground capitalize">
+          <h1 className="title-satu">Berita</h1>
+          <p className="footnote capitalize">
             Semua info penting untuk kamu
           </p>
         </div>

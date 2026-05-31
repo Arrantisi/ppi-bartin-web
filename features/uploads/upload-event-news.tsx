@@ -92,15 +92,15 @@ export const UploaderPhoto = ({
       <AspectRatio
         {...getRootProps()}
         ratio={4 / 3}
-        className="relative bg-muted rounded-4xl overflow-hidden border"
+        className="relative bg-surface rounded-[10px] overflow-hidden border border-border"
       >
         {isUploading ? (
           <UploadingAnimation progress={progress} />
         ) : (
           <div
             className={cn(
-              "shadow-2xl rounded-3xl p-2 flex flex-col items-center justify-center gap-2 duration-300 h-full",
-              isDragActive ? "bg-primary/15" : "bg-transparent",
+              "rounded-[10px] p-2 flex flex-col items-center justify-center gap-2 duration-300 h-full border border-transparent",
+              isDragActive ? "bg-accent-subtle border-border" : "bg-transparent",
             )}
           >
             {value ? (
@@ -113,7 +113,7 @@ export const UploaderPhoto = ({
                 />
                 {/* Overlay Tombol Ganti Foto jika sudah selesai upload */}
                 <div className=" absolute flex w-full left-0 justify-end pr-2">
-                  <Button className=" rounded-2xl" variant={"destructive"}>
+                  <Button className="rounded-xl" variant={"destructive"}>
                     Hapus
                   </Button>
                 </div>
@@ -123,13 +123,13 @@ export const UploaderPhoto = ({
                 <input {...getInputProps()} />
                 <UploadIllustration />
                 <CardTitle>Tarik & Lepas Foto</CardTitle>
-                <CardDescription className="text-xs text-center px-4">
+                <CardDescription className="footnote text-center px-4">
                   Foto akan langsung diunggah (Maks. 4 MB)
                 </CardDescription>
 
                 <Button
                   variant="outline"
-                  className="rounded-full mt-4 pointer-events-none text-sm"
+                  className="rounded-full mt-4 pointer-events-none"
                 >
                   Pilih File <IconCloudUpload className="ml-2" />
                 </Button>

@@ -25,29 +25,39 @@ export const EventActionButton = ({
 
   if (isJoined) {
     return (
-      <HoldButtonCancel eventId={event.id} participantId={myParticipation.id} />
+      <div className="flex justify-end">
+        <HoldButtonCancel eventId={event.id} participantId={myParticipation.id} />
+      </div>
     );
   }
 
   if (isExpired) {
     return (
-      <StatusBadge className="text-info border-info gap-1.5">
-        <TimerOff className="w-3.5 h-3.5" />
-        <span>Pendaftaran Berakhir</span>
-      </StatusBadge>
+      <div className="flex justify-end">
+        <StatusBadge className="text-info border-info gap-1.5">
+          <TimerOff className="w-3.5 h-3.5" />
+          <span>Pendaftaran Berakhir</span>
+        </StatusBadge>
+      </div>
     );
   }
 
   if (capacityFull) {
     return (
-      <StatusBadge className="text-warning border-warning gap-1.5">
-        <IconUserOff className="w-3.5 h-3.5" />
-        <span>Kapasitas Penuh</span>
-      </StatusBadge>
+      <div className="flex justify-end">
+        <StatusBadge className="text-warning border-warning gap-1.5">
+          <IconUserOff className="w-3.5 h-3.5" />
+          <span>Kapasitas Penuh</span>
+        </StatusBadge>
+      </div>
     );
   }
 
-  return <HoldButtonJoin eventId={event.id}>Tahan Untuk Ikuti</HoldButtonJoin>;
+  return (
+    <div className="flex justify-end">
+      <HoldButtonJoin eventId={event.id}>Tekan untuk mendaftar</HoldButtonJoin>
+    </div>
+  );
 };
 
 const StatusBadge = ({
@@ -62,7 +72,7 @@ const StatusBadge = ({
       buttonVariants({
         variant: "outline",
         className:
-          "w-full text-center text-sm rounded-full capitalize py-2.5 px-3",
+          "inline-flex w-fit text-center text-sm rounded-full capitalize py-2.5 px-3",
       }),
       className,
     )}

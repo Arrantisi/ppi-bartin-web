@@ -137,11 +137,11 @@ export const UpdateProfileField = ({
           }}
         </form.Field>
 
-        <div className="bg-accent/50 py-6 px-5 space-y-1 my-3">
-          <h3 className="text-[15px] leading-3.75 font-semibold">
+        <div className="form-section-header px-4 sm:px-6">
+          <h3 className="form-section-title">
             Informasi Pribadi
           </h3>
-          <p className="text-[12px] leading-4.5 text-foreground/40">
+          <p className="form-section-subtitle">
             Data diri yang akan ditampilkan di profil
           </p>
         </div>
@@ -154,12 +154,12 @@ export const UpdateProfileField = ({
               return (
                 <Field>
                   <FieldLabel className="gap-1">
-                    <IconIdBadge2 size={18} className="text-primary" />
+                    <IconIdBadge2 size={14} className="text-text-disabled" />
                     Nomor Siswa
                     <span className="text-destructive">*</span>
                   </FieldLabel>
                   <Input
-                    disabled
+                    readOnly
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
@@ -178,11 +178,11 @@ export const UpdateProfileField = ({
               return (
                 <Field>
                   <FieldLabel className="gap-1">
-                    <IconUser size={18} className="text-primary" /> Nama Lengkap
+                    <IconUser size={14} className="text-text-disabled" /> Nama Lengkap
                     <span className="text-destructive">*</span>
                   </FieldLabel>
                   <Input
-                    disabled
+                    readOnly
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
@@ -200,18 +200,18 @@ export const UpdateProfileField = ({
               return (
                 <Field>
                   <FieldLabel className="gap-1">
-                    <IconMail size={18} className="text-primary" />
+                    <IconMail size={14} className="text-text-disabled" />
                     Email
                     <span className="text-destructive">*</span>
                   </FieldLabel>
                   <Input
-                    disabled
+                    readOnly
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
-                  <FieldDescription>
+                  <FieldDescription className="field-helper">
                     {emailDescription}
                   </FieldDescription>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -226,7 +226,7 @@ export const UpdateProfileField = ({
               return (
                 <Field>
                   <FieldLabel className="gap-1">
-                    <IconPhone size={18} className="text-primary" />
+                    <IconPhone size={14} className="text-text-disabled" />
                     Nomor Whatsapp
                     <span className="text-destructive">*</span>
                   </FieldLabel>
@@ -250,7 +250,7 @@ export const UpdateProfileField = ({
               return (
                 <Field>
                   <FieldLabel className="gap-1">
-                    <IconUser size={18} className="text-primary" />
+                    <IconUser size={14} className="text-text-disabled" />
                     Username
                     <span className="text-destructive">*</span>
                   </FieldLabel>
@@ -268,11 +268,11 @@ export const UpdateProfileField = ({
         </div>
 
         {/* data akademik stage */}
-        <div className="bg-accent/50 py-6 px-5 space-y-1 my-6">
-          <h3 className="text-[15px] leading-3.75 font-semibold">
+        <div className="form-section-header px-4 sm:px-6 mt-2">
+          <h3 className="form-section-title">
             Data Akademik
           </h3>
-          <p className="text-[12px] leading-4.5 text-foreground/40">
+          <p className="form-section-subtitle">
             Informasi tambahan untuk akademik
           </p>
         </div>
@@ -285,7 +285,7 @@ export const UpdateProfileField = ({
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconBuilding size={18} className="text-primary" />
+                      <IconBuilding size={14} className="text-text-disabled" />
                       Fakultas <span className="text-destructive">*</span>
                     </FieldLabel>
 
@@ -317,7 +317,7 @@ export const UpdateProfileField = ({
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconBook2 size={18} className="text-primary" />
+                      <IconBook2 size={14} className="text-text-disabled" />
                       Jurusan <span className="text-destructive">*</span>
                     </FieldLabel>
                     <Select
@@ -347,7 +347,7 @@ export const UpdateProfileField = ({
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconCalendar size={18} className="text-primary" />
+                      <IconCalendar size={14} className="text-text-disabled" />
                       Angkatan <span className="text-destructive">*</span>
                     </FieldLabel>
                     <Select
@@ -375,7 +375,7 @@ export const UpdateProfileField = ({
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconLanguage size={18} className="text-primary" />
+                      <IconLanguage size={14} className="text-text-disabled" />
                       Status Pelajar <span className="text-destructive">*</span>
                     </FieldLabel>
                     <Select
@@ -400,11 +400,11 @@ export const UpdateProfileField = ({
         </div>
 
         {/* detail pribadi stage */}
-        <div className="bg-accent/50 py-6 px-5 space-y-1 my-6">
-          <h3 className="text-[15px] leading-3.75 font-semibold">
+        <div className="form-section-header px-4 sm:px-6 mt-2">
+          <h3 className="form-section-title">
             Detail Pribadi
           </h3>
-          <p className="text-[12px] leading-4.5 text-foreground/40">
+          <p className="form-section-subtitle">
             Informasi tambahan untuk profil
           </p>
         </div>
@@ -418,7 +418,7 @@ export const UpdateProfileField = ({
                 return (
                   <Field className="min-w-0 flex-1">
                     <FieldLabel>
-                      <IconCalendar size={18} className="text-primary" />
+                      <IconCalendar size={14} className="text-text-disabled" />
                       Tanggal Lahir <span className="text-destructive">*</span>
                     </FieldLabel>
                     <TanggalLahitField
@@ -442,7 +442,7 @@ export const UpdateProfileField = ({
                 return (
                   <Field className="min-w-0 flex-1">
                     <FieldLabel>
-                      <IconGenderBigender size={18} className="text-primary" />
+                      <IconGenderBigender size={14} className="text-text-disabled" />
                       {genderLabel} <span className="text-destructive">*</span>
                     </FieldLabel>
                     <Select
@@ -479,7 +479,7 @@ export const UpdateProfileField = ({
               return (
                 <Field>
                   <FieldLabel className="gap-1">
-                    <IconUser size={18} className="text-primary" />
+                    <IconUser size={14} className="text-text-disabled" />
                     {bioLabel}
                   </FieldLabel>
                   <Textarea
@@ -516,7 +516,7 @@ export const UpdateProfileField = ({
               return (
                 <Field>
                   <FieldLabel>
-                    <IconUsers size={18} className="text-primary" />
+                    <IconUsers size={14} className="text-text-disabled" />
                     {addressLabel}
                   </FieldLabel>
                   <Textarea
@@ -539,7 +539,7 @@ export const UpdateProfileField = ({
         <Button
           type="submit"
           form="update-profile-field"
-          className={isOnboarding ? "w-full rounded-full" : "text-[14px] leading-6 w-full rounded-xl"}
+          className={isOnboarding ? "w-full rounded-full" : "w-full rounded-xl"}
           disabled={isLoading}
         >
           {isLoading ? (
@@ -549,7 +549,7 @@ export const UpdateProfileField = ({
             </>
           ) : (
             <>
-              {!isOnboarding && <IconFileCheck size={18} className="text-primary" />}
+              {!isOnboarding && <IconFileCheck size={18} />}
               {submitButtonLabel}
             </>
           )}

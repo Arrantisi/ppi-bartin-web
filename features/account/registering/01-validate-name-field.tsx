@@ -71,7 +71,7 @@ const ValidateNameField = () => {
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
                   </div>
-                  <FieldDescription className="text-[12px] leading-tight">
+                  <FieldDescription className="footnote">
                     Gunakan nomor öğrenci yang anda daftarkan saat pendaftaran
                     data diri di **PPI Bartın**.
                   </FieldDescription>
@@ -96,7 +96,7 @@ const ValidateNameField = () => {
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
-                  <FieldDescription className="text-[12px] leading-tight">
+                  <FieldDescription className="footnote">
                     Nama lengkap membantu sinkronisasi database lebih akurat.
                   </FieldDescription>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}

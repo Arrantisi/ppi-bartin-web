@@ -125,7 +125,7 @@ export const DataTable = () => {
       </div>
       <div className="max-h-100 overflow-auto relative">
         <Table>
-          <TableHeader className="sticky top-0 z-10 bg-white dark:bg-slate-950 shadow-sm">
+          <TableHeader className="sticky top-0 z-10 bg-background border-b border-border">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (

@@ -3,22 +3,19 @@ import { RenderAcara } from "./render-event";
 
 const AcaraMendatang = () => {
   return (
-    <div className="mt-7 space-y-2">
-      <div className="flex justify-between items-center">
-        <h1 className="font-semibold text-[22px] tracking-tight">
-          Kegiatan Tebaru
-        </h1>
-        <Link
-          href={"/acara"}
-          className="text-secondary font-semibold text-sm"
-        >
-          selengkapnya
+    <section className="space-y-3">
+      <div className="flex items-baseline justify-between gap-4">
+        <h2 className="text-[1rem] font-semibold tracking-[-0.01em] text-text-primary">
+          Kegiatan terbaru
+        </h2>
+        <Link href="/acara" className="text-[0.8125rem] text-text-disabled">
+          Lihat semua
         </Link>
       </div>
       <div className="flex justify-center">
         <RenderAcara />
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -2,21 +2,13 @@ import { Skeleton } from "../ui/skeleton";
 
 export const NewsCaratogorySkeleton = () => {
   return (
-    <div className="grid grid-cols-5 w-full bg-muted-foreground/5 p-2 rounded-4xl gap-2">
-      <Skeleton className="size-36 rounded-4xl col-span-2" />
-      <div className="flex flex-col items-start justify-between col-span-3">
-        <div>
-          <Skeleton className="h-[18px] w-16 my-2" />
-          <Skeleton className="h-[24px] w-56 my-2" />
-          <Skeleton className="h-[24px] w-52" />
-        </div>
-        <div className="flex items-center justify-between w-full pr-4 my-2">
-          <div className="flex items-center gap-1">
-            <Skeleton className="size-6 rounded-full" />
-            <Skeleton className="h-[16px] w-14" />
-          </div>
-          <Skeleton className="h-[16px] w-16" />
-        </div>
+    <div className="flex w-full items-start gap-2.5 rounded-[10px] border border-border bg-surface p-3">
+      <Skeleton className="h-20 w-20 shrink-0 rounded-lg" />
+      <div className="min-w-0 flex-1 space-y-2 pt-0.5">
+        <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-5/6" />
+        <Skeleton className="h-3 w-20" />
       </div>
     </div>
   );

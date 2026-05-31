@@ -61,7 +61,7 @@ export function TanggalLahitField({
         className={buttonVariants({
           variant: "outline",
           className:
-            "group/pick-date w-full justify-between rounded-xl text-[14px]",
+            "group/pick-date w-full justify-between rounded-xl",
         })}
       >
         <span className={cn("truncate", !value && "text-muted-foreground")}>

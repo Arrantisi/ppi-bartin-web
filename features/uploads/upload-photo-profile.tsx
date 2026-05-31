@@ -73,7 +73,7 @@ export const UploadPhotoProfile = ({
 
   return (
     <div className="flex items-center flex-col space-y-3 my-5">
-      <div className="shadow-2xl p-1 rounded-full relative bg-card">
+      <div className="p-1 rounded-full relative bg-card border border-border">
         <Image
           src={preview || value || ""}
           alt=""
@@ -83,19 +83,19 @@ export const UploadPhotoProfile = ({
         />
         {!preview && (
           <div
-            className="flex items-center justify-center absolute shadow bg-secondary-600 rounded-full text-background size-[36px] top-[90px] left-[90px]"
+            className="flex items-center justify-center absolute bg-surface-hover rounded-full text-text-primary border border-border size-[36px] top-[90px] left-[90px]"
             {...getRootProps()}
           >
             <input {...getInputProps()} />
-            <IconCamera size={20} className="text-secondary-foreground" />
+            <IconCamera size={20} />
           </div>
         )}
       </div>
       <div className="flex flex-col items-center">
-        <h3 className="text-[13px] leading-[19.5px] text-foreground/60 ">
+        <h3 className="footnote text-text-secondary">
           Tap untuk ganti foto profil
         </h3>
-        <p className="text-[12px] leading-[18px] text-foreground/40 ">
+        <p className="footnote text-text-disabled">
           JPG, PNG (Max 1MB)
         </p>
       </div>
