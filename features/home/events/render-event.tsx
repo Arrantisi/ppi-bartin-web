@@ -6,7 +6,6 @@ import CardEvent from "@/components/cards/card-event";
 import {
   Carousel,
   CarouselContent,
-  CarouselDots,
   CarouselItem,
 } from "@/components/ui/carousel";
 import { DataKosong } from "@/components/data-kosong";
@@ -32,17 +31,16 @@ export const RenderAcara = () => {
       }}
       className="w-full"
     >
-      <CarouselContent className="-ml-4">
+      <CarouselContent className="-ml-3">
         {data.slice(0, 3).map((event) => (
           <CarouselItem
             key={event.slug}
-            className="basis-[90%] md:basis-1/2 p-2"
+            className="basis-[92%] md:basis-1/2 pl-3"
           >
             <CardEvent {...event} />
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselDots />
     </Carousel>
   );
 };

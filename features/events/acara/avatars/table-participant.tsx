@@ -99,7 +99,7 @@ export const DialogTableParticipant = ({
     <DialogPopup showCloseButton={false}>
       <DialogHeader className="items-start space-y-3">
         <DialogTitle>{judul}</DialogTitle>
-        <DialogDescription>List total {participants.length} orang yang mengikuti kegiatan</DialogDescription>
+        <DialogDescription>List total {participants.length} orang yang telah mendaftar</DialogDescription>
       </DialogHeader>
       <div className="flex justify-center items-center gap-2">
         <Input

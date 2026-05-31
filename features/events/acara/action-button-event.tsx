@@ -55,7 +55,7 @@ export const EventActionButton = ({
 
   return (
     <div className="flex justify-end">
-      <HoldButtonJoin eventId={event.id}>Ikuti</HoldButtonJoin>
+      <HoldButtonJoin eventId={event.id}>Tekan untuk mendaftar</HoldButtonJoin>
     </div>
   );
 };

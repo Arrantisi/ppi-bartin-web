@@ -75,6 +75,28 @@ export const EventDetail = ({
     });
   };
 
+  const renderLokasi = (lokasi: string, JoinStatus: boolean) => {
+    const URL_REGEX = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+    const parts = lokasi.split(URL_REGEX);
+    return parts.map((part, index) => {
+      if (part.match(/^https?:\/\/|^www\./)) {
+        const href = part.startsWith("www.") ? `https://${part}` : part;
+        return !JoinStatus ? (
+          <a key={index} href={href} target="_blank" rel="noopener noreferrer"
+            className="text-primary hover:underline font-semibold break-all">
+            {part}
+          </a>
+        ) : (
+          <span key={index} className="break-all">
+            <span className="text-text-disabled line-through font-medium">{part}</span>
+            <span className="text-text-disabled text-xs"> (daftar terlebih dahulu untuk mengakses)</span>
+          </span>
+        );
+      }
+      return <span key={index}>{part}</span>;
+    });
+  };
+
   const clean = DOMPurify.sanitize(data.deskripsi, {
     FORBID_ATTR: ["style", "font"], // ← strip style attribute
   });
@@ -206,7 +228,7 @@ export const EventDetail = ({
                           Lokasi
                         </span>
                         <span className="detail-meta-value">
-                          {data.lokasi}
+                          {!isReadOnly ? renderLokasi(data.lokasi || "", isJoined) : "Masuk untuk melihat lokasi"}
                         </span>
                       </div>
                     </div>
@@ -214,7 +236,7 @@ export const EventDetail = ({
                 </div>
 
                 {!isReadOnly ? (
-                  <div className="detail-cta-wrap">
+                  <div className="detail-cta-wrap text-text-primary">
                     <EventActionButton
                       event={data}
                       sessionUserId={session?.user.id}

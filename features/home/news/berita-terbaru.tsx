@@ -3,21 +3,18 @@ import { RenderNews } from "./render-news";
 
 const BeritaTerbaru = () => {
   return (
-    <div className="mt-7 space-y-2 mb-28">
-      <div className="flex justify-between items-center">
-        <h1 className="title-satu capitalize">
-          berita terbaru
-        </h1>
-        <Link
-          href={"/berita"}
-          className="title-tiga text-text-secondary"
-        >
-          selengkapnya
+    <section className="space-y-3 pb-28">
+      <div className="flex items-baseline justify-between gap-4">
+        <h2 className="text-[1rem] font-semibold tracking-[-0.01em] text-text-primary">
+          Berita terbaru
+        </h2>
+        <Link href="/berita" className="text-[0.8125rem] text-text-disabled">
+          Lihat semua
         </Link>
       </div>
 
       <RenderNews />
-    </div>
+    </section>
   );
 };
 

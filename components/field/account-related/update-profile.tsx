@@ -549,7 +549,7 @@ export const UpdateProfileField = ({
             </>
           ) : (
             <>
-              {!isOnboarding && <IconFileCheck size={18} className="text-primary" />}
+              {!isOnboarding && <IconFileCheck size={18} />}
               {submitButtonLabel}
             </>
           )}

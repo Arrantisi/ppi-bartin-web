@@ -98,13 +98,13 @@ export const HoldButtonJoin = ({
       disabled={onLoading}
     >
       {onLoading ? (
-        <h1 className="flex gap-2 items-center">
+        <span className="flex gap-2 items-center">
           <Spinner className="size-4" /> Memproses
-        </h1>
+        </span>
       ) : (
-        <h1 className="flex gap-2 items-center">
+        <span className="flex gap-2 items-center">
           <IconHandClick className="size-4" /> <span>{children}</span>
-        </h1>
+        </span>
       )}
     </HoldButton>
   );

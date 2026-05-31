@@ -4,13 +4,20 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "@/components/ui/sonner";
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
   variable: "--font-inter",
+});
+
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
+  variable: "--font-mono",
 });
 
 export const metadata: Metadata = {
@@ -34,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${mono.variable}`} suppressHydrationWarning>
       <meta name="theme-color" content="#2563eb" />
       <body className={`antialiased min-h-screen w-full relative`}>
         <main>

@@ -118,13 +118,14 @@ export const NewsDetailComponent = ({
           </h1>
 
           {/* Hero Image */}
-          <div className="relative aspect-videomt-6 overflow-hidden rounded-3xl border border-border shadow-sm w-full mt-5">
+          <div className="w-full mt-5 overflow-hidden rounded-3xl border border-border shadow-sm">
             <Image
               src={imageUrl(data.fileKey)}
               alt="Berita"
-              width={500}
-              height={1000}
-              className="object-cover"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="w-full h-auto object-cover"
               priority
             />
           </div>

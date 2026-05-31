@@ -40,12 +40,12 @@ export const UpdateProfileComponent = () => {
 
 			<Card className="border-destructive/30 bg-destructive/5">
 				<CardHeader>
-					<CardTitle className="flex items-center gap-2">
+					<CardTitle className="flex items-center gap-2 text-destructive">
 						<IconShieldLock className="size-5 text-destructive" />
-						Hapus Akun
+						Danger Zone
 					</CardTitle>
 					<CardDescription>
-						Tindakan ini akan menghapus akun dan semua data akun kamu.
+						Tindakan ini akan menghapus akun dan semua data terkait akun kamu. Tindakan ini tidak dapat dibatalkan.
 					</CardDescription>
 				</CardHeader>
 				<CardContent>

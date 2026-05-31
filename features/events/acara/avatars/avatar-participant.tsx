@@ -16,17 +16,16 @@ const AvatarParticipant = ({
             <AvatarImage
               src={user.image}
               alt="@reui"
-              className="border border-accent hover:z-10"
             />
-            <AvatarFallback className="border-2 border-background hover:z-10 text-foreground">
+            <AvatarFallback className="hover:z-10 text-foreground">
               CN
             </AvatarFallback>
           </Avatar>
         ))}
         {participant.length > showParticipant && (
           <Avatar>
-            <AvatarFallback className="border-2 border-background hover:z-10 text-foreground">
-              + {participant.length - showParticipant}
+            <AvatarFallback className="hover:z-10 font-mono text-foreground">
+              +{participant.length - showParticipant}
             </AvatarFallback>
           </Avatar>
         )}
