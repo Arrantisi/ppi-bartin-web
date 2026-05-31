@@ -48,8 +48,3 @@ next-env.d.ts
 /.docs/
 /.understand-anything/
 restructure-program-goal/
-
-# opencode agents & skills (local AI config, not project code)
-/AGEND.md
-/skills/
-
