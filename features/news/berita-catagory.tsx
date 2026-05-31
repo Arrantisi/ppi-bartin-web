@@ -50,7 +50,7 @@ const BeritaCatagory = () => {
             <IconSearch className="size-5" />
           </InputGroupAddon>
         </InputGroup> */}
-        <div className="h-[42px] w-full bg-card rounded-full" />
+        <div className="h-[42px] w-full bg-card rounded-full border border-border" />
 
         <ButtonCreate catagory="berita" />
       </div>
@@ -63,9 +63,8 @@ const BeritaCatagory = () => {
                 key={item.ctg}
                 value={item.ctg}
                 className={cn(
-                  "rounded-full bg-muted px-6 py-2.5 capitalize transition-all",
-                  "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md",
-                  "dark:data-[state=active]:bg-accent-foreground dark:data-[state=active]:text-accent dark:data-[state=active]:shadow-md",
+                  "rounded-full border border-border bg-surface px-6 py-2.5 capitalize transition-colors",
+                  "data-[state=active]:bg-surface-active data-[state=active]:text-text-primary",
                 )}
               >
                 {item.ctg}

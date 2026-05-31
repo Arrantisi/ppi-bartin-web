@@ -83,7 +83,7 @@ export const EventDetail = ({
     <>
       <Dialog open={isOpenImageDialog} onOpenChange={setIsOpenImageDialog}>
         <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
-          <div className="max-w-2xl mx-auto bg-background min-h-screen pb-10 pt-3 relative flex flex-col overflow-hidden">
+          <div className="detail-page max-w-2xl mx-auto min-h-screen pb-10 pt-3 relative flex flex-col overflow-hidden bg-background">
             {/* Header */}
             <div className="absolute w-full z-10">
               <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
@@ -96,7 +96,7 @@ export const EventDetail = ({
                   <IconArrowLeft size={20} />
                 </Button>
 
-                <h1 className="h-11 px-[calc(--spacing(4)-1px)] text-lg sm:h-10 sm:text-base [&_svg:not([class*='size-'])]:size-5 sm:[&_svg:not([class*='size-'])]:size-4.5 flex justify-center items-center rounded-4xl border-input bg-background not-dark:bg-clip-padding text-foreground shadow-xs/5 not-disabled:not-active:not-data-pressed:before:shadow-[0_1px_--theme(--color-black/6%)] dark:bg-input/32 dark:not-disabled:before:shadow-[0_-1px_--theme(--color-white/2%)] dark:not-disabled:not-active:not-data-pressed:before:shadow-[0_-1px_--theme(--color-white/6%)] [:disabled,:active,[data-pressed]]:shadow-none [:hover,[data-pressed]]:bg-accent/50 dark:[:hover,[data-pressed]]:bg-input/64">
+                <h1 className="h-11 px-[calc(--spacing(4)-1px)] text-lg sm:h-10 sm:text-base [&_svg:not([class*='size-'])]:size-5 sm:[&_svg:not([class*='size-'])]:size-4.5 flex justify-center items-center rounded-4xl border border-border bg-background text-text-primary shadow-none">
                   Acara
                 </h1>
 
@@ -125,7 +125,7 @@ export const EventDetail = ({
                 />
                 <button
                   onClick={() => setIsOpenImageDialog(true)}
-                  className="flex items-center justify-center gap-2 absolute bottom-13 right-3 p-2 bg-background rounded-xl shadow border-border text-center text-sm font-medium hover:bg-background/80 cursor-pointer transition-all duration-300"
+                  className="flex items-center justify-center gap-2 absolute bottom-13 right-3 rounded-full border border-border bg-background/90 p-2 text-center text-sm font-medium text-text-primary shadow-sm transition-colors hover:bg-background cursor-pointer"
                 >
                   <IconEye size={16} />
                 </button>
@@ -171,7 +171,7 @@ export const EventDetail = ({
                     )}
                   </div>
 
-                  <div className="relative py-3 border-y max-w-full body wrap-anywhere my-4 [&_p]:block prose prose-sm [&_strong]:text-foreground">
+                  <div className="detail-page relative py-3 border-y border-border max-w-full body wrap-anywhere my-4 prose prose-sm dark:prose-invert prose-neutral prose-headings:font-semibold prose-p:text-[--text-secondary] prose-strong:text-[--text-primary] prose-a:text-[--accent] prose-img:rounded-[10px] max-w-none [&_p]:block [&_strong]:text-text-primary">
                     { isJoined && (
                       <button
                         className="h-full bg-transparent absolute w-full"
@@ -182,30 +182,30 @@ export const EventDetail = ({
                     {parse(clean)}
                   </div>
 
-                  <div className="space-y-4 mb-8">
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                        <IconCalendarWeek size={20} />
+                  <div className="detail-meta mb-8">
+                    <div className="detail-meta-row">
+                      <div className="rounded-full border border-border bg-background p-2 text-text-disabled">
+                        <IconCalendarWeek className="detail-meta-icon" size={16} />
                       </div>
                       <div className="flex flex-col gap-0.5">
-                        <span className="subheadline text-text-primary">
+                        <span className="detail-meta-label">
                           Tanggal
                         </span>
-                        <span className="footnote">
+                        <span className="detail-meta-value">
                           {formattedDate(data.date || new Date())}
                         </span>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                        <IconMapPin size={20} />
+                    <div className="detail-meta-row">
+                      <div className="rounded-full border border-border bg-background p-2 text-text-disabled">
+                        <IconMapPin className="detail-meta-icon" size={16} />
                       </div>
                       <div className="flex flex-col gap-0.5">
-                        <span className="subheadline text-text-primary">
+                        <span className="detail-meta-label">
                           Lokasi
                         </span>
-                        <span className="footnote">
+                        <span className="detail-meta-value">
                           {data.lokasi}
                         </span>
                       </div>
@@ -214,7 +214,7 @@ export const EventDetail = ({
                 </div>
 
                 {!isReadOnly ? (
-                  <div className="w-full">
+                  <div className="detail-cta-wrap">
                     <EventActionButton
                       event={data}
                       sessionUserId={session?.user.id}

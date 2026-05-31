@@ -35,7 +35,7 @@ export const NewsDetailComponent = ({
 
   const { data, isLoading } = useNewsBySlug({ slug });
   if (isLoading) return <LoaderOneDemo />;
-  if (!data) return <div>data tidak di temukan</div>;
+  if (!data) return <div className="p-10 text-center">data tidak di temukan</div>;
 
   const handleOpenDelete = () => {
     setIsOpenDrawer(false);
@@ -48,7 +48,7 @@ export const NewsDetailComponent = ({
 
   return (
     <>
-      <div className="max-w-2xl mx-auto bg-background min-h-screen pb-10 pt-3">
+      <div className="detail-page max-w-2xl mx-auto bg-background min-h-screen pb-10 pt-3">
         {/* Top Navigation */}
         <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
           <Button
@@ -60,7 +60,7 @@ export const NewsDetailComponent = ({
             <IconArrowLeft size={20} />
           </Button>
 
-          <h1 className="h-11 px-[calc(--spacing(4)-1px)] text-lg sm:h-10 sm:text-base [&_svg:not([class*='size-'])]:size-5 sm:[&_svg:not([class*='size-'])]:size-4.5 flex justify-center items-center rounded-4xl border-input bg-background not-dark:bg-clip-padding text-foreground shadow-xs/5 not-disabled:not-active:not-data-pressed:before:shadow-[0_1px_--theme(--color-black/6%)] dark:bg-input/32 dark:not-disabled:before:shadow-[0_-1px_--theme(--color-white/2%)] dark:not-disabled:not-active:not-data-pressed:before:shadow-[0_-1px_--theme(--color-white/6%)] [:disabled,:active,[data-pressed]]:shadow-none [:hover,[data-pressed]]:bg-accent/50 dark:[:hover,[data-pressed]]:bg-input/64">
+          <h1 className="h-11 px-[calc(--spacing(4)-1px)] text-lg sm:h-10 sm:text-base [&_svg:not([class*='size-'])]:size-5 sm:[&_svg:not([class*='size-'])]:size-4.5 flex justify-center items-center rounded-4xl border border-border bg-background text-text-primary shadow-none">
             Berita
           </h1>
 
@@ -113,12 +113,12 @@ export const NewsDetailComponent = ({
           </div>
 
           {/* Title */}
-          <h1 className="title-satu mt-4">
+          <h1 className="title-satu mt-4 text-text-primary">
             {data.judul}
           </h1>
 
           {/* Hero Image */}
-          <div className="relative aspect-videomt-6 overflow-hidden rounded-3xl shadow-lg w-full mt-5">
+          <div className="relative aspect-videomt-6 overflow-hidden rounded-3xl border border-border shadow-sm w-full mt-5">
             <Image
               src={imageUrl(data.fileKey)}
               alt="Berita"
@@ -131,7 +131,7 @@ export const NewsDetailComponent = ({
 
           {/* Article */}
           <article className="mt-8 mx-auto">
-            <div className="relative [&_strong]:text-foreground py-3 border-y max-w-full body wrap-anywhere my-4 [&_p]:block prose prose-sm">
+            <div className="detail-page relative py-3 border-y border-border max-w-full body wrap-anywhere my-4 prose prose-sm dark:prose-invert prose-neutral prose-headings:font-semibold prose-p:text-[--text-secondary] prose-strong:text-[--text-primary] prose-a:text-[--accent] prose-img:rounded-[10px] max-w-none [&_p]:block [&_strong]:text-text-primary">
               {parse(clean)}
             </div>
           </article>

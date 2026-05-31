@@ -58,7 +58,7 @@ const CardEvent = ({
         </div>
 
         <CardContent className="px-3 space-y-3">
-          <h1 className="title-tiga line-clamp-2">{props.judul}</h1>
+          <div className="title-tiga line-clamp-2">{props.judul}</div>
           <div className="flex items-center justify-between mt-1">
             <div className="footnote flex items-center gap-2">
               <Avatar className="size-5">

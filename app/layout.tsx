@@ -4,6 +4,14 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "@/components/ui/sonner";
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "PPI Bartin App",
@@ -26,12 +34,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <meta name="theme-color" content="#2563eb" />
-      <body className="antialiased min-h-screen w-full relative">
+      <body className={`antialiased min-h-screen w-full relative`}>
         <main>
           <ThemeProvider
-            attribute="class"
+            attribute="data-theme"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange

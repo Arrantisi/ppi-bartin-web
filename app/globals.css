@@ -3,20 +3,30 @@
 @import "shadcn/tailwind.css";
 @plugin "@tailwindcss/typography";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark *, [data-theme="dark"] *));
 
 :root {
-  --bg: #FAFAF8;
-  --surface: #FFFFFF;
-  --surface-hover: #F1F1EF;
-  --border: #E3E3DF;
-  --text-primary: #141414;
-  --text-secondary: #5F5F5C;
-  --text-disabled: #8B8B87;
-  --accent: #3B9EFF;
-  --success: #4CAF78;
-  --warning: #C89A2E;
-  --danger: #E06C67;
+  --bg: #FFFFFF;
+  --surface: #F7F7F5;
+  --surface-hover: #EFEFED;
+  --surface-active: #E8E8E5;
+  --border: #E8E8E5;
+  --border-strong: #D0D0CC;
+  --text-primary: #1A1A19;
+  --text-secondary: #6B6B68;
+  --text-disabled: #AFAFAC;
+  --text-inverse: #FFFFFF;
+  --accent: #0F7DDB;
+  --accent-hover: #0A65B8;
+  --accent-subtle: rgba(15, 125, 219, 0.08);
+  --success: #3D8C5E;
+  --success-subtle: rgba(61, 140, 94, 0.08);
+  --warning: #9E6C00;
+  --warning-subtle: rgba(158, 108, 0, 0.08);
+  --danger: #C4554D;
+  --danger-subtle: rgba(196, 85, 77, 0.08);
+  --info: #0F7DDB;
+  --info-subtle: rgba(15, 125, 219, 0.08);
 
   --background: var(--bg);
   --foreground: var(--text-secondary);
@@ -30,7 +40,7 @@
   --secondary-foreground: var(--text-primary);
   --muted: var(--surface);
   --muted-foreground: var(--text-secondary);
-  --accent-foreground: var(--text-primary);
+  --accent-foreground: var(--text-inverse);
   --border-token: var(--border);
   --input: var(--surface);
   --ring: var(--accent);
@@ -56,15 +66,14 @@
   --cream: var(--surface);
 
   --destructive: var(--danger);
-  --destructive-foreground: var(--bg);
-  --info: var(--accent);
-  --info-foreground: var(--bg);
-  --success-foreground: var(--bg);
-  --warning-foreground: var(--bg);
+  --destructive-foreground: var(--text-inverse);
+  --info-foreground: var(--text-inverse);
+  --success-foreground: var(--text-inverse);
+  --warning-foreground: var(--text-inverse);
 
-  --font-sans: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: monospace;
+  --font-mono: "SFMono-Regular", Menlo, Consolas, monospace;
   --shadow-x: 0px;
   --shadow-y: 0px;
   --shadow-blur: 0px;
@@ -90,7 +99,7 @@
   --base-50: var(--bg);
   --base-100: var(--surface);
   --base-200: var(--border);
-  --base-300: var(--surface-hover);
+  --base-300: var(--border-strong);
   --base-400: var(--text-disabled);
   --base-500: var(--text-disabled);
   --base-600: var(--text-secondary);
@@ -99,8 +108,8 @@
   --base-900: var(--text-primary);
   --base-950: var(--bg);
   --base-1000: var(--bg);
-  --primary-50: color-mix(in srgb, var(--accent) 10%, transparent);
-  --primary-100: color-mix(in srgb, var(--accent) 14%, transparent);
+  --primary-50: var(--accent-subtle);
+  --primary-100: color-mix(in srgb, var(--accent) 12%, transparent);
   --primary-200: color-mix(in srgb, var(--accent) 18%, transparent);
   --primary-300: color-mix(in srgb, var(--accent) 24%, transparent);
   --primary-400: color-mix(in srgb, var(--accent) 34%, transparent);
@@ -114,7 +123,7 @@
   --secondary-50: var(--surface);
   --secondary-100: var(--surface);
   --secondary-200: var(--surface-hover);
-  --secondary-300: var(--surface-hover);
+  --secondary-300: var(--surface-active);
   --secondary-400: var(--text-disabled);
   --secondary-500: var(--text-secondary);
   --secondary-600: var(--text-secondary);
@@ -125,14 +134,29 @@
   --secondary-1000: var(--text-primary);
 }
 
+[data-theme="dark"],
 .dark {
   --bg: #141414;
   --surface: #1E1E1E;
   --surface-hover: #272727;
+  --surface-active: #2F2F2F;
   --border: #2A2A2A;
+  --border-strong: #3A3A3A;
   --text-primary: #E8E8E6;
   --text-secondary: #8C8C8A;
   --text-disabled: #5A5A58;
+  --text-inverse: #141414;
+  --accent: #3B9EFF;
+  --accent-hover: #5BADFF;
+  --accent-subtle: rgba(59, 158, 255, 0.08);
+  --success: #4CAF78;
+  --success-subtle: rgba(76, 175, 120, 0.08);
+  --warning: #C89A2E;
+  --warning-subtle: rgba(200, 154, 46, 0.08);
+  --danger: #E06C67;
+  --danger-subtle: rgba(224, 108, 103, 0.08);
+  --info: #3B9EFF;
+  --info-subtle: rgba(59, 158, 255, 0.08);
   --background: var(--bg);
   --foreground: var(--text-secondary);
   --card: var(--surface);
@@ -145,7 +169,7 @@
   --secondary-foreground: var(--text-primary);
   --muted: var(--surface);
   --muted-foreground: var(--text-secondary);
-  --accent-foreground: var(--text-primary);
+  --accent-foreground: var(--text-inverse);
   --destructive: var(--danger);
   --border-token: var(--border);
   --input: var(--surface);
@@ -245,7 +269,7 @@
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--surface-hover);
+  --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -277,7 +301,7 @@
   --tracking-wider: calc(var(--tracking-normal) + 0.05em);
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
   --font-heading: var(--font-sans);
-  --font-sans: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   --radius-2xl: 16px;
   --radius-3xl: 20px;
   --radius-4xl: 24px;
@@ -293,6 +317,7 @@
     font-family: var(--font-sans);
   }
 
+  [data-theme="dark"],
   .dark {
     color-scheme: dark;
   }
@@ -302,11 +327,21 @@
     margin: 0;
     font-family: var(--font-sans);
     font-size: 0.875rem;
-    font-weight: 400;
+    font-weight: 450;
     line-height: 1.5;
     color: var(--foreground);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     letter-spacing: var(--tracking-normal);
+    text-rendering: optimizeLegibility;
+  }
+
+  a,
+  button,
+  input,
+  textarea,
+  select {
+    font-family: inherit;
   }
 
   :focus-visible {
@@ -322,6 +357,140 @@
 }
 
 @layer components {
+  .form-section-header {
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .form-section-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  .form-section-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-disabled);
+    margin-top: 2px;
+  }
+
+  .field-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-disabled);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  .field-label svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--text-disabled);
+    flex-shrink: 0;
+  }
+
+  .field-helper {
+    font-size: 0.75rem;
+    color: var(--text-disabled);
+    margin-top: 4px;
+    padding-left: 0;
+  }
+
+  .input-editable {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+
+  .input-editable:focus,
+  .input-editable:focus-visible {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+  }
+
+  .input-readonly {
+    background: transparent;
+    border: 1px solid transparent;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    color: var(--text-secondary);
+    pointer-events: none;
+    padding-left: 0;
+    padding-right: 0;
+    box-shadow: none;
+  }
+
+  .input-readonly:focus,
+  .input-readonly:focus-visible {
+    box-shadow: none;
+    border-color: var(--border);
+  }
+
+  .detail-page {
+    background: var(--bg);
+    color: var(--text-secondary);
+  }
+
+  .detail-page h1,
+  .detail-page h2,
+  .detail-page h3 {
+    color: var(--text-primary);
+  }
+
+  .detail-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin: 20px 0;
+  }
+
+  .detail-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .detail-meta-label {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-disabled);
+    width: 72px;
+    flex-shrink: 0;
+  }
+
+  .detail-meta-value {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .detail-meta-icon {
+    width: 16px;
+    height: 16px;
+    stroke: var(--text-disabled);
+    flex-shrink: 0;
+  }
+
+  .detail-cta-wrap {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    bottom: 0;
+  }
+
   .title-satu {
     color: var(--text-primary);
     font-size: 1.375rem;
@@ -431,6 +600,18 @@
   button[data-slot="button"][class*="bg-destructive"][data-pressed] {
     background-color: transparent !important;
     color: var(--danger) !important;
+  }
+
+  .prose {
+    color: var(--text-secondary);
+  }
+
+  .prose :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--text-primary);
+  }
+
+  .prose strong {
+    color: var(--text-primary);
   }
 
   .scrollbar-none {
