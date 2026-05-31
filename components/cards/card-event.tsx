@@ -69,7 +69,7 @@ const CardEvent = ({
           <div className="card-kicker uppercase">Acara</div>
           <div className="card-title line-clamp-2 mb-auto">{props.judul}</div>
           <div className="card-meta line-clamp-1 text-text-secondary">
-            {metaDate} · {props.lokasi}
+            {metaDate} · {showActions ? props.lokasi : "Masuk untuk detail lokasi"}
           </div>
           <div className={cn("card-meta line-clamp-1", deadlineTone)}>
             {deadlineCopy}
