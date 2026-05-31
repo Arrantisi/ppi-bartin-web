@@ -42,11 +42,11 @@ const BottomNav = ({ show }: { show: boolean }) => {
   return (
     <div
       className={cn(
-        "fixed w-full bottom-0 left-0 flex items-center justify-center z-50 h-14 bg-surface border-t border-border",
+        "fixed w-full bottom-0 left-0 flex items-center justify-center z-50 bg-card shadow-2xl",
         !show && "hidden",
       )}
     >
-      <div className="max-w-xl md:max-w-2xl xl:max-w-3xl flex items-stretch justify-between px-4 gap-2 w-full">
+      <div className="max-w-xl md:max-w-2xl xl:max-w-3xl flex items-center justify-between px-6 pb-4 pt-0.5 gap-[16px] w-full">
         {navItems.map((e) => {
           const isActive = e.url === params;
 
@@ -55,19 +55,19 @@ const BottomNav = ({ show }: { show: boolean }) => {
               href={e.url}
               key={e.title}
               className={cn(
-                "relative flex flex-1 flex-col justify-center items-center gap-1 py-2 border-t-2 border-transparent text-text-disabled transition-colors duration-100",
-                isActive && "border-accent text-text-primary",
+                "relative flex flex-col justify-center items-center p-2 w-40 m-1.5 dark:text-foreground text-foreground/40 transition-colors duration-200",
+                isActive && "text-primary",
               )}
             >
               <AnimatePresence>
                 {isActive && (
                   <motion.span
                     layoutId="nav-active-bg"
-                    className="absolute inset-0 rounded-2xl border border-border bg-surface-active"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.1 }}
+                    className="absolute inset-0 bg-primary/20 dark:bg-primary/50 rounded-2xl"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
               </AnimatePresence>
@@ -75,12 +75,11 @@ const BottomNav = ({ show }: { show: boolean }) => {
               <motion.div
                 animate={isActive ? { y: -2, scale: 1.15 } : { y: 0, scale: 1 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                className="relative z-10"
               >
                 <e.icon className="size-5" />
               </motion.div>
 
-              <motion.span className="relative z-10 text-xs">{e.title}</motion.span>
+              <motion.span className="text-xs">{e.title}</motion.span>
             </Link>
           );
         })}
@@ -93,8 +92,8 @@ const DesktopSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   const params = usePathname();
 
   return (
-    <Sidebar collapsible="offcanvas" {...props} className="bg-sidebar border-r border-border">
-      <SidebarHeader className="my-5 border-b border-border">
+    <Sidebar collapsible="offcanvas" {...props} className="bg-sidebar">
+      <SidebarHeader className="my-5 border-b">
         <Link href="/home" className="flex items-center gap-3 mx-2">
           <Image
             src={"/logo-ppi.png"}
@@ -103,7 +102,7 @@ const DesktopSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
             width={200}
             className="size-7"
           />
-          <span className="title-tiga">
+          <span className="text-xl font-semibold tracking-tighter">
             PPI Bartın
           </span>
         </Link>
@@ -123,8 +122,9 @@ const DesktopSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
                     tooltip={e.title}
                     className={cn(
                       "my-0.5 py-0.5",
-                      "data-[active=true]:bg-surface-active data-[active=true]:font-medium data-[active=true]:text-text-primary data-[active=true]:border data-[active=true]:border-border data-[active=true]:shadow-none",
-                      "hover:bg-surface-hover hover:text-text-primary",
+                      "data-[active=true]:bg-linear-to-r data-[active=true]:from-primary-100 data-[active=true]:to-sidebar data-[active=true]:font-medium data-[active=true]:text-sidebar-primary",
+                      "dark:data-[active=true]:bg-linear-to-r dark:data-[active=true]:from-primary-900 dark:data-[active=true]:to-sidebar dark:data-[active=true]:font-medium dark:data-[active=true]:text-primary-300 dark:hover:bg-linear-to-r dark:hover:from-base-800 dark:hover:to-sidebar",
+                      "hover:bg-linear-to-r hover:from-base-200 hover:to-background",
                     )}
                   >
                     <motion.div
@@ -134,14 +134,10 @@ const DesktopSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
                         stiffness: 400,
                         damping: 20,
                       }}
-                      className={cn(
-                        "relative z-10",
-                        isActive ? "text-text-primary" : "text-text-disabled",
-                      )}
                     >
                       <e.icon className="size-4.5" />
                     </motion.div>
-                    <span className="relative z-10">{e.title}</span>
+                    <span>{e.title}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>

@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
+import { studentAccount } from "../actions/account";
 
 export const getEventParticipants = async (eventId: string) => {
   const data = await prisma.events.findUnique({
@@ -44,6 +45,8 @@ export const getAllEvents = async () => {
 export type TgetAllEvent = Awaited<ReturnType<typeof getAllEvents>>[0];
 
 export const getEventBySlug = async (slug: string) => {
+  await studentAccount();
+
   return await prisma.events.findUnique({
     where: { slug },
     include: {

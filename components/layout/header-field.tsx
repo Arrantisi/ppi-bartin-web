@@ -23,7 +23,7 @@ export const HeaderFieldLayout = ({
         <h1 className="title-tiga">{label}</h1>
 
         <Button
-          variant={"link"}
+          variant={"outline"}
           onClick={() => router.push(href)}
           className="absolute left-0 top-0 rounded-full shadow-xl"
         >

@@ -14,13 +14,13 @@
     },
     {
       "label": "Lokasi",
-      "placeholder": "Nama tempat atau link meeting\n(dimulai dengan https:// atau www.)",
+      "placeholder": "Nama tempat atau link meeting...",
       "description": "Pastikan lokasi mudah ditemukan atau diakses."
     },
     {
       "label": "Deskripsi",
       "placeholder": "Jelaskan keseruan acara kamu...",
-      "description": "Caption tentang acara kamu"
+      "description": "Berikan ringkasan singkat mengenai agenda kegiatan."
     },
     {
       "label": "Slug URL",

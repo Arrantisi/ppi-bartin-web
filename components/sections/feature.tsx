@@ -1,36 +1,30 @@
-import {
-  BellRing,
-  CalendarDays,
-  Image as ImageIcon,
-  ShieldCheck,
-} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { ShieldCheck, Database, Image as ImageIcon, Eye } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const features = [
   {
-    title: "Masuk dengan mudah",
+    title: "Keamanan Data",
     description:
-      "Anggota dapat login dengan akun Google lalu melengkapi profil secara bertahap.",
+      "Integrasi Better Auth memastikan autentikasi lapis ganda yang sangat aman.",
     icon: <ShieldCheck className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Acara dan berita",
+    title: "Manajemen Database",
     description:
-      "Informasi terkait organisasi, agenda, dan pengumuman penting ditampilkan di satu tempat.",
-    icon: <CalendarDays className="w-8 h-8 text-primary" />,
+      "Penyimpanan cloud realtime dengan Supabase untuk akses data tanpa jeda.",
+    icon: <Database className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Unggah foto kegiatan",
+    title: "Media Terpusat",
     description:
-      "Dokumentasi acara dan berita bisa ditambahkan dengan cepat agar arsip tetap rapi.",
+      "Pengunggahan dokumen dan foto kegiatan cepat menggunakan UploadThing.",
     icon: <ImageIcon className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Notifikasi web",
+    title: "Akses Transparan",
     description:
-      "Pengumuman penting dapat muncul langsung di browser anggota yang sudah mengizinkan.",
-    icon: <BellRing className="w-8 h-8 text-primary" />,
+      "Dashboard publik untuk memantau program kerja dan laporan keuangan.",
+    icon: <Eye className="w-8 h-8 text-primary" />,
   },
 ];
 
@@ -39,15 +33,10 @@ export const Features = () => {
     <section className="py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <Badge className="mb-4 rounded-full bg-primary/10 text-primary hover:bg-primary/10">
-            Fitur aktif
-          </Badge>
-          <h2 className="text-3xl font-extrabold mb-4">
-            Yang sudah bisa dipakai sekarang
-          </h2>
+          <h2 className="text-3xl font-extrabold mb-4">Pilar Utama Sistem</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Semua fitur di bawah ini dirancang agar anggota bisa tetap terhubung
-            dengan kegiatan organisasi tanpa kerumitan.
+            Teknologi canggih untuk mempermudah birokrasi dan meningkatkan
+            kepercayaan anggota.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

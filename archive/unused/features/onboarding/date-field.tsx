@@ -1,1 +1,1 @@
-export { TanggalLahitField } from "@/components/field/account-related/tanggal-lahir";
+export { TanggalLahitField } from "@/components/event/profile/update/tanggal-lahir";

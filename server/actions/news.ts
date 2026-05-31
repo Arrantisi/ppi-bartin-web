@@ -100,7 +100,7 @@ export const createNews = async ({
     await sendPushToAll({
       title: "Berita Bartin Hari Ini",
       message: `${judul}`,
-      url: `/berita/${slug}`,
+      url: `/home/berita/${slug}`,
     });
 
     revalidatePath(`/home/news/uploader/${slug}`);

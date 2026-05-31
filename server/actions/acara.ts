@@ -94,7 +94,7 @@ export const createAcara = async ({
     await sendPushToAll({
       title: "Acara Baru di PPI Bartin!",
       message: `Ada acara: ${judul}. Yuk cek detailnya!`,
-      url: `/acara/${slug}`,
+      url: `/home/acara/${slug}`,
     });
 
     return {
