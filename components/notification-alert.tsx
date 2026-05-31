@@ -64,8 +64,8 @@ export function NotificationAlert() {
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogPopup>
         <AlertDialogHeader className="flex flex-col items-center text-center">
-          <div className="bg-primary-100 p-3 rounded-full mb-2">
-            <BellRing className="h-6 w-6 text-primary-600" />
+          <div className="bg-info-subtle p-3 rounded-full mb-2">
+            <BellRing className="h-6 w-6 text-info" />
           </div>
           <AlertDialogTitle>Aktifkan Notifikasi?</AlertDialogTitle>
           <AlertDialogDescription>
