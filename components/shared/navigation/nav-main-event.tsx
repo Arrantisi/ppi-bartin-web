@@ -42,10 +42,12 @@ const BottomNav = ({ show }: { show: boolean }) => {
   return (
     <div
       className={cn(
-        "fixed w-full bottom-0 left-0 flex items-center justify-center z-50 h-16 bg-surface border-t border-border",
+        "fixed w-full bottom-0 left-0 flex items-center justify-center z-50 bg-surface border-t border-border h-16",
         !show && "hidden",
       )}
+      style={{ paddingBottom: "env(safe-area-inset-bottom)", height: "calc(4rem + env(safe-area-inset-bottom))" }}
     >
+
       <div className="max-w-xl md:max-w-2xl xl:max-w-3xl flex items-stretch justify-between px-4 gap-2 w-full">
         {navItems.map((e) => {
           const isActive = e.url === params;
