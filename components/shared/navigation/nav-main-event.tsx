@@ -42,7 +42,7 @@ const BottomNav = ({ show }: { show: boolean }) => {
   return (
     <div
       className={cn(
-        "fixed w-full bottom-0 left-0 flex items-center justify-center z-50 h-14 bg-surface border-t border-border",
+        "fixed w-full bottom-0 left-0 flex items-center justify-center z-50 h-16 bg-surface border-t border-border",
         !show && "hidden",
       )}
     >
