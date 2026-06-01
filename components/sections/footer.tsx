@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { ThemeToggle } from "../shared";
+import Image from "next/image";
 
 export const Footer = () => {
   return (
@@ -7,11 +9,20 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-10 h-10 bg-surface-hover border border-border rounded-xl flex items-center justify-center text-text-primary title-tiga">
-                B
+              <div className="size-8 bg-surface-hover rounded-lg flex items-center justify-center">
+                <Image
+                  src={"/logo-ppi-webp.webp"}
+                  alt="logo-ppi-bartin"
+                  width={20}
+                  height={20}
+                />
               </div>
-              <span className="title-satu uppercase">
-                PPI Bartın
+              <span className="title-satu uppercase w-full">
+                Portal Digital PPI Bartın
+              </span>
+              <span className="flex items-center text-sm text-text-secondary">
+                Tema
+                <ThemeToggle />
               </span>
             </div>
             <p className="body max-w-sm">

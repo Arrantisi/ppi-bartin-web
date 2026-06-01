@@ -242,10 +242,9 @@ export const EventDetail = ({
                 </div>
               ) : (
                 <div className="w-full rounded-2xl border border-dashed border-border bg-muted/20 px-4 py-3 text-sm text-muted-foreground">
-                  Konten ini hanya bisa dibaca publik. <a href="/login" className="text-primary hover:underline">
-                    Masuk
-                  </a>{" "}
-                  untuk lebih lanjut.
+                  Anda mengakses laman publik Portal PPI Bartin.{" "}
+                  <a href="/login" className="text-primary hover:underline">
+                    Masuk</a>{" "}untuk lebih lanjut.
                 </div>
               )}
             </div>

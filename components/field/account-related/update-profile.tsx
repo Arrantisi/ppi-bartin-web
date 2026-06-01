@@ -55,7 +55,7 @@ export const UpdateProfileField = ({
   const loadingLabel = isOnboarding ? "Menyimpan..." : undefined;
   const successToastTitle = isOnboarding
     ? "Profil berhasil dilengkapi"
-    : "Profile kamu sudah up to date";
+    : "Perubahan kamu berhasil disimpan";
   const successToastDescription = isOnboarding ? "Selamat datang!" : undefined;
   const successRedirectTo = isOnboarding ? "/home" : "/home/profile";
   const emailDescription = "Email yang terdaftar tidak dapat diubah. Hubungi admin jika ingin mengganti email.";

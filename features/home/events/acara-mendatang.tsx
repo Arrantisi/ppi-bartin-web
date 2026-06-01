@@ -8,8 +8,8 @@ const AcaraMendatang = () => {
         <h2 className="text-[1rem] font-semibold tracking-[-0.01em] text-text-primary">
           Kegiatan terbaru
         </h2>
-        <Link href="/acara" className="text-[0.8125rem] text-text-disabled">
-          Lihat semua
+        <Link href="/home/acara" className="text-[0.8125rem] text-text-secondary">
+          Lihat lebih banyak
         </Link>
       </div>
       <div className="flex justify-center">

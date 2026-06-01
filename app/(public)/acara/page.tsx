@@ -11,9 +11,9 @@ export default function PublicEventPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 md:py-12 space-y-6">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Acara</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-text-primary">Acara</h1>
         <p className="text-muted-foreground">
-          Jadwal kegiatan dan acara PPI Bartin. <a href="/home" className="text-primary hover:underline">Masuk</a> untuk mendaftar.
+          Jadwal kegiatan dan acara PPI Bartin.
         </p>
       </div>
 

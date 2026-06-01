@@ -65,7 +65,7 @@ export const Hero = () => {
               </Link>
               <Link href="/home">
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="lg"
                   className="rounded-xl px-8 h-14 font-semibold"
                 >

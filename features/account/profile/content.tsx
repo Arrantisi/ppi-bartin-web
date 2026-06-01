@@ -133,18 +133,14 @@ export const ContentProfile = () => {
 
       <div className="self-stretch h-7 relative ">
         <div className="absolute top-[-0.062rem] left-0 title-tiga">
-          Setting
+          Lainnya
         </div>
       </div>
-      <div className="self-stretch rounded-2xl bg-card border border-border box-border overflow-hidden shrink-0 flex flex-col items-start p-0 text-center body text-text-secondary">
+      <div className="self-stretch rounded-2xl bg-card border border-border box-border overflow-hidden shrink-0 flex flex-col items-start p-0 text-center body text-text-primary">
         <div className="self-stretch h-14 bg-card border-b border-border box-border flex items-center justify-between py-0 px-5 gap-5 text-left">
           <div className="h-6 flex items-center gap-4">
             <IconSun className="h-6 w-6" />
-            <div className="h-5.5 flex-1 relative">
-              <div className="absolute top-[-0.062rem] left-0 body text-text-primary">
-                Tema
-              </div>
-            </div>
+            <p>Ganti Tema</p>
           </div>
           <ThemeToggle />
         </div>

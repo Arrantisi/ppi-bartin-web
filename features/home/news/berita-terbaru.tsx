@@ -8,8 +8,8 @@ const BeritaTerbaru = () => {
         <h2 className="text-[1rem] font-semibold tracking-[-0.01em] text-text-primary">
           Berita terbaru
         </h2>
-        <Link href="/berita" className="text-[0.8125rem] text-text-disabled">
-          Lihat semua
+        <Link href="/home/berita" className="text-[0.8125rem] text-text-secondary">
+          Lihat lebih banyak
         </Link>
       </div>
 
