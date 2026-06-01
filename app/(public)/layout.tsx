@@ -4,9 +4,24 @@ import { headers } from "next/headers";
 import { HomeLayoutComponent } from "@/components/layout/home-layout";
 import { Footer } from "@/components/sections/footer";
 import { Navbar } from "@/components/sections/navbar";
+import { absoluteUrl, defaultOgImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "PPI Bartin | Portal Mahasiswa Indonesia di Bartin",
+  description: "Portal resmi Persatuan Pelajar Indonesia di Bartin, Turki. Informasi kegiatan, acara, dan berita terkini.",
+  openGraph: {
+    title: "PPI Bartin | Portal Mahasiswa Indonesia di Bartin",
+    description: "Portal resmi Persatuan Pelajar Indonesia di Bartin, Turki. Informasi kegiatan, acara, dan berita terkini.",
+    url: absoluteUrl("/"),
+    type: "website",
+    images: [defaultOgImage],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PPI Bartin | Portal Mahasiswa Indonesia di Bartin",
+    description: "Portal resmi Persatuan Pelajar Indonesia di Bartin, Turki. Informasi kegiatan, acara, dan berita terkini.",
+    images: [defaultOgImage.url],
+  },
 };
 
 const PublicLayout = async ({ children }: { children: React.ReactNode }) => {

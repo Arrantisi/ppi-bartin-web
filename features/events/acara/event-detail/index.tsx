@@ -14,7 +14,6 @@ import { useRouter } from "next/navigation";
 import { formattedDate } from "@/utils/date-format";
 import { useState } from "react";
 import { Drawer } from "@/components/ui/drawer";
-import AvatarParticipant from "@/features/events/acara/avatars/avatar-participant";
 import { authClient } from "@/lib/auth/client";
 import { imageUrl } from "@/utils/image-url";
 import { useEventBySlug } from "@/hooks/use-events";
@@ -23,13 +22,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AlertDEelete } from "@/components/shared/confirm-delete-dialog";
 import { EventActionButton } from "@/features/events/acara/action-button-event";
 import { DrawerOpsi } from "@/components/shared/content-actions-drawer";
-import { DialogTableParticipant } from "@/features/events/acara/avatars/table-participant";
-import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogClose,
   DialogPopup,
-  DialogTrigger,
 } from "@/components/animate-ui/components/base/dialog";
 import parse from "html-react-parser";
 import DOMPurify from "isomorphic-dompurify";
@@ -82,14 +78,24 @@ export const EventDetail = ({
       if (part.match(/^https?:\/\/|^www\./)) {
         const href = part.startsWith("www.") ? `https://${part}` : part;
         return !JoinStatus ? (
-          <a key={index} href={href} target="_blank" rel="noopener noreferrer"
-            className="text-primary hover:underline font-semibold break-all">
+          <a
+            key={index}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline font-semibold break-all"
+          >
             {part}
           </a>
         ) : (
           <span key={index} className="break-all">
-            <span className="text-text-disabled line-through font-medium">{part}</span>
-            <span className="text-text-disabled text-xs"> (daftar terlebih dahulu untuk mengakses)</span>
+            <span className="text-text-disabled line-through font-medium">
+              {part}
+            </span>
+            <span className="text-text-disabled text-xs">
+              {" "}
+              (daftar terlebih dahulu untuk mengakses)
+            </span>
           </span>
         );
       }
@@ -156,7 +162,9 @@ export const EventDetail = ({
               <div className="flex items-center gap-3 mt-6">
                 <Avatar className="size-10">
                   <AvatarImage src={data.creator.image || ""} />
-                  <AvatarFallback>{getTwoWords(data.creator.name || "")}</AvatarFallback>
+                  <AvatarFallback>
+                    {getTwoWords(data.creator.name || "")}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <p className="body text-text-primary font-semibold capitalize">
@@ -244,12 +252,13 @@ export const EventDetail = ({
                 <div className="w-full rounded-2xl border border-dashed border-border bg-muted/20 px-4 py-3 text-sm text-muted-foreground">
                   Anda mengakses laman publik Portal PPI Bartin.{" "}
                   <a href="/login" className="text-primary hover:underline">
-                    Masuk</a>{" "}untuk lebih lanjut.
+                    Masuk
+                  </a>{" "}
+                  untuk lebih lanjut.
                 </div>
               )}
             </div>
           </div>
-
         </Drawer>
 
         {/* DialogPopup di luar Drawer */}
@@ -287,4 +296,3 @@ export const EventDetail = ({
     </>
   );
 };
-

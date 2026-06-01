@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
+import { absoluteUrl, defaultOgImage } from "@/lib/og";
+import { imageUrl } from "@/utils/image-url";
 
 export async function generateMetadata({
   params,
@@ -16,9 +18,29 @@ export async function generateMetadata({
     return { title: "Acara Tidak Ditemukan", description: "Acara tidak ditemukan" };
   }
 
+  const description = event.deskripsi.length > 160 ? event.deskripsi.slice(0, 157) + "..." : event.deskripsi;
+
+  const ogImage = event.fileKey
+    ? { url: imageUrl(event.fileKey), width: 1200, height: 630, alt: event.judul }
+    : defaultOgImage;
+
   return {
     title: event.judul,
-    description: event.deskripsi.length > 160 ? event.deskripsi.slice(0, 157) + "..." : event.deskripsi,
+    description,
+    openGraph: {
+      title: event.judul,
+      description,
+      url: absoluteUrl(`/acara/${eventSlug}`),
+      type: "article",
+      publishedTime: event.createdAt.toISOString(),
+      images: [ogImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: event.judul,
+      description,
+      images: [ogImage.url],
+    },
   };
 }
 
