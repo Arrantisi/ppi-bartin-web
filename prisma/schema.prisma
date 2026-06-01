@@ -8,53 +8,52 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-
-  image           String?
-  name            String?
-  username        String?
-  email           String    @unique
-  noTelephone     String?
-  nomorSiswa      String?   @unique
-  statusPelajar   String?
-  fakultas        String?
-  jurusan         String?
-  angkatan        String?
-  userNameChanged DateTime?
-
-  bio          String?
-  tanggalLahir DateTime?
-  jenisKelamin String?
-  alamat       String?
-
-  emailVerified Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  events Events[] @relation("createdEvent")
-  news   News[]   @relation("createdNews")
-
+  id                        String                     @id @default(uuid())
+  image                     String?
+  name                      String?
+  username                  String?
+  email                     String                     @unique
+  noTelephone               String?
+  nomorSiswa                String?                    @unique
+  bio                       String?
+  tanggalLahir              DateTime?
+  jenisKelamin              String?
+  alamat                    String?
+  emailVerified             Boolean                    @default(false)
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
+  angkatan                  String?
+  jurusan                   String?
+  fakultas                  String?
+  statusPelajar             String?
+  userNameChanged           DateTime?
+  banExpires                DateTime?
+  banReason                 String?
+  banned                    Boolean?                   @default(false)
+  role                      Role                       @default(USER)
   accounts                  Account[]
+  cancelLogs                CancelLog[]
+  customerServices          CustomerService[]
+  events                    Events[]                   @relation("createdEvent")
+  news                      News[]                     @relation("createdNews")
+  notificationSubscriptions NotificationSubscription[]
   participants              Participants[]
   sessions                  Session[]
-  cancelLogs                CancelLog[]
-  notificationSubscriptions NotificationSubscription[]
-  customerServices          CustomerService[]
 
   @@map("user")
 }
 
 model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String   @id
+  expiresAt      DateTime
+  token          String   @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  ipAddress      String?
+  userAgent      String?
+  userId         String
+  impersonatedBy String?
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("session")
@@ -100,62 +99,50 @@ model dataSiswa {
 }
 
 model News {
-  id String @id @default(uuid())
-
+  id         String   @id @default(uuid())
   judul      String
   catagory   String
   desckripsi String
   fileKey    String
   ringkasan  String
-
-  slug String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId  String
-  creator User   @relation("createdNews", fields: [userId], references: [id], onDelete: Cascade)
+  slug       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  userId     String
+  creator    User     @relation("createdNews", fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("news")
 }
 
 model Events {
-  id    String @id @default(uuid())
-  judul String
-
-  lokasi      String
-  date        DateTime
-  deskripsi   String
-  maxCapacity Int
-  catagory    String?
-  batasDaftar DateTime
-  persyaratan String?
-  fileKey     String
-
-  slug String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId  String
-  creator User   @relation("createdEvent", fields: [userId], references: [id], onDelete: Cascade)
-
-  participants Participants[]
+  id           String         @id @default(uuid())
+  judul        String
+  lokasi       String
+  date         DateTime
+  deskripsi    String
+  maxCapacity  Int
+  catagory     String?
+  batasDaftar  DateTime
+  persyaratan  String?
+  fileKey      String
+  slug         String         @unique
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  userId       String
   cancelLogs   CancelLog[]
+  creator      User           @relation("createdEvent", fields: [userId], references: [id], onDelete: Cascade)
+  participants Participants[]
 
   @@map("events")
 }
 
 model Participants {
-  id String @id @default(uuid())
-
-  userId  String
-  eventId String
-
+  id        String   @id @default(uuid())
+  userId    String
+  eventId   String
   createdAt DateTime @default(now())
-
-  event Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event     Events   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, eventId])
   @@map("participants")
@@ -163,45 +150,44 @@ model Participants {
 
 model NotificationSubscription {
   id        String   @id @default(cuid())
-  userId    String // Jika ingin kirim ke user tertentu (opsional)
-  endpoint  String   @unique // URL unik dari Google/Apple
-  auth      String // Kunci enkripsi
-  p256dh    String // Kunci enkripsi
+  userId    String
+  endpoint  String   @unique
+  auth      String
+  p256dh    String
   createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notificationSubscription")
 }
 
 model CustomerService {
-  id       String @id @default(cuid())
-  catagory String
-  subject  String
-  message  String
-  status   String
-  level    String
-
-  userId String
-
-  user User @relation(fields: [userId], references: [id])
-
+  id        String   @id @default(cuid())
+  catagory  String
+  subject   String
+  message   String
+  status    String
+  level     String
   createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 
   @@map("customerService")
 }
 
 model CancelLog {
-  id String @id @default(uuid())
-
-  userId  String
-  eventId String
-
+  id        String   @id @default(uuid())
+  userId    String
+  eventId   String
   createdAt DateTime @default(now())
-
-  event Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event     Events   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, eventId])
   @@map("cancelLog")
+}
+
+enum Role {
+  USER
+  ADMIN
+  PENGURUS
 }
