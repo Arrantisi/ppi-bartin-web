@@ -182,15 +182,24 @@ export const RichTextEditor = ({
       <EditorContent editor={editor} />
 
       {/* TOOLBAR UTAMA STICKY DENGAN ICON */}
-      <div className={cn(
-        "sticky bottom-16 z-10 flex flex-nowrap items-center justify-center gap-1 rounded-2xl border border-border p-1.5 w-max mx-auto overflow-x-auto scrollbar-none snap-x",
-        "bg-background/95 backdrop-blur-sm shadow-sm",
-        "bottom-[var(--toolbar-bottom)] md:bottom-2"
+      <div 
+        className={cn(
+          // 1. GAYA DASAR & SCROLL (Punya lo, tetep murni sticky)
+          "sticky z-10 flex flex-nowrap items-center justify-center gap-1 rounded-2xl border border-border p-1.5 overflow-x-auto scrollbar-none snap-x",
+          "bg-background/95 backdrop-blur-sm shadow-sm",
+          
+          // 2. DI LAYAR MOBILE (HP)
+          // w-auto + mx-4 bikin dia otomatis nyesuaiin lebar layar HP tapi ga bakal jebol ke pinggir
+          "w-auto mx-4 bottom-[var(--toolbar-bottom)]",
+          
+          // 3. DI LAYAR DESKTOP (md ke atas)
+          // Balik ke ukuran pas sesuai tombol dan posisinya di tengah form
+          "md:w-max md:mx-auto md:bottom-2"
         )}
         style={{ 
-            "--toolbar-bottom": "calc(4.5rem + env(safe-area-inset-bottom))" 
-          } as React.CSSProperties}
-        >
+          "--toolbar-bottom": "calc(4.5rem + env(safe-area-inset-bottom))" 
+        } as React.CSSProperties}
+      >
           
         <button
           type="button"

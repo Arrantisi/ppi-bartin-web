@@ -147,7 +147,7 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                   <Field>
                     <FieldLabel>
                       <IconCalendar size={18} className="text-primary" />
-                      Tanggal
+                      Tanggal Acara
                       <span className="text-destructive">*</span>
                     </FieldLabel>
                     <DatePickerField
@@ -256,7 +256,7 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                   <Field>
                     <FieldLabel>
                       <IconUsers size={18} className="text-primary" />
-                      Kuota <span className="text-destructive">*</span>
+                      Kuota Peserta <span className="text-destructive">*</span>
                     </FieldLabel>
 
                     <Input

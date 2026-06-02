@@ -26,12 +26,18 @@ import {
   Dialog,
   DialogClose,
   DialogPopup,
+  DialogTrigger,
 } from "@/components/animate-ui/components/base/dialog";
 import parse from "html-react-parser";
 import DOMPurify from "isomorphic-dompurify";
 import linkifyHtml from "linkify-html";
 import { toast } from "sonner";
 import { getTwoWords } from "@/utils/get-twowords";
+
+// FIX IMPORTS
+import { cn } from "@/lib/utils";
+import AvatarParticipant from "@/features/events/acara/avatars/avatar-participant";
+import { DialogTableParticipant } from "@/features/events/acara/avatars/table-participant";
 
 // REGISTER HOOK DOMPURIFY SEKALI SAJA (Next.js SSR Safe)
 if (typeof window !== "undefined") {
@@ -146,6 +152,7 @@ export const EventDetail = ({
     const cleanLokasi = processHtmlContent(lokasiStr, "text-primary hover:underline font-semibold break-all");
     return parse(cleanLokasi);
   };
+
   return (
     <>
       <Dialog open={isOpenImageDialog} onOpenChange={setIsOpenImageDialog}>
@@ -243,11 +250,31 @@ export const EventDetail = ({
                 </button>
               </div>
 
-              {/* PROTECTED WRAPPER CONTAINER
-                Tombol transparan dipasang di container tingkat ini (relative)
-                sehingga menutupi baik area Article Deskripsi maupun area Detail Meta Lokasi di bawahnya sekaligus.
-              */}
-              <div className="relative mt-8">
+              {/* PARTICIPANT AVATARS ROW - Placed safely outside the protected click shield wrapper */}
+              <div className="mt-4 flex justify-start">
+                <Dialog>
+                  <DialogTrigger
+                    className={cn(
+                      "cursor-pointer rounded-2xl px-1 transition-all duration-300",
+                    )}
+                  >
+                    <AvatarParticipant
+                      participant={data.participants.map((p) => ({
+                        image: p.user.image || "",
+                      }))}
+                    />
+                  </DialogTrigger>
+                  <DialogTableParticipant
+                    userCreatorId={data.creator.id}
+                    judul={data.judul}
+                    participants={data.participants}
+                    eventId={data.id}
+                  />
+                </Dialog>
+              </div>
+
+              {/* PROTECTED WRAPPER CONTAINER */}
+              <div className="relative mt-4">
                 {isJoined && (
                   <button
                     className="absolute inset-0 bg-transparent w-full h-full z-20 cursor-pointer"
