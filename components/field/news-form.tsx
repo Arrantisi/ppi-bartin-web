@@ -1,22 +1,10 @@
 "use client";
 
-import { createNewsSchema, TcreateNewsSchema } from "@/schemas";
-import { useForm } from "@tanstack/react-form";
-import { Field, FieldError, FieldLabel, FieldDescription } from "../ui/field";
-import { Textarea } from "../ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { Button, buttonVariants } from "../ui/button";
-import { updateNews } from "@/server/actions/news";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Spinner } from "../ui/spinner";
 import { UploaderPhoto } from "@/features/uploads/upload-event-news";
+import { createNews, updateNews } from "@/server/actions/news";
+import { createNewsSchema, TcreateNewsSchema } from "@/schemas";
+import { TupdateNewsProps } from "@/types";
+import { useForm } from "@tanstack/react-form";
 import {
   IconClipboardText,
   IconFileText,
@@ -25,23 +13,49 @@ import {
   IconTypography,
 } from "@tabler/icons-react";
 import Link from "next/link";
-import { TupdateNewsProps } from "@/types";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
+import { Button, buttonVariants } from "../ui/button";
+import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import { RichTextEditor } from "../ui/rich-text-editor";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Spinner } from "../ui/spinner";
+import { Textarea } from "../ui/textarea";
+
+type NewsFormMode = "create" | "update";
+
+type NewsFormFieldProps = {
+  mode: NewsFormMode;
+  slug?: string;
+  data?: TupdateNewsProps["data"];
+};
 
 const catagoryTrigger = [
   { ctg: "beasiswa" },
   { ctg: "kegiatan" },
+  { ctg: "berita-utama" },
+  { ctg: "kabar-kampus" },
+  { ctg: "prestasi" },
+  { ctg: "artikel" },
   { ctg: "pengumuman" },
 ];
 
-export const UpdateNewsField = ({ slug, data }: TupdateNewsProps) => {
+export const NewsFormField = ({ mode, slug, data }: NewsFormFieldProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [lenghtOfJudul, setLenghtOfJudul] = useState(0);
   const [lenghtOfRingkasan, setLenghtOfRingkasan] = useState(0);
   const [lenghtOfDeskripsi, setLenghtOfDeskripsi] = useState(0);
 
   const router = useRouter();
+
+  const formId = mode === "update" ? "update-news-field" : "create-news-field";
 
   const form = useForm({
     validators: { onSubmit: createNewsSchema },
@@ -54,15 +68,23 @@ export const UpdateNewsField = ({ slug, data }: TupdateNewsProps) => {
     },
     onSubmit: async ({ value }: { value: TcreateNewsSchema }) => {
       setIsLoading(true);
-      const data = await updateNews(slug, value);
-      if (data.status === "error") {
-        toast.error("error", {
-          description: "Ada Masalah mohon hubungi admin ppi bartin",
-        });
-      } else if (data.status === "success") {
-        toast.success("Selamat Kamu Telah Berhasil Memperbarui Berita");
+
+      const response =
+        mode === "update" && slug
+          ? await updateNews(slug, value)
+          : await createNews(value);
+
+      if (response.status === "error") {
+        toast.error(response.msg);
+      } else {
+        toast.success(
+          mode === "update"
+            ? "Selamat Kamu Telah Berhasil Memperbarui Berita"
+            : "Berahail Membuat Berita",
+        );
         router.push("/home/berita");
       }
+
       setIsLoading(false);
     },
   });
@@ -70,7 +92,7 @@ export const UpdateNewsField = ({ slug, data }: TupdateNewsProps) => {
   return (
     <div className="space-y-3">
       <form
-        id="update-news-field"
+        id={formId}
         className="space-y-6 my-5"
         onSubmit={(e) => {
           e.preventDefault();
@@ -97,6 +119,7 @@ export const UpdateNewsField = ({ slug, data }: TupdateNewsProps) => {
             );
           }}
         </form.Field>
+
         <form.Field name="judul">
           {(field) => {
             const isInvalid =
@@ -135,7 +158,7 @@ export const UpdateNewsField = ({ slug, data }: TupdateNewsProps) => {
               <Field data-invalid={isInvalid} orientation={"responsive"}>
                 <FieldLabel>
                   <IconTags size={18} className="text-primary" />
-                  Catagory Berita
+                  Kategori Berita
                   <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Select
@@ -148,7 +171,7 @@ export const UpdateNewsField = ({ slug, data }: TupdateNewsProps) => {
                     data-invalid={isInvalid}
                     className="rounded-2xl"
                   >
-                    <SelectValue placeholder={"select catagory"} />
+                    <SelectValue placeholder={"Pilih Kategori"} />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl">
                     {catagoryTrigger.map(({ ctg }) => (
@@ -228,7 +251,7 @@ export const UpdateNewsField = ({ slug, data }: TupdateNewsProps) => {
       </form>
       <div className="flex flex-col-reverse items-center justify-center gap-2 mt-6">
         <Link
-          href={"/home/berita"}
+          href="/home/berita"
           className={buttonVariants({
             variant: "outline",
             className: "text-sm px-4 py-3 w-full",
@@ -239,7 +262,7 @@ export const UpdateNewsField = ({ slug, data }: TupdateNewsProps) => {
         <Button
           disabled={isLoading}
           className="text-sm px-4 py-3 w-full"
-          form="update-news-field"
+          form={formId}
           type="submit"
         >
           {isLoading ? (
