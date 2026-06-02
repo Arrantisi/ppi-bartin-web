@@ -18,6 +18,7 @@ import { DrawerOpsi } from "@/components/shared/content-actions-drawer";
 import parse from "html-react-parser";
 import DOMPurify from "isomorphic-dompurify";
 import { getTwoWords } from "@/utils/get-twowords";
+import linkifyHtml from "linkify-html";
 
 export const NewsDetailComponent = ({
   slug,
@@ -43,10 +44,33 @@ export const NewsDetailComponent = ({
     setTimeout(() => setIsOpenAlert(true), 300);
   };
 
-  const clean = DOMPurify.sanitize(data.desckripsi, {
-    FORBID_ATTR: ["style", "font"], // ← strip style attribute
+  // 1. DAFTARKAN HOOK DOMPURIFY DI LUAR KOMPONEN ATAU TEPAT SEBELUM SANITASI
+  // Kita cek typeof window agar tidak error saat Next.js melakukan Server-Side Rendering (SSR)
+  if (typeof window !== "undefined") {
+    DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+      if ("target" in node && node.tagName === "A") {
+        node.setAttribute("target", "_blank");
+        node.setAttribute("rel", "noopener noreferrer");
+      }
+    });
+  }
+
+  // 2. PROSES LINKIFY (Ubah teks URL mentah jadi tag <a>)
+  const htmlWithLinks = linkifyHtml(data.desckripsi || "", {
+    target: "_blank",
+    attributes: {
+      rel: "noopener noreferrer",
+    },
+    validate: {
+      url: (value) => /^(http|https):\/\//.test(value) || value.includes("."),
+    },
   });
 
+  // 3. PROSES SANITASI DENGAN DOMPURIFY
+  const clean = DOMPurify.sanitize(htmlWithLinks, {
+    FORBID_ATTR: ["style", "font"],
+    ADD_ATTR: ["target", "rel"],
+  });
   return (
     <>
       <div className="detail-page max-w-2xl mx-auto bg-background min-h-screen pb-10 pt-3">

@@ -1,19 +1,16 @@
 "use client";
 
+import { createAcara, updateAcara } from "@/server/actions/acara";
 import { TcreateEventSchema, createEventSchema } from "@/schemas";
-import { useForm } from "@tanstack/react-form";
-import { useRouter } from "next/navigation";
-import { Field, FieldLabel, FieldError, FieldDescription } from "../ui/field";
-import { Button, buttonVariants } from "../ui/button";
+import { TupdateEventProps } from "@/types";
 import { DatePickerField } from "../dates/date-picker-future";
-import { createAcara } from "@/server/actions/acara";
-import { Textarea } from "../ui/textarea";
-import props from "@/props/create-acara-props.json";
+import { Button, buttonVariants } from "../ui/button";
+import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { RichTextEditor } from "../ui/rich-text-editor";
 import { Spinner } from "../ui/spinner";
-import Link from "next/link";
-import { UploaderPhoto } from "@/features/uploads/upload-event-news";
+import { Textarea } from "../ui/textarea";
+import { useForm } from "@tanstack/react-form";
 import {
   IconCalendar,
   IconFileText,
@@ -22,40 +19,63 @@ import {
   IconUpload,
   IconUsers,
 } from "@tabler/icons-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
-import { RichTextEditor } from "../ui/rich-text-editor";
+import { UploaderPhoto } from "@/features/uploads/upload-event-news";
+import props from "@/props/create-acara-props.json";
 
-export const CreateEventField = () => {
+type EventFormMode = "create" | "update";
+
+type EventFormFieldProps = {
+  mode: EventFormMode;
+  slug?: string;
+  data?: TupdateEventProps["data"];
+};
+
+export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [lengthOfDeskripsi, setLengthOfDeskripsi] = useState(0);
   const [isDate, setIsDate] = useState<Date>(new Date());
 
   const today = new Date();
-
   const router = useRouter();
+
+  const formId = mode === "update" ? "update-acara-form" : "create-acara-form";
 
   const form = useForm({
     defaultValues: {
-      judul: "",
-      lokasi: "",
-      date: new Date(),
-      deskripsi: "",
-      maxCapacity: 0,
-      batasDaftar: new Date(),
-      fileKey: "",
+      judul: data?.judul || "",
+      lokasi: data?.lokasi || "",
+      date: data?.date || new Date(),
+      deskripsi: data?.deskripsi || "",
+      maxCapacity: data?.maxCapacity || 0,
+      batasDaftar: data?.batasDaftar || new Date(),
+      fileKey: data?.fileKey || "",
     },
     validators: { onSubmit: createEventSchema },
     onSubmit: async ({ value }: { value: TcreateEventSchema }) => {
       setIsLoading(true);
-      const matched = await createAcara(value);
+
+      const matched =
+        mode === "update" && slug
+          ? await updateAcara(slug, value)
+          : await createAcara(value);
+
       if (matched.status === "error") {
         toast.error("ada kesalahan", {
           description: matched.msg,
         });
-      } else if (matched.status === "success") {
-        toast.success("Berhasil Membuat Acara");
-        router.push(`/home/acara`);
+      } else {
+        toast.success(
+          mode === "update"
+            ? "Selamat Kamu Telah Berhasil Memperbarui Acara"
+            : "Berhasil Membuat Acara",
+        );
+        router.push("/home/acara");
       }
+
       setIsLoading(false);
     },
   });
@@ -65,7 +85,7 @@ export const CreateEventField = () => {
       <div>
         <form
           className="space-y-6"
-          id="create-acara-form"
+          id={formId}
           onSubmit={(e) => {
             e.preventDefault();
             form.handleSubmit();
@@ -92,6 +112,7 @@ export const CreateEventField = () => {
               );
             }}
           </form.Field>
+
           <form.Field name="judul">
             {(field) => {
               const isInvalid =
@@ -140,9 +161,7 @@ export const CreateEventField = () => {
                       value={field.state.value}
                     />
 
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </Field>
                 );
               }}
@@ -167,9 +186,7 @@ export const CreateEventField = () => {
                       value={field.state.value}
                     />
 
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </Field>
                 );
               }}
@@ -209,7 +226,7 @@ export const CreateEventField = () => {
                 <Field>
                   <FieldLabel>
                     <IconFileText size={18} className="text-primary" />
-                    Deskripsi <span className="text-destructive">*</span>
+                    Caption <span className="text-destructive">*</span>
                   </FieldLabel>
 
                   <RichTextEditor
@@ -217,6 +234,7 @@ export const CreateEventField = () => {
                       field.handleChange(e);
                       setLengthOfDeskripsi(e.length);
                     }}
+                    placeholder="Ketik isi pesan/caption/deskripsi acaramu disini..."
                     value={field.state.value}
                   />
 
@@ -228,6 +246,7 @@ export const CreateEventField = () => {
               );
             }}
           </form.Field>
+
           <div className="flex items-center justify-center gap-3">
             <form.Field name="maxCapacity">
               {(field) => {
@@ -247,14 +266,10 @@ export const CreateEventField = () => {
                       placeholder={props.textarea[5].placeholder}
                       className="focus-visible:ring-primary"
                       value={field.state.value}
-                      onChange={(e) =>
-                        field.handleChange(e.target.valueAsNumber)
-                      }
+                      onChange={(e) => field.handleChange(e.target.valueAsNumber)}
                     />
 
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </Field>
                 );
               }}
@@ -262,20 +277,21 @@ export const CreateEventField = () => {
           </div>
         </form>
       </div>
+
       <div className="flex flex-col-reverse items-center justify-center gap-2 mt-6">
         <Link
-          href={"/home/acara"}
+          href="/home/acara"
           className={buttonVariants({
-            variant: "outline",
+            variant: "destructive",
             className: "text-sm px-4 py-3 w-full",
           })}
         >
-          cancel
+          Batal
         </Link>
         <Button
           disabled={isLoading}
           className="text-sm px-4 py-3 w-full"
-          form="create-acara-form"
+          form={formId}
           type="submit"
         >
           {isLoading ? (
