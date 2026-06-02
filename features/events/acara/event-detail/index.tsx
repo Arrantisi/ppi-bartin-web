@@ -29,8 +29,41 @@ import {
 } from "@/components/animate-ui/components/base/dialog";
 import parse from "html-react-parser";
 import DOMPurify from "isomorphic-dompurify";
+import linkifyHtml from "linkify-html";
 import { toast } from "sonner";
 import { getTwoWords } from "@/utils/get-twowords";
+
+// REGISTER HOOK DOMPURIFY SEKALI SAJA (Next.js SSR Safe)
+if (typeof window !== "undefined") {
+  DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+    if ("target" in node && node.tagName === "A") {
+      node.setAttribute("target", "_blank");
+      node.setAttribute("rel", "noopener noreferrer");
+    }
+  });
+}
+
+/**
+ * REUSABLE UTILITY FUNCTION
+ * Menggabungkan fungsi Linkify + DOMPurify untuk mengeliminasi duplikasi kode.
+ */
+const processHtmlContent = (rawText: string, customAnchorClass?: string) => {
+  const htmlWithLinks = linkifyHtml(rawText, {
+    target: "_blank",
+    attributes: {
+      rel: "noopener noreferrer",
+      ...(customAnchorClass ? { class: customAnchorClass } : {}),
+    },
+    validate: {
+      url: (value) => /^(http|https):\/\//.test(value) || value.includes("."),
+    },
+  });
+
+  return DOMPurify.sanitize(htmlWithLinks, {
+    FORBID_ATTR: ["style", "font"],
+    ADD_ATTR: ["target", "rel", "class"],
+  });
+};
 
 export const EventDetail = ({
   slug,
@@ -71,47 +104,55 @@ export const EventDetail = ({
     });
   };
 
-  const renderLokasi = (lokasi: string, JoinStatus: boolean) => {
-    const URL_REGEX = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
-    const parts = lokasi.split(URL_REGEX);
-    return parts.map((part, index) => {
-      if (part.match(/^https?:\/\/|^www\./)) {
-        const href = part.startsWith("www.") ? `https://${part}` : part;
-        return !JoinStatus ? (
-          <a
-            key={index}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:underline font-semibold break-all"
-          >
-            {part}
-          </a>
-        ) : (
-          <span key={index} className="break-all">
-            <span className="text-text-disabled line-through font-medium">
-              {part}
-            </span>
-            <span className="text-text-disabled text-xs">
-              {" "}
-              (daftar terlebih dahulu untuk mengakses)
-            </span>
-          </span>
-        );
-      }
-      return <span key={index}>{part}</span>;
-    });
+  // 1. PROSES KONTEN DESKRIPSI UTAMA
+  const cleanDeskripsi = processHtmlContent(data.deskripsi || "");
+
+  // 2. PROSES LOGIKA SENSOR / EKSTRAKSI LOKASI META
+  const renderLokasiContent = () => {
+    const lokasiStr = data.lokasi || "";
+    if (!lokasiStr) return "-";
+
+    // 1. JIKA USER BELUM GABUNG, SENSOR LINK-NYA SAJA
+    if (isJoined) {
+      // Kita pakai regex standar bawaan HTML URL untuk split teks
+      const URL_REGEX = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+      const parts = lokasiStr.split(URL_REGEX);
+
+      return (
+        <span className="break-all">
+          {parts.map((part, index) => {
+            // Cukup cek apakah potongan kata ini berformat URL
+            const isUrl = part.startsWith("http://") || part.startsWith("https://") || part.startsWith("www.");
+            
+            if (isUrl) {
+              return (
+                <span key={index}>
+                  <span className="text-text-disabled line-through font-medium">
+                    {part}
+                  </span>
+                  <span className="text-text-disabled text-xs block mt-0.5 sm:inline sm:mt-0">
+                    {" "} (daftar terlebih dahulu untuk mengakses)
+                  </span>
+                </span>
+              );
+            }
+            return <span key={index}>{part}</span>;
+          })}
+        </span>
+      );
+    }
+
+    // 2. JIKA USER SUDAH GABUNG, PAKAI LINKIFY BERSIH
+    const cleanLokasi = processHtmlContent(lokasiStr, "text-primary hover:underline font-semibold break-all");
+    return parse(cleanLokasi);
   };
-
-  const clean = DOMPurify.sanitize(data.deskripsi, {
-    FORBID_ATTR: ["style", "font"], // ← strip style attribute
-  });
-
   return (
     <>
       <Dialog open={isOpenImageDialog} onOpenChange={setIsOpenImageDialog}>
         <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
           <div className="detail-page max-w-2xl mx-auto bg-background min-h-screen pb-10 pt-3">
+            
+            {/* Top Navigation */}
             <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
               <Button
                 variant="outline"
@@ -137,7 +178,6 @@ export const EventDetail = ({
                     >
                       <IconDots />
                     </Button>
-
                     <DrawerOpsi
                       userId={session?.user.id || ""}
                       creatorId={data.creator.id}
@@ -159,6 +199,7 @@ export const EventDetail = ({
             </div>
 
             <div className="px-5">
+              {/* Author & Meta */}
               <div className="flex items-center gap-3 mt-6">
                 <Avatar className="size-10">
                   <AvatarImage src={data.creator.image || ""} />
@@ -178,10 +219,12 @@ export const EventDetail = ({
                 </div>
               </div>
 
+              {/* Title */}
               <h1 className="title-satu mt-4 text-text-primary">
                 {data.judul}
               </h1>
 
+              {/* Hero Image */}
               <div className="relative w-full mt-5 overflow-hidden rounded-3xl border border-border shadow-sm">
                 <Image
                   src={imageUrl(data.fileKey)}
@@ -200,47 +243,55 @@ export const EventDetail = ({
                 </button>
               </div>
 
-              <article className="mt-8 mx-auto">
-                <div className="detail-page relative py-3 border-y border-border max-w-full body wrap-anywhere my-4 prose prose-sm dark:prose-invert prose-neutral prose-headings:font-semibold prose-p:text-[--text-secondary] prose-strong:text-[--text-primary] prose-a:text-[--accent] prose-img:rounded-[10px] max-w-none [&_p]:block [&_strong]:text-text-primary">
-                  {isJoined && (
-                    <button
-                      className="h-full bg-transparent absolute w-full"
-                      onClick={handleToastLink}
-                    />
-                  )}
+              {/* PROTECTED WRAPPER CONTAINER
+                Tombol transparan dipasang di container tingkat ini (relative)
+                sehingga menutupi baik area Article Deskripsi maupun area Detail Meta Lokasi di bawahnya sekaligus.
+              */}
+              <div className="relative mt-8">
+                {isJoined && (
+                  <button
+                    className="absolute inset-0 bg-transparent w-full h-full z-20 cursor-pointer"
+                    onClick={handleToastLink}
+                    aria-label="Informasi terkunci, silahkan daftar"
+                  />
+                )}
 
-                  {parse(clean)}
-                </div>
-              </article>
+                {/* Article Content */}
+                <article className="mx-auto">
+                  <div className="detail-page relative py-3 border-y border-border max-w-full body wrap-anywhere my-4 prose prose-sm dark:prose-invert prose-neutral prose-headings:font-semibold prose-p:text-[--text-secondary] prose-strong:text-[--text-primary] prose-a:text-[--accent] prose-img:rounded-[10px] max-w-none [&_p]:block [&_strong]:text-text-primary">
+                    {parse(cleanDeskripsi)}
+                  </div>
+                </article>
 
-              <div className="detail-meta mb-8">
-                <div className="detail-meta-row">
-                  <div className="rounded-full border border-border bg-background p-2 text-text-disabled">
-                    <IconCalendarWeek className="detail-meta-icon" size={16} />
+                {/* Detail Meta Info (Tanggal & Lokasi) */}
+                <div className="detail-meta mb-8">
+                  <div className="detail-meta-row">
+                    <div className="rounded-full border border-border bg-background p-2 text-text-disabled">
+                      <IconCalendarWeek className="detail-meta-icon" size={16} />
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="detail-meta-label">Tanggal</span>
+                      <span className="detail-meta-value">
+                        {formattedDate(data.date || new Date())}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="detail-meta-label">Tanggal</span>
-                    <span className="detail-meta-value">
-                      {formattedDate(data.date || new Date())}
-                    </span>
-                  </div>
-                </div>
 
-                <div className="detail-meta-row">
-                  <div className="rounded-full border border-border bg-background p-2 text-text-disabled">
-                    <IconMapPin className="detail-meta-icon" size={16} />
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="detail-meta-label">Lokasi</span>
-                    <span className="detail-meta-value">
-                      {!isReadOnly
-                        ? renderLokasi(data.lokasi || "", isJoined)
-                        : "Masuk untuk melihat lokasi"}
-                    </span>
+                  <div className="detail-meta-row">
+                    <div className="rounded-full border border-border bg-background p-2 text-text-disabled">
+                      <IconMapPin className="detail-meta-icon" size={16} />
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="detail-meta-label">Lokasi</span>
+                      <span className="detail-meta-value">
+                        {!isReadOnly ? renderLokasiContent() : "Masuk untuk melihat lokasi"}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
 
+              {/* Call to Action Section */}
               {!isReadOnly ? (
                 <div className="detail-cta-wrap text-text-primary">
                   <EventActionButton
@@ -261,7 +312,7 @@ export const EventDetail = ({
           </div>
         </Drawer>
 
-        {/* DialogPopup di luar Drawer */}
+        {/* DialogPopup Image Viewer */}
         <DialogPopup showCloseButton={false}>
           <Image
             src={imageUrl(data.fileKey)}
@@ -278,11 +329,7 @@ export const EventDetail = ({
         </DialogPopup>
       </Dialog>
 
-      {/*
-        AlertDEelete ditaruh di LUAR semua portal (Drawer & Dialog).
-        Komponen ini sekarang pakai modal sendiri (motion + fixed positioning)
-        sehingga tidak bergantung pada AlertDialog context sama sekali.
-      */}
+      {/* Delete Confirmation Alert */}
       {!isReadOnly && (
         <AlertDEelete
           type="acara"

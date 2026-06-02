@@ -226,7 +226,7 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                 <Field>
                   <FieldLabel>
                     <IconFileText size={18} className="text-primary" />
-                    Deskripsi <span className="text-destructive">*</span>
+                    Caption <span className="text-destructive">*</span>
                   </FieldLabel>
 
                   <RichTextEditor
@@ -234,6 +234,7 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                       field.handleChange(e);
                       setLengthOfDeskripsi(e.length);
                     }}
+                    placeholder="Ketik isi pesan/caption/deskripsi acaramu disini..."
                     value={field.state.value}
                   />
 
@@ -281,11 +282,11 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
         <Link
           href="/home/acara"
           className={buttonVariants({
-            variant: "outline",
+            variant: "destructive",
             className: "text-sm px-4 py-3 w-full",
           })}
         >
-          cancel
+          Batal
         </Link>
         <Button
           disabled={isLoading}

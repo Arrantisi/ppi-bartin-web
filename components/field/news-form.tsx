@@ -230,14 +230,18 @@ export const NewsFormField = ({ mode, slug, data }: NewsFormFieldProps) => {
               <Field>
                 <FieldLabel>
                   <IconFileText size={18} className="text-primary" />
-                  Deskripsi Berita
+                  Isi Berita
                   <span className="text-destructive">*</span>
                 </FieldLabel>
+                <FieldDescription>
+                  masukan isi beritamu disini
+                </FieldDescription>
                 <RichTextEditor
                   onChange={(e) => {
                     field.handleChange(e);
                     setLenghtOfDeskripsi(e.length);
                   }}
+                  placeholder="Tulis isi beritamu di sini..."
                   value={field.state.value}
                 />
                 <FieldDescription className="text-right">
