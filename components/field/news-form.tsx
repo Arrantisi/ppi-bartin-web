@@ -201,7 +201,7 @@ export const NewsFormField = ({ mode, slug, data }: NewsFormFieldProps) => {
                 <Textarea
                   name={field.name}
                   id={field.name}
-                  placeholder="Masukkan judul berita yang menarik"
+                  placeholder="Ringkasan berita anda dalam satu paragraf singkat"
                   value={field.state.value}
                   onChange={(e) => {
                     field.handleChange(e.target.value);
@@ -233,9 +233,6 @@ export const NewsFormField = ({ mode, slug, data }: NewsFormFieldProps) => {
                   Isi Berita
                   <span className="text-destructive">*</span>
                 </FieldLabel>
-                <FieldDescription>
-                  masukan isi beritamu disini
-                </FieldDescription>
                 <RichTextEditor
                   onChange={(e) => {
                     field.handleChange(e);
@@ -257,11 +254,11 @@ export const NewsFormField = ({ mode, slug, data }: NewsFormFieldProps) => {
         <Link
           href="/home/berita"
           className={buttonVariants({
-            variant: "outline",
+            variant: "destructive",
             className: "text-sm px-4 py-3 w-full",
           })}
         >
-          cancel
+          Batal
         </Link>
         <Button
           disabled={isLoading}

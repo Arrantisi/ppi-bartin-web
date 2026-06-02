@@ -79,7 +79,7 @@ export const RichTextEditor = ({
         class: cn(
           "input-editable min-h-40 w-full rounded-2xl border border-border px-3 py-3 text-sm outline-none transition-[color,box-shadow,background-color]",
           "focus-visible:ring-3 focus-visible:ring-accent/10",
-          "[&_.is-editor-empty:first-child::before]:pointer-events-none [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:h-0 [&_.is-editor-empty:first-child::before]:text-text-disabled/70 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]",
+          "[&_.is-editor-empty:first-child::before]:pointer-events-none [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:h-0 [&_.is-editor-empty:first-child::before]:text-text-primary/70 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]",
           "[&_h2]:text-lg [&_h2]:font-semibold [&_h3]:text-base [&_h3]:font-semibold",
           "[&_p]:min-h-[1.25rem] [&_p+p]:mt-2",
           "[&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-3 [&_blockquote]:text-text-secondary",
