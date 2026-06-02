@@ -48,8 +48,6 @@ const BottomNav = ({ show }: { show: boolean }) => {
         "rounded-full h-16 flex items-center justify-center",
         !show && "hidden",
       )}
-      // Di iOS melayang, kita tidak perlu memaksakan padding-bottom env() di dalam container utama 
-      // karena container-nya sendiri sudah kita angkat ke atas menggunakan 'bottom-4'
     >
       <div className="flex items-stretch justify-center px-1 gap-1 w-full h-full">
         {navItems.map((e) => {
@@ -60,7 +58,6 @@ const BottomNav = ({ show }: { show: boolean }) => {
               href={e.url}
               key={e.title}
               className={cn(
-                // Menggunakan text-inherit agar span di dalamnya otomatis ikut
                 "relative flex flex-1 flex-col justify-center items-center gap-1 py-1 text-text-disabled transition-colors duration-200 tap-highlight-transparent",
                 isActive && "text-text-primary",
               )}
@@ -69,7 +66,6 @@ const BottomNav = ({ show }: { show: boolean }) => {
                 {isActive && (
                   <motion.span
                     layoutId="nav-active-bg"
-                    // Menggunakan request sebelumnya: melengkung hanya di bawah (bottom side)
                     className="absolute inset-x-1 inset-y-1.5 rounded-full border border-border/40 bg-surface-hover/60"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -102,7 +98,11 @@ const DesktopSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   const params = usePathname();
 
   return (
-    <Sidebar collapsible="offcanvas" {...props} className="bg-sidebar border-r border-border">
+    <Sidebar
+      collapsible="offcanvas"
+      {...props}
+      className="bg-sidebar border-r border-border"
+    >
       <SidebarHeader className="my-5 border-b border-border">
         <Link href="/" className="flex items-center gap-3 mx-2">
           <Image
@@ -112,9 +112,7 @@ const DesktopSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
             width={200}
             className="size-7"
           />
-          <span className="title-tiga">
-            PPI Bartın
-          </span>
+          <span className="title-tiga">PPI Bartın</span>
         </Link>
       </SidebarHeader>
 
