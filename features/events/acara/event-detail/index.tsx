@@ -80,7 +80,7 @@ export const EventDetail = ({
 }) => {
   const { data: session } = authClient.useSession();
   const router = useRouter();
-  const isReadOnly = readOnly || !session;
+  const isPublicVisitor = readOnly || !session;
 
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const [isOpenImageDialog, setIsOpenImageDialog] = useState(false);
@@ -104,7 +104,7 @@ export const EventDetail = ({
 
   const handleToastLink = () => {
     toast.info("Info", {
-      description: isReadOnly
+      description: isPublicVisitor
         ? "Masuk ke portal untuk berinteraksi"
         : "Tekan dan tahan tombol daftar dibawah!",
     });
@@ -174,7 +174,7 @@ export const EventDetail = ({
                 Acara
               </h1>
 
-              {!isReadOnly ? (
+              {!isPublicVisitor ? (
                 <div className="flex gap-2">
                   <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
                     <Button
@@ -251,11 +251,12 @@ export const EventDetail = ({
               </div>
 
               {/* PARTICIPANT AVATARS ROW - Placed safely outside the protected click shield wrapper */}
-              <div className="mt-4 flex justify-start">
-                <Dialog>
-                  <DialogTrigger
-                    className={cn(
-                      "cursor-pointer rounded-2xl px-1 transition-all duration-300",
+              { !isPublicVisitor && (
+                <div className="mt-4 flex justify-start">
+                  <Dialog>
+                    <DialogTrigger
+                      className={cn(
+                        "cursor-pointer rounded-2xl px-1 transition-all duration-300",
                     )}
                   >
                     <AvatarParticipant
@@ -272,6 +273,7 @@ export const EventDetail = ({
                   />
                 </Dialog>
               </div>
+              )}
 
               {/* PROTECTED WRAPPER CONTAINER */}
               <div className="relative mt-4">
@@ -311,7 +313,7 @@ export const EventDetail = ({
                     <div className="flex flex-col gap-0.5">
                       <span className="detail-meta-label">Lokasi</span>
                       <span className="detail-meta-value">
-                        {!isReadOnly ? renderLokasiContent() : "Masuk untuk melihat lokasi"}
+                        {!isPublicVisitor ? renderLokasiContent() : "Masuk untuk melihat lokasi"}
                       </span>
                     </div>
                   </div>
@@ -319,7 +321,7 @@ export const EventDetail = ({
               </div>
 
               {/* Call to Action Section */}
-              {!isReadOnly ? (
+              {!isPublicVisitor ? (
                 <div className="detail-cta-wrap text-text-primary">
                   <EventActionButton
                     event={data}
@@ -357,7 +359,7 @@ export const EventDetail = ({
       </Dialog>
 
       {/* Delete Confirmation Alert */}
-      {!isReadOnly && (
+      {!isPublicVisitor && (
         <AlertDEelete
           type="acara"
           id={data.id}

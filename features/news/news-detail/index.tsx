@@ -32,7 +32,7 @@ export const NewsDetailComponent = ({
   const router = useRouter();
 
   const { data: session } = authClient.useSession();
-  const isReadOnly = readOnly || !session;
+  const isPublicVisitor = readOnly || !session;
 
   const { data, isLoading } = useNewsBySlug({ slug });
   if (isLoading) return <LoaderOneDemo />;
@@ -90,7 +90,7 @@ export const NewsDetailComponent = ({
           </h1>
 
           <div className="flex gap-2">
-            {!isReadOnly && (
+            {!isPublicVisitor && (
               <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
                 <Button
                   variant={"outline"}
@@ -160,7 +160,7 @@ export const NewsDetailComponent = ({
             </div>
           </article>
 
-          {!isReadOnly ? (
+          {!isPublicVisitor ? (
             <div></div>
           ) : (
             <div className="w-full rounded-2xl border border-dashed border-border bg-muted/20 px-4 py-3 text-sm text-muted-foreground">
@@ -173,7 +173,7 @@ export const NewsDetailComponent = ({
       </div>
 
       {/* AlertDEelete di luar semua portal — dikontrol via state */}
-      {!isReadOnly && (
+      {!isPublicVisitor && (
         <AlertDEelete
           href="/berita"
           type="berita"
