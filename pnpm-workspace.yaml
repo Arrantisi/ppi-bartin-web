@@ -1,3 +1,10 @@
+allowBuilds:
+  '@prisma/engines': true
+  msgpackr-extract: true
+  msw: true
+  prisma: true
+  sharp: set this to true or false
+  unrs-resolver: true
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
