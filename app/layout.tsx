@@ -22,8 +22,8 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-  title: "PPI Bartin App",
-  description: "Portal Mahasiswa Indonesia di Bartin",
+  title: "Portal PPI Bartin",
+  description: "Portal Resmi Perhimpunan Pelajar Indonesia di Bartin",
   icons: {
     icon: "/logo-ppi.png",
     apple: "/logo-ppi.png",
@@ -32,27 +32,27 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "PPI Bartin",
+    title: "Portal PPI Bartin",
   },
   openGraph: {
     type: "website",
     locale: "id_ID",
-    siteName: "PPI Bartin",
-    title: "PPI Bartin",
-    description: "Portal Mahasiswa Indonesia di Bartin",
+    siteName: "Portal PPI Bartin",
+    title: "Portal PPI Bartin",
+    description: "Portal Resmi Perhimpunan Pelajar Indonesia di Bartin",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "PPI Bartin",
+        alt: "Portal PPI Bartin",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "PPI Bartin",
-    description: "Portal Mahasiswa Indonesia di Bartin",
+    title: "Portal PPI Bartin",
+    description: "Portal Resmi Perhimpunan Pelajar Indonesia di Bartin",
     images: ["/og-image.jpg"],
   },
 };
