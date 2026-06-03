@@ -5,6 +5,7 @@ import {
   JENIS_KELAMIN_OPTIONS,
   STATUS_PELAJAR_OPTIONS,
 } from "./utils";
+import { startOfDay } from "date-fns/startOfDay";
 
 const usernameSchema = z
   .string()
@@ -162,7 +163,7 @@ export const createEventSchema = z
     }),
     fileKey: z.string().min(1, "Gambar/File wajib diunggah"),
   })
-  .refine((data) => data.batasDaftar <= data.date, {
+  .refine((data) => startOfDay(data.batasDaftar) <= data.date, {
     message: "Batas pendaftaran tidak boleh melewati tanggal acara",
     path: ["batasDaftar"], // Pesan error akan muncul di field batasDaftar
   });

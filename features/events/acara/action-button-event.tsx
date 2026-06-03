@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { TimerOff } from "lucide-react";
 import { IconUserOff } from "@tabler/icons-react";
+import { endOfDay } from "date-fns/endOfDay";
+import { isBefore } from "date-fns/isBefore";
 
 interface EventActionButtonProps {
   event: TgetAllEvent;
@@ -21,7 +23,7 @@ export const EventActionButton = ({
   );
   const isJoined = !!myParticipation;
   const capacityFull = event.participants.length >= event.maxCapacity;
-  const isExpired = new Date(event.date) <= new Date();
+  const isExpired = isBefore(endOfDay(event.batasDaftar), new Date());
 
   if (isJoined) {
     return (
