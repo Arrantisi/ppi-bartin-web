@@ -18,7 +18,7 @@ export const HeaderBand = ({ user }: Props) => {
           alt={user.name || ""}
           height={160}
           width={160}
-          className="size-20 rounded-full object-cover border-2 border-border"
+          className="size-20 rounded-full object-cover"
         />
         <span className="absolute bottom-0.5 right-0.5 size-3.5 bg-green-500 border-[2.5px] border-bg rounded-full" />
       </div>
@@ -36,21 +36,15 @@ export const HeaderBand = ({ user }: Props) => {
         </div>
 
         <div className="flex flex-wrap justify-center md:justify-start gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-[#FFD700] text-black text-xs font-medium px-3 py-1">
+          <span className="inline-flex items-center gap-1 rounded-full bg-surface-hover text-text-primary text-xs font-medium px-3 py-1">
             <IconBintangProfile />
             Anggota PPI Bartın
           </span>
-          <span className="inline-flex items-center rounded-full bg-success/10 text-success text-xs font-medium px-3 py-1">
+          <span className="inline-flex items-center rounded-full bg-surface-hover text-text-primary text-xs font-medium px-3 py-1">
             Aktif 2026
           </span>
           {user.statusPelajar && (
-            <span
-              className="inline-flex items-center rounded-full text-xs font-medium px-3 py-1"
-              style={{
-                backgroundColor: "var(--page-accent-subtle)",
-                color: "var(--page-accent)",
-              }}
-            >
+            <span className="inline-flex items-center rounded-full bg-surface-hover text-text-primary text-xs font-medium px-3 py-1">
               {user.statusPelajar}
             </span>
           )}
@@ -59,7 +53,7 @@ export const HeaderBand = ({ user }: Props) => {
 
       <Link
         href="/home/profile/update"
-        className="shrink-0 self-center md:self-start inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-hover transition-colors"
+        className="shrink-0 self-center md:self-start inline-flex items-center justify-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-hover transition-colors"
       >
         Edit profil
       </Link>

@@ -16,21 +16,17 @@
   --text-secondary: #6B6B68;
   --text-disabled: #AFAFAC;
   --text-inverse: #FFFFFF;
-  --accent: #6e0000;
-  --accent-hover: #4D0000;
-  --accent-subtle: rgba(110, 0, 0, 0.08);
-  --accent-secondary: #144d9f;
-  --accent-secondary-hover: #0F3D7A;
-  --accent-secondary-subtle: rgba(20, 77, 159, 0.08);
-  --accent-tertiary: #1A1A19;
+  --accent: #0F7DDB;
+  --accent-hover: #0A65B8;
+  --accent-subtle: rgba(15, 125, 219, 0.08);
   --success: #3D8C5E;
   --success-subtle: rgba(61, 140, 94, 0.08);
   --warning: #9E6C00;
   --warning-subtle: rgba(158, 108, 0, 0.08);
   --danger: #ff1100;
   --danger-subtle: rgba(196, 85, 77, 0.08);
-  --info: #6e0000;
-  --info-subtle: rgba(110, 0, 0, 0.08);
+  --info: #0F7DDB;
+  --info-subtle: rgba(15, 125, 219, 0.08);
 
   --background: var(--bg);
   --foreground: var(--text-secondary);
@@ -93,7 +89,7 @@
   --shadow-lg: none;
   --shadow-xl: none;
   --shadow-2xl: none;
-  --tracking-normal: 0.025em;
+  --tracking-normal: 0em;
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;
@@ -151,21 +147,17 @@
   --text-secondary: #8C8C8A;
   --text-disabled: #5A5A58;
   --text-inverse: #141414;
-  --accent: #D45545;
-  --accent-hover: #E06050;
-  --accent-subtle: rgba(212, 85, 69, 0.08);
-  --accent-secondary: #4A8FD4;
-  --accent-secondary-hover: #6AA0E0;
-  --accent-secondary-subtle: rgba(74, 143, 212, 0.08);
-  --accent-tertiary: #E8E8E6;
+  --accent: #3B9EFF;
+  --accent-hover: #5BADFF;
+  --accent-subtle: rgba(59, 158, 255, 0.08);
   --success: #4CAF78;
   --success-subtle: rgba(76, 175, 120, 0.08);
   --warning: #C89A2E;
   --warning-subtle: rgba(200, 154, 46, 0.08);
   --danger: #E06C67;
   --danger-subtle: rgba(224, 108, 103, 0.08);
-  --info: #D45545;
-  --info-subtle: rgba(212, 85, 69, 0.08);
+  --info: #3B9EFF;
+  --info-subtle: rgba(59, 158, 255, 0.08);
   --background: var(--bg);
   --foreground: var(--text-secondary);
   --card: var(--surface);
@@ -207,8 +199,7 @@
   --color-text-secondary: var(--text-secondary);
   --color-text-disabled: var(--text-disabled);
   --color-accent: var(--accent);
-  --color-accent-secondary: var(--accent-secondary);
-  --color-accent-tertiary: var(--accent-tertiary);
+
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
@@ -339,7 +330,7 @@
     margin: 0;
     font-family: var(--font-sans);
     font-size: 0.875rem;
-    font-weight: 450;
+    font-weight: 400;
     line-height: 1.5;
     color: var(--foreground);
     -webkit-font-smoothing: antialiased;
@@ -360,7 +351,7 @@
   :focus-visible {
     outline: 1px solid var(--accent);
     outline-offset: 0;
-    box-shadow: 0 0 0 3px rgb(59 158 255 / 0.1);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
   }
 
   ::selection {

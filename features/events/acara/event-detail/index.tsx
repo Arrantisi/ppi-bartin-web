@@ -164,7 +164,7 @@ export const EventDetail = ({
               <Button
                 variant="outline"
                 size="icon-xl"
-                className="rounded-full"
+                className="rounded-md"
                 onClick={() => router.back()}
               >
                 <IconArrowLeft size={20} />
@@ -232,7 +232,7 @@ export const EventDetail = ({
               </h1>
 
               {/* Hero Image */}
-              <div className="relative w-full mt-5 overflow-hidden rounded-3xl border border-border shadow-sm">
+              <div className="relative w-full mt-5 overflow-hidden rounded-lg border border-border">
                 <Image
                   src={imageUrl(data.fileKey)}
                   alt="Acara"

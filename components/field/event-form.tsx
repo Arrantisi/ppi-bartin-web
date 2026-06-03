@@ -282,7 +282,7 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
         <Link
           href="/home/acara"
           className={buttonVariants({
-            variant: "destructive",
+            variant: "outline",
             className: "text-sm px-4 py-3 w-full",
           })}
         >

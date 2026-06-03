@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { authClient } from "@/lib/auth/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
 import {
   IconUser,
   IconLock,
@@ -21,6 +22,7 @@ import {
   IconDownload,
 } from "@tabler/icons-react";
 import { usePWAInstallTourContext } from "@/hooks/pwa-install-tour-context";
+import { cn } from "@/lib/utils";
 
 type Props = {
   user: NonNullable<TgetProfileUser>;
@@ -32,27 +34,26 @@ const GroupHeader = ({ title }: { title: string }) => (
   </h3>
 );
 
+const iconWrap =
+  "flex items-center justify-center size-9 rounded-lg shrink-0 bg-surface-hover text-text-primary";
+
+const destructiveIconWrap =
+  "flex items-center justify-center size-9 rounded-lg shrink-0 bg-destructive-subtle text-destructive";
+
 const SettingRow = ({
   icon,
-  iconBg,
   label,
   subtitle,
   control,
 }: {
   icon: React.ReactNode;
-  iconBg: string;
   label: string;
   subtitle?: string;
   control: React.ReactNode;
 }) => (
   <div className="flex items-center justify-between py-3 px-4 border-b border-border last:border-b-0">
     <div className="flex items-center gap-3 min-w-0 flex-1">
-      <div
-        className="flex items-center justify-center size-9 rounded-lg shrink-0"
-        style={{ backgroundColor: iconBg }}
-      >
-        {icon}
-      </div>
+      <div className={iconWrap}>{icon}</div>
       <div className="min-w-0">
         <p className="text-sm text-text-primary font-medium">{label}</p>
         {subtitle && <p className="text-xs text-text-secondary">{subtitle}</p>}
@@ -64,28 +65,29 @@ const SettingRow = ({
 
 const ClickRow = ({
   icon,
-  iconBg,
   label,
   subtitle,
   value,
   href,
   onClick,
+  destructive,
 }: {
   icon: React.ReactNode;
-  iconBg: string;
   label: string;
   subtitle?: string;
   value?: string;
   href?: string;
   onClick?: () => void;
+  destructive?: boolean;
 }) => {
+  const isActionable = Boolean(href || onClick);
   const content = (
-    <div className="flex items-center justify-between py-3 px-4 border-b border-border last:border-b-0 cursor-pointer hover:bg-surface-hover transition-colors">
+    <div className={cn(
+      "flex items-center justify-between py-3 px-4 border-b border-border last:border-b-0 transition-colors",
+      isActionable && "cursor-pointer hover:bg-surface-hover"
+    )}>
       <div className="flex items-center gap-3 min-w-0 flex-1">
-        <div
-          className="flex items-center justify-center size-9 rounded-lg shrink-0"
-          style={{ backgroundColor: iconBg }}
-        >
+        <div className={destructive ? destructiveIconWrap : iconWrap}>
           {icon}
         </div>
         <div className="min-w-0">
@@ -97,7 +99,7 @@ const ClickRow = ({
       </div>
       <div className="flex items-center gap-2 shrink-0">
         {value && <span className="text-xs text-text-disabled">{value}</span>}
-        <IconChevronRight className="size-4 text-text-disabled" />
+        {isActionable && <IconChevronRight className="size-4 text-text-disabled" />}
       </div>
     </div>
   );
@@ -105,11 +107,14 @@ const ClickRow = ({
   if (href) {
     return <Link href={href}>{content}</Link>;
   }
-  return (
-    <button type="button" onClick={onClick} className="w-full text-left">
-      {content}
-    </button>
-  );
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className="w-full text-left">
+        {content}
+      </button>
+    );
+  }
+  return content;
 };
 
 export const TabPengaturan = ({ user }: Props) => {
@@ -131,21 +136,17 @@ export const TabPengaturan = ({ user }: Props) => {
         <GroupHeader title="Akun" />
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <ClickRow
-            icon={<IconUser className="size-4 text-white" />}
-            iconBg="rgba(212,69,52,0.85)"
+            icon={<IconUser />}
             label="Edit profil"
             href="/home/profile/update"
           />
           <ClickRow
-            icon={<IconLock className="size-4 text-white" />}
-            iconBg="rgba(59,130,246,0.85)"
+            icon={<IconLock />}
             label="Ganti password"
-            subtitle="Terakhir diubah 3 bulan lalu"
-            href="/home/profile/update"
+            onClick={() => toast.info("Segera hadir")}
           />
           <ClickRow
-            icon={<IconMail className="size-4 text-white" />}
-            iconBg="rgba(34,197,94,0.85)"
+            icon={<IconMail />}
             label="Email"
             value={user.email || ""}
           />
@@ -156,8 +157,7 @@ export const TabPengaturan = ({ user }: Props) => {
         <GroupHeader title="Preferensi" />
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <SettingRow
-            icon={<IconMoon className="size-4 text-white" />}
-            iconBg="rgba(212,69,52,0.85)"
+            icon={<IconMoon />}
             label="Mode gelap"
             control={
               <Switch
@@ -165,37 +165,37 @@ export const TabPengaturan = ({ user }: Props) => {
                 onCheckedChange={(checked) =>
                   setTheme(checked ? "dark" : "light")
                 }
-                className="data-checked:bg-(--page-accent) data-checked:border-(--page-accent)"
+                className="data-checked:bg-text-primary data-checked:border-text-primary"
               />
             }
           />
           <SettingRow
-            icon={<IconBell className="size-4 text-white" />}
-            iconBg="rgba(59,130,246,0.85)"
+            icon={<IconBell />}
             label="Notifikasi push"
+            subtitle="Segera hadir"
             control={
               <Switch
-                defaultChecked
-                className="data-checked:bg-(--page-accent) data-checked:border-(--page-accent)"
+                disabled
+                className="data-checked:bg-text-primary data-checked:border-text-primary"
               />
             }
           />
           <SettingRow
-            icon={<IconBellRinging className="size-4 text-white" />}
-            iconBg="rgba(34,197,94,0.85)"
+            icon={<IconBellRinging />}
             label="Notifikasi email"
+            subtitle="Segera hadir"
             control={
               <Switch
-                defaultChecked
-                className="data-checked:bg-(--page-accent) data-checked:border-(--page-accent)"
+                disabled
+                className="data-checked:bg-text-primary data-checked:border-text-primary"
               />
             }
           />
           <ClickRow
-            icon={<IconLanguage className="size-4 text-white" />}
-            iconBg="rgba(250,204,21,0.85)"
+            icon={<IconLanguage />}
             label="Bahasa"
             value="Indonesia"
+            onClick={() => toast.info("Segera hadir")}
           />
         </div>
       </div>
@@ -204,19 +204,18 @@ export const TabPengaturan = ({ user }: Props) => {
         <GroupHeader title="Lainnya" />
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <ClickRow
-            icon={<IconMessage className="size-4 text-white" />}
-            iconBg="rgba(107,114,128,0.85)"
+            icon={<IconMessage />}
             label="Umpan balik"
+            onClick={() => toast.info("Segera hadir")}
           />
           <ClickRow
-            icon={<IconInfoCircle className="size-4 text-white" />}
-            iconBg="rgba(107,114,128,0.85)"
+            icon={<IconInfoCircle />}
             label="Tentang aplikasi"
             value="Versi 1.2.0"
+            onClick={() => toast.info("Segera hadir")}
           />
           <ClickRow
-            icon={<IconDownload className="size-4 text-white" />}
-            iconBg="rgba(107,114,128,0.85)"
+            icon={<IconDownload />}
             label="Cara Install Aplikasi"
             onClick={replayTour}
           />
@@ -227,11 +226,11 @@ export const TabPengaturan = ({ user }: Props) => {
         <GroupHeader title="Sesi" />
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <ClickRow
-            icon={<IconLogout className="size-4 text-white" />}
-            iconBg="rgba(212,69,52,0.9)"
+            icon={<IconLogout />}
             label="Logout"
             subtitle="Keluar dari akun"
             onClick={handleLogout}
+            destructive
           />
         </div>
       </div>
