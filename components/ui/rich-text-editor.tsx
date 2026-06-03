@@ -9,18 +9,16 @@ import { EditorContent, useEditor, BubbleMenu } from "@tiptap/react";
 import BubbleMenuExtension from "@tiptap/extension-bubble-menu";
 
 // 1. IMPORT ICON DARI LUCIDE
-import { 
-  Bold, 
-  Italic, 
-  Heading2, 
-  Heading3, 
-  List, 
-  ListOrdered, 
-  Quote,
-  Strikethrough,
+import {
+  Bold,
+  Italic,
+  Heading2,
+  Heading3,
+  List,
+  ListOrdered,
   Undo2,
   Redo2,
-  Eraser
+  Eraser,
 } from "lucide-react";
 
 type RichTextEditorProps = {
@@ -53,7 +51,8 @@ export const RichTextEditor = ({
         HTMLAttributes: {
           target: "_blank",
           rel: "noopener noreferrer",
-          class: "text-accent underline hover:text-accent/80 transition-colors cursor-pointer",
+          class:
+            "text-accent underline hover:text-accent/80 transition-colors cursor-pointer",
         },
       }),
     ],
@@ -67,12 +66,12 @@ export const RichTextEditor = ({
       },
       handlePaste: (_view, event) => {
         return Array.from(event.clipboardData?.files || []).some((file) =>
-          file.type.startsWith("image/")
+          file.type.startsWith("image/"),
         );
       },
       handleDrop: (_view, event) => {
         return Array.from(event.dataTransfer?.files || []).some((file) =>
-          file.type.startsWith("image/")
+          file.type.startsWith("image/"),
         );
       },
       attributes: {
@@ -85,7 +84,7 @@ export const RichTextEditor = ({
           "[&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-3 [&_blockquote]:text-text-secondary",
           "[&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5",
           "[&_li]:my-1",
-          className
+          className,
         ),
       },
     },
@@ -102,7 +101,6 @@ export const RichTextEditor = ({
 
   return (
     <div className="space-y-2 relative">
-      
       {/* BUBBLE MENU DENGAN ICON */}
       <BubbleMenu editor={editor} tippyOptions={{ duration: 150 }}>
         <div className="flex items-center gap-0.5 rounded-xl border border-border bg-background p-1 shadow-md backdrop-blur-sm">
@@ -110,7 +108,9 @@ export const RichTextEditor = ({
             type="button"
             className={cn(
               "rounded-lg p-1.5 transition-colors",
-              editor.isActive("bold") ? "bg-primary/10 text-primary" : "text-text-secondary hover:bg-muted"
+              editor.isActive("bold")
+                ? "bg-primary/10 text-primary"
+                : "text-text-secondary hover:bg-muted",
             )}
             onClick={() => editor.chain().focus().toggleBold().run()}
           >
@@ -120,22 +120,28 @@ export const RichTextEditor = ({
             type="button"
             className={cn(
               "rounded-lg p-1.5 transition-colors",
-              editor.isActive("italic") ? "bg-primary/10 text-primary" : "text-text-secondary hover:bg-muted"
+              editor.isActive("italic")
+                ? "bg-primary/10 text-primary"
+                : "text-text-secondary hover:bg-muted",
             )}
             onClick={() => editor.chain().focus().toggleItalic().run()}
           >
             <Italic className="h-4 w-4" />
           </button>
-          
+
           <div className="h-4 w-[1px] bg-border mx-1" />
-          
+
           <button
             type="button"
             className={cn(
               "rounded-lg p-1.5 transition-colors",
-              editor.isActive("heading", { level: 2 }) ? "bg-primary/10 text-primary" : "text-text-secondary hover:bg-muted"
+              editor.isActive("heading", { level: 2 })
+                ? "bg-primary/10 text-primary"
+                : "text-text-secondary hover:bg-muted",
             )}
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 2 }).run()
+            }
           >
             <Heading2 className="h-4 w-4" />
           </button>
@@ -143,32 +149,40 @@ export const RichTextEditor = ({
             type="button"
             className={cn(
               "rounded-lg p-1.5 transition-colors",
-              editor.isActive("bold") ? "bg-primary/10 text-primary" : "text-text-secondary hover:bg-muted"
+              editor.isActive("bold")
+                ? "bg-primary/10 text-primary"
+                : "text-text-secondary hover:bg-muted",
             )}
-            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 3 }).run()
+            }
           >
             <Heading3 className="h-4 w-4" />
           </button>
 
           <div className="h-4 w-[1px] bg-border mx-1" />
-          
+
           <button
             type="button"
             className={cn(
               "rounded-lg p-1.5 transition-colors",
-              editor.isActive("bulletList") ? "bg-primary/10 text-primary" : "text-text-secondary hover:bg-muted"
+              editor.isActive("bulletList")
+                ? "bg-primary/10 text-primary"
+                : "text-text-secondary hover:bg-muted",
             )}
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             title="Bullet List"
           >
             <List className="h-4 w-4" />
           </button>
-          
+
           <button
             type="button"
             className={cn(
               "rounded-lg p-1.5 transition-colors",
-              editor.isActive("orderedList") ? "bg-primary/10 text-primary" : "text-text-secondary hover:bg-muted"
+              editor.isActive("orderedList")
+                ? "bg-primary/10 text-primary"
+                : "text-text-secondary hover:bg-muted",
             )}
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             title="Ordered List"
@@ -177,47 +191,52 @@ export const RichTextEditor = ({
           </button>
         </div>
       </BubbleMenu>
-      
+
       {/* AREA EDITOR */}
       <EditorContent editor={editor} />
 
       {/* TOOLBAR UTAMA STICKY DENGAN ICON */}
-      <div 
+      <div
         className={cn(
           // 1. GAYA DASAR & SCROLL (Punya lo, tetep murni sticky)
           "sticky z-10 flex flex-nowrap items-center justify-center gap-1 rounded-2xl border border-border p-1.5 overflow-x-auto scrollbar-none snap-x",
           "bg-background/95 backdrop-blur-sm shadow-sm",
-          
+
           // 2. DI LAYAR MOBILE (HP)
           // w-auto + mx-4 bikin dia otomatis nyesuaiin lebar layar HP tapi ga bakal jebol ke pinggir
           "w-auto mx-4 bottom-[var(--toolbar-bottom)]",
-          
+
           // 3. DI LAYAR DESKTOP (md ke atas)
           // Balik ke ukuran pas sesuai tombol dan posisinya di tengah form
-          "md:w-max md:mx-auto md:bottom-2"
+          "md:w-max md:mx-auto md:bottom-2",
         )}
-        style={{ 
-          "--toolbar-bottom": "calc(4.5rem + env(safe-area-inset-bottom))" 
-        } as React.CSSProperties}
+        style={
+          {
+            "--toolbar-bottom": "calc(4.5rem + env(safe-area-inset-bottom))",
+          } as React.CSSProperties
+        }
       >
-          
         <button
           type="button"
           className={cn(
             "rounded-xl border p-2 transition-colors",
-            editor.isActive("bold") ? "border-primary bg-primary/10 text-primary" : "border-border text-text-secondary hover:bg-muted"
+            editor.isActive("bold")
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-text-secondary hover:bg-muted",
           )}
           onClick={() => editor.chain().focus().toggleBold().run()}
           title="Bold"
         >
           <Bold className="h-4 w-4" />
         </button>
-        
+
         <button
           type="button"
           className={cn(
             "rounded-xl border p-2 transition-colors",
-            editor.isActive("italic") ? "border-primary bg-primary/10 text-primary" : "border-border text-text-secondary hover:bg-muted"
+            editor.isActive("italic")
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-text-secondary hover:bg-muted",
           )}
           onClick={() => editor.chain().focus().toggleItalic().run()}
           title="Italic"
@@ -231,21 +250,29 @@ export const RichTextEditor = ({
           type="button"
           className={cn(
             "rounded-xl border p-2 transition-colors",
-            editor.isActive("heading", { level: 2 }) ? "border-primary bg-primary/10 text-primary" : "border-border text-text-secondary hover:bg-muted"
+            editor.isActive("heading", { level: 2 })
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-text-secondary hover:bg-muted",
           )}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
           title="Heading 2"
         >
           <Heading2 className="h-4 w-4" />
         </button>
-        
+
         <button
           type="button"
           className={cn(
             "rounded-xl border p-2 transition-colors",
-            editor.isActive("heading", { level: 3 }) ? "border-primary bg-primary/10 text-primary" : "border-border text-text-secondary hover:bg-muted"
+            editor.isActive("heading", { level: 3 })
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-text-secondary hover:bg-muted",
           )}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 3 }).run()
+          }
           title="Heading 3"
         >
           <Heading3 className="h-4 w-4" />
@@ -257,19 +284,23 @@ export const RichTextEditor = ({
           type="button"
           className={cn(
             "rounded-xl border p-2 transition-colors",
-            editor.isActive("bulletList") ? "border-primary bg-primary/10 text-primary" : "border-border text-text-secondary hover:bg-muted"
+            editor.isActive("bulletList")
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-text-secondary hover:bg-muted",
           )}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           title="Bullet List"
         >
           <List className="h-4 w-4" />
         </button>
-        
+
         <button
           type="button"
           className={cn(
             "rounded-xl border p-2 transition-colors",
-            editor.isActive("orderedList") ? "border-primary bg-primary/10 text-primary" : "border-border text-text-secondary hover:bg-muted"
+            editor.isActive("orderedList")
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-text-secondary hover:bg-muted",
           )}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           title="Ordered List"
@@ -283,7 +314,9 @@ export const RichTextEditor = ({
           type="button"
           className={cn(
             "rounded-xl border p-2 transition-colors",
-            editor.isActive("undo") ? "border-primary bg-primary/10 text-primary" : "border-border text-text-secondary hover:bg-muted"
+            editor.isActive("undo")
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-text-secondary hover:bg-muted",
           )}
           onClick={() => editor.chain().focus().undo().run()}
           title="Undo"
@@ -295,7 +328,9 @@ export const RichTextEditor = ({
           type="button"
           className={cn(
             "rounded-xl border p-2 transition-colors",
-            editor.isActive("redo") ? "border-primary bg-primary/10 text-primary" : "border-border text-text-secondary hover:bg-muted"
+            editor.isActive("redo")
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-text-secondary hover:bg-muted",
           )}
           onClick={() => editor.chain().focus().redo().run()}
           title="Redo"
@@ -307,14 +342,15 @@ export const RichTextEditor = ({
           type="button"
           className={cn(
             "rounded-xl border p-2 transition-colors",
-            editor.isActive("clearNodes") ? "border-primary bg-primary/10 text-primary" : "border-border text-text-secondary hover:bg-muted"
+            editor.isActive("clearNodes")
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-text-secondary hover:bg-muted",
           )}
           onClick={() => editor.chain().focus().clearNodes().run()}
           title="Clear Nodes"
         >
           <Eraser className="h-4 w-4" />
         </button>
-
       </div>
     </div>
   );

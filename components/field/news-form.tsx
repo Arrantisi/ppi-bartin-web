@@ -169,7 +169,7 @@ export const NewsFormField = ({ mode, slug, data }: NewsFormFieldProps) => {
                   <SelectTrigger
                     id="select-catagory-news"
                     data-invalid={isInvalid}
-                    className="rounded-2xl"
+                    className="rounded-md"
                   >
                     <SelectValue placeholder={"Pilih Kategori"} />
                   </SelectTrigger>
@@ -254,7 +254,7 @@ export const NewsFormField = ({ mode, slug, data }: NewsFormFieldProps) => {
         <Link
           href="/home/berita"
           className={buttonVariants({
-            variant: "destructive",
+            variant: "outline",
             className: "text-sm px-4 py-3 w-full",
           })}
         >

@@ -40,11 +40,6 @@ export const TabKegiatan = ({ user }: Props) => {
                 idx < sorted.length - 1 ? "border-b border-border" : ""
               }`}
             >
-              <div
-                className={`size-2 rounded-full shrink-0 ${
-                  isPast ? "bg-success" : "bg-warning"
-                }`}
-              />
               <div className="min-w-0 flex-1">
                 <p className="text-sm text-text-primary font-medium truncate">
                   {p.event.judul}
@@ -58,13 +53,7 @@ export const TabKegiatan = ({ user }: Props) => {
                   })}
                 </p>
               </div>
-              <span
-                className={`shrink-0 text-xs font-medium px-3 py-1 rounded-full ${
-                  isPast
-                    ? "bg-success/10 text-success"
-                    : "bg-warning/10 text-warning"
-                }`}
-              >
+              <span className="shrink-0 text-xs text-text-disabled mono">
                 {isPast ? "Selesai" : "Akan Datang"}
               </span>
             </div>

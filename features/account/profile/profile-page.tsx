@@ -38,18 +38,8 @@ const ProfilePage = () => {
 
   return (
     <HomeLayoutComponent>
-      <div
-        style={
-          {
-            "--page-accent": "#D44534",
-            "--page-accent-subtle": "rgba(212, 69, 52, 0.08)",
-            "--page-accent-hover": "#BD3524",
-          } as React.CSSProperties
-        }
-      >
         <HeaderBand user={user} />
         <TabsSection user={user} />
-      </div>
     </HomeLayoutComponent>
   );
 };

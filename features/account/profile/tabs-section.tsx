@@ -19,19 +19,19 @@ export const TabsSection = ({ user }: Props) => {
       >
         <TabsTrigger
           value="profil"
-          className="flex-1 max-w-32 rounded-none data-[variant=line]:data-active:after:opacity-100 after:bg-[var(--page-accent)]"
+          className="flex-1 max-w-32 rounded-none data-[variant=line]:data-active:after:opacity-100 after:bg-text-primary"
         >
           Profil
         </TabsTrigger>
         <TabsTrigger
           value="kegiatan"
-          className="flex-1 max-w-32 rounded-none data-[variant=line]:data-active:after:opacity-100 after:bg-[var(--page-accent)]"
+          className="flex-1 max-w-32 rounded-none data-[variant=line]:data-active:after:opacity-100 after:bg-text-primary"
         >
           Kegiatan
         </TabsTrigger>
         <TabsTrigger
           value="pengaturan"
-          className="flex-1 max-w-32 rounded-none data-[variant=line]:data-active:after:opacity-100 after:bg-[var(--page-accent)]"
+          className="flex-1 max-w-32 rounded-none data-[variant=line]:data-active:after:opacity-100 after:bg-text-primary"
         >
           Pengaturan
         </TabsTrigger>

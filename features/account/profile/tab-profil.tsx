@@ -32,13 +32,12 @@ const InfoRow = ({
   label: string;
   value: string | null | undefined;
 }) => (
-  <div className="flex items-center gap-3 py-2.5 border-b border-border last:border-b-0">
-    <div
-      className="flex items-center justify-center size-8 rounded-lg shrink-0"
-      style={{ backgroundColor: "var(--page-accent-subtle)" }}
-    >
-      <div className="text-(--page-accent) [&_svg]:size-4">{icon}</div>
-    </div>
+    <div className="flex items-center gap-3 py-2.5 border-b border-border last:border-b-0">
+     <div
+        className="flex items-center justify-center size-8 rounded-lg shrink-0 bg-surface-hover"
+      >
+        <div className="text-text-primary [&_svg]:size-4">{icon}</div>
+      </div>
     <div className="min-w-0 flex-1">
       <p className="text-xs text-text-disabled uppercase tracking-wider">
         {label}
@@ -74,10 +73,9 @@ const StatCard = ({
 }) => (
   <div className="rounded-xl border border-border bg-card p-4 flex flex-col items-center gap-1.5 text-center">
     <div
-      className="flex items-center justify-center size-9 rounded-lg"
-      style={{ backgroundColor: "var(--page-accent-subtle)" }}
+      className="flex items-center justify-center size-9 rounded-lg bg-surface-hover"
     >
-      <div className="text-(--page-accent) [&_svg]:size-4.5">{icon}</div>
+      <div className="text-text-primary [&_svg]:size-4.5">{icon}</div>
     </div>
     <span className="text-xl font-bold text-text-primary">{value}</span>
     <span className="text-xs text-text-secondary">{label}</span>
@@ -159,11 +157,6 @@ export const TabProfil = ({ user }: Props) => {
                     key={p.id}
                     className="flex items-center gap-3 py-2.5 border-b border-border last:border-b-0"
                   >
-                    <span
-                      className={`size-2 rounded-full shrink-0 ${
-                        isPast ? "bg-success" : "bg-warning"
-                      }`}
-                    />
                     <div className="min-w-0 flex-1">
                       <p className="text-sm text-text-primary font-medium truncate">
                         {p.event.judul}
@@ -176,13 +169,7 @@ export const TabProfil = ({ user }: Props) => {
                         })}
                       </p>
                     </div>
-                    <span
-                      className={`shrink-0 text-xs font-medium px-2.5 py-0.5 rounded-full ${
-                        isPast
-                          ? "bg-success/10 text-success"
-                          : "bg-warning/10 text-warning"
-                      }`}
-                    >
+                    <span className="shrink-0 text-xs text-text-disabled mono">
                       {isPast ? "Selesai" : "Akan Datang"}
                     </span>
                   </div>
@@ -200,11 +187,8 @@ export const TabProfil = ({ user }: Props) => {
           <div className="space-y-0">
             <div className="flex items-center justify-between py-2.5 border-b border-border">
               <div className="flex items-center gap-3">
-                <div
-                  className="flex items-center justify-center size-8 rounded-lg"
-                  style={{ backgroundColor: "var(--page-accent-subtle)" }}
-                >
-                  <IconMoon className="size-4 text-(--page-accent)" />
+                <div className="flex items-center justify-center size-8 rounded-lg bg-surface-hover">
+                  <IconMoon className="size-4 text-text-primary" />
                 </div>
                 <span className="text-sm text-text-primary">Mode gelap</span>
               </div>
@@ -213,22 +197,19 @@ export const TabProfil = ({ user }: Props) => {
                 onCheckedChange={(checked) =>
                   setTheme(checked ? "dark" : "light")
                 }
-                className="data-checked:bg-(--page-accent) data-checked:border-(--page-accent)"
+                className="data-checked:bg-text-primary data-checked:border-text-primary"
               />
             </div>
             <div className="flex items-center justify-between py-2.5 border-b border-border">
               <div className="flex items-center gap-3">
-                <div
-                  className="flex items-center justify-center size-8 rounded-lg"
-                  style={{ backgroundColor: "var(--page-accent-subtle)" }}
-                >
-                  <IconBell className="size-4 text-(--page-accent)" />
+                <div className="flex items-center justify-center size-8 rounded-lg bg-surface-hover">
+                  <IconBell className="size-4 text-text-primary" />
                 </div>
                 <span className="text-sm text-text-primary">Notifikasi</span>
               </div>
               <Switch
                 defaultChecked
-                className="data-checked:bg-(--page-accent) data-checked:border-(--page-accent)"
+                className="data-checked:bg-text-primary data-checked:border-text-primary"
               />
             </div>
             <Link
@@ -236,11 +217,8 @@ export const TabProfil = ({ user }: Props) => {
               className="flex items-center justify-between py-2.5 group cursor-pointer"
             >
               <div className="flex items-center gap-3">
-                <div
-                  className="flex items-center justify-center size-8 rounded-lg"
-                  style={{ backgroundColor: "var(--page-accent-subtle)" }}
-                >
-                  <IconLock className="size-4 text-(--page-accent)" />
+                <div className="flex items-center justify-center size-8 rounded-lg bg-surface-hover">
+                  <IconLock className="size-4 text-text-primary" />
                 </div>
                 <span className="text-sm text-text-primary group-hover:text-text-primary transition-colors">
                   Ganti password
