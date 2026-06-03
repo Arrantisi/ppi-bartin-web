@@ -50,7 +50,7 @@ const BeritaCatagory = () => {
             <IconSearch className="size-5" />
           </InputGroupAddon>
         </InputGroup> */}
-        <div className="h-[42px] w-full bg-card rounded-full border border-border" />
+        <div className="h-10.5 w-full bg-card rounded-full border border-border" />
 
         <ButtonCreate catagory="berita" />
       </div>
