@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { deleteUploadedFile } from "./delete-upload";
 
 interface IServerPrompt {
   status: "error" | "success";
@@ -15,11 +16,34 @@ export const deleteAccount = async (): Promise<IServerPrompt> => {
   if (!session) throw new Error("Unauthorized");
 
   try {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { image: true },
+    });
+
+    const newsFiles = await prisma.news.findMany({
+      where: { userId: session.user.id },
+      select: { fileKey: true },
+    });
+
+    const eventFiles = await prisma.events.findMany({
+      where: { userId: session.user.id },
+      select: { fileKey: true },
+    });
+
     await prisma.user.delete({
       where: {
         id: session.user.id,
       },
     });
+
+    const fileKeys = [
+      user?.image,
+      ...newsFiles.map((n) => n.fileKey),
+      ...eventFiles.map((e) => e.fileKey),
+    ].filter(Boolean) as string[];
+
+    await Promise.all(fileKeys.map((key) => deleteUploadedFile(key)));
 
     return {
       status: "success",

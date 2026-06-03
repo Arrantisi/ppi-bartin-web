@@ -7,14 +7,28 @@ import { createSlug } from "@/utils/slug";
 import { revalidatePath } from "next/cache";
 import { studentAccount } from "./account";
 import { sendPushToAll } from "@/lib/push/server";
+import { deleteUploadedFile } from "./delete-upload";
 
 export const deleteNews = async (newsId: string): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
 
   try {
+    const news = await prisma.news.findUnique({
+      where: { id: newsId, userId: user.id },
+      select: { fileKey: true },
+    });
+
+    if (!news) {
+      return { status: "error", msg: "Berita tidak ditemukan" };
+    }
+
     await prisma.news.delete({
       where: { id: newsId, userId: user.id },
     });
+
+    if (news.fileKey) {
+      await deleteUploadedFile(news.fileKey);
+    }
 
     return {
       status: "success",
@@ -39,7 +53,7 @@ export const updateNews = async (
     const updatedSlug = createSlug(judul);
     const ownedNews = await prisma.news.findFirst({
       where: { slug, userId: user.id },
-      select: { id: true },
+      select: { id: true, fileKey: true },
     });
     if (!ownedNews) {
       return {
@@ -59,6 +73,10 @@ export const updateNews = async (
         slug: updatedSlug,
       },
     });
+
+    if (ownedNews.fileKey && ownedNews.fileKey !== fileKey) {
+      await deleteUploadedFile(ownedNews.fileKey);
+    }
 
     return {
       status: "success",

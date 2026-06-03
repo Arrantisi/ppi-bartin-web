@@ -8,7 +8,8 @@ import { Progress } from "@/components/ui/progress";
 import { useConstruct } from "@/hooks/use-construct-url";
 import { useUploadThing } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
-import { IconCloudUpload } from "@tabler/icons-react";
+import { deleteUploadedFile } from "@/server/actions/delete-upload";
+import { IconCloudUpload, IconTrash } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useCallback } from "react";
@@ -27,6 +28,7 @@ export const UploaderPhoto = ({
 
   const [preview, setPreview] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+  const [deleting, setDeleting] = useState(false);
 
   const { startUpload, isUploading } = useUploadThing("onOploadFile", {
     onClientUploadComplete: async (res) => {
@@ -54,6 +56,21 @@ export const UploaderPhoto = ({
     },
     [startUpload],
   );
+
+  const handleDelete = async () => {
+    if (deleting) return;
+    setDeleting(true);
+    try {
+      await deleteUploadedFile(value);
+      onChange?.("");
+      setPreview(null);
+      toast.info("Foto telah dihapus");
+    } catch {
+      toast.error("Gagal menghapus foto");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const rejectedFiles = (fileRejections: FileRejection[]) => {
     fileRejections.forEach(({ file, errors }) => {
@@ -112,9 +129,16 @@ export const UploaderPhoto = ({
                   className="object-cover"
                 />
                 {/* Overlay Tombol Ganti Foto jika sudah selesai upload */}
-                <div className=" absolute flex w-full left-0 justify-end pr-2">
-                  <Button className="rounded-xl" variant={"destructive"}>
-                    Hapus
+                <div className=" absolute flex w-full left-0 justify-end p-2 gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:text-destructive bg-surface/80 backdrop-blur-sm hover:bg-surface-hover/80"
+                    onClick={handleDelete}
+                    disabled={deleting}
+                  >
+                    <IconTrash className="size-4" />
+                    {deleting ? "Menghapus..." : "Hapus"}
                   </Button>
                 </div>
               </div>

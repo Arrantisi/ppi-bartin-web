@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
 import { sendPushToAll } from "@/lib/push/server";
+import { deleteUploadedFile } from "./delete-upload";
 
 export const cancelParticipant = async (
   eventId: string,
@@ -128,7 +129,7 @@ export const updateAcara = async (
     const updattedSlug = createSlug(judul);
     const ownedEvent = await prisma.events.findFirst({
       where: { slug, userId: user.id },
-      select: { id: true },
+      select: { id: true, fileKey: true },
     });
     if (!ownedEvent) {
       return {
@@ -151,6 +152,10 @@ export const updateAcara = async (
       },
     });
 
+    if (ownedEvent.fileKey && ownedEvent.fileKey !== fileKey) {
+      await deleteUploadedFile(ownedEvent.fileKey);
+    }
+
     revalidatePath("/home/acara");
     return {
       status: "success",
@@ -169,9 +174,22 @@ export const deleteEvent = async (eventId: string): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
 
   try {
+    const event = await prisma.events.findUnique({
+      where: { id: eventId, userId: user.id },
+      select: { fileKey: true },
+    });
+
+    if (!event) {
+      return { status: "error", msg: "Acara tidak ditemukan" };
+    }
+
     await prisma.events.delete({
       where: { id: eventId, userId: user.id },
     });
+
+    if (event.fileKey) {
+      await deleteUploadedFile(event.fileKey);
+    }
 
     return {
       status: "success",
