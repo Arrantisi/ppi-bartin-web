@@ -17,6 +17,11 @@ export const FrameNews = ({
       className="flex w-full items-start gap-2.5 rounded-[10px] border border-border bg-surface p-3 text-left shadow-none"
     >
       <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
+        {news.environment && news.environment !== "production" && (
+          <div className="absolute left-1 top-1 z-10 rounded-[4px] bg-[rgba(0,0,0,.55)] px-1.5 py-[1px] font-mono text-[0.625rem] font-medium leading-[1.4] text-white backdrop-blur-[4px]">
+            {news.environment === "local" ? "LOCAL" : "PREVIEW"}
+          </div>
+        )}
         <Image
           src={imageUrl(news.fileKey)}
           className="object-cover"

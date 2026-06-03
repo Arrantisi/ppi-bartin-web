@@ -1,16 +1,29 @@
 "use server";
 
 import { prisma } from "@/lib/db";
+import { userSession } from "./users";
+
+const getEnvironmentFilter = async (): Promise<string[]> => {
+  const session = await userSession();
+  const role = (session?.user as { role?: string } | undefined)?.role;
+
+  if (role === "ADMIN") return ["local", "preview", "production"];
+  if (role === "PENGURUS") return ["preview", "production"];
+  return ["production"];
+};
 
 export const getNewsBySlug = async (slug: string) => {
-  return await prisma.news.findUnique({
-    where: { slug },
+  const allowed = await getEnvironmentFilter();
+
+  return await prisma.news.findFirst({
+    where: { slug, environment: { in: allowed } },
     select: {
       id: true,
       slug: true,
       catagory: true,
       desckripsi: true,
       fileKey: true,
+      environment: true,
       createdAt: true,
       ringkasan: true,
       creator: {
@@ -29,7 +42,10 @@ export const getNewsBySlug = async (slug: string) => {
 export type TgetNewsBySlug = Awaited<ReturnType<typeof getNewsBySlug>>;
 
 export const getNews = async () => {
+  const allowed = await getEnvironmentFilter();
+
   return await prisma.news.findMany({
+    where: { environment: { in: allowed } },
     orderBy: { createdAt: "desc" },
     select: {
       slug: true,
@@ -37,6 +53,7 @@ export const getNews = async () => {
       desckripsi: true,
       fileKey: true,
       createdAt: true,
+      environment: true,
       creator: {
         select: {
           image: true,
