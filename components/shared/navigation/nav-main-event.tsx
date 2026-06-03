@@ -42,13 +42,16 @@ const BottomNav = ({ show }: { show: boolean }) => {
   return (
     <div
       className={cn(
-        "fixed w-full bottom-0 left-0 flex items-center justify-center z-50 bg-surface border-t border-border h-16",
+        // LAYOUT & POSITIONING: Melayang (floating) dengan margin samping, bukan w-full penuh
+        "fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm z-50",
+        "bg-surface/70 backdrop-blur-lg border border-white/10 shadow-lg shadow-black/5",
+        "rounded-full h-16 flex items-center justify-center",
         !show && "hidden",
       )}
-      style={{ paddingBottom: "env(safe-area-inset-bottom)", height: "calc(4rem + env(safe-area-inset-bottom))" }}
+      // Di iOS melayang, kita tidak perlu memaksakan padding-bottom env() di dalam container utama 
+      // karena container-nya sendiri sudah kita angkat ke atas menggunakan 'bottom-4'
     >
-
-      <div className="max-w-xl md:max-w-2xl xl:max-w-3xl flex items-stretch justify-between px-4 gap-2 w-full">
+      <div className="flex items-stretch justify-center px-1 gap-1 w-full h-full">
         {navItems.map((e) => {
           const isActive = e.url === params;
 
@@ -57,32 +60,36 @@ const BottomNav = ({ show }: { show: boolean }) => {
               href={e.url}
               key={e.title}
               className={cn(
-                "relative flex flex-1 flex-col justify-center items-center gap-1 py-2 border-t-2 border-transparent text-text-disabled transition-colors duration-100",
-                isActive && "border-accent text-text-primary",
+                // Menggunakan text-inherit agar span di dalamnya otomatis ikut
+                "relative flex flex-1 flex-col justify-center items-center gap-1 py-1 text-text-disabled transition-colors duration-200 tap-highlight-transparent",
+                isActive && "text-text-primary",
               )}
             >
               <AnimatePresence>
                 {isActive && (
                   <motion.span
                     layoutId="nav-active-bg"
-                    className="absolute inset-0 rounded-2xl border border-border bg-surface-active"
+                    // Menggunakan request sebelumnya: melengkung hanya di bawah (bottom side)
+                    className="absolute inset-x-1 inset-y-1.5 rounded-full border border-border/40 bg-surface-hover/60"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.1 }}
+                    transition={{ duration: 0.15 }}
                   />
                 )}
               </AnimatePresence>
 
               <motion.div
-                animate={isActive ? { y: -2, scale: 1.15 } : { y: 0, scale: 1 }}
-                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                animate={isActive ? { y: -1, scale: 1.1 } : { y: 0, scale: 1 }}
+                transition={{ type: "spring", stiffness: 350, damping: 25 }}
                 className="relative z-10"
               >
-                <e.icon className="size-5" />
+                <e.icon className="size-5.5 stroke-[1.75]" />
               </motion.div>
 
-              <motion.span className="relative z-10 text-xs">{e.title}</motion.span>
+              <motion.span className="relative z-10 text-[10px] font-medium tracking-wide">
+                {e.title}
+              </motion.span>
             </Link>
           );
         })}
@@ -97,7 +104,7 @@ const DesktopSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   return (
     <Sidebar collapsible="offcanvas" {...props} className="bg-sidebar border-r border-border">
       <SidebarHeader className="my-5 border-b border-border">
-        <Link href="/home" className="flex items-center gap-3 mx-2">
+        <Link href="/" className="flex items-center gap-3 mx-2">
           <Image
             src={"/logo-ppi.png"}
             alt="logo-ppi-bartin"
@@ -124,8 +131,12 @@ const DesktopSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
                     isActive={isActive}
                     tooltip={e.title}
                     className={cn(
-                      "my-0.5 py-0.5",
-                      "data-[active=true]:bg-surface-active data-[active=true]:font-medium data-[active=true]:text-text-primary data-[active=true]:border data-[active=true]:border-border data-[active=true]:shadow-none",
+                      "my-0.5 py-0.5 transition-colors",
+                      // Warna saat TIDAK aktif
+                      "text-text-disabled", 
+                      // Warna saat AKTIF
+                      "data-[active=true]:bg-surface-hover data-[active=true]:font-medium data-[active=true]:text-text-primary data-[active=true]:border data-[active=true]:border-border data-[active=true]:shadow-none",
+                      // Warna saat HOVER
                       "hover:bg-surface-hover hover:text-text-primary",
                     )}
                   >
@@ -137,8 +148,7 @@ const DesktopSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
                         damping: 20,
                       }}
                       className={cn(
-                        "relative z-10",
-                        isActive ? "text-text-primary" : "text-text-disabled",
+                        "relative z-10"
                       )}
                     >
                       <e.icon className="size-4.5" />
