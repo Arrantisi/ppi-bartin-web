@@ -55,10 +55,17 @@ const CardEvent = ({
             fill
             className="object-cover"
           />
-          <div className="absolute right-2.5 top-2.5 inline-flex items-center gap-1.5 rounded-[4px] bg-bg px-2 py-0.75 backdrop-blur-xs">
-            <IconUsers className="size-3.5 text-text-primary" />
-            <span className="font-mono text-[0.6875rem] font-medium leading-[1.4] text-text-primary">
-              {props.participants.length} / {props.maxCapacity} Peserta
+          <div className="absolute right-2.5 top-2.5 inline-flex items-center gap-1.5">
+            {props.environment && props.environment !== "production" && (
+              <span className="rounded-[4px] bg-[rgba(0,0,0,.55)] px-1.5 py-0.75 font-mono text-[0.625rem] font-medium leading-[1.4] text-white backdrop-blur-[4px]">
+                {props.environment === "local" ? "LOCAL" : "PREVIEW"}
+              </span>
+            )}
+            <span className="inline-flex items-center gap-1.5 rounded-[4px] bg-bg px-2 py-0.75 backdrop-blur-xs">
+              <IconUsers className="size-3.5 text-text-primary" />
+              <span className="font-mono text-[0.6875rem] font-medium leading-[1.4] text-text-primary">
+                {props.participants.length} / {props.maxCapacity} Peserta
+              </span>
             </span>
           </div>
         </div>

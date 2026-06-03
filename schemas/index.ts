@@ -110,6 +110,10 @@ export const customerServiceSchema = z.object({
 
 export type TcustomerServiceSchema = z.infer<typeof customerServiceSchema>;
 
+const environmentSchema = z.enum(["local", "preview", "production"]);
+
+export type TenvironmentSchema = z.infer<typeof environmentSchema>;
+
 export const createNewsSchema = z.object({
   judul: z
     .string()
@@ -126,6 +130,7 @@ export const createNewsSchema = z.object({
     .string()
     .min(8, "Deskripsi acara minimal 8 karakter")
     .max(100, "Ringkasan tidak boleh lebih dari 100 kata"),
+  environment: environmentSchema,
 });
 
 export type TcreateNewsSchema = z.infer<typeof createNewsSchema>;
@@ -162,10 +167,11 @@ export const createEventSchema = z
       error: "Silakan tentukan batas pendaftaran",
     }),
     fileKey: z.string().min(1, "Gambar/File wajib diunggah"),
+    environment: environmentSchema,
   })
   .refine((data) => startOfDay(data.batasDaftar) <= data.date, {
     message: "Batas pendaftaran tidak boleh melewati tanggal acara",
-    path: ["batasDaftar"], // Pesan error akan muncul di field batasDaftar
+    path: ["batasDaftar"],
   });
 
 export type TcreateEventSchema = z.infer<typeof createEventSchema>;

@@ -1,5 +1,9 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
 import { useUploadThing } from "@/lib/uploadthing";
-import { IconCamera } from "@tabler/icons-react";
+import { deleteUploadedFile } from "@/server/actions/delete-upload";
+import { IconCamera, IconTrash } from "@tabler/icons-react";
 import Image from "next/image";
 import { useCallback, useState } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
@@ -15,6 +19,22 @@ export const UploadPhotoProfile = ({
   onValueChange,
 }: TuploadPhotoProfileProps) => {
   const [preview, setPreview] = useState<string | null>("");
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (!value || deleting) return;
+    setDeleting(true);
+    try {
+      await deleteUploadedFile(value);
+      onValueChange?.("");
+      setPreview(null);
+      toast.info("Foto profil telah dihapus");
+    } catch {
+      toast.error("Gagal menghapus foto");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const { startUpload } = useUploadThing("onOploadProfile", {
     onClientUploadComplete: (res) => {
@@ -91,13 +111,25 @@ export const UploadPhotoProfile = ({
           </div>
         )}
       </div>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center gap-2">
         <h3 className="footnote text-text-secondary">
           Tap untuk ganti foto profil
         </h3>
         <p className="footnote text-text-disabled">
           JPG, PNG (Max 1MB)
         </p>
+        {value && !preview && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-destructive hover:text-destructive mt-1"
+            onClick={handleDelete}
+            disabled={deleting}
+          >
+            <IconTrash className="size-4" />
+            {deleting ? "Menghapus..." : "Hapus foto"}
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import {
   TupdateProfileSchema,
 } from "@/schemas";
 import { TServerPrompt } from "@/types";
+import { deleteUploadedFile } from "./delete-upload";
 
 export const completeProfile = async ({
   ...data
@@ -61,6 +62,11 @@ export const updateProfile = async ({
   const { user } = await studentAccount();
 
   try {
+    const oldUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { image: true },
+    });
+
     await prisma.user.update({
       where: { id: user.id },
       data: {
@@ -78,6 +84,10 @@ export const updateProfile = async ({
         fakultas,
       },
     });
+
+    if (oldUser?.image && oldUser.image !== fileKey && fileKey) {
+      await deleteUploadedFile(oldUser.image);
+    }
 
     return {
       status: "success",

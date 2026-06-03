@@ -18,12 +18,21 @@ import {
   IconTypography,
   IconUpload,
   IconUsers,
+  IconWorld,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { getCurrentUserRole } from "@/server/actions/account";
 import { UploaderPhoto } from "@/features/uploads/upload-event-news";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import props from "@/props/create-acara-props.json";
 
 type EventFormMode = "create" | "update";
@@ -34,13 +43,34 @@ type EventFormFieldProps = {
   data?: TupdateEventProps["data"];
 };
 
+const ENVIRONMENT_OPTIONS: Record<string, { label: string; value: string }[]> =
+  {
+    ADMIN: [
+      { label: "Local", value: "local" },
+      { label: "Preview", value: "preview" },
+      { label: "Production", value: "production" },
+    ],
+    PENGURUS: [
+      { label: "Preview", value: "preview" },
+      { label: "Production", value: "production" },
+    ],
+  };
+
 export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [lengthOfDeskripsi, setLengthOfDeskripsi] = useState(0);
   const [isDate, setIsDate] = useState<Date>(new Date());
+  const [role, setRole] = useState<string>("USER");
+
+  useEffect(() => {
+    getCurrentUserRole().then(setRole);
+  }, []);
+  const envOptions = ENVIRONMENT_OPTIONS[role] || [];
 
   const today = new Date();
   const router = useRouter();
+
+  console.log(role);
 
   const formId = mode === "update" ? "update-acara-form" : "create-acara-form";
 
@@ -53,6 +83,10 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
       maxCapacity: data?.maxCapacity || 0,
       batasDaftar: data?.batasDaftar || new Date(),
       fileKey: data?.fileKey || "",
+      environment: (data?.environment || "production") as
+        | "local"
+        | "preview"
+        | "production",
     },
     validators: { onSubmit: createEventSchema },
     onSubmit: async ({ value }: { value: TcreateEventSchema }) => {
@@ -161,7 +195,9 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                       value={field.state.value}
                     />
 
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 );
               }}
@@ -186,7 +222,9 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                       value={field.state.value}
                     />
 
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 );
               }}
@@ -266,15 +304,68 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                       placeholder={props.textarea[5].placeholder}
                       className="focus-visible:ring-primary"
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+                      onChange={(e) =>
+                        field.handleChange(e.target.valueAsNumber)
+                      }
                     />
 
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 );
               }}
             </form.Field>
           </div>
+
+          {envOptions.length > 0 && (
+            <form.Field name="environment">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field>
+                    <FieldLabel>
+                      <IconWorld size={18} className="text-primary" />
+                      Environment
+                      <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <Select
+                      name={field.name}
+                      value={field.state.value}
+                      onValueChange={(value) =>
+                        field.handleChange(
+                          value as "local" | "preview" | "production",
+                        )
+                      }
+                    >
+                      <SelectTrigger
+                        id="select-environment-event"
+                        data-invalid={isInvalid}
+                        className="rounded-md"
+                      >
+                        <SelectValue placeholder={"Pilih Environment"} />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-2xl">
+                        {envOptions.map(({ label, value }) => (
+                          <SelectItem
+                            key={value}
+                            className="rounded-2xl"
+                            value={value}
+                          >
+                            {label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+          )}
         </form>
       </div>
 

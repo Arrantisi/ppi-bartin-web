@@ -11,11 +11,13 @@ import {
   IconPhotoScan,
   IconTags,
   IconTypography,
+  IconWorld,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { getCurrentUserRole } from "@/server/actions/account";
 import { Button, buttonVariants } from "../ui/button";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import { RichTextEditor } from "../ui/rich-text-editor";
@@ -47,11 +49,30 @@ const catagoryTrigger = [
   { ctg: "pengumuman" },
 ];
 
+const ENVIRONMENT_OPTIONS: Record<string, { label: string; value: string }[]> = {
+  ADMIN: [
+    { label: "Local", value: "local" },
+    { label: "Preview", value: "preview" },
+    { label: "Production", value: "production" },
+  ],
+  PENGURUS: [
+    { label: "Preview", value: "preview" },
+    { label: "Production", value: "production" },
+  ],
+};
+
 export const NewsFormField = ({ mode, slug, data }: NewsFormFieldProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [lenghtOfJudul, setLenghtOfJudul] = useState(0);
   const [lenghtOfRingkasan, setLenghtOfRingkasan] = useState(0);
   const [lenghtOfDeskripsi, setLenghtOfDeskripsi] = useState(0);
+  const [role, setRole] = useState<string>("USER");
+
+  useEffect(() => {
+    getCurrentUserRole().then(setRole);
+  }, []);
+
+  const envOptions = ENVIRONMENT_OPTIONS[role] || [];
 
   const router = useRouter();
 
@@ -65,6 +86,7 @@ export const NewsFormField = ({ mode, slug, data }: NewsFormFieldProps) => {
       catagory: data?.catagory || "",
       fileKey: data?.fileKey || "",
       ringkasan: data?.ringkasan || "",
+      environment: (data?.environment || "production") as "local" | "preview" | "production",
     },
     onSubmit: async ({ value }: { value: TcreateNewsSchema }) => {
       setIsLoading(true);
@@ -186,6 +208,45 @@ export const NewsFormField = ({ mode, slug, data }: NewsFormFieldProps) => {
             );
           }}
         </form.Field>
+
+        {envOptions.length > 0 && (
+          <form.Field name="environment">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field>
+                  <FieldLabel>
+                    <IconWorld size={18} className="text-primary" />
+                    Environment
+                    <span className="text-destructive">*</span>
+                  </FieldLabel>
+                  <Select
+                    name={field.name}
+                    value={field.state.value}
+                    onValueChange={(value) => field.handleChange(value as "local" | "preview" | "production")}
+                  >
+                    <SelectTrigger
+                      id="select-environment-news"
+                      data-invalid={isInvalid}
+                      className="rounded-md"
+                    >
+                      <SelectValue placeholder={"Pilih Environment"} />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-2xl">
+                      {envOptions.map(({ label, value }) => (
+                        <SelectItem key={value} className="rounded-2xl" value={value}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+        )}
 
         <form.Field name="ringkasan">
           {(field) => {
