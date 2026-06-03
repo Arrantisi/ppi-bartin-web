@@ -322,7 +322,7 @@ export const EventDetail = ({
 
               {/* Call to Action Section */}
               {!isPublicVisitor ? (
-                <div className="detail-cta-wrap text-text-primary">
+                <div className="text-text-primary">
                   <EventActionButton
                     event={data}
                     sessionUserId={session?.user.id}

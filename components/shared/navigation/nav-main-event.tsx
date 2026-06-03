@@ -43,13 +43,11 @@ const BottomNav = ({ show }: { show: boolean }) => {
     <div
       className={cn(
         // LAYOUT & POSITIONING: Melayang (floating) dengan margin samping, bukan w-full penuh
-        "fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm z-50",
+        "fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm z-50",
         "bg-surface/70 backdrop-blur-lg border border-white/10 shadow-lg shadow-black/5",
         "rounded-full h-16 flex items-center justify-center",
         !show && "hidden",
       )}
-      // Di iOS melayang, kita tidak perlu memaksakan padding-bottom env() di dalam container utama 
-      // karena container-nya sendiri sudah kita angkat ke atas menggunakan 'bottom-4'
     >
       <div className="flex items-stretch justify-center px-1 gap-1 w-full h-full">
         {navItems.map((e) => {
