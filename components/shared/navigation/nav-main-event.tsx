@@ -43,7 +43,7 @@ const BottomNav = ({ show }: { show: boolean }) => {
     <div
       className={cn(
         // LAYOUT & POSITIONING: Melayang (floating) dengan margin samping, bukan w-full penuh
-        "fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm z-50",
+        "fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm z-50",
         "bg-surface/70 backdrop-blur-lg border border-white/10 shadow-lg shadow-black/5",
         "rounded-full h-16 flex items-center justify-center",
         !show && "hidden",
