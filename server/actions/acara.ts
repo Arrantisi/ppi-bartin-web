@@ -72,6 +72,7 @@ export const createAcara = async ({
   maxCapacity,
   batasDaftar,
   fileKey,
+  environment,
 }: TcreateEventSchema): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
 
@@ -89,14 +90,17 @@ export const createAcara = async ({
         maxCapacity,
         date,
         lokasi,
+        environment,
       },
     });
 
-    await sendPushToAll({
-      title: "Acara Baru di PPI Bartin!",
-      message: `Ada acara: ${judul}. Yuk cek detailnya!`,
-      url: `/acara/${slug}`,
-    });
+    if (environment === "production") {
+      await sendPushToAll({
+        title: "Acara Baru di PPI Bartin!",
+        message: `Ada acara: ${judul}. Yuk cek detailnya!`,
+        url: `/acara/${slug}`,
+      });
+    }
 
     return {
       status: "success",
@@ -121,6 +125,7 @@ export const updateAcara = async (
     maxCapacity,
     batasDaftar,
     fileKey,
+    environment,
   }: TcreateEventSchema,
 ): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
@@ -149,6 +154,7 @@ export const updateAcara = async (
         maxCapacity,
         date,
         lokasi,
+        environment,
       },
     });
 

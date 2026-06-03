@@ -45,7 +45,7 @@ export const deleteNews = async (newsId: string): Promise<TServerPrompt> => {
 
 export const updateNews = async (
   slug: string,
-  { judul, catagory, desckripsi, fileKey, ringkasan }: TcreateNewsSchema,
+  { judul, catagory, desckripsi, fileKey, ringkasan, environment }: TcreateNewsSchema,
 ): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
 
@@ -71,6 +71,7 @@ export const updateNews = async (
         ringkasan,
         judul,
         slug: updatedSlug,
+        environment,
       },
     });
 
@@ -97,6 +98,7 @@ export const createNews = async ({
   desckripsi,
   fileKey,
   ringkasan,
+  environment,
 }: TcreateNewsSchema): Promise<TServerPrompt> => {
   const { user } = await studentAccount();
 
@@ -112,14 +114,17 @@ export const createNews = async ({
         judul,
         slug,
         userId: user.id,
+        environment,
       },
     });
 
-    await sendPushToAll({
-      title: "Berita Bartin Hari Ini",
-      message: `${judul}`,
-      url: `/berita/${slug}`,
-    });
+    if (environment === "production") {
+      await sendPushToAll({
+        title: "Berita Bartin Hari Ini",
+        message: `${judul}`,
+        url: `/berita/${slug}`,
+      });
+    }
 
     revalidatePath(`/home/news/uploader/${slug}`);
     return {

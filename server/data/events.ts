@@ -1,6 +1,16 @@
 "use server";
 
 import { prisma } from "@/lib/db";
+import { userSession } from "./users";
+
+const getEnvironmentFilter = async (): Promise<string[]> => {
+  const session = await userSession();
+  const role = (session?.user as { role?: string } | undefined)?.role;
+
+  if (role === "ADMIN") return ["local", "preview", "production"];
+  if (role === "PENGURUS") return ["preview", "production"];
+  return ["production"];
+};
 
 export const getEventParticipants = async (eventId: string) => {
   const data = await prisma.events.findUnique({
@@ -28,7 +38,10 @@ export type TgetEventParticipants = Awaited<
 >;
 
 export const getAllEvents = async () => {
+  const allowed = await getEnvironmentFilter();
+
   const data = await prisma.events.findMany({
+    where: { environment: { in: allowed } },
     include: {
       creator: {
         select: { username: true, image: true, id: true, name: true },
@@ -44,8 +57,10 @@ export const getAllEvents = async () => {
 export type TgetAllEvent = Awaited<ReturnType<typeof getAllEvents>>[0];
 
 export const getEventBySlug = async (slug: string) => {
-  return await prisma.events.findUnique({
-    where: { slug },
+  const allowed = await getEnvironmentFilter();
+
+  return await prisma.events.findFirst({
+    where: { slug, environment: { in: allowed } },
     include: {
       creator: {
         select: { username: true, image: true, id: true, name: true },
