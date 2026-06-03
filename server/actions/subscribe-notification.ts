@@ -33,3 +33,23 @@ export async function saveNotificationSubscription(sub: {
 
   return { success: true, data: savedSub };
 }
+
+export async function getUserPushSubscriptions() {
+  const { user } = await studentAccount();
+
+  const count = await prisma.notificationSubscription.count({
+    where: { userId: user.id },
+  });
+
+  return { hasSubscription: count > 0 };
+}
+
+export async function deleteUserPushSubscriptions() {
+  const { user } = await studentAccount();
+
+  await prisma.notificationSubscription.deleteMany({
+    where: { userId: user.id },
+  });
+
+  return { success: true };
+}

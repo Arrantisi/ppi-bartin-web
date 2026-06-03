@@ -6,18 +6,17 @@ import {
   IconCalendar,
   IconMail,
   IconBrandWhatsapp,
-  IconMapPin,
   IconBuilding,
   IconClock,
-  IconPercentage,
   IconMoon,
-  IconBell,
-  IconLock,
   IconChevronRight,
+  IconUser,
+  IconGenderBigender,
 } from "@tabler/icons-react";
 import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import { PushNotificationSwitch } from "@/components/push-notification-switch";
 
 type Props = {
   user: NonNullable<TgetProfileUser>;
@@ -32,12 +31,10 @@ const InfoRow = ({
   label: string;
   value: string | null | undefined;
 }) => (
-    <div className="flex items-center gap-3 py-2.5 border-b border-border last:border-b-0">
-     <div
-        className="flex items-center justify-center size-8 rounded-lg shrink-0 bg-surface-hover"
-      >
-        <div className="text-text-primary [&_svg]:size-4">{icon}</div>
-      </div>
+  <div className="flex items-center gap-3 py-2.5 border-b border-border last:border-b-0">
+    <div className="flex items-center justify-center size-8 rounded-lg shrink-0 bg-surface-hover">
+      <div className="text-text-primary [&_svg]:size-4">{icon}</div>
+    </div>
     <div className="min-w-0 flex-1">
       <p className="text-xs text-text-disabled uppercase tracking-wider">
         {label}
@@ -72,9 +69,7 @@ const StatCard = ({
   label: string;
 }) => (
   <div className="rounded-xl border border-border bg-card p-4 flex flex-col items-center gap-1.5 text-center">
-    <div
-      className="flex items-center justify-center size-9 rounded-lg bg-surface-hover"
-    >
+    <div className="flex items-center justify-center size-9 rounded-lg bg-surface-hover">
       <div className="text-text-primary [&_svg]:size-4.5">{icon}</div>
     </div>
     <span className="text-xl font-bold text-text-primary">{value}</span>
@@ -88,13 +83,13 @@ export const TabProfil = ({ user }: Props) => {
   const tahunAktif = user.angkatan
     ? Math.max(1, today.getFullYear() - parseInt(user.angkatan) + 1)
     : 1;
-  const pastCount =
-    user.participants?.filter((p) => new Date(p.event.date) <= today).length ||
-    0;
-  const kehadiran =
-    totalKegiatan > 0 ? Math.round((pastCount / totalKegiatan) * 100) : 0;
+  // const pastCount =
+  //   user.participants?.filter((p) => new Date(p.event.date) <= today).length ||
+  //   0;
 
   const { setTheme, theme } = useTheme();
+
+  const gender = user.jenisKelamin === "laki-laki" ? "laki-laki" : "Wanita";
 
   return (
     <div className="flex flex-col md:flex-row gap-4 mt-4 w-full">
@@ -120,11 +115,38 @@ export const TabProfil = ({ user }: Props) => {
             label="WhatsApp"
             value={user.noTelephone}
           />
-          <InfoRow
-            icon={<IconMapPin />}
-            label="Asal Kota"
-            value={user.alamat}
-          />
+        </InfoCard>
+        <InfoCard title="Pengaturan Cepat">
+          <div className="space-y-0">
+            <Link
+              href="/home/profile/update"
+              className="flex items-center justify-between py-2.5 group cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center size-8 rounded-lg bg-surface-hover">
+                  <IconUser className="size-4 text-text-primary" />
+                </div>
+                <span className="text-sm text-text-primary">Edit profil</span>
+              </div>
+              <IconChevronRight className="size-4 text-text-disabled" />
+            </Link>
+            <div className="flex items-center justify-between py-2.5 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center size-8 rounded-lg bg-surface-hover">
+                  <IconMoon className="size-4 text-text-primary" />
+                </div>
+                <span className="text-sm text-text-primary">Mode gelap</span>
+              </div>
+              <Switch
+                checked={theme === "dark"}
+                onCheckedChange={(checked) =>
+                  setTheme(checked ? "dark" : "light")
+                }
+                className="data-checked:bg-text-primary data-checked:border-text-primary"
+              />
+            </div>
+            <PushNotificationSwitch className="py-2.5" />
+          </div>
         </InfoCard>
       </div>
 
@@ -141,9 +163,9 @@ export const TabProfil = ({ user }: Props) => {
             label="Tahun aktif"
           />
           <StatCard
-            icon={<IconPercentage />}
-            value={`${kehadiran}%`}
-            label="Kehadiran"
+            icon={<IconGenderBigender />}
+            value={gender}
+            label="Jenis Kelamin"
           />
         </div>
 
@@ -155,7 +177,7 @@ export const TabProfil = ({ user }: Props) => {
                 return (
                   <div
                     key={p.id}
-                    className="flex items-center gap-3 py-2.5 border-b border-border last:border-b-0"
+                    className="flex items-center gap-3 py-2.5 border-b border-border last:border-b-0 max-h-112.5"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-sm text-text-primary font-medium truncate">
@@ -181,52 +203,6 @@ export const TabProfil = ({ user }: Props) => {
               Belum ada kegiatan
             </p>
           )}
-        </InfoCard>
-
-        <InfoCard title="Pengaturan Cepat">
-          <div className="space-y-0">
-            <div className="flex items-center justify-between py-2.5 border-b border-border">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center size-8 rounded-lg bg-surface-hover">
-                  <IconMoon className="size-4 text-text-primary" />
-                </div>
-                <span className="text-sm text-text-primary">Mode gelap</span>
-              </div>
-              <Switch
-                checked={theme === "dark"}
-                onCheckedChange={(checked) =>
-                  setTheme(checked ? "dark" : "light")
-                }
-                className="data-checked:bg-text-primary data-checked:border-text-primary"
-              />
-            </div>
-            <div className="flex items-center justify-between py-2.5 border-b border-border">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center size-8 rounded-lg bg-surface-hover">
-                  <IconBell className="size-4 text-text-primary" />
-                </div>
-                <span className="text-sm text-text-primary">Notifikasi</span>
-              </div>
-              <Switch
-                defaultChecked
-                className="data-checked:bg-text-primary data-checked:border-text-primary"
-              />
-            </div>
-            <Link
-              href="/home/profile/update"
-              className="flex items-center justify-between py-2.5 group cursor-pointer"
-            >
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center size-8 rounded-lg bg-surface-hover">
-                  <IconLock className="size-4 text-text-primary" />
-                </div>
-                <span className="text-sm text-text-primary group-hover:text-text-primary transition-colors">
-                  Ganti password
-                </span>
-              </div>
-              <IconChevronRight className="size-4 text-text-disabled" />
-            </Link>
-          </div>
         </InfoCard>
       </div>
     </div>

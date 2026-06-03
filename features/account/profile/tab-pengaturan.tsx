@@ -7,11 +7,11 @@ import { authClient } from "@/lib/auth/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
+import { PushNotificationSwitch } from "@/components/push-notification-switch";
 import {
   IconUser,
   IconMail,
   IconMoon,
-  IconBell,
   IconBellRinging,
   IconLanguage,
   IconChevronRight,
@@ -167,17 +167,7 @@ export const TabPengaturan = ({ user }: Props) => {
               />
             }
           />
-          <SettingRow
-            icon={<IconBell className="size-4.5" />}
-            label="Notifikasi push"
-            subtitle="Segera hadir"
-            control={
-              <Switch
-                disabled
-                className="data-checked:bg-text-primary data-checked:border-text-primary"
-              />
-            }
-          />
+          <PushNotificationSwitch className="py-3 px-4" />
           <SettingRow
             icon={<IconBellRinging className="size-4.5" />}
             label="Notifikasi email"
