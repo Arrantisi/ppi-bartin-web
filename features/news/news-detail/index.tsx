@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { IconArrowLeft, IconDots } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
 import { formattedDate } from "@/utils/date-format";
 import { imageUrl } from "@/utils/image-url";
 import { useNewsBySlug } from "@/hooks/use-news";
@@ -79,7 +78,7 @@ export const NewsDetailComponent = ({
           <Button
             variant="outline"
             size="icon-xl"
-            className="rounded-full"
+            className="rounded-md"
             onClick={() => router.back()}
           >
             <IconArrowLeft size={20} />
@@ -127,12 +126,9 @@ export const NewsDetailComponent = ({
               <div className="flex items-center gap-2 footnote text-text-secondary">
                 <span>{formattedDate(data.createdAt)}</span>
                 <div className="size-1 rounded-full bg-muted-foreground" />
-                <Badge
-                  variant="secondary"
-                  className="subheadline h-4 leading-none"
-                >
+                <span className="mono text-xs text-text-disabled uppercase tracking-wider">
                   {data.catagory}
-                </Badge>
+                </span>
               </div>
             </div>
           </div>
@@ -141,7 +137,7 @@ export const NewsDetailComponent = ({
           <h1 className="title-satu mt-4 text-text-primary">{data.judul}</h1>
 
           {/* Hero Image */}
-          <div className="w-full mt-5 overflow-hidden rounded-3xl border border-border shadow-sm">
+          <div className="w-full mt-5 overflow-hidden rounded-lg border border-border">
             <Image
               src={imageUrl(data.fileKey)}
               alt="Berita"

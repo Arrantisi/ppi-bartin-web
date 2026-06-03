@@ -89,7 +89,7 @@
   --shadow-lg: none;
   --shadow-xl: none;
   --shadow-2xl: none;
-  --tracking-normal: 0.025em;
+  --tracking-normal: 0em;
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;
@@ -199,6 +199,7 @@
   --color-text-secondary: var(--text-secondary);
   --color-text-disabled: var(--text-disabled);
   --color-accent: var(--accent);
+
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
@@ -329,7 +330,7 @@
     margin: 0;
     font-family: var(--font-sans);
     font-size: 0.875rem;
-    font-weight: 450;
+    font-weight: 400;
     line-height: 1.5;
     color: var(--foreground);
     -webkit-font-smoothing: antialiased;
@@ -350,7 +351,7 @@
   :focus-visible {
     outline: 1px solid var(--accent);
     outline-offset: 0;
-    box-shadow: 0 0 0 3px rgb(59 158 255 / 0.1);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
   }
 
   ::selection {
