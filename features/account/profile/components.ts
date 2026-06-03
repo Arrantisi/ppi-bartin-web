@@ -1,6 +1,3 @@
-export { ContentProfile } from "./content";
-export { HeaderContentProfile } from "./header-content";
-export { HeaderProfile } from "./header";
+export { default as ProfilePage } from "./profile-page";
 export { BantuanComponent } from "./bantuan/component";
 export { UpdateProfileComponent } from "./profile-update-component";
-

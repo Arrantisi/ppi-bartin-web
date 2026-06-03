@@ -9,11 +9,8 @@ export {
   OnboardingShell,
 } from "./registering";
 export {
-  ContentProfile,
-  BantuanComponent,
-  HeaderContentProfile,
-  HeaderProfile,
   ProfilePage,
   ProfileUpdatePage,
   UpdateProfileComponent,
+  BantuanComponent,
 } from "./profile";

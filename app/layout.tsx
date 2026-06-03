@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TanstackProvider } from "@/components/providers/tanstack";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "@/components/ui/sonner";
+import { PWAInstallTourProviderLayer } from "@/components/pwa-install-tour-provider";
 import { Inter, JetBrains_Mono } from "next/font/google";
 
 const inter = Inter({
@@ -80,7 +81,9 @@ export default function RootLayout({
             <TanstackProvider>
               <Toaster position="top-center" />
               <SpeedInsights />
-              {children}
+              <PWAInstallTourProviderLayer>
+                {children}
+              </PWAInstallTourProviderLayer>
             </TanstackProvider>
           </ThemeProvider>
         </main>
