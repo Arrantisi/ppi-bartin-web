@@ -37,7 +37,8 @@ model User {
   events                    Events[]                   @relation("createdEvent")
   news                      News[]                     @relation("createdNews")
   notificationSubscriptions NotificationSubscription[]
-  participants              Participants[]
+   participants              Participants[]
+  calendarEntries           CalendarEntry[]
   sessions                  Session[]
 
   @@map("user")
@@ -186,6 +187,23 @@ model CancelLog {
 
   @@index([userId, eventId])
   @@map("cancelLog")
+}
+
+model CalendarEntry {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  date        DateTime
+  time        String?
+  location    String?
+  category    String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("calendarEntry")
 }
 
 enum Role {
