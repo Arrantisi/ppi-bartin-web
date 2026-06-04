@@ -1,19 +1,32 @@
 # Calendar Feature — Profile Event Tab
 
 ## Status
-- ✅ All components built and styled per DS
-- ✅ Split layout (mini calendar + event list)
-- ✅ Today indicator: ring-accent (1px border), no fill
-- ✅ Grid layout: `grid grid-cols-7` for weekdays & weeks
-- ✅ No `getDefaultClassNames()` — all custom classes
-- ✅ Nav arrows: raw Lucide icons, no buttonVariants wrapper
-- ✅ "+ Tambah Event" CTA removed from event-list (read-only for real events)
+- ✅ Semua komponen, hooks, types, utils terimplementasi
+- ✅ Split layout: mini calendar (sticky desktop) + split event list
+- ✅ Mini calendar: react-day-picker v9, custom classes, DS-styled
+- ✅ Split event list: dua section — "Kegiatan Sendiri" + "Event Terdaftar"
+- ✅ View toggle: segmented control (Harian / Agenda)
+- ✅ Personal entries: CRUD via Dialog + server actions (CalendarEntry model)
+- ✅ Participant events: read-only, link ke `/home/acara/[slug]`
+- ✅ CalendarEntry model di Prisma, udah `prisma db push`
+- ✅ Server actions: createEntry, updateEntry, deleteEntry (validasi ownership)
+- ✅ React Query invalidate after mutation
+- ✅ Data flow: `getProfileUser` → participants[].event + calendarEntries
+- ✅ `slug` field di query participant event
+- ✅ Loading spinners (LoaderCircle + animate-spin) untuk submit & delete
+- ✅ iOS auto-zoom fix: font-size 16px di input/textarea/select
+- ✅ Event form: `@tanstack/react-form` + Zod v4 (no .optional())
+- ✅ Event form di `components/field/calendar-event-form.tsx` (bukan di features/)
+- ✅ hooks/types/utils di root level (bukan di features/calendar/)
+- ✅ design-guideline.md updated dengan centralized field rule
+- ✅ docs/file-placement.md updated
+- ✅ `bg-surface-secondary` → `bg-surface-hover` (token tidak ada)
+- ✅ Dead code di EventListItem (isParticipant) dibersihkan
 - ✅ `npm run build` lulus zero errors
-- ⏳ **Persistence**: Add/edit/delete masih lokal `useReducer` — perlu wiring ke DB via `CalendarEntry` model
 
 ---
 
-## Layout Choice: Split Layout (Mini Calendar + Event List)
+## Layout Choice: Split Layout (Mini Calendar + Split Event List)
 
 ### Mobile (<768px)
 
@@ -24,15 +37,14 @@
 │      1  2  3  4  5  6    │
 │  ...                     │
 ├──────────────────────────┤
-│  SEL, 3 JUN 2025          │  ← Selected date header (mono, uppercase)
+│  SEL, 3 JUN 2025          │  ← Date header + [Harian|Agenda] toggle + [+]
 ├──────────────────────────┤
-│  ● 09:00                 │
-│    Seminar Beasiswa       │  ← Event cards per baris
-│    Ruang A.103            │     category dot subtle
-│                           │
-│  ● 14:30                 │
-│    Rapat Kaderisasi       │
-│    Online                 │
+│  Kegiatan Sendiri         │
+│  ● 09:00  Seminar        │  ← EventListItem (editable, click → dialog)
+│  ● 14:30  Rapat          │
+├─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┤
+│  Event Terdaftar          │
+│  ● 10:00  Acara BEM      │  ← ParticipantEventRow (link, opacity-70)
 └──────────────────────────┘
 ```
 
@@ -40,154 +52,123 @@
 
 ```
 ┌──────────────────────┬───────────────────────────────────┐
-│                      │  SEL, 3 JUN 2025                   │
-│  ◁  Sept 2025  ▷     │                                    │
-│  Su Mo Tu We ..      │  ● 09:00  Seminar Beasiswa         │
-│        1  2  3  4    │      Ruang A.103                   │
-│  ...                 │                                    │
-│                      │  ● 14:30  Rapat Kaderisasi         │
-│                      │      Online                        │
+│  ◁  Sept 2025  ▷     │  SEL, 3 JUN 2025     [Hrn|Agd] [+]│
+│  Su Mo Tu We ..      │                                    │
+│        1  2  3  4    │  Kegiatan Sendiri                  │
+│  ...                 │  ● 09:00  Seminar Beasiswa         │
+│  sticky, self-start  │  ● 14:30  Rapat Kaderisasi        │
+│                      │  ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─         │
+│                      │  Event Terdaftar                   │
+│                      │  ● 10:00  Acara BEM               │
 └──────────────────────┴───────────────────────────────────┘
 ```
 
 ---
 
-## Design Alignment dengan Design System
-
-### Tone & Aesthetic
-
-| Aspect       | Decision                         | Basis (design-guideline.md)                   |
-| ------------ | -------------------------------- | --------------------------------------------- |
-| **Tone**     | Notion-modern, minimal, refined  | "Notion-modern · Mobile-first · Dark & Light" |
-| **Layout**   | Mobile stack → desktop split     | "Single column layout on mobile"              |
-| **Calendar** | Navigasi tool, bukan fitur utama | Date picker spec in Forms section             |
-| **Events**   | Chronological list, scannable    | Card Variant B — Horizontal (content-led)     |
-| **Shadow**   | None on static elements          | "Static elements: no shadow"                  |
-
-### Fonts
-
-| Role                | Font | Size                    | Weight | Color          | Tracking                            |
-| ------------------- | ---- | ----------------------- | ------ | -------------- | ----------------------------------- |
-| Month/Year header   | sans | 0.9375rem               | 600    | text-primary   | -0.01em (H4)                        |
-| Day name header     | sans | 0.6875rem               | 500    | text-disabled  | +0.05em (Label, uppercase)          |
-| Day number          | sans | 0.875rem                | 400    | text-secondary | 0 (Body)                            |
-| Selected day number | sans | 0.875rem                | 600    | text-inverse   | 0                                   |
-| Today marker        | —    | 1px solid accent border | —      | —              | —                                   |
-| Date header (list)  | mono | 0.8125rem               | 400    | text-secondary | 0 (Meta)                            |
-| Event time          | mono | 0.8125rem               | 400    | text-secondary | 0 (Meta)                            |
-| Event title         | sans | 0.875rem                | 600    | text-primary   | 0 (Body strong)                     |
-| Event location      | sans | 0.75rem                 | 400    | text-disabled  | 0 (Small)                           |
-| Category label      | sans | 0.6875rem               | 500    | text-disabled  | +0.05em (Label/Footnote, uppercase) |
-| Empty state title   | sans | 0.9375rem               | 600    | text-primary   | -0.01em (H4)                        |
-| Empty state body    | sans | 0.875rem                | 400    | text-secondary | 0 (Body)                            |
-
-### Color Tokens
-
-| Element               | Token                                                           | Notes                           |
-| --------------------- | --------------------------------------------------------------- | ------------------------------- |
-| Calendar container    | `--surface` bg, `--border` border                               | Card tokens                     |
-| Nav arrows            | `--text-disabled` → hover `--text-primary`                      | Per date picker spec            |
-| Day default           | `--text-secondary`                                              |                                 |
-| Day hover             | `--surface-hover` bg                                            |                                 |
-| Day selected          | `--text-primary` bg, `--text-inverse` text                      |                                 |
-| Day today             | 1px solid `--accent` border (`ring-1 ring-accent`)              | Bukan filled circle             |
-| Day outside month     | `--text-disabled` opacity 40%                                   |                                 |
-| Day disabled          | `--text-disabled` opacity 40%                                   |                                 |
-| Event item bg         | Transparent (divider-separated list)                            | Card Variant B list view        |
-| Event item hover      | `--surface-hover` bg                                            |                                 |
-| Divider               | 1px solid `--border`                                            |                                 |
-| Category dot bg       | `--{category}-subtle`                                           | 8% opacity, subtle              |
-| Selected date dot     | `--accent`                                                      | Small indicator on calendar     |
-| Empty state icon      | `--text-disabled`                                               |                                 |
-
-### Spacing (8px grid)
-
-| Context                  | Value                       |
-| ------------------------ | --------------------------- |
-| Calendar wrapper padding | 16px (`--space-md`)         |
-| Between calendar & list  | 24px (`--space-lg`) desktop |
-| Event item padding Y     | 12px                        |
-| Event item padding X     | 16px                        |
-| Gap between event items  | 0 (divider separator)       |
-| Gap time + title row     | 8px (`--space-sm`)          |
-| Gap title + location row | 2px                         |
-| Date header padding      | 12px 16px                   |
-| Category dot size        | 8px                         |
-| Touch target min         | 44px                        |
-
-### Radius
-
-| Context            | Value | Basis          |
-| ------------------ | ----- | -------------- |
-| Calendar container | 10px  | Card radius    |
-
----
-
-## Stack (No New Libraries)
-
-| Library             | Status               | Untuk                                         |
-| ------------------- | -------------------- | --------------------------------------------- |
-| react-day-picker    | ✅ Already installed | Mini month calendar                           |
-| date-fns            | ✅ Already installed | Tanggal manipulation & formatting (id locale) |
-| lucide-react        | ✅ Already installed | Chevron nav icons (Lucide preferred per DS)   |
-| @tabler/icons-react | ✅ Already installed | Empty state icon only                         |
-| @base-ui/react      | ✅ Already installed | Dialog + Tabs (line variant) di profile       |
-
----
-
-## Struktur Folder
+## Struktur Folder (Aktual)
 
 ```
+components/
+  field/
+    calendar-event-form.tsx       # @tanstack/react-form + Field/Input/Textarea/Select
+  ui/
+    button.tsx
+    dialog.tsx                      # shadcn Dialog (wrapper)
+    input.tsx                       # text-base (16px, iOS fix)
+    textarea.tsx                    # text-base (16px, iOS fix)
+    select.tsx                      # text-base (16px, iOS fix)
+    field.tsx                       # Field, FieldLabel, FieldError
+
 features/
   calendar/
-    index.ts                      # Barrel exports
     components/
-      calendar-view.tsx           # Container: split layout orchestrator
-      calendar-mini.tsx           # Mini month (react-day-picker, DS-styled)
-      event-list.tsx              # Date header + divider list (no CTA)
-      event-list-item.tsx         # Satu baris event (horizontal card B)
-      event-dialog.tsx            # @base-ui Dialog (add/edit)
-      event-form.tsx              # react-hook-form + zod
-      agenda-view.tsx             # Semua event mendatang (alternate view)
-      category-dot.tsx            # Subtle color dot (--{cat}-subtle)
+      calendar-mini.tsx             # react-day-picker v9 mini calendar
+      split-event-list.tsx          # Split list: personal + participant, daily/agenda toggle
+      event-list-item.tsx           # Single event row (editable, personal entries only)
+      event-dialog.tsx              # shadcn Dialog (wrapper around calendar-event-form)
+      category-dot.tsx              # 8px subtle dot
+      event-form.tsx                # DELETED — moved to components/field/calendar-event-form.tsx
+    hooks/                          # DELETED — moved to hooks/
+      use-calendar.ts
+    types/                          # DELETED — moved to types/
+      index.ts
+    utils/                          # DELETED — moved to utils/
+      calendar-utils.ts
+
+features/
+  account/profile/
+    tab-kegiatan.tsx                # Orchestrator: composes CalendarMini + SplitEventList + EventDialog
+    tabs-section.tsx                # Parent tab container, imports TabKegiatan
 
 hooks/
-  use-calendar.ts                 # useReducer + async server action calls
+  use-calendar.ts                   # UI-only reducer (no events state, no SET_EVENTS)
 
 types/
-  calendar.ts                     # CalendarEvent, Category, ViewType
+  calendar.ts                       # CalendarEvent, Category, ViewType, DialogState
 
 utils/
-  calendar-utils.ts               # date-fns helpers
+  calendar-utils.ts                 # date-fns helpers
 ```
 
 ---
 
-## Kategori → Warna (Semantic Tokens)
+## Component Tree
 
-| Kategori   | Dot BG (subtle)    | Contoh                          |
-| ---------- | ------------------ | ------------------------------- |
-| beasiswa   | `--accent-subtle`  | Seminar beasiswa, info beasiswa |
-| akademik   | `--info-subtle`    | Kelas, workshop akademik        |
-| sosial     | `--success-subtle` | Bakti sosial, gathering         |
-| olahraga   | `--warning-subtle` | Turnamen, senam                 |
-| pengumuman | `--accent-subtle`  | Announcement                    |
-| kaderisasi | `--danger-subtle`  | Rapat kaderisasi, pelatihan     |
+```
+TabKegiatan (features/account/profile/tab-kegiatan.tsx)
+  ├── CalendarMini (features/calendar/components/calendar-mini.tsx)
+  │     └── react-day-picker (v9, custom classNames API)
+  │
+  ├── SplitEventList (features/calendar/components/split-event-list.tsx)
+  │     ├── Segmented control (Harian / Agenda)
+  │     ├── "Kegiatan Sendiri" section
+  │     │     ├── EventSection (daily view) — uses EventListItem
+  │     │     └── AgendaGroup (agenda view) — uses EventListItem
+  │     ├── "Event Terdaftar" section
+  │     │     ├── ParticipantDaily — uses ParticipantEventRow (Link)
+  │     │     └── ParticipantAgenda — uses ParticipantEventRow (Link)
+  │     └── [+] button (opens add dialog)
+  │
+  └── EventDialog (features/calendar/components/event-dialog.tsx)
+        └── EventForm (components/field/calendar-event-form.tsx)
+              ├── Field + Input (title, time, location)
+              ├── Field + Select (category)
+              ├── Field + Textarea (description)
+              ├── Submit button (with LoaderCircle spinner)
+              └── Delete button (with LoaderCircle spinner)
+```
 
 ---
 
-## Types
+## Data Flow
+
+```
+server/data/users.ts → getProfileUser() (server action via React Query)
+       │
+       ├── user.participants[].event  → { judul, date, slug }
+       └── user.calendarEntries[]     → { id, title, date, time, location, category, description }
+       │
+       ▼
+   TabKegiatan (useProfileUser hook)
+       │  merge → CalendarEvent[] (dengan source: "participant" | "entry" + slug)
+       │
+       ▼
+   SplitEventList (render events)
+       │
+       ▼
+   EventDialog (on edit/add)
+       │  handleSave/createEntry/updateEntry → server action → DB
+       │  handleDelete/deleteEntry           → server action → DB
+       │
+       ▼
+   queryClient.invalidateQueries(["profileUser"]) → refetch → re-render
+```
+
+---
+
+## Types (types/calendar.ts)
 
 ```ts
-// types/index.ts
-export type Category =
-  | "beasiswa"
-  | "akademik"
-  | "sosial"
-  | "olahraga"
-  | "pengumuman"
-  | "kaderisasi";
-
 export type CalendarEvent = {
   id: string;
   title: string;
@@ -196,7 +177,8 @@ export type CalendarEvent = {
   location?: string;
   category: Category;
   description?: string;
-  source: "participant" | "entry"; // membedakan real event vs personal entry
+  slug?: string;              // untuk participant → link ke event detail
+  source: "participant" | "entry";
 };
 
 export type ViewType = "daily" | "agenda";
@@ -208,15 +190,27 @@ export type DialogState = {
 };
 ```
 
-**Perubahan:** Tambah field `source` di `CalendarEvent` untuk membedakan:
-- `"participant"` — dari tabel `Participants` (real event, read-only)
-- `"entry"` — dari tabel `CalendarEntry` (personal, bisa edit/hapus)
+---
+
+## useCalendar Hook (UI-only)
+
+```ts
+type State = { selectedDate: Date; view: ViewType; dialog: DialogState };
+type Action =
+  | { type: "SELECT_DATE"; payload: Date }
+  | { type: "SET_VIEW"; payload: ViewType }
+  | { type: "OPEN_DIALOG"; payload: { mode: "add" | "edit"; event?: CalendarEvent } }
+  | { type: "CLOSE_DIALOG" };
+```
+
+- **Tidak ada** penyimpanan events di state
+- **Tidak ada** SET_EVENTS action
+- Events di-pass sebagai props dari TabKegiatan (parent)
+- UI-only: selectedDate, view (daily/agenda), dialog state
 
 ---
 
-## Data Model — CalendarEntry (Prisma)
-
-Model baru di `prisma/schema.prisma` untuk personal calendar entries:
+## CalendarEntry Prisma Model
 
 ```prisma
 model CalendarEntry {
@@ -231,7 +225,6 @@ model CalendarEntry {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   @@index([userId])
   @@map("calendarEntry")
 }
@@ -239,215 +232,156 @@ model CalendarEntry {
 
 ---
 
-## Server Actions — `server/actions/calendar-entry.ts`
+## Server Actions (server/actions/calendar-entry.ts)
 
-### createEntry
-- Validasi: `studentAccount()` → userId dari session
-- Insert ke `CalendarEntry` dengan data: title, date, time, location, category, description
-- Return `TServerPrompt`
+| Action        | Validasi                              | Effect                        |
+| ------------- | ------------------------------------- | ----------------------------- |
+| createEntry   | studentAccount() → userId             | INSERT ke CalendarEntry       |
+| updateEntry   | entry.userId === session.user.id      | UPDATE field yang berubah     |
+| deleteEntry   | entry.userId === session.user.id      | DELETE dari DB                |
 
-### updateEntry
-- Validasi: entry milik user sendiri (userId === session.user.id)
-- Update field yang berubah
-- Return `TServerPrompt`
-
-### deleteEntry
-- Validasi: entry milik user sendiri
-- Delete dari DB
-- Return `TServerPrompt`
+Semua return `TServerPrompt { status, msg }`.
 
 ---
 
-## Data Flow (Updated)
+## Key Behaviors
 
-```
-useProfileUser() (React Query)
-       ↓
-  getProfileUser() server action
-       ├── user.participants[].event  → real events
-       └── user.calendarEntries[]     → personal entries
-       ↓
-  TabKegiatan
-       ↓  merge kedua sumber jadi CalendarEvent[] (tambah source field)
-       ↓
-  CalendarView (orchestrator)
-       ↓
-  useCalendar (useReducer — local UI state + async server calls)
-       ↓
-  event-list / event-dialog / calendar-mini
-       ↓
-  (add/edit/delete) → server action → React Query invalidation → re-render
-```
-
-**Aturan:**
-- Entries dengan `source: "participant"` → **read-only** (bisa dilihat, diklik → lihat detail)
-- Entries dengan `source: "entry"` → **bisa edit/hapus** via dialog
-- Yang bisa "Tambah Event" hanya personal entries (`CalendarEntry`)
-- Setelah server action sukses → `queryClient.invalidateQueries(["profileUser"])` → re-render otomatis
+| Element               | Personal Entry (source: "entry")                | Participant Event (source: "participant")      |
+| --------------------- | ----------------------------------------------- | ---------------------------------------------- |
+| Click                 | Opens EventDialog in edit mode                  | Navigasi ke `/home/acara/[slug]` via `<Link>`  |
+| Edit                  | ✅ Via dialog                                   | ❌ Read-only                                   |
+| Delete                | ✅ Tombol "Hapus event" di dialog               | ❌                                              |
+| Visual                | Full opacity, hover bg change                   | opacity-70, hover bg change                    |
+| Time                  | Dari field `event.time`                         | Dari `format(event.date, "HH:mm")` (DateTime)  |
 
 ---
 
-## Component Specifications
+## View Modes
 
-### calendar-mini.tsx
+### Harian (daily)
+- Filter events by `selectedDate` (isSameDay)
+- Dua section terpisah: personal entries + participant events
+- Empty states masing-masing section
 
-- Wrapper around react-day-picker (v9 `classNames` API)
-- Styled per Date picker spec di design-guideline.md Forms section
-- Tidak pakai `getDefaultClassNames()` — semua class custom
-- "Today": `ring-1 ring-accent rounded-full` (1px solid border, no fill)
-- "Selected": `bg-text-primary text-text-inverse rounded-full`
-- Nav arrows: Lucide `ChevronLeftIcon` / `ChevronRightIcon`, 16px, no button wrapper
-- Grid layout: `grid grid-cols-7` untuk `weekdays` dan `week`
-- Container: surface bg, 1px border-border, radius 10px, padding 12px
-
-```tsx
-type Props = {
-  selectedDate: Date;
-  onSelect: (date: Date) => void;
-  events: CalendarEvent[];
-};
-```
-
-### event-list.tsx
-
-- Date header: mono 0.8125rem text-secondary, uppercase locale ("SEL, 3 JUN 2025")
-- Divider-separated list (Card Variant B — horizontal, content-led)
-- Empty: centered text "Tidak ada kegiatan" + "Pilih tanggal lain"
-- **Tidak ada CTA button** — event list read-only, add/edit via entry source
-
-```tsx
-type Props = {
-  selectedDate: Date;
-  events: CalendarEvent[];
-  onEditEvent: (event: CalendarEvent) => void;
-  className?: string;
-};
-```
-
-### event-list-item.tsx
-
-- Horizontal layout: category dot | time (mono) | title + location stack
-- Category dot: 8px circle, `--{category}-subtle` bg, flex-shrink 0
-- Time column: mono 0.8125rem text-secondary, min-width 48px
-- Title: 0.875rem/600 text-primary, single line truncate
-- Location: 0.75rem text-disabled, single line truncate
-- Touch target: min 44px
-- Hover: `--surface-hover` bg
-- Click: opens edit dialog (hanya untuk `source: "entry"`)
-
-```tsx
-type Props = {
-  event: CalendarEvent;
-  onEdit: () => void;
-};
-```
-
-### category-dot.tsx
-
-- Pure CSS: 8px `rounded-full`, background via inline style
-- Map category → `var(--{name}-subtle)`
-
-```tsx
-type Props = {
-  category: Category;
-};
-```
-
-### calendar-view.tsx (Orchestrator)
-
-```tsx
-<CalendarMini selectedDate={...} onSelect={...} events={...} />
-<EventList selectedDate={...} events={...} onEditEvent={...} />
-<EventDialog
-  open={dialog.open}
-  mode={dialog.mode}
-  event={dialog.event}
-  onSave={handleSave}       // async — panggil server action
-  onDelete={dialog.mode === "edit" ? handleDelete : undefined}
-  onClose={closeDialog}
-/>
-```
-
-### event-dialog.tsx + event-form.tsx
-
-- @base-ui/react Dialog
-- Form: react-hook-form + zod validation
-- Fields: title (text), date (date picker), time (time), location (text), category (select), description (textarea)
-- Submit handler: async — panggil `createEntry` / `updateEntry`, lalu invalidate query
-- Delete: panggil `deleteEntry`, lalu invalidate query
-
-### agenda-view.tsx
-
-- Alternate view: all upcoming events grouped by month
-- Same event-item styling
-- Month separator: subheadline (0.6875rem uppercase text-disabled tracking 0.05em)
+### Agenda
+- Group semua events by date (via groupEventsByDate)
+- Sort asc by date
+- Date separator baris
+- Empty state hanya muncul kalo total events = 0
 
 ---
 
-## Desktop Split Layout Logic
+## Desktop Split Layout
 
 ```
-Mobile:                          Desktop:
-┌──────────────────────┐         ┌──────────────────────┬───────────────────────┐
-│  Calendar (full w)   │         │  Calendar (280px)    │  Event List (flex-1)  │
-│  ─────────────────── │         │  sticky, self-start  │                       │
-│  Date header         │         │                      │  Date header          │
-│  ─────────────────── │         │                      │  ───────────────────  │
-│  Event items         │         │                      │  Event items          │
-└──────────────────────┘         └──────────────────────┴───────────────────────┘
-```
-
-- Desktop: `md:flex-row`, gap 24px
-- Calendar panel: `md:basis-[280px] md:shrink-0 md:sticky md:top-4 md:self-start`
-- Event list: `flex-1 min-w-0`
-- Mobile: single column, calendar on top
-
----
-
-## Empty State
-
-```tsx
-<div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-  <p className="text-sm text-text-secondary">Tidak ada kegiatan</p>
-  <p className="text-xs text-text-disabled mt-1">
-    Pilih tanggal lain
-  </p>
+// Tailwind classes (desktop):
+<div className="flex flex-col md:flex-row md:gap-6">
+  <div className="md:basis-70 md:shrink-0 md:sticky md:top-4 md:self-start">
+    <CalendarMini />
+  </div>
+  <div className="flex-1 min-w-0 mt-4 md:mt-0">
+    <SplitEventList />
+  </div>
 </div>
 ```
 
----
-
-## Design Rules Check (vs design-guideline.md)
-
-| Rule                                       | Status                                                 |
-| ------------------------------------------ | ------------------------------------------------------ |
-| Use tokens, never hardcoded values         | ✅ All colors/spacing via CSS vars                     |
-| 8px grid for spacing                       | ✅                                                     |
-| Single column on mobile                    | ✅                                                     |
-| Mono for all data, dates, numbers          | ✅ Date header, time — mono                            |
-| One primary action per screen              | ✅ Tidak ada CTA, list read-only                       |
-| 44px minimum touch target                  | ✅                                                     |
-| No shadows on static elements              | ✅                                                     |
-| No colored button fills                    | ✅ Tidak ada button filled                             |
-| No colored dots (decorative)               | ⚠️ Category dots exist but functional, using subtle bg |
-| Lucide icons, outlined, strokeWidth 1.5    | ✅ Chevron nav via lucide-react                        |
-| Labels always uppercase                    | ✅ Date header uppercase                               |
-| Semantic colors on text/icons/borders only | ✅                                                     |
-| No hardcoded white/black                   | ✅ Uses tokens                                         |
+- Mobile: stack (calendar di atas, list di bawah)
+- Desktop: `md:flex-row`, gap 24px, calendar sticky (280px basis)
 
 ---
 
-## Urutan Implementasi (Sisa)
+## Design Tokens Used
 
-| #  | File                                          | What                                      |
-| -- | --------------------------------------------- | ----------------------------------------- |
-| 1  | `prisma/schema.prisma`                        | Tambah model `CalendarEntry`              |
-| 2  | `npx prisma migrate dev`                      | Generate migration                        |
-| 3  | `server/actions/calendar-entry.ts`            | createEntry, updateEntry, deleteEntry     |
-| 4  | `server/data/users.ts`                        | Include `calendarEntries` di getProfileUser |
-| 5  | `features/calendar/types/index.ts`            | Tambah field `source` di CalendarEvent    |
-| 6  | `features/account/profile/tab-kegiatan.tsx`   | Merge participants + calendarEntries      |
-| 7  | `features/calendar/hooks/use-calendar.ts`     | Ubah addEvent/updateEvent/deleteEvent jadi async |
-| 8  | `features/calendar/components/calendar-view.tsx` | handleSave async + invalidate query   |
-| 9  | `features/calendar/components/event-list-item.tsx` | Read-only state untuk participant source |
-| 10 | `npx tsc --noEmit && npm run build`           | Verify                                    |
+| Token              | Value (Light) | Value (Dark)  | Usage                              |
+| ------------------ | ------------- | ------------- | ---------------------------------- |
+| --bg               | #FFFFFF       | #141414       | Page background                    |
+| --surface          | #F7F7F5       | #1E1E1E       | Card container, segmented bg       |
+| --surface-hover    | #EFEFED       | #272727       | Hover state, segmented bg          |
+| --surface-active   | #E8E8E5       | #2F2F2F       | Active/pressed state               |
+| --border           | #E8E8E5       | #2A2A2A       | Dividers, borders                  |
+| --text-primary     | #1A1A19       | #E8E8E6       | Titles, active text                |
+| --text-secondary   | #6B6B68       | #8C8C8A       | Body text, date header, time       |
+| --text-disabled    | #AFAFAC       | #5A5A58       | Labels, empty state, subtle text   |
+| --accent           | #0F7DDB       | #3B9EFF       | Today ring, focus-visible          |
+| --accent-subtle    | rgba(...0.08) |               | Category dot: beasiswa, pengumuman |
+| --info-subtle      | rgba(...0.08) |               | Category dot: akademik             |
+| --success-subtle   | rgba(...0.08) |               | Category dot: sosial               |
+| --warning-subtle   | rgba(...0.08) |               | Category dot: olahraga             |
+| --danger-subtle    | rgba(...0.08) |               | Category dot: kaderisasi           |
+
+---
+
+## Empty States
+
+Setiap section di SplitEventList punya empty state sendiri:
+
+| Section          | Daily View                        | Agenda View                              |
+| ---------------- | --------------------------------- | ---------------------------------------- |
+| Kegiatan Sendiri | "Belum ada catatan pribadi" +     | "Belum ada catatan pribadi"              |
+|                  | "Tambah kegiatan untuk tanggal ini" |                                          |
+| Event Terdaftar  | "Belum terdaftar di event"        | "Belum terdaftar di event"               |
+
+---
+
+## Loading States
+
+| Action  | Indikator                           | Component         |
+| ------- | ----------------------------------- | ----------------- |
+| Submit  | `LoaderCircle` animate-spin + "Menyimpan..." | Submit button (disabled) |
+| Delete  | `LoaderCircle` animate-spin + "Menghapus..." | Delete button (disabled, opacity-50) |
+
+- `isSubmitting` dan `isDeleting` state dipisah (bisa submit sambil delete? gak, tapi states terpisah untuk kontrol yang jelas)
+- `try/finally` → state di-reset even kalo error
+- Dialog nutup setelah sukses (kalo error, tetap terbuka)
+
+---
+
+## iOS Auto-Zoom Fix
+
+- Input/textarea/select font-size: `text-base` (16px)
+- Ini threshold minimum iOS Safari supaya gak auto-zoom pas focus
+- Berlaku di semua form, bukan cuma calendar
+- Gak perlu `maximum-scale=1` — lebih accessible
+
+---
+
+## Aturan File Placement
+
+1. **hooks/**, **types/**, **utils/** — root level, *bukan* di `features/<name>/`
+2. **Form field components** — `components/field/<feature>-form.tsx`, *bukan* di `features/<name>/components/`
+3. **UI primitives** — `components/ui/` (button, input, dialog, dll.)
+4. **Feature components** — `features/<name>/components/` (komponen spesifik UI, bukan form)
+
+---
+
+## Design Rules Check
+
+| Rule                                       | Status                                                      |
+| ------------------------------------------ | ----------------------------------------------------------- |
+| Use tokens, never hardcoded values         | ✅ All colors/spacing via CSS vars                          |
+| 8px grid for spacing                       | ✅                                                          |
+| Single column on mobile                    | ✅                                                          |
+| Mono for all data, dates, numbers          | ✅ Date header, time — mono                                 |
+| 44px minimum touch target                  | ✅ min-h-11 (44px)                                          |
+| No shadows on static elements             | ✅ shadow-none default                                      |
+| No colored button fills                   | ✅                                                          |
+| Lucide icons, strokeWidth 1.5              | ✅ Chevron, Plus, LoaderCircle                              |
+| Labels always uppercase                    | ✅ Date header uppercase                                    |
+| Semantic colors on text/icons/borders only | ✅                                                          |
+| No hardcoded white/black                   | ✅ Uses tokens                                              |
+| @tanstack/react-form for forms             | ✅ calendar-event-form.tsx                                  |
+| components/ui/ primitives for field inputs | ✅ Field, Input, Textarea, Select                           |
+| components/field/ for form components      | ✅ calendar-event-form.tsx                                  |
+
+---
+
+## Potensi Pengembangan ke Depan
+
+- [ ] Drag & drop reschedule (drag event ke tanggal lain di mini calendar)
+- [ ] Repeat/recurring events
+- [ ] Color picker per kategori (kustom)
+- [ ] Export calendar (iCal/CSV)
+- [ ] Sync dengan Google Calendar
+- [ ] Notifikasi reminder
+- [ ] Week view (alternate layout)
+- [ ] Search/filter events
