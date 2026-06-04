@@ -60,7 +60,7 @@ components/
 ├── layout/           # Layout wrappers: home-layout, responsive-page-container
 ├── shared/           # Cross-cutting: share-popover, delete-dialog, nav-main-event
 ├── cards/            # Reusable cards: card-event, card-news
-├── field/            # Form fields: event-form, news-form, create-bantuan
+├── field/            # Form fields: event-form, calendar-event-form, news-form, create-bantuan
 ├── providers/        # React context: realtime, tanstack-query, theme
 ├── sections/         # Landing page: navbar, hero, features, footer
 ├── skeletons/        # Loading skeletons
@@ -88,7 +88,7 @@ Setiap fitur adalah sub-direktori. Komponen spesifik-fitur taruh di `features/<f
 ```
 features/
 ├── calendar/
-│   └── components/         # calendar-view, calendar-mini, event-list, event-form, dll.
+│   └── components/         # calendar-view, calendar-mini, event-list, event-dialog, dll.
 ├── account/
 │   ├── auth/
 │   ├── profile/            # tab-kegiatan, profile-header, profile-content
@@ -224,6 +224,7 @@ schemas/
 | Page/route | `app/` | `app/(protected)/home/profile/page.tsx` |
 | Shared UI component | `components/ui/` | `components/ui/button.tsx` |
 | Feature component | `features/<name>/components/` | `features/calendar/components/calendar-mini.tsx` |
+| Field form | `components/field/` | `components/field/calendar-event-form.tsx` |
 | Custom hook | `hooks/` | `hooks/use-calendar.ts` |
 | Type definition | `types/` | `types/calendar.ts` |
 | Utility function | `utils/` | `utils/calendar-utils.ts` |

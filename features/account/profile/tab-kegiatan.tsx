@@ -1,7 +1,17 @@
 "use client";
 
+import { useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import type { TgetProfileUser } from "@/server/data/users";
-import { CalendarView } from "@/features/calendar/components/calendar-view";
+import { CalendarMini } from "@/features/calendar/components/calendar-mini";
+import { SplitEventList } from "@/features/calendar/components/split-event-list";
+import { EventDialog } from "@/features/calendar/components/event-dialog";
+import { useCalendar } from "@/hooks/use-calendar";
+import {
+  createEntry,
+  updateEntry,
+  deleteEntry,
+} from "@/server/actions/calendar-entry";
 import type { CalendarEvent, Category } from "@/types/calendar";
 
 type Props = {
@@ -9,11 +19,20 @@ type Props = {
 };
 
 export const TabKegiatan = ({ user }: Props) => {
+  const queryClient = useQueryClient();
+  const { state, selectDate, setView, openAddDialog, openEditDialog, closeDialog } =
+    useCalendar();
+
+  const invalidate = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ["profileUser"] });
+  }, [queryClient]);
+
   const participantEvents: CalendarEvent[] = (user.participants || []).map(
     (p) => ({
       id: p.id,
       title: p.event.judul,
       date: new Date(p.event.date),
+      slug: p.event.slug,
       category: "beasiswa" as Category,
       source: "participant" as const,
     }),
@@ -32,11 +51,86 @@ export const TabKegiatan = ({ user }: Props) => {
     }),
   );
 
-  const events = [...participantEvents, ...personalEntries];
+  const handleSave = useCallback(
+    async (data: {
+      title: string;
+      date: Date;
+      time?: string;
+      location?: string;
+      category: Category;
+      description?: string;
+    }) => {
+      if (state.dialog.mode === "add") {
+        await createEntry({
+          title: data.title,
+          date: data.date,
+          time: data.time,
+          location: data.location,
+          category: data.category,
+          description: data.description,
+        });
+      } else if (state.dialog.event && state.dialog.event.source === "entry") {
+        await updateEntry(state.dialog.event.id, {
+          title: data.title,
+          date: data.date,
+          time: data.time,
+          location: data.location,
+          category: data.category,
+          description: data.description,
+        });
+      }
+      invalidate();
+      closeDialog();
+    },
+    [state.dialog, invalidate, closeDialog],
+  );
+
+  const handleDelete = useCallback(async () => {
+    if (state.dialog.event && state.dialog.event.source === "entry") {
+      await deleteEntry(state.dialog.event.id);
+      invalidate();
+    }
+    closeDialog();
+  }, [state.dialog.event, invalidate, closeDialog]);
+
+  const isParticipant = state.dialog.event?.source === "participant";
 
   return (
-    <div className="mt-4">
-      <CalendarView events={events} />
+    <div className="mt-4 flex flex-col md:flex-row md:gap-6">
+      <div className="md:basis-70 md:shrink-0 md:sticky md:top-4 md:self-start">
+        <CalendarMini
+          selectedDate={state.selectedDate}
+          onSelect={selectDate}
+          events={[...participantEvents, ...personalEntries]}
+        />
+      </div>
+
+      <div className="flex-1 min-w-0 mt-4 md:mt-0">
+        <SplitEventList
+          selectedDate={state.selectedDate}
+          view={state.view}
+          onViewChange={setView}
+          personalEntries={personalEntries}
+          participantEvents={participantEvents}
+          onAddEvent={openAddDialog}
+          onEditEvent={openEditDialog}
+          className="border border-border rounded-lg bg-card"
+        />
+      </div>
+
+      <EventDialog
+        open={state.dialog.open}
+        mode={state.dialog.mode}
+        event={state.dialog.event}
+        defaultDate={state.dialog.mode === "add" ? state.selectedDate : undefined}
+        onSave={handleSave}
+        onDelete={
+          state.dialog.mode === "edit" && !isParticipant
+            ? handleDelete
+            : undefined
+        }
+        onClose={closeDialog}
+      />
     </div>
   );
 };

@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { EventForm } from "./event-form";
+import { EventForm } from "@/components/field/calendar-event-form";
 import type { CalendarEvent, Category } from "@/types/calendar";
 
 type Props = {
