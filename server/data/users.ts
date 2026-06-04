@@ -42,6 +42,7 @@ export const getProfileUser = async () => {
             select: {
               judul: true,
               date: true,
+              slug: true,
             },
           },
         },

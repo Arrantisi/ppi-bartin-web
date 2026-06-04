@@ -1,4 +1,4 @@
-import type { Category } from "../types";
+import type { Category } from "@/types/calendar";
 
 const categoryStyles: Record<Category, { bg: string }> = {
   beasiswa: { bg: "var(--accent-subtle)" },

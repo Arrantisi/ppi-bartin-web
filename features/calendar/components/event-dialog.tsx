@@ -6,13 +6,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { EventForm } from "./event-form";
-import type { CalendarEvent, Category } from "../types";
+import { EventForm } from "@/components/field/calendar-event-form";
+import type { CalendarEvent, Category } from "@/types/calendar";
 
 type Props = {
   open: boolean;
   mode: "add" | "edit";
   event?: CalendarEvent;
+  defaultDate?: Date;
   onSave: (data: {
     title: string;
     date: Date;
@@ -24,16 +25,19 @@ type Props = {
   onDelete?: () => void;
   onClose: () => void;
   isSubmitting?: boolean;
+  isDeleting?: boolean;
 };
 
 export const EventDialog = ({
   open,
   mode,
   event,
+  defaultDate,
   onSave,
   onDelete,
   onClose,
   isSubmitting,
+  isDeleting,
 }: Props) => {
   const isReadOnly = event?.source === "participant";
 
@@ -42,7 +46,11 @@ export const EventDialog = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {isReadOnly ? "Detail Kegiatan" : mode === "add" ? "Tambah Event" : "Edit Event"}
+            {isReadOnly
+              ? "Detail Kegiatan"
+              : mode === "add"
+                ? "Tambah Event"
+                : "Edit Event"}
           </DialogTitle>
         </DialogHeader>
 
@@ -52,7 +60,7 @@ export const EventDialog = ({
           onSubmit={(data) =>
             onSave({
               title: data.title,
-              date: new Date(data.date),
+              date: mode === "edit" && event ? event.date : (defaultDate || new Date()),
               time: data.time || undefined,
               location: data.location || undefined,
               category: data.category as Category,
@@ -62,6 +70,7 @@ export const EventDialog = ({
           onCancel={onClose}
           onDelete={mode === "edit" && !isReadOnly ? onDelete : undefined}
           isSubmitting={isSubmitting}
+          isDeleting={isDeleting}
         />
       </DialogContent>
     </Dialog>

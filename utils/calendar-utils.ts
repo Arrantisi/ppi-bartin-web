@@ -1,6 +1,13 @@
-import { format, isSameDay, isToday, parseISO, startOfDay, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth } from "date-fns";
+import {
+  format,
+  isSameDay,
+  isToday,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+} from "date-fns";
 import { id } from "date-fns/locale/id";
-import type { CalendarEvent } from "../types";
+import type { CalendarEvent } from "@/types/calendar";
 
 export function formatDateHeader(date: Date): string {
   return format(date, "EEEE, d MMMM yyyy", { locale: id }).toUpperCase();
@@ -19,7 +26,10 @@ export function formatMonthYear(date: Date): string {
   return format(date, "MMMM yyyy", { locale: id });
 }
 
-export function getEventsForDate(events: CalendarEvent[], date: Date): CalendarEvent[] {
+export function getEventsForDate(
+  events: CalendarEvent[],
+  date: Date,
+): CalendarEvent[] {
   return events.filter((event) => isSameDay(event.date, date));
 }
 
@@ -69,7 +79,9 @@ export function getCalendarDays(date: Date): (Date | null)[] {
   return padded;
 }
 
-export function groupEventsByDate(events: CalendarEvent[]): Map<string, CalendarEvent[]> {
+export function groupEventsByDate(
+  events: CalendarEvent[],
+): Map<string, CalendarEvent[]> {
   const groups = new Map<string, CalendarEvent[]>();
   for (const event of events) {
     const key = format(event.date, "yyyy-MM-dd");

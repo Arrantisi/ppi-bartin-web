@@ -14,6 +14,7 @@ export type CalendarEvent = {
   location?: string;
   category: Category;
   description?: string;
+  slug?: string;
   source: "participant" | "entry";
 };
 
