@@ -3,9 +3,9 @@
 import { format } from "date-fns";
 import { id } from "date-fns/locale/id";
 import { cn } from "@/lib/utils";
+import { sortEventsByDate } from "@/utils/calendar-utils";
+import type { CalendarEvent } from "@/types/calendar";
 import { EventListItem } from "./event-list-item";
-import { sortEventsByDate } from "../utils/calendar-utils";
-import type { CalendarEvent } from "../types";
 
 type Props = {
   events: CalendarEvent[];
@@ -38,7 +38,9 @@ export const AgendaView = ({ events, onEditEvent, className }: Props) => {
               <div key={event.id}>
                 <div className="px-4 pt-4 pb-1">
                   <p className="font-mono text-xs text-text-disabled">
-                    {format(event.date, "EEE, d MMM", { locale: id }).toUpperCase()}
+                    {format(event.date, "EEE, d MMM", {
+                      locale: id,
+                    }).toUpperCase()}
                   </p>
                 </div>
                 <EventListItem
@@ -61,7 +63,9 @@ export const AgendaView = ({ events, onEditEvent, className }: Props) => {
               <div key={event.id}>
                 <div className="px-4 pt-4 pb-1">
                   <p className="font-mono text-xs text-text-disabled">
-                    {format(event.date, "EEE, d MMM", { locale: id }).toUpperCase()}
+                    {format(event.date, "EEE, d MMM", {
+                      locale: id,
+                    }).toUpperCase()}
                   </p>
                 </div>
                 <EventListItem

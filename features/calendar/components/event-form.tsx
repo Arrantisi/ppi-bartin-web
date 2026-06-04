@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import type { CalendarEvent, Category } from "../types";
+import type { CalendarEvent, Category } from "@/types/calendar";
 
 const categories: { value: Category; label: string }[] = [
   { value: "beasiswa", label: "Beasiswa" },

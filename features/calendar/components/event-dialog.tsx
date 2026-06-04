@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { EventForm } from "./event-form";
-import type { CalendarEvent, Category } from "../types";
+import type { CalendarEvent, Category } from "@/types/calendar";
 
 type Props = {
   open: boolean;
@@ -42,7 +42,11 @@ export const EventDialog = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {isReadOnly ? "Detail Kegiatan" : mode === "add" ? "Tambah Event" : "Edit Event"}
+            {isReadOnly
+              ? "Detail Kegiatan"
+              : mode === "add"
+                ? "Tambah Event"
+                : "Edit Event"}
           </DialogTitle>
         </DialogHeader>
 

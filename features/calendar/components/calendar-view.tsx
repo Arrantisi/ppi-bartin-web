@@ -6,13 +6,13 @@ import { cn } from "@/lib/utils";
 import { CalendarMini } from "./calendar-mini";
 import { EventList } from "./event-list";
 import { EventDialog } from "./event-dialog";
-import { useCalendar } from "../hooks/use-calendar";
+import { useCalendar } from "@/hooks/use-calendar";
 import {
   createEntry,
   updateEntry,
   deleteEntry,
 } from "@/server/actions/calendar-entry";
-import type { CalendarEvent, Category } from "../types";
+import type { CalendarEvent, Category } from "@/types/calendar";
 
 type Props = {
   events?: CalendarEvent[];

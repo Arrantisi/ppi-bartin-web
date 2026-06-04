@@ -3,7 +3,7 @@
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CategoryDot } from "./category-dot";
-import type { CalendarEvent } from "../types";
+import type { CalendarEvent } from "@/types/calendar";
 
 type Props = {
   event: CalendarEvent;
@@ -25,9 +25,11 @@ export const EventListItem = ({ event, onEdit }: Props) => {
         isParticipant && "cursor-default opacity-70 hover:bg-transparent",
       )}
     >
-      <CategoryDot category={event.category} />
-      <span className="mt-0.5 shrink-0 font-mono text-xs leading-[1.4] text-text-secondary w-10 tabular-nums">
-        {time}
+      <span className="flex items-center gap-3 mt-0.5">
+        <CategoryDot category={event.category} />
+        <span className="shrink-0 font-mono text-xs leading-[1.4] text-text-secondary w-10 tabular-nums">
+          {time}
+        </span>
       </span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold text-text-primary">

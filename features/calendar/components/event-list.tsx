@@ -4,8 +4,12 @@ import { PlusIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { EventListItem } from "./event-list-item";
-import { formatDateHeader, sortEventsByDate, getEventsForDate } from "../utils/calendar-utils";
-import type { CalendarEvent } from "../types";
+import {
+  formatDateHeader,
+  sortEventsByDate,
+  getEventsForDate,
+} from "@/utils/calendar-utils";
+import type { CalendarEvent } from "@/types/calendar";
 
 type Props = {
   selectedDate: Date;
@@ -43,9 +47,7 @@ export const EventList = ({
 
       {todayEvents.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-          <p className="text-sm text-text-secondary">
-            Tidak ada kegiatan
-          </p>
+          <p className="text-sm text-text-secondary">Tidak ada kegiatan</p>
           <p className="text-xs text-text-disabled mt-1">
             Pilih tanggal lain atau tambah kegiatan baru
           </p>
@@ -61,7 +63,6 @@ export const EventList = ({
           ))}
         </div>
       )}
-
     </div>
   );
 };

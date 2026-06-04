@@ -2,7 +2,7 @@
 
 import type { TgetProfileUser } from "@/server/data/users";
 import { CalendarView } from "@/features/calendar/components/calendar-view";
-import type { CalendarEvent, Category } from "@/features/calendar/types";
+import type { CalendarEvent, Category } from "@/types/calendar";
 
 type Props = {
   user: NonNullable<TgetProfileUser>;
@@ -19,18 +19,18 @@ export const TabKegiatan = ({ user }: Props) => {
     }),
   );
 
-  const personalEntries: CalendarEvent[] = (
-    user.calendarEntries || []
-  ).map((e) => ({
-    id: e.id,
-    title: e.title,
-    date: new Date(e.date),
-    time: e.time ?? undefined,
-    location: e.location ?? undefined,
-    category: e.category as Category,
-    description: e.description ?? undefined,
-    source: "entry" as const,
-  }));
+  const personalEntries: CalendarEvent[] = (user.calendarEntries || []).map(
+    (e) => ({
+      id: e.id,
+      title: e.title,
+      date: new Date(e.date),
+      time: e.time ?? undefined,
+      location: e.location ?? undefined,
+      category: e.category as Category,
+      description: e.description ?? undefined,
+      source: "entry" as const,
+    }),
+  );
 
   const events = [...participantEvents, ...personalEntries];
 

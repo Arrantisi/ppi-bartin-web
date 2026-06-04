@@ -3,8 +3,8 @@
 import { DayPicker } from "react-day-picker";
 import { id } from "date-fns/locale/id";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { hasEventOnDate } from "../utils/calendar-utils";
-import type { CalendarEvent } from "../types";
+import { hasEventOnDate } from "@/utils/calendar-utils";
+import type { CalendarEvent } from "@/types/calendar";
 
 type Props = {
   selectedDate: Date;
