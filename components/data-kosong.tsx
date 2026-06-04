@@ -13,7 +13,7 @@ export const DataKosong = ({
 
   return (
     <div className="flex flex-col items-center justify-center p-10 mt-4 text-center animate-in fade-in zoom-in duration-300">
-      <div className="flex h-20 w-20 items-center justify-center rounded-full border border-border bg-surface-secondary text-text-primary">
+      <div className="flex h-20 w-20 items-center justify-center rounded-full border border-border bg-surface-hover text-text-primary">
         {catagory === "Acara" ? (
           <IconCalendarOff className="h-10 w-10" />
         ) : (

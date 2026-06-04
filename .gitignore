@@ -49,7 +49,7 @@ next-env.d.ts
 /.understand-anything/
 restructure-program-goal/
 
-# # opencode config
-# /skills/
-# /AGEND.md
-# /design-guideline.md
+# opencode config
+/skills/
+/AGEND.md
+/design-guideline.md

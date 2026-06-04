@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import type { TgetProfileUser } from "@/server/data/users";
 import { CalendarMini } from "@/features/calendar/components/calendar-mini";
@@ -20,6 +20,8 @@ type Props = {
 
 export const TabKegiatan = ({ user }: Props) => {
   const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { state, selectDate, setView, openAddDialog, openEditDialog, closeDialog } =
     useCalendar();
 
@@ -60,37 +62,47 @@ export const TabKegiatan = ({ user }: Props) => {
       category: Category;
       description?: string;
     }) => {
-      if (state.dialog.mode === "add") {
-        await createEntry({
-          title: data.title,
-          date: data.date,
-          time: data.time,
-          location: data.location,
-          category: data.category,
-          description: data.description,
-        });
-      } else if (state.dialog.event && state.dialog.event.source === "entry") {
-        await updateEntry(state.dialog.event.id, {
-          title: data.title,
-          date: data.date,
-          time: data.time,
-          location: data.location,
-          category: data.category,
-          description: data.description,
-        });
+      setIsSubmitting(true);
+      try {
+        if (state.dialog.mode === "add") {
+          await createEntry({
+            title: data.title,
+            date: data.date,
+            time: data.time,
+            location: data.location,
+            category: data.category,
+            description: data.description,
+          });
+        } else if (state.dialog.event && state.dialog.event.source === "entry") {
+          await updateEntry(state.dialog.event.id, {
+            title: data.title,
+            date: data.date,
+            time: data.time,
+            location: data.location,
+            category: data.category,
+            description: data.description,
+          });
+        }
+        invalidate();
+        closeDialog();
+      } finally {
+        setIsSubmitting(false);
       }
-      invalidate();
-      closeDialog();
     },
     [state.dialog, invalidate, closeDialog],
   );
 
   const handleDelete = useCallback(async () => {
-    if (state.dialog.event && state.dialog.event.source === "entry") {
-      await deleteEntry(state.dialog.event.id);
-      invalidate();
+    setIsDeleting(true);
+    try {
+      if (state.dialog.event && state.dialog.event.source === "entry") {
+        await deleteEntry(state.dialog.event.id);
+        invalidate();
+      }
+      closeDialog();
+    } finally {
+      setIsDeleting(false);
     }
-    closeDialog();
   }, [state.dialog.event, invalidate, closeDialog]);
 
   const isParticipant = state.dialog.event?.source === "participant";
@@ -130,6 +142,8 @@ export const TabKegiatan = ({ user }: Props) => {
             : undefined
         }
         onClose={closeDialog}
+        isSubmitting={isSubmitting}
+        isDeleting={isDeleting}
       />
     </div>
   );

@@ -212,7 +212,7 @@ export const SplitEventList = ({
           {formatDateHeader(selectedDate)}
         </p>
         <div className="flex items-center gap-2">
-          <div className="flex rounded-lg bg-surface-secondary p-0.5">
+          <div className="flex rounded-lg bg-surface-hover p-0.5">
             <button
               type="button"
               onClick={() => onViewChange("daily")}

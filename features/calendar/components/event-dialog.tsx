@@ -25,6 +25,7 @@ type Props = {
   onDelete?: () => void;
   onClose: () => void;
   isSubmitting?: boolean;
+  isDeleting?: boolean;
 };
 
 export const EventDialog = ({
@@ -36,6 +37,7 @@ export const EventDialog = ({
   onDelete,
   onClose,
   isSubmitting,
+  isDeleting,
 }: Props) => {
   const isReadOnly = event?.source === "participant";
 
@@ -68,6 +70,7 @@ export const EventDialog = ({
           onCancel={onClose}
           onDelete={mode === "edit" && !isReadOnly ? onDelete : undefined}
           isSubmitting={isSubmitting}
+          isDeleting={isDeleting}
         />
       </DialogContent>
     </Dialog>

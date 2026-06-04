@@ -2,6 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
+import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -41,6 +42,7 @@ type Props = {
   onCancel: () => void;
   onDelete?: () => void;
   isSubmitting?: boolean;
+  isDeleting?: boolean;
 };
 
 export const EventForm = ({
@@ -50,6 +52,7 @@ export const EventForm = ({
   onCancel,
   onDelete,
   isSubmitting,
+  isDeleting,
 }: Props) => {
   const form = useForm({
     defaultValues: {
@@ -193,6 +196,9 @@ export const EventForm = ({
             disabled={isSubmitting}
             className="flex-1"
           >
+            {isSubmitting ? (
+              <LoaderCircle className="size-4 animate-spin" />
+            ) : null}
             {isSubmitting ? "Menyimpan..." : event ? "Simpan" : "Tambah"}
           </Button>
         </div>
@@ -215,9 +221,13 @@ export const EventForm = ({
         <button
           type="button"
           onClick={onDelete}
-          className="self-center text-xs text-danger hover:text-danger/80 active:text-danger/60 transition-colors mt-1 hover:bg-danger/10 active:bg-danger/15 w-full py-1.5 rounded-lg"
+          disabled={isDeleting}
+          className="flex items-center justify-center gap-2 self-center text-xs text-danger hover:text-danger/80 active:text-danger/60 transition-colors mt-1 hover:bg-danger/10 active:bg-danger/15 w-full py-1.5 rounded-lg disabled:opacity-50"
         >
-          Hapus event
+          {isDeleting ? (
+            <LoaderCircle className="size-3.5 animate-spin" />
+          ) : null}
+          {isDeleting ? "Menghapus..." : "Hapus event"}
         </button>
       )}
     </form>
