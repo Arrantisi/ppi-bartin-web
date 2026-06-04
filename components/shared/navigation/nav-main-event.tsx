@@ -51,7 +51,7 @@ const BottomNav = ({ show }: { show: boolean }) => {
     >
       <div className="flex items-stretch justify-center px-1 gap-1 w-full h-full">
         {navItems.map((e) => {
-          const isActive = e.url === params;
+          const isActive = params === e.url || (e.url !== "/home" && params.startsWith(e.url + "/"));
 
           return (
             <Link
@@ -120,7 +120,7 @@ const DesktopSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
         <SidebarGroupLabel>Menu</SidebarGroupLabel>
         <SidebarMenu>
           {navItems.map((e) => {
-            const isActive = e.url === params;
+            const isActive = params === e.url || (e.url !== "/home" && params.startsWith(e.url + "/"));
 
             return (
               <SidebarMenuItem key={e.title}>

@@ -46,6 +46,17 @@ export const getProfileUser = async () => {
           },
         },
       },
+      calendarEntries: {
+        select: {
+          id: true,
+          title: true,
+          date: true,
+          time: true,
+          location: true,
+          category: true,
+          description: true,
+        },
+      },
     },
   });
 };
