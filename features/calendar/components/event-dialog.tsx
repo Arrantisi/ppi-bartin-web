@@ -13,6 +13,7 @@ type Props = {
   open: boolean;
   mode: "add" | "edit";
   event?: CalendarEvent;
+  defaultDate?: Date;
   onSave: (data: {
     title: string;
     date: Date;
@@ -30,6 +31,7 @@ export const EventDialog = ({
   open,
   mode,
   event,
+  defaultDate,
   onSave,
   onDelete,
   onClose,
@@ -56,7 +58,7 @@ export const EventDialog = ({
           onSubmit={(data) =>
             onSave({
               title: data.title,
-              date: new Date(data.date),
+              date: mode === "edit" && event ? event.date : (defaultDate || new Date()),
               time: data.time || undefined,
               location: data.location || undefined,
               category: data.category as Category,

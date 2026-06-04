@@ -4,14 +4,12 @@ import { useReducer, useCallback } from "react";
 import type { CalendarEvent, ViewType, DialogState } from "@/types/calendar";
 
 type State = {
-  events: CalendarEvent[];
   selectedDate: Date;
   view: ViewType;
   dialog: DialogState;
 };
 
 type Action =
-  | { type: "SET_EVENTS"; payload: CalendarEvent[] }
   | { type: "SELECT_DATE"; payload: Date }
   | { type: "SET_VIEW"; payload: ViewType }
   | { type: "OPEN_DIALOG"; payload: { mode: "add" | "edit"; event?: CalendarEvent } }
@@ -19,8 +17,6 @@ type Action =
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case "SET_EVENTS":
-      return { ...state, events: action.payload };
     case "SELECT_DATE":
       return { ...state, selectedDate: action.payload };
     case "SET_VIEW":
@@ -41,17 +37,13 @@ function reducer(state: State, action: Action): State {
 }
 
 const initialState: State = {
-  events: [],
   selectedDate: new Date(),
   view: "daily",
   dialog: { open: false, mode: "add" },
 };
 
-export function useCalendar(initialEvents: CalendarEvent[] = []) {
-  const [state, dispatch] = useReducer(reducer, {
-    ...initialState,
-    events: initialEvents,
-  });
+export function useCalendar() {
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const selectDate = useCallback((date: Date) => {
     dispatch({ type: "SELECT_DATE", payload: date });
@@ -73,10 +65,6 @@ export function useCalendar(initialEvents: CalendarEvent[] = []) {
     dispatch({ type: "CLOSE_DIALOG" });
   }, []);
 
-  const setEvents = useCallback((events: CalendarEvent[]) => {
-    dispatch({ type: "SET_EVENTS", payload: events });
-  }, []);
-
   return {
     state,
     selectDate,
@@ -84,6 +72,5 @@ export function useCalendar(initialEvents: CalendarEvent[] = []) {
     openAddDialog,
     openEditDialog,
     closeDialog,
-    setEvents,
   };
 }

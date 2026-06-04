@@ -17,7 +17,6 @@ const categories: { value: Category; label: string }[] = [
 
 const eventSchema = z.object({
   title: z.string().min(1, "Judul harus diisi"),
-  date: z.string().min(1, "Tanggal harus diisi"),
   time: z.string().optional(),
   location: z.string().optional(),
   category: z.string().min(1, "Kategori harus dipilih"),
@@ -52,7 +51,6 @@ export const EventForm = ({
     defaultValues: event
       ? {
           title: event.title,
-          date: event.date.toISOString().split("T")[0],
           time: event.time || "",
           location: event.location || "",
           category: event.category,
@@ -60,7 +58,6 @@ export const EventForm = ({
         }
       : {
           title: "",
-          date: new Date().toISOString().split("T")[0],
           time: "",
           location: "",
           category: "",
@@ -87,22 +84,6 @@ export const EventForm = ({
         />
         {errors.title && (
           <p className="text-xs text-danger mt-1">{errors.title.message}</p>
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <label className="field-label" htmlFor="date">
-          Tanggal
-        </label>
-        <input
-          id="date"
-          type="date"
-          {...register("date")}
-          className={inputClass}
-          readOnly={readOnly}
-        />
-        {errors.date && (
-          <p className="text-xs text-danger mt-1">{errors.date.message}</p>
         )}
       </div>
 
@@ -205,7 +186,7 @@ export const EventForm = ({
         <button
           type="button"
           onClick={onDelete}
-          className="self-center text-xs text-danger hover:text-danger/80 transition-colors mt-1 hover:bg-danger/10 w-full py-1.5 rounded-lg"
+          className="self-center text-xs text-danger hover:text-danger/80 active:text-danger/60 transition-colors mt-1 hover:bg-danger/10 active:bg-danger/15 w-full py-1.5 rounded-lg"
         >
           Hapus event
         </button>

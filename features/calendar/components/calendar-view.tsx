@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import { CalendarMini } from "./calendar-mini";
@@ -22,12 +22,7 @@ type Props = {
 export const CalendarView = ({ events = [], className }: Props) => {
   const queryClient = useQueryClient();
   const { state, selectDate, openAddDialog, openEditDialog, closeDialog } =
-    useCalendar(events);
-
-  const currentEvents = useMemo(
-    () => (state.view === "daily" ? state.events : state.events),
-    [state.events, state.view],
-  );
+    useCalendar();
 
   const invalidate = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ["profileUser"] });
@@ -83,16 +78,16 @@ export const CalendarView = ({ events = [], className }: Props) => {
         <CalendarMini
           selectedDate={state.selectedDate}
           onSelect={selectDate}
-          events={currentEvents}
+          events={events}
         />
       </div>
 
       <div className="flex-1 min-w-0 mt-4 md:mt-0">
         <EventList
           selectedDate={state.selectedDate}
-          events={currentEvents}
-          onEditEvent={openEditDialog}
+          events={events}
           onAddEvent={openAddDialog}
+          onEditEvent={openEditDialog}
           className="border border-border rounded-lg bg-card"
         />
       </div>
@@ -101,6 +96,7 @@ export const CalendarView = ({ events = [], className }: Props) => {
         open={state.dialog.open}
         mode={state.dialog.mode}
         event={state.dialog.event}
+        defaultDate={state.dialog.mode === "add" ? state.selectedDate : undefined}
         onSave={handleSave}
         onDelete={
           state.dialog.mode === "edit" && !isParticipant
