@@ -57,7 +57,7 @@ const CardEvent = ({
           />
           <div className="absolute right-2.5 top-2.5 inline-flex items-center gap-1.5">
             {props.environment && props.environment !== "production" && (
-              <span className="rounded-[4px] bg-[rgba(0,0,0,.55)] px-1.5 py-0.75 font-mono text-[0.625rem] font-medium leading-[1.4] text-white backdrop-blur-[4px]">
+              <span className="rounded-[4px] bg-[rgba(0,0,0,.55)] px-1.5 py-0.75 font-mono text-[0.625rem] font-medium leading-[1.4] text-white backdrop-blur-xs">
                 {props.environment === "local" ? "LOCAL" : "PREVIEW"}
               </span>
             )}
@@ -76,13 +76,13 @@ const CardEvent = ({
           <div className="card-title line-clamp-2 mb-auto">{props.judul}</div>
 
           <div className="card-meta line-clamp-1 text-text-secondary">
-            {metaDate} · {showActions ? props.lokasi : "Masuk untuk detail lokasi"}
+            {metaDate} ·{" "}
+            {showActions ? props.lokasi : "Masuk untuk detail lokasi"}
           </div>
 
           <div className={cn("card-meta line-clamp-1", deadlineTone)}>
             {deadlineCopy}
           </div>
-
         </CardContent>
       </Link>
 

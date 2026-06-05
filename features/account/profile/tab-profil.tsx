@@ -17,6 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { PushNotificationSwitch } from "@/components/push-notification-switch";
+import { cn } from "@/lib/utils";
 
 type Props = {
   user: NonNullable<TgetProfileUser>;
@@ -175,12 +176,18 @@ export const TabProfil = ({ user }: Props) => {
               {user.participants.map((p) => {
                 const isPast = new Date(p.event.date) <= today;
                 return (
-                  <div
+                  <Link
+                    href={`/home/acara/${p.event.slug}`}
                     key={p.id}
                     className="flex items-center gap-3 py-2.5 border-b border-border last:border-b-0 max-h-112.5"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm text-text-primary font-medium truncate">
+                      <p
+                        className={cn(
+                          "text-sm text-text-primary font-medium truncate",
+                          isPast && "text-text-disabled",
+                        )}
+                      >
                         {p.event.judul}
                       </p>
                       <p className="text-xs text-text-secondary">
@@ -194,7 +201,7 @@ export const TabProfil = ({ user }: Props) => {
                     <span className="shrink-0 text-xs text-text-disabled mono">
                       {isPast ? "Selesai" : "Akan Datang"}
                     </span>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
