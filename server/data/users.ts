@@ -46,6 +46,7 @@ export const getProfileUser = async () => {
             },
           },
         },
+        orderBy: { createdAt: "desc" },
       },
       calendarEntries: {
         select: {

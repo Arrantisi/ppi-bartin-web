@@ -12,7 +12,10 @@ type State = {
 type Action =
   | { type: "SELECT_DATE"; payload: Date }
   | { type: "SET_VIEW"; payload: ViewType }
-  | { type: "OPEN_DIALOG"; payload: { mode: "add" | "edit"; event?: CalendarEvent } }
+  | {
+      type: "OPEN_DIALOG";
+      payload: { mode: "add" | "edit"; event?: CalendarEvent };
+    }
   | { type: "CLOSE_DIALOG" };
 
 function reducer(state: State, action: Action): State {
