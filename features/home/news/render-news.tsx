@@ -10,11 +10,11 @@ export const RenderNews = () => {
 
   if (isLoading) {
     return (
-      <>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
         {Array.from({ length: 6 }).map((_, idx) => (
           <NewsCaratogorySkeleton key={idx} />
         ))}
-      </>
+      </div>
     );
   }
 

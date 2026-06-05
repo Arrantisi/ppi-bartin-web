@@ -11,8 +11,8 @@ const CardAcaras = () => {
 
   if (isLoading) {
     return (
-      <div className="py-2 space-y-3">
-        {Array.from({ length: 3 }).map((_, idx) => (
+      <div className="mt-3 gap-6 w-full grid grid-cols-1 md:grid-cols-2">
+        {Array.from({ length: 4 }).map((_, idx) => (
           <SkeletonCardAcara key={idx} />
         ))}
       </div>
