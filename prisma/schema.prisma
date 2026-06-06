@@ -164,17 +164,34 @@ model NotificationSubscription {
 }
 
 model CustomerService {
-  id        String   @id @default(cuid())
-  catagory  String
-  subject   String
-  message   String
-  status    String
-  level     String
-  createdAt DateTime @default(now())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  id         String               @id @default(cuid())
+  catagory   String
+  subject    String
+  message    String
+  status     String
+  level      String
+  createdAt  DateTime             @default(now())
+  resolvedAt DateTime?
+  userId     String
+  user       User                 @relation(fields: [userId], references: [id])
+  files      CustomerServiceFile[]
 
+  @@index([userId])
+  @@index([status])
   @@map("customerService")
+}
+
+model CustomerServiceFile {
+  id        String         @id @default(cuid())
+  fileKey   String
+  fileUrl   String
+  name      String?
+  ticketId  String
+  ticket    CustomerService @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  createdAt DateTime       @default(now())
+
+  @@index([ticketId])
+  @@map("customerServiceFile")
 }
 
 model CancelLog {

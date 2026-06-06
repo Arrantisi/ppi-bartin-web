@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { PushNotificationSwitch } from "@/components/push-notification-switch";
+import { getCurrentUserRole } from "@/server/actions/account";
+import { useEffect, useState } from "react";
 import {
   IconUser,
   IconMail,
@@ -19,6 +21,7 @@ import {
   IconInfoCircle,
   IconLogout,
   IconDownload,
+  IconInbox,
 } from "@tabler/icons-react";
 import { usePWAInstallTourContext } from "@/hooks/pwa-install-tour-context";
 import { cn } from "@/lib/utils";
@@ -124,6 +127,13 @@ export const TabPengaturan = ({ user }: Props) => {
   const router = useRouter();
   const { setTheme, theme } = useTheme();
   const { replayTour } = usePWAInstallTourContext();
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    getCurrentUserRole().then(setRole);
+  }, []);
+
+  const isAdminOrPengurus = role === "ADMIN" || role === "PENGURUS";
 
   const handleLogout = async () => {
     await authClient.signOut({
@@ -193,9 +203,18 @@ export const TabPengaturan = ({ user }: Props) => {
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <ClickRow
             icon={<IconMessage className="size-4.5" />}
-            label="Umpan balik"
-            onClick={() => toast.info("Segera hadir")}
+            label="Customer Service"
+            subtitle="Laporkan bug atau kendala"
+            href="/home/profile/customer-service"
           />
+          {isAdminOrPengurus && (
+            <ClickRow
+              icon={<IconInbox className="size-4.5" />}
+              label="Pesan Masuk"
+              subtitle="Lihat pesan dari pengguna"
+              href="/home/profile/customer-service/list"
+            />
+          )}
           <ClickRow
             icon={<IconInfoCircle className="size-4.5" />}
             label="Tentang aplikasi"
