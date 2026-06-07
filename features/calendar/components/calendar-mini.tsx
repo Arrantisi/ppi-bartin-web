@@ -1,6 +1,6 @@
 "use client";
 
-import { DayPicker } from "react-day-picker";
+import { DayPicker, type DayButtonProps } from "react-day-picker";
 import { id } from "date-fns/locale/id";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { hasEventOnDate } from "@/utils/calendar-utils";
@@ -11,6 +11,19 @@ type Props = {
   onSelect: (date: Date) => void;
   events: CalendarEvent[];
 };
+
+function DotDayButton({ day, modifiers, ...buttonProps }: DayButtonProps) {
+  return (
+    <button {...buttonProps} type="button">
+      <span className="relative inline-flex items-center justify-center">
+        <span>{day.date.getDate()}</span>
+        {modifiers.hasEvent && (
+          <span className="absolute left-1/2 -translate-x-1/2 top-full mb-1 block w-1.25 h-1.25 rounded-full bg-accent" />
+        )}
+      </span>
+    </button>
+  );
+}
 
 export const CalendarMini = ({ selectedDate, onSelect, events }: Props) => {
   return (
@@ -40,7 +53,7 @@ export const CalendarMini = ({ selectedDate, onSelect, events }: Props) => {
         week: "grid grid-cols-7",
         day: "flex items-center justify-center h-9 text-center select-none data-selected:bg-text-primary/15 data-selected:rounded-xl",
         day_button:
-          "flex items-center justify-center h-9 w-full text-sm text-text-secondary rounded-xl hover:bg-surface-hover active:bg-surface-active transition-colors data-selected:text-text-primary",
+          "h-9 w-full text-sm text-text-secondary rounded-xl hover:bg-surface-hover active:bg-surface-active transition-colors data-selected:text-text-primary",
         today: "ring-1 ring-text-primary/30 rounded-xl",
         outside: "text-text-disabled opacity-40",
         disabled: "text-text-disabled opacity-40",
@@ -54,6 +67,7 @@ export const CalendarMini = ({ selectedDate, onSelect, events }: Props) => {
           }),
       }}
       components={{
+        DayButton: DotDayButton,
         Chevron: ({ orientation }) => {
           if (orientation === "left") {
             return <ChevronLeftIcon className="size-4" />;
@@ -63,11 +77,6 @@ export const CalendarMini = ({ selectedDate, onSelect, events }: Props) => {
       }}
       modifiers={{
         hasEvent: (date) => hasEventOnDate(events, date),
-      }}
-      modifiersStyles={{
-        hasEvent: {
-          fontWeight: 600,
-        },
       }}
     />
   );
