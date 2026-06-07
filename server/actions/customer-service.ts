@@ -4,15 +4,23 @@ import { prisma } from "@/lib/db";
 import { TcustomerServiceSchema } from "@/schemas";
 import { TServerPrompt } from "@/types";
 import { studentAccount } from "./account";
+import { sendPushToRole } from "@/lib/push/server";
 
 export const customerService = async ({
   catagory,
   level,
   message,
   subject,
+  fileKeys,
 }: TcustomerServiceSchema): Promise<TServerPrompt> => {
   try {
-    const { user } = await studentAccount();
+    let user;
+    try {
+      const session = await studentAccount();
+      user = session.user;
+    } catch {
+      return { msg: "kamu harus login", status: "error" };
+    }
 
     await prisma.customerService.create({
       data: {
@@ -22,7 +30,22 @@ export const customerService = async ({
         status: "PENDING",
         subject,
         userId: user.id,
+        files: fileKeys && fileKeys.length > 0
+          ? {
+              create: fileKeys.map((key) => ({
+                fileKey: key,
+                fileUrl: `https://d9i7wgmc1q.ufs.sh/f/${key}`,
+              })),
+            }
+          : undefined,
       },
+    });
+
+    await sendPushToRole({
+      title: "Pesan Customer Service Baru",
+      message: `${user.name || "Seseorang"} mengirim pesan: ${subject}`,
+      url: "/home/profile/customer-service/list",
+      roles: ["ADMIN", "PENGURUS"],
     });
 
     return {
