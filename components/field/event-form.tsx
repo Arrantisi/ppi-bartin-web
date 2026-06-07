@@ -20,12 +20,14 @@ import {
   IconUsers,
   IconWorld,
 } from "@tabler/icons-react";
+import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getCurrentUserRole } from "@/server/actions/account";
 import { UploaderPhoto } from "@/features/uploads/upload-event-news";
+import { mergeTime } from "@/utils/date-format";
 import {
   Select,
   SelectContent,
@@ -74,6 +76,13 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
 
   const formId = mode === "update" ? "update-acara-form" : "create-acara-form";
 
+  const extractTime = (date?: Date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    if (d.getHours() === 0 && d.getMinutes() === 0) return "";
+    return format(d, "HH:mm");
+  };
+
   const form = useForm({
     defaultValues: {
       judul: data?.judul || "",
@@ -82,20 +91,42 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
       deskripsi: data?.deskripsi || "",
       maxCapacity: data?.maxCapacity || 0,
       batasDaftar: data?.batasDaftar || new Date(),
+      dateTime: extractTime(data?.date),
+      batasDaftarTime: extractTime(data?.batasDaftar),
       fileKey: data?.fileKey || "",
       environment: (data?.environment || "production") as
         | "local"
         | "preview"
         | "production",
     },
-    validators: { onSubmit: createEventSchema },
+    validators: { onSubmit: createEventSchema as any },
     onSubmit: async ({ value }: { value: TcreateEventSchema }) => {
       setIsLoading(true);
 
+      const mergedDate = mergeTime(value.date, value.dateTime);
+      const mergedBatasDaftar = mergeTime(
+        value.batasDaftar,
+        value.batasDaftarTime,
+      );
+
+      if (mergedBatasDaftar > mergedDate) {
+        toast.error("Batas pendaftaran tidak boleh melewati tanggal acara");
+        setIsLoading(false);
+        return;
+      }
+
       const matched =
         mode === "update" && slug
-          ? await updateAcara(slug, value)
-          : await createAcara(value);
+          ? await updateAcara(slug, {
+              ...value,
+              date: mergedDate,
+              batasDaftar: mergedBatasDaftar,
+            })
+          : await createAcara({
+              ...value,
+              date: mergedDate,
+              batasDaftar: mergedBatasDaftar,
+            });
 
       if (matched.status === "error") {
         toast.error("ada kesalahan", {
@@ -194,7 +225,28 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                       disabled={[{ before: today }]}
                       value={field.state.value}
                     />
-
+                    <form.Subscribe
+                      selector={(state: any) => state.values.dateTime}
+                    >
+                      {(dateTime: string) => (
+                        <>
+                          <label className="block text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-text-disabled mt-2 mb-1">
+                            Jam Mulai
+                          </label>
+                          <Input
+                            type="time"
+                            value={dateTime}
+                            onChange={(e) =>
+                              form.setFieldValue(
+                                "dateTime",
+                                e.target.value,
+                              )
+                            }
+                            className="focus-visible:ring-primary"
+                          />
+                        </>
+                      )}
+                    </form.Subscribe>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
@@ -221,7 +273,28 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                       disabled={[{ before: today }, { after: isDate }]}
                       value={field.state.value}
                     />
-
+                    <form.Subscribe
+                      selector={(state: any) => state.values.batasDaftarTime}
+                    >
+                      {(batasDaftarTime: string) => (
+                        <>
+                          <label className="block text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-text-disabled mt-2 mb-1">
+                            Jam Tutup
+                          </label>
+                          <Input
+                            type="time"
+                            value={batasDaftarTime}
+                            onChange={(e) =>
+                              form.setFieldValue(
+                                "batasDaftarTime",
+                                e.target.value,
+                              )
+                            }
+                            className="focus-visible:ring-primary"
+                          />
+                        </>
+                      )}
+                    </form.Subscribe>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}

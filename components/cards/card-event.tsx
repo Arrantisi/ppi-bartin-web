@@ -10,6 +10,7 @@ import { Dialog, DialogTrigger } from "../animate-ui/components/base/dialog";
 import { cn } from "@/lib/utils";
 import { TgetAllEvent } from "@/server/data/events";
 import { imageUrl } from "@/utils/image-url";
+import { formatDateTime } from "@/utils/date-format";
 import { DialogTableParticipant } from "@/features/events/acara/avatars/table-participant";
 import Link from "next/link";
 import { authClient } from "@/lib/auth/client";
@@ -25,14 +26,22 @@ const CardEvent = ({
   const deadlineDate = new Date(props.batasDaftar);
   const daysLeft = differenceInCalendarDays(deadlineDate, new Date());
   const isClosed = isFull || daysLeft < 0;
-  const metaDate = format(new Date(props.date), "E, d LLL", { locale: id });
+  const rawDate = new Date(props.date);
+  const metaDate =
+    rawDate.getHours() === 0 && rawDate.getMinutes() === 0
+      ? format(rawDate, "E, d LLL", { locale: id })
+      : formatDateTime(rawDate);
+  const deadlineLabel =
+    deadlineDate.getHours() === 0 && deadlineDate.getMinutes() === 0
+      ? format(deadlineDate, "E, d LLL", { locale: id })
+      : formatDateTime(deadlineDate);
   const deadlineCopy = isClosed
     ? "Pendaftaran Berakhir"
     : daysLeft <= 1
       ? `Pendaftaran ditutup hari ini!!`
       : daysLeft <= 3
-        ? `Daftar sebelum ${format(deadlineDate, "E, d LLL", { locale: id })} (${daysLeft} hari lagi)`
-        : `Daftar sebelum ${format(deadlineDate, "E, d LLL", { locale: id })}`;
+        ? `Daftar sebelum ${deadlineLabel} (${daysLeft} hari lagi)`
+        : `Daftar sebelum ${deadlineLabel}`;
   const deadlineTone = isClosed
     ? "text-text-disabled"
     : daysLeft <= 1
