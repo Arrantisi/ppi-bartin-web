@@ -16,6 +16,7 @@ import {
   IconCalendar,
   IconMessage,
   IconPhoto,
+  IconCheck,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 
@@ -117,51 +118,79 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
         </div>
 
         <div className="p-5 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center gap-3">
-              <div className="size-8 rounded-lg bg-surface-hover flex items-center justify-center shrink-0">
-                <IconTag className="size-4 text-text-secondary" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center gap-3">
+                <div className="size-8 rounded-lg bg-surface-hover flex items-center justify-center shrink-0">
+                  <IconTag className="size-4 text-text-secondary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[0.625rem] uppercase tracking-wider text-text-disabled font-medium">Kategori</p>
+                  <p className="text-sm text-text-primary">{catagoryLabel[ticket.catagory] ?? ticket.catagory}</p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <p className="text-[0.625rem] uppercase tracking-wider text-text-disabled font-medium">Kategori</p>
-                <p className="text-sm text-text-primary">{catagoryLabel[ticket.catagory] ?? ticket.catagory}</p>
+              <div className="flex items-center gap-3">
+                <div className="size-8 rounded-lg bg-surface-hover flex items-center justify-center shrink-0">
+                  <IconChartDots3 className="size-4 text-text-secondary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[0.625rem] uppercase tracking-wider text-text-disabled font-medium">Level</p>
+                  <p className="text-sm text-text-primary">{levelLabel[ticket.level] ?? ticket.level}</p>
+                </div>
               </div>
+              <div className="flex items-center gap-3">
+                <div className="size-8 rounded-lg bg-surface-hover flex items-center justify-center shrink-0">
+                  <IconUser className="size-4 text-text-secondary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[0.625rem] uppercase tracking-wider text-text-disabled font-medium">Pengirim</p>
+                  <p className="text-sm text-text-primary break-words">
+                    {ticket.user.name || ticket.user.username || "Unknown"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="size-8 rounded-lg bg-surface-hover flex items-center justify-center shrink-0">
+                  <IconCalendar className="size-4 text-text-secondary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[0.625rem] uppercase tracking-wider text-text-disabled font-medium">Tanggal</p>
+                  <p className="text-sm text-text-primary">
+                    {new Date(ticket.createdAt).toLocaleDateString("id-ID", {
+                      day: "numeric", month: "long", year: "numeric",
+                      hour: "2-digit", minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+              </div>
+              {(ticket.status === "READ" || ticket.status === "RESOLVED") && ticket.readBy && (
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-lg bg-surface-hover flex items-center justify-center shrink-0">
+                    <IconEye className="size-4 text-text-secondary" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[0.625rem] uppercase tracking-wider text-text-disabled font-medium">Dibaca oleh</p>
+                    <p className="text-sm text-text-primary break-words">
+                      {ticket.readBy.name || "Admin"}
+                      <span className="text-text-disabled text-xs ml-1">({ticket.readBy.role})</span>
+                    </p>
+                  </div>
+                </div>
+              )}
+              {ticket.status === "RESOLVED" && ticket.resolvedBy && (
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-lg bg-surface-hover flex items-center justify-center shrink-0">
+                    <IconCircleCheck className="size-4 text-text-secondary" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[0.625rem] uppercase tracking-wider text-text-disabled font-medium">Diselesaikan oleh</p>
+                    <p className="text-sm text-text-primary break-words">
+                      {ticket.resolvedBy.name || "Admin"}
+                      <span className="text-text-disabled text-xs ml-1">({ticket.resolvedBy.role})</span>
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-3">
-              <div className="size-8 rounded-lg bg-surface-hover flex items-center justify-center shrink-0">
-                <IconChartDots3 className="size-4 text-text-secondary" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[0.625rem] uppercase tracking-wider text-text-disabled font-medium">Level</p>
-                <p className="text-sm text-text-primary">{levelLabel[ticket.level] ?? ticket.level}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="size-8 rounded-lg bg-surface-hover flex items-center justify-center shrink-0">
-                <IconUser className="size-4 text-text-secondary" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[0.625rem] uppercase tracking-wider text-text-disabled font-medium">Pengirim</p>
-                <p className="text-sm text-text-primary truncate">
-                  {ticket.user.name || ticket.user.username || "Unknown"}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="size-8 rounded-lg bg-surface-hover flex items-center justify-center shrink-0">
-                <IconCalendar className="size-4 text-text-secondary" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[0.625rem] uppercase tracking-wider text-text-disabled font-medium">Tanggal</p>
-                <p className="text-sm text-text-primary">
-                  {new Date(ticket.createdAt).toLocaleDateString("id-ID", {
-                    day: "numeric", month: "long", year: "numeric",
-                    hour: "2-digit", minute: "2-digit",
-                  })}
-                </p>
-              </div>
-            </div>
-          </div>
 
           <div className="pt-4 border-t border-border">
             <p className="text-[0.625rem] uppercase tracking-wider text-text-disabled font-medium mb-3">Pesan</p>
@@ -203,7 +232,7 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
       </div>
 
       <div className="flex items-center gap-3 mt-6">
-        {ticket.status !== "READ" && (
+        {ticket.status === "PENDING" && (
           <Button
             variant="outline"
             onClick={() => handleStatusUpdate("READ")}
@@ -221,6 +250,12 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
             {updateStatus.isPending ? <Spinner /> : <IconCircleCheck className="size-4" />}
             Tandai Selesai
           </Button>
+        )}
+        {ticket.status === "RESOLVED" && (
+          <div className="flex items-center gap-2 text-sm text-success">
+            <IconCheck className="size-5" />
+            <span>Pesan ini telah diselesaikan</span>
+          </div>
         )}
       </div>
     </div>

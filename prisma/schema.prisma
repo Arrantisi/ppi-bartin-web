@@ -34,6 +34,8 @@ model User {
   accounts                  Account[]
   cancelLogs                CancelLog[]
   customerServices          CustomerService[]
+  readTickets               CustomerService[]           @relation("ReadTicket")
+  resolvedTickets           CustomerService[]           @relation("ResolvedTicket")
   events                    Events[]                   @relation("createdEvent")
   news                      News[]                     @relation("createdNews")
   notificationSubscriptions NotificationSubscription[]
@@ -164,17 +166,21 @@ model NotificationSubscription {
 }
 
 model CustomerService {
-  id         String               @id @default(cuid())
-  catagory   String
-  subject    String
-  message    String
-  status     String
-  level      String
-  createdAt  DateTime             @default(now())
-  resolvedAt DateTime?
-  userId     String
+  id           String               @id @default(cuid())
+  catagory     String
+  subject      String
+  message      String
+  status       String
+  level        String
+  createdAt    DateTime             @default(now())
+  resolvedAt   DateTime?
+  userId       String
   user       User                 @relation(fields: [userId], references: [id])
-  files      CustomerServiceFile[]
+  readById     String?
+  readBy       User?                @relation("ReadTicket", fields: [readById], references: [id])
+  resolvedById String?
+  resolvedBy   User?                @relation("ResolvedTicket", fields: [resolvedById], references: [id])
+  files        CustomerServiceFile[]
 
   @@index([userId])
   @@index([status])

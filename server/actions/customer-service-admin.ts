@@ -2,14 +2,13 @@
 
 import { prisma } from "@/lib/db";
 import { TServerPrompt } from "@/types";
-import { getCurrentUserRole } from "./account";
+import { getCurrentUserRole, studentAccount } from "./account";
 
 const authorizeAdmin = async () => {
   const role = await getCurrentUserRole();
   if (role !== "ADMIN" && role !== "PENGURUS") {
     throw new Error("Forbidden");
   }
-  return role;
 };
 
 export const getTickets = async () => {
@@ -36,6 +35,12 @@ export const getTickets = async () => {
             name: true,
           },
         },
+        readBy: {
+          select: { id: true, name: true, image: true, role: true },
+        },
+        resolvedBy: {
+          select: { id: true, name: true, image: true, role: true },
+        },
       },
     });
 
@@ -54,11 +59,16 @@ export const updateTicketStatus = async ({
   status: string;
 }): Promise<TServerPrompt> => {
   try {
+    const { user } = await studentAccount();
     await authorizeAdmin();
 
-    const data: { status: string; resolvedAt?: Date } = { status };
+    const data: { status: string; resolvedAt?: Date; readById?: string; resolvedById?: string } = { status };
+    if (status === "READ") {
+      data.readById = user.id;
+    }
     if (status === "RESOLVED") {
       data.resolvedAt = new Date();
+      data.resolvedById = user.id;
     }
 
     await prisma.customerService.update({

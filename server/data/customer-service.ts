@@ -22,6 +22,12 @@ export const getCustomerServiceData = async () => {
           name: true,
         },
       },
+      readBy: {
+        select: { id: true, name: true, image: true, role: true },
+      },
+      resolvedBy: {
+        select: { id: true, name: true, image: true, role: true },
+      },
     },
   });
 
