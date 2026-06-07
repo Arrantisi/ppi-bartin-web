@@ -124,10 +124,16 @@ features/customer-service/
 - Stores `fileKey` → creates `CustomerServiceFile` records on submit
 
 ### Admin list features:
-- Shows sender avatar (or initial fallback)
+- Shows sender avatar (or initial fallback) — 44px on mobile, 40px desktop
 - Shows file count per ticket
-- Status badges (Pending/Dibaca/Selesai)
+- Status badges (Pending/Dibaca/Selesai) — pill shape with icon
 - Level badges (Rendah/Sedang/Darurat)
+- **Mobile layout** (3 rows inside card):
+  1. Title (truncated) + level badge
+  2. Sender name + date (muted, smaller)
+  3. Attachment info (left) + status pill (right)
+- Avatar top-aligned (`self-start`) on mobile, center-aligned on desktop
+- Card gap: `space-y-3` (12px)
 
 ### Admin detail features:
 - Full ticket info with sender details
