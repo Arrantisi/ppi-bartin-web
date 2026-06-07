@@ -12,7 +12,7 @@ type Props = {
 
 export const TabsSection = ({ user }: Props) => {
   return (
-    <Tabs defaultValue="profil" className="w-full mt-6 overflow-hidden">
+    <Tabs defaultValue="kegiatan" className="w-full mt-6 overflow-hidden">
       <TabsList
         variant="line"
         className="w-full border-b border-border gap-0"
