@@ -14,7 +14,13 @@ export const customerService = async ({
   fileKeys,
 }: TcustomerServiceSchema): Promise<TServerPrompt> => {
   try {
-    const { user } = await studentAccount();
+    let user;
+    try {
+      const session = await studentAccount();
+      user = session.user;
+    } catch {
+      return { msg: "kamu harus login", status: "error" };
+    }
 
     await prisma.customerService.create({
       data: {

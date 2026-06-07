@@ -8,6 +8,14 @@ const ProfileHome = () => {
   const { data: session } = useProfileUser();
   const displayName = session?.name || session?.username || "Pengguna";
 
+  const greeting = () => {
+    const h = new Date().getHours();
+    if (h < 12) return "Selamat Pagi";
+    if (h < 15) return "Selamat Siang";
+    if (h < 18) return "Selamat Sore";
+    return "Selamat Malam";
+  };
+
   return (
     <div className="flex items-center justify-between gap-3 py-3">
       <div className="flex min-w-0 items-center gap-3">
@@ -20,7 +28,7 @@ const ProfileHome = () => {
             Halo, {displayName}
           </h3>
           <h1 className="text-[0.8125rem] font-normal text-text-disabled">
-            Selamat datang
+            {greeting()}
           </h1>
         </div>
       </div>
