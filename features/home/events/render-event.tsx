@@ -14,7 +14,17 @@ export const RenderAcara = () => {
   const { data, isLoading } = useEventsHome();
 
   if (isLoading) {
-    return <SkeletonCardAcara />;
+    return (
+      <div className="w-full overflow-hidden">
+        <div className="flex gap-3 overflow-hidden">
+          {Array.from({ length: 2 }).map((_, idx) => (
+            <div key={idx} className="min-w-[92%] md:min-w-[calc(50%-6px)]">
+              <SkeletonCardAcara />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (!data || data.length === 0) {

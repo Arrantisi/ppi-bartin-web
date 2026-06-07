@@ -1,11 +1,10 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { userSession } from "./users";
+import { getCurrentUserRole } from "../actions/account";
 
 const getEnvironmentFilter = async (): Promise<string[]> => {
-  const session = await userSession();
-  const role = (session?.user as { role?: string } | undefined)?.role;
+  const role = await getCurrentUserRole();
 
   if (role === "ADMIN") return ["local", "preview", "production"];
   if (role === "PENGURUS") return ["preview", "production"];

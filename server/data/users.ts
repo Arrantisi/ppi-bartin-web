@@ -42,8 +42,21 @@ export const getProfileUser = async () => {
             select: {
               judul: true,
               date: true,
+              slug: true,
             },
           },
+        },
+        orderBy: { createdAt: "desc" },
+      },
+      calendarEntries: {
+        select: {
+          id: true,
+          title: true,
+          date: true,
+          time: true,
+          location: true,
+          category: true,
+          description: true,
         },
       },
     },

@@ -34,10 +34,13 @@ model User {
   accounts                  Account[]
   cancelLogs                CancelLog[]
   customerServices          CustomerService[]
+  readTickets               CustomerService[]           @relation("ReadTicket")
+  resolvedTickets           CustomerService[]           @relation("ResolvedTicket")
   events                    Events[]                   @relation("createdEvent")
   news                      News[]                     @relation("createdNews")
   notificationSubscriptions NotificationSubscription[]
-  participants              Participants[]
+   participants              Participants[]
+  calendarEntries           CalendarEntry[]
   sessions                  Session[]
 
   @@map("user")
@@ -163,17 +166,38 @@ model NotificationSubscription {
 }
 
 model CustomerService {
-  id        String   @id @default(cuid())
-  catagory  String
-  subject   String
-  message   String
-  status    String
-  level     String
-  createdAt DateTime @default(now())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  id           String               @id @default(cuid())
+  catagory     String
+  subject      String
+  message      String
+  status       String
+  level        String
+  createdAt    DateTime             @default(now())
+  resolvedAt   DateTime?
+  userId       String
+  user       User                 @relation(fields: [userId], references: [id])
+  readById     String?
+  readBy       User?                @relation("ReadTicket", fields: [readById], references: [id])
+  resolvedById String?
+  resolvedBy   User?                @relation("ResolvedTicket", fields: [resolvedById], references: [id])
+  files        CustomerServiceFile[]
 
+  @@index([userId])
+  @@index([status])
   @@map("customerService")
+}
+
+model CustomerServiceFile {
+  id        String         @id @default(cuid())
+  fileKey   String
+  fileUrl   String
+  name      String?
+  ticketId  String
+  ticket    CustomerService @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  createdAt DateTime       @default(now())
+
+  @@index([ticketId])
+  @@map("customerServiceFile")
 }
 
 model CancelLog {
@@ -186,6 +210,23 @@ model CancelLog {
 
   @@index([userId, eventId])
   @@map("cancelLog")
+}
+
+model CalendarEntry {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  date        DateTime
+  time        String?
+  location    String?
+  category    String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("calendarEntry")
 }
 
 enum Role {

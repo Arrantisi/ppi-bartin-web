@@ -29,11 +29,11 @@ const BeritaCatagory = () => {
 
   if (isLoading) {
     return (
-      <>
-        {Array.from({ length: 5 }).map((_, idx) => (
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+        {Array.from({ length: 6 }).map((_, idx) => (
           <NewsCaratogorySkeleton key={idx} />
         ))}
-      </>
+      </div>
     );
   }
 
