@@ -11,7 +11,7 @@ import {
 } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { formattedDate } from "@/utils/date-format";
+import { formattedDate, formatDateTime } from "@/utils/date-format";
 import { useState } from "react";
 import { Drawer } from "@/components/ui/drawer";
 import { authClient } from "@/lib/auth/client";
@@ -301,7 +301,7 @@ export const EventDetail = ({
                     <div className="flex flex-col gap-0.5">
                       <span className="detail-meta-label">Tanggal</span>
                       <span className="detail-meta-value">
-                        {formattedDate(data.date || new Date())}
+                        {formatDateTime(data.date || new Date())}
                       </span>
                     </div>
                   </div>

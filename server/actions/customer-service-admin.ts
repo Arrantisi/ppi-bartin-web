@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/db";
 import { TServerPrompt } from "@/types";
 import { getCurrentUserRole, studentAccount } from "./account";
+import { deleteUploadedFile } from "./delete-upload";
 
 const authorizeAdmin = async () => {
   const role = await getCurrentUserRole();
@@ -80,5 +81,32 @@ export const updateTicketStatus = async ({
   } catch (error) {
     console.error(error);
     return { msg: "gagal memperbarui status", status: "error" };
+  }
+};
+
+export const deleteTicket = async (
+  id: string,
+): Promise<TServerPrompt> => {
+  try {
+    await authorizeAdmin();
+
+    const ticket = await prisma.customerService.findUnique({
+      where: { id },
+      include: { files: { select: { fileKey: true } } },
+    });
+    if (!ticket) {
+      return { status: "error", msg: "Tiket tidak ditemukan" };
+    }
+
+    await Promise.allSettled(
+      ticket.files.map((file) => deleteUploadedFile(file.fileKey)),
+    );
+
+    await prisma.customerService.delete({ where: { id } });
+
+    return { status: "success", msg: "Tiket berhasil dihapus" };
+  } catch (error) {
+    console.error(error);
+    return { status: "error", msg: "Gagal menghapus tiket" };
   }
 };

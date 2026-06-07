@@ -5,7 +5,7 @@ import {
   JENIS_KELAMIN_OPTIONS,
   STATUS_PELAJAR_OPTIONS,
 } from "./utils";
-import { startOfDay } from "date-fns/startOfDay";
+
 
 const usernameSchema = z
   .string()
@@ -161,19 +161,22 @@ export const formUsername = z.object({
 
 export type FormUsername = z.infer<typeof formUsername>;
 
-export const createEventSchema = z
-  .object({
-    ...eventBaseSchema.shape,
-    batasDaftar: z.date({
-      error: "Silakan tentukan batas pendaftaran",
-    }),
-    fileKey: z.string().min(1, "Gambar/File wajib diunggah"),
-    environment: environmentSchema,
-  })
-  .refine((data) => startOfDay(data.batasDaftar) <= data.date, {
-    message: "Batas pendaftaran tidak boleh melewati tanggal acara",
-    path: ["batasDaftar"],
-  });
+export const createEventSchema = z.object({
+  ...eventBaseSchema.shape,
+  batasDaftar: z.date({
+    error: "Silakan tentukan batas pendaftaran",
+  }),
+  dateTime: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Format jam tidak valid")
+    .optional(),
+  batasDaftarTime: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Format jam tidak valid")
+    .optional(),
+  fileKey: z.string().min(1, "Gambar/File wajib diunggah"),
+  environment: environmentSchema,
+});
 
 export type TcreateEventSchema = z.infer<typeof createEventSchema>;
 

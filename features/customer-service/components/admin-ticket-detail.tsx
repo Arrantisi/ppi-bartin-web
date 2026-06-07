@@ -1,6 +1,6 @@
 "use client";
 
-import { useCustomerServiceTickets, useUpdateTicketStatus } from "@/hooks/use-customer-service";
+import { useCustomerServiceTickets, useUpdateTicketStatus, useDeleteTicket } from "@/hooks/use-customer-service";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -17,8 +17,20 @@ import {
   IconMessage,
   IconPhoto,
   IconCheck,
+  IconTrash,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogPopup,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/animate-ui/components/base/alert-dialog";
 
 const statusMeta: Record<string, { label: string; icon: React.ReactNode }> = {
   PENDING: { label: "Pending", icon: <IconAlertCircle className="size-4" /> },
@@ -68,6 +80,7 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
   }
 
   const status = statusMeta[ticket.status] ?? statusMeta.PENDING;
+  const { mutateAsync: removeTicket, isPending: isDeleting } = useDeleteTicket();
 
   const handleStatusUpdate = async (newStatus: string) => {
     const res = await updateStatus.mutateAsync({ id: ticket.id, status: newStatus });
@@ -75,6 +88,14 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
       toast.success(res.msg);
     } else {
       toast.error(res.msg);
+    }
+  };
+
+  const handleDeleteTicket = async () => {
+    const res = await removeTicket(ticket.id);
+    if (res.status === "success") {
+      toast.success(res.msg);
+      router.push("/home/profile/customer-service/list");
     }
   };
 
@@ -257,6 +278,32 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
             <span>Pesan ini telah diselesaikan</span>
           </div>
         )}
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-border">
+        <AlertDialog>
+          <AlertDialogTrigger
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-destructive px-3 py-1.5 text-xs font-medium text-destructive-foreground hover:bg-destructive/90 disabled:pointer-events-none disabled:opacity-50"
+            disabled={isDeleting}
+          >
+            {isDeleting ? <Spinner /> : <IconTrash className="size-4" />}
+            Hapus Tiket
+          </AlertDialogTrigger>
+          <AlertDialogPopup>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Hapus tiket ini?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Semua file terkait akan ikut dihapus. Tindakan ini tidak bisa dibatalkan.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Batal</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteTicket} disabled={isDeleting}>
+                {isDeleting ? "Menghapus..." : "Hapus"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogPopup>
+        </AlertDialog>
       </div>
     </div>
   );
