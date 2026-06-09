@@ -2,7 +2,7 @@
 
 import { UploaderPhoto } from "@/features/uploads/upload-event-news";
 import { createNews, updateNews } from "@/server/actions/news";
-import { createNewsSchema, TcreateNewsSchema } from "@/schemas";
+import { createNewsSchema, TcreateNewsSchema } from "@/schemas/news";
 import { TupdateNewsProps } from "@/types";
 import { useForm } from "@tanstack/react-form";
 import {

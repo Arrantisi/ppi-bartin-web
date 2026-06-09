@@ -1,6 +1,6 @@
 "use client";
 
-import { useCustomerServiceTickets, useUpdateTicketStatus, useDeleteTicket } from "@/hooks/use-customer-service";
+import { useTicketById, useUpdateTicketStatus, useDeleteTicket } from "@/hooks/use-customer-service";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -54,7 +54,7 @@ const catagoryLabel: Record<string, string> = {
 };
 
 export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
-  const { data, isLoading } = useCustomerServiceTickets();
+  const { data, isLoading } = useTicketById(ticketId);
   const updateStatus = useUpdateTicketStatus();
   const { mutateAsync: removeTicket, isPending: isDeleting } = useDeleteTicket();
   const router = useRouter();
@@ -67,8 +67,7 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
     );
   }
 
-  const ticket = data?.data?.find((t) => t.id === ticketId);
-  if (!ticket) {
+  if (!data || data.status === "error") {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <IconMessage className="size-12 text-text-disabled mb-4" />
@@ -80,6 +79,7 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
     );
   }
 
+  const ticket = data.data;
   const status = statusMeta[ticket.status] ?? statusMeta.PENDING;
 
   const handleStatusUpdate = async (newStatus: string) => {

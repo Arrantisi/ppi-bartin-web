@@ -12,6 +12,48 @@ const authorizeAdmin = async () => {
   }
 };
 
+export const getTicketById = async (id: string) => {
+  try {
+    await authorizeAdmin();
+
+    const ticket = await prisma.customerService.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            image: true,
+            email: true,
+          },
+        },
+        files: {
+          select: {
+            id: true,
+            fileKey: true,
+            fileUrl: true,
+            name: true,
+          },
+        },
+        readBy: {
+          select: { id: true, name: true, image: true, role: true },
+        },
+        resolvedBy: {
+          select: { id: true, name: true, image: true, role: true },
+        },
+      },
+    });
+
+    if (!ticket) return { status: "error" as const, msg: "Tiket tidak ditemukan" };
+
+    return { status: "success" as const, data: ticket };
+  } catch (error) {
+    console.error(error);
+    return { status: "error" as const, msg: "gagal mengambil data tiket" };
+  }
+};
+
 export const getTickets = async () => {
   try {
     await authorizeAdmin();

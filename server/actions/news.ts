@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { TcreateNewsSchema } from "@/schemas";
+import { TcreateNewsSchema } from "@/schemas/news";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";
 import { revalidatePath } from "next/cache";

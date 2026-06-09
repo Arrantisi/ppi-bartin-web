@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { formUsername, type FormUsername } from "@/schemas";
+import { formUsername, type FormUsername } from "@/schemas/auth";
 import { postUsername } from "@/server/actions/user";
 import { useForm } from "@tanstack/react-form";
 import { IconAt, IconSparkles } from "@tabler/icons-react";

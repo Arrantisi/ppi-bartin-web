@@ -7,6 +7,7 @@ import { FrameNews } from "@/components/cards/card-news";
 import { useNews } from "@/hooks/use-news";
 import { DataKosong } from "@/components/data-kosong";
 import { ButtonCreate } from "@/components/buttons";
+import { useMemo, useTransition } from "react";
 
 const catagoryTrigger = [
   { ctg: "all" },
@@ -26,6 +27,19 @@ const catagoryTrigger = [
 
 const BeritaCatagory = () => {
   const { data, isLoading } = useNews();
+  const [isPending, startTransition] = useTransition();
+
+  const filteredMap = useMemo(() => {
+    if (!data) return null;
+    const map = new Map<string, typeof data>();
+    for (const category of catagoryTrigger) {
+      const filtered = category.ctg === "all"
+        ? data
+        : data.filter((news) => news.catagory === category.ctg);
+      map.set(category.ctg, filtered);
+    }
+    return map;
+  }, [data]);
 
   if (isLoading) {
     return (
@@ -44,12 +58,6 @@ const BeritaCatagory = () => {
   return (
     <>
       <div className="flex items-center gap-2 mt-3">
-        {/* <InputGroup className="rounded-full py-5">
-          <InputGroupInput placeholder="Search..." />
-          <InputGroupAddon>
-            <IconSearch className="size-5" />
-          </InputGroupAddon>
-        </InputGroup> */}
         <div className="h-10.5 w-full bg-card rounded-full border border-border" />
 
         <ButtonCreate catagory="berita" />
@@ -62,6 +70,7 @@ const BeritaCatagory = () => {
               <TabsTrigger
                 key={item.ctg}
                 value={item.ctg}
+                onClick={() => startTransition(() => {})}
                 className={cn(
                   "rounded-full border border-border bg-surface px-6 py-2.5 capitalize transition-colors",
                   "data-[state=active]:bg-surface-active data-[state=active]:text-text-primary",
@@ -78,15 +87,11 @@ const BeritaCatagory = () => {
           <TabsContent
             key={category.ctg}
             value={category.ctg}
-            className="mt-0 grid grid-cols-1 xl:grid-cols-2 gap-3"
+            className={`mt-0 grid grid-cols-1 xl:grid-cols-2 gap-3 ${isPending ? "opacity-60" : ""}`}
           >
-            {data
-              .filter((news) =>
-                category.ctg === "all" ? true : news.catagory === category.ctg,
-              )
-              .map((news) => (
-                <FrameNews key={news.slug} {...news} />
-              ))}
+            {filteredMap?.get(category.ctg)?.map((news) => (
+              <FrameNews key={news.slug} {...news} />
+            ))}
           </TabsContent>
         ))}
       </Tabs>

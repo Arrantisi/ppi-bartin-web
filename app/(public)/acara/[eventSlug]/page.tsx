@@ -6,6 +6,17 @@ import type { Metadata } from "next";
 import { absoluteUrl, defaultOgImage } from "@/lib/og";
 import { imageUrl } from "@/utils/image-url";
 
+export const revalidate = 60;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const allEvents = await prisma.events.findMany({
+    select: { slug: true },
+    where: { environment: "production" },
+  });
+  return allEvents.map((item) => ({ eventSlug: item.slug }));
+}
+
 export async function generateMetadata({
   params,
 }: {

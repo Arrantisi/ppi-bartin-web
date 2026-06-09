@@ -2,6 +2,7 @@
 
 import {
   getTickets,
+  getTicketById,
   updateTicketStatus,
   deleteTicket,
 } from "@/server/actions/customer-service-admin";
@@ -24,6 +25,14 @@ export const useUpdateTicketStatus = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customerServiceTickets"] });
     },
+  });
+};
+
+export const useTicketById = (id: string) => {
+  return useQuery({
+    queryKey: ["customerServiceTicket", id],
+    queryFn: () => getTicketById(id),
+    enabled: !!id,
   });
 };
 

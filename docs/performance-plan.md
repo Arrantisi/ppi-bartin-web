@@ -1,4 +1,4 @@
-# Performance Optimization Plan
+# Performance Optimization Plan — status: done
 
 Berdasarkan audit menyeluruh menggunakan **Vercel React Best Practices** pada project ppi-bartin-web.
 

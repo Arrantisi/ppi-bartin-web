@@ -1,7 +1,7 @@
 "use client";
 
 import { createAcara, updateAcara } from "@/server/actions/acara";
-import { TcreateEventSchema, createEventSchema } from "@/schemas";
+import { TcreateEventSchema, createEventSchema } from "@/schemas/event";
 import { TupdateEventProps } from "@/types";
 import { DatePickerField } from "../dates/date-picker-future";
 import { Button, buttonVariants } from "../ui/button";

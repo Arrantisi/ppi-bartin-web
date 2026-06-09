@@ -11,7 +11,7 @@ import { useNewsBySlug } from "@/hooks/use-news";
 import { LoaderOneDemo } from "@/components/loader";
 import { Drawer } from "@/components/ui/drawer";
 import { authClient } from "@/lib/auth/client";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { AlertDEelete } from "@/components/shared/confirm-delete-dialog";
 import { DrawerOpsi } from "@/components/shared/content-actions-drawer";
 import parse from "html-react-parser";
@@ -34,6 +34,36 @@ export const NewsDetailComponent = ({
   const isPublicVisitor = readOnly || !session;
 
   const { data, isLoading } = useNewsBySlug({ slug });
+
+  useEffect(() => {
+    DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+      if ("target" in node && node.tagName === "A") {
+        node.setAttribute("target", "_blank");
+        node.setAttribute("rel", "noopener noreferrer");
+      }
+    });
+    return () => {
+      DOMPurify.removeHook("afterSanitizeAttributes");
+    };
+  }, []);
+
+  const clean = useMemo(() => {
+    const htmlWithLinks = linkifyHtml(data?.desckripsi || "", {
+      target: "_blank",
+      attributes: {
+        rel: "noopener noreferrer",
+      },
+      validate: {
+        url: (value) => /^(http|https):\/\//.test(value) || value.includes("."),
+      },
+    });
+
+    return DOMPurify.sanitize(htmlWithLinks, {
+      FORBID_ATTR: ["style", "font"],
+      ADD_ATTR: ["target", "rel"],
+    });
+  }, [data?.desckripsi]);
+
   if (isLoading) return <LoaderOneDemo />;
   if (!data)
     return <div className="p-10 text-center">data tidak di temukan</div>;
@@ -42,34 +72,6 @@ export const NewsDetailComponent = ({
     setIsOpenDrawer(false);
     setTimeout(() => setIsOpenAlert(true), 300);
   };
-
-  // 1. DAFTARKAN HOOK DOMPURIFY DI LUAR KOMPONEN ATAU TEPAT SEBELUM SANITASI
-  // Kita cek typeof window agar tidak error saat Next.js melakukan Server-Side Rendering (SSR)
-  if (typeof window !== "undefined") {
-    DOMPurify.addHook("afterSanitizeAttributes", (node) => {
-      if ("target" in node && node.tagName === "A") {
-        node.setAttribute("target", "_blank");
-        node.setAttribute("rel", "noopener noreferrer");
-      }
-    });
-  }
-
-  // 2. PROSES LINKIFY (Ubah teks URL mentah jadi tag <a>)
-  const htmlWithLinks = linkifyHtml(data.desckripsi || "", {
-    target: "_blank",
-    attributes: {
-      rel: "noopener noreferrer",
-    },
-    validate: {
-      url: (value) => /^(http|https):\/\//.test(value) || value.includes("."),
-    },
-  });
-
-  // 3. PROSES SANITASI DENGAN DOMPURIFY
-  const clean = DOMPurify.sanitize(htmlWithLinks, {
-    FORBID_ATTR: ["style", "font"],
-    ADD_ATTR: ["target", "rel"],
-  });
   return (
     <>
       <div className="detail-page max-w-2xl mx-auto bg-background min-h-screen pb-10 pt-3">

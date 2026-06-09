@@ -1,6 +1,6 @@
 "use client";
 
-import { formSchema, FormSchema } from "@/schemas";
+import { formSchema, FormSchema } from "@/schemas/auth";
 import { useForm } from "@tanstack/react-form";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";

@@ -2,7 +2,7 @@
 
 import { studentAccount } from "@/server/actions/account";
 import { prisma } from "@/lib/db";
-import { TcreateEventSchema } from "@/schemas";
+import { TcreateEventSchema } from "@/schemas/event";
 import { revalidatePath } from "next/cache";
 import { TServerPrompt } from "@/types";
 import { createSlug } from "@/utils/slug";

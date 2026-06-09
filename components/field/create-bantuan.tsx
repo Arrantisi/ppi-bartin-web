@@ -1,6 +1,6 @@
 "use client";
 
-import { customerServiceSchema, TcustomerServiceSchema } from "@/schemas";
+import { customerServiceSchema, TcustomerServiceSchema } from "@/schemas/customer-service";
 import { customerService } from "@/server/actions/customer-service";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";

@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { TcustomerServiceSchema } from "@/schemas";
+import { TcustomerServiceSchema } from "@/schemas/customer-service";
 import { TServerPrompt } from "@/types";
 import { studentAccount } from "./account";
 import { sendPushToRole } from "@/lib/push/server";

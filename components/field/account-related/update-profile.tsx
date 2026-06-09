@@ -1,6 +1,6 @@
 "use client";
 
-import { TupdateProfileSchema, updateProfileSchema } from "@/schemas";
+import { TupdateProfileSchema, updateProfileSchema } from "@/schemas/profile";
 import "react-phone-number-input/style.css";
 import { TgetProfileUser } from "@/server/data/users";
 import { useForm } from "@tanstack/react-form";

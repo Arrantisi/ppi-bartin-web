@@ -2,11 +2,8 @@
 
 import { studentAccount } from "../actions/account";
 import { prisma } from "@/lib/db";
-import {
-  FormPersonalSchema,
-  FormUsername,
-  TupdateProfileSchema,
-} from "@/schemas";
+import { FormPersonalSchema, TupdateProfileSchema } from "@/schemas/profile";
+import { FormUsername } from "@/schemas/auth";
 import { TServerPrompt } from "@/types";
 import { deleteUploadedFile } from "./delete-upload";
 

@@ -8,31 +8,15 @@ import {
 import { useQuery } from "@tanstack/react-query";
 
 export const useEvents = () => {
-  const query = useQuery({
+  return useQuery({
     queryKey: ["events"],
     queryFn: () => getAllEvents(),
   });
-
-  return query;
 };
 
-export const useEventsHome = () => {
-  const query = useQuery({
-    queryKey: ["events_home"], // Key spesifik home
-    queryFn: () => getAllEvents(),
-  });
-
-  return query;
-};
-
-export const useEventsPage = () => {
-  const query = useQuery({
-    queryKey: ["events_list"], // Key spesifik list page
-    queryFn: () => getAllEvents(),
-  });
-
-  return query;
-};
+// Aliases — share same query key so React Query deduplicates fetches
+export const useEventsHome = useEvents;
+export const useEventsPage = useEvents;
 
 export const useEventBySlug = ({ slug }: { slug: string }) => {
   return useQuery({
