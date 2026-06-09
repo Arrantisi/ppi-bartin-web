@@ -19,7 +19,7 @@ export const deleteNews = async (newsId: string): Promise<TServerPrompt> => {
     });
 
     if (!news) {
-      return { status: "error", msg: "Berita tidak ditemukan" };
+      return { success: false, error: "Berita tidak ditemukan" };
     }
 
     await prisma.news.delete({
@@ -31,14 +31,15 @@ export const deleteNews = async (newsId: string): Promise<TServerPrompt> => {
     }
 
     return {
-      status: "success",
-      msg: "Berita telah di hapus dari draft",
+      success: true,
+      data: undefined,
+      message: "Berita telah di hapus dari draft",
     };
   } catch (error) {
     console.error(error);
     return {
-      status: "error",
-      msg: "masalah pada server delete Berita",
+      success: false,
+      error: "masalah pada server delete Berita",
     };
   }
 };
@@ -57,8 +58,8 @@ export const updateNews = async (
     });
     if (!ownedNews) {
       return {
-        status: "error",
-        msg: "Kamu tidak memiliki akses untuk mengubah berita ini",
+        success: false,
+        error: "Kamu tidak memiliki akses untuk mengubah berita ini",
       };
     }
 
@@ -80,14 +81,15 @@ export const updateNews = async (
     }
 
     return {
-      status: "success",
-      msg: "Photo telah disimpan",
+      success: true,
+      data: undefined,
+      message: "Photo telah disimpan",
     };
   } catch (error) {
     console.error(error);
     return {
-      status: "error",
-      msg: "masalah pada server delete acara",
+      success: false,
+      error: "masalah pada server delete acara",
     };
   }
 };
@@ -128,14 +130,15 @@ export const createNews = async ({
 
     revalidatePath(`/home/news/uploader/${slug}`);
     return {
-      status: "success",
-      msg: slug,
+      success: true,
+      data: undefined,
+      message: slug,
     };
   } catch (error) {
     console.error(error);
     return {
-      status: "error",
-      msg: "masalah pada server delete acara",
+      success: false,
+      error: "masalah pada server delete acara",
     };
   }
 };

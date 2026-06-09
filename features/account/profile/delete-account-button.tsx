@@ -25,8 +25,8 @@ export const DeleteAccountButton = () => {
 		try {
 			const result = await deleteAccount();
 
-			if (result.status === "success") {
-				toast.success(result.msg);
+			if (result.success) {
+				toast.success(result.message);
 				await authClient.signOut({
 					fetchOptions: {
 						onSuccess: () => router.push("/login"),
@@ -35,7 +35,7 @@ export const DeleteAccountButton = () => {
 				return;
 			}
 
-			toast.error(result.msg);
+			toast.error(result.error);
 		} finally {
 			setLoading(false);
 		}

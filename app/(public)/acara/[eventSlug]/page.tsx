@@ -1,6 +1,7 @@
 import { EventDetail } from "@/features/events/components";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { getEventBySlug } from "@/server/data/events";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { absoluteUrl, defaultOgImage } from "@/lib/og";
@@ -62,6 +63,13 @@ export default async function PublicEventDetailPage({
 }) {
   const { eventSlug } = await params;
   const session = await auth.api.getSession({ headers: await headers() });
+  const initialData = await getEventBySlug(eventSlug);
 
-  return <EventDetail slug={eventSlug} readOnly={!session} />;
+  return (
+    <EventDetail
+      slug={eventSlug}
+      readOnly={!session}
+      initialData={initialData}
+    />
+  );
 }

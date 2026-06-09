@@ -15,12 +15,12 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { getCurrentUserRole } from "@/server/actions/account";
+import { useCurrentUserRole } from "@/hooks/use-current-role";
 import { Button, buttonVariants } from "../ui/button";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
-import { RichTextEditor } from "../ui/rich-text-editor";
+import { RichTextEditor } from "../ui/rich-text-editor-dynamic";
 import {
   Select,
   SelectContent,
@@ -66,13 +66,9 @@ export const NewsFormField = ({ mode, slug, data }: NewsFormFieldProps) => {
   const [lenghtOfJudul, setLenghtOfJudul] = useState(0);
   const [lenghtOfRingkasan, setLenghtOfRingkasan] = useState(0);
   const [lenghtOfDeskripsi, setLenghtOfDeskripsi] = useState(0);
-  const [role, setRole] = useState<string>("USER");
+  const { data: role } = useCurrentUserRole();
 
-  useEffect(() => {
-    getCurrentUserRole().then(setRole);
-  }, []);
-
-  const envOptions = ENVIRONMENT_OPTIONS[role] || [];
+  const envOptions = ENVIRONMENT_OPTIONS[role ?? "USER"] || [];
 
   const router = useRouter();
 
@@ -96,8 +92,8 @@ export const NewsFormField = ({ mode, slug, data }: NewsFormFieldProps) => {
           ? await updateNews(slug, value)
           : await createNews(value);
 
-      if (response.status === "error") {
-        toast.error(response.msg);
+      if (!response.success) {
+        toast.error(response.error);
       } else {
         toast.success(
           mode === "update"

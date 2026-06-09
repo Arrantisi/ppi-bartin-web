@@ -29,11 +29,11 @@ const UsernameField = () => {
       try {
         const result = await postUsername(value);
 
-        if (result.status === "success") {
-          toast.success("Username tersimpan", { description: result.msg });
+        if (result.success) {
+          toast.success("Username tersimpan", { description: result.message });
           router.push("/complete-profile");
         } else {
-          toast.error("Gagal menyimpan username", { description: result.msg });
+          toast.error("Gagal menyimpan username", { description: result.error });
         }
       } finally {
         setLoading(false);

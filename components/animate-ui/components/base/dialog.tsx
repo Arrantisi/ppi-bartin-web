@@ -1,5 +1,5 @@
 import * as React from "react";
-import { XIcon } from "lucide-react";
+import { IconX } from "@tabler/icons-react";
 
 import {
   Dialog as DialogPrimitive,
@@ -79,7 +79,7 @@ function DialogPopup({
         {children}
         {showCloseButton && (
           <DialogClosePrimitive className="ring-offset-background focus:ring-ring data-open:bg-accent data-open:text-muted-foreground absolute top-5 right-5 rounded-full opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 shadow-2xl p-1.5">
-            <XIcon />
+            <IconX />
             <span className="sr-only">Close</span>
           </DialogClosePrimitive>
         )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { PlusIcon } from "lucide-react";
+import { IconPlus } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { EventListItem } from "./event-list-item";
@@ -41,7 +41,7 @@ export const EventList = ({
           className="size-8 shrink-0"
           aria-label="Tambah kegiatan"
         >
-          <PlusIcon className="size-4" />
+          <IconPlus className="size-4" />
         </Button>
       </div>
 

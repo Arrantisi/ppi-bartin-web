@@ -1,10 +1,10 @@
 import {
-  ArrowRight,
-  BadgeCheck,
-  CalendarDays,
-  BellRing,
-  Users,
-} from "lucide-react";
+  IconArrowRight,
+  IconCircleCheck,
+  IconCalendarMonth,
+  IconBellRinging,
+  IconUsers,
+} from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -12,17 +12,17 @@ import Link from "next/link";
 export const Hero = () => {
   const highlights = [
     {
-      icon: <Users className="size-4 text-primary" />,
+      icon: <IconUsers className="size-4 text-primary" />,
       label: "Untuk anggota",
       text: "Profil, akses, dan informasi organisasi dalam satu tempat.",
     },
     {
-      icon: <CalendarDays className="size-4 text-primary" />,
+      icon: <IconCalendarMonth className="size-4 text-primary" />,
       label: "Agenda dan Kegiatan",
       text: "Acara dan berita tampil langsung dari data terbaru.",
     },
     {
-      icon: <BellRing className="size-4 text-primary" />,
+      icon: <IconBellRinging className="size-4 text-primary" />,
       label: "Notifikasi penting",
       text: "Pengumuman bisa diterima lebih cepat lewat browser.",
     },
@@ -60,7 +60,7 @@ export const Hero = () => {
                   size="lg"
                   className="rounded-xl px-8 h-14 font-semibold gap-2"
                 >
-                  Baca Berita <ArrowRight className="w-5 h-5" />
+                  Baca Berita <IconArrowRight className="w-5 h-5" />
                 </Button>
               </Link>
               <Link href="/home">
@@ -130,7 +130,7 @@ export const Hero = () => {
 
             <div className="mt-5 rounded-2xl border border-dashed border-border bg-surface-hover p-4 body">
               <div className="flex items-start gap-3">
-                <BadgeCheck className="mt-0.5 size-4 shrink-0 text-accent" />
+                <IconCircleCheck className="mt-0.5 size-4 shrink-0 text-accent" />
                 <p className="leading-[1.6]">
                   Semua informasi penting dikumpulkan agar anggota tidak perlu
                   mencari ke banyak tempat.

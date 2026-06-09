@@ -1,4 +1,4 @@
-import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
+import { IconArrowDownLeft, IconArrowUpRight } from "@tabler/icons-react";
 
 export const DashboardPreview = () => {
   return (
@@ -60,14 +60,14 @@ export const DashboardPreview = () => {
             <h3 className="title-tiga">Aliran Dana</h3>
             <div className="space-y-3">
               <FinanceItem
-                icon={<ArrowDownLeft className="text-success" />}
+                icon={<IconArrowDownLeft className="text-success" />}
                 label="Kas Masuk"
                 date="12 Okt"
                 amount="+₺450"
                 color="text-success"
               />
               <FinanceItem
-                icon={<ArrowUpRight className="text-danger" />}
+                icon={<IconArrowUpRight className="text-danger" />}
                 label="Logistik"
                 date="10 Okt"
                 amount="-₺120"

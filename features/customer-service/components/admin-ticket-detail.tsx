@@ -67,7 +67,7 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
     );
   }
 
-  if (!data || data.status === "error") {
+  if (!data || !data.success) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <IconMessage className="size-12 text-text-disabled mb-4" />
@@ -79,22 +79,22 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
     );
   }
 
-  const ticket = data.data;
+  const ticket = data.data!;
   const status = statusMeta[ticket.status] ?? statusMeta.PENDING;
 
   const handleStatusUpdate = async (newStatus: string) => {
     const res = await updateStatus.mutateAsync({ id: ticket.id, status: newStatus });
-    if (res.status === "success") {
-      toast.success(res.msg);
+    if (res.success) {
+      toast.success(res.message);
     } else {
-      toast.error(res.msg);
+      toast.error(res.error);
     }
   };
 
   const handleDeleteTicket = async () => {
     const res = await removeTicket(ticket.id);
-    if (res.status === "success") {
-      toast.success(res.msg);
+    if (res.success) {
+      toast.success(res.message);
       router.push("/home/profile/customer-service/list");
     }
   };

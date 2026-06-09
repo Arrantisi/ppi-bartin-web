@@ -1,16 +1,12 @@
 "use server";
 
+import { TServerPrompt } from "@/types";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { deleteUploadedFile } from "./delete-upload";
 
-interface IServerPrompt {
-  status: "error" | "success";
-  msg: string;
-}
-
-export const deleteAccount = async (): Promise<IServerPrompt> => {
+export const deleteAccount = async (): Promise<TServerPrompt> => {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) throw new Error("Unauthorized");
@@ -46,20 +42,21 @@ export const deleteAccount = async (): Promise<IServerPrompt> => {
     await Promise.all(fileKeys.map((key) => deleteUploadedFile(key)));
 
     return {
-      status: "success",
-      msg: "account berhasil dihapus!",
+      success: true,
+      data: undefined,
+      message: "account berhasil dihapus!",
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("DEBUG ERROR:", error);
 
     if (error.code === "P2025") {
-      return { status: "error", msg: "User tidak ditemukan di database" };
+      return { success: false, error: "User tidak ditemukan di database" };
     }
 
     return {
-      status: "error",
-      msg: "Terjadi kesalahan pada server",
+      success: false,
+      error: "Terjadi kesalahan pada server",
     };
   }
 };

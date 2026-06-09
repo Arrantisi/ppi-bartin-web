@@ -98,9 +98,9 @@ export const UpdateProfileField = ({
     onSubmit: async ({ value }: { value: TupdateProfileSchema }) => {
       setIsLoading(true);
       const fetch = await updateProfile(value);
-      if (fetch.status === "error") {
-        toast.error("kesalahan", { description: fetch.msg });
-      } else if (fetch.status === "success") {
+      if (!fetch.success) {
+        toast.error("kesalahan", { description: fetch.error });
+      } else if (fetch.success) {
         if (successToastDescription) {
           toast.success(successToastTitle, { description: successToastDescription });
         } else {

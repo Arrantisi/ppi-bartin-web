@@ -4,8 +4,7 @@ import { TgetAllEvent } from "@/server/data/events";
 import { HoldButtonCancel, HoldButtonJoin } from "@/components/buttons";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { TimerOff } from "lucide-react";
-import { IconUserOff } from "@tabler/icons-react";
+import { IconClockOff, IconUserOff } from "@tabler/icons-react";
 import { endOfDay } from "date-fns/endOfDay";
 import { isBefore } from "date-fns/isBefore";
 
@@ -37,7 +36,7 @@ export const EventActionButton = ({
     return (
       <div className="flex justify-end">
         <StatusBadge className="text-info border-info gap-1.5">
-          <TimerOff className="w-3.5 h-3.5" />
+          <IconClockOff className="w-3.5 h-3.5" />
           <span>Pendaftaran Berakhir</span>
         </StatusBadge>
       </div>

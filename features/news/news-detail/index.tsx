@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { formattedDate } from "@/utils/date-format";
 import { imageUrl } from "@/utils/image-url";
 import { useNewsBySlug } from "@/hooks/use-news";
+import type { TgetNewsBySlug } from "@/server/data/news";
 import { LoaderOneDemo } from "@/components/loader";
 import { Drawer } from "@/components/ui/drawer";
 import { authClient } from "@/lib/auth/client";
@@ -22,9 +23,11 @@ import linkifyHtml from "linkify-html";
 export const NewsDetailComponent = ({
   slug,
   readOnly = false,
+  initialData,
 }: {
   slug: string;
   readOnly?: boolean;
+  initialData?: TgetNewsBySlug;
 }) => {
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
@@ -33,7 +36,7 @@ export const NewsDetailComponent = ({
   const { data: session } = authClient.useSession();
   const isPublicVisitor = readOnly || !session;
 
-  const { data, isLoading } = useNewsBySlug({ slug });
+  const { data, isLoading } = useNewsBySlug({ slug, initialData });
 
   useEffect(() => {
     DOMPurify.addHook("afterSanitizeAttributes", (node) => {

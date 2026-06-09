@@ -1,5 +1,6 @@
-import { IconCalendarOff, IconNewsOff } from "@tabler/icons-react";
-import { PlusCircle } from "lucide-react";
+"use client";
+
+import { IconCalendarOff, IconNewsOff, IconCirclePlus } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
 export const DataKosong = ({
@@ -30,7 +31,7 @@ export const DataKosong = ({
         className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover"
         onClick={() => router.push(href)}
       >
-        <PlusCircle className="mr-2 h-4 w-4" />
+        <IconCirclePlus className="mr-2 h-4 w-4" />
         Buat Acara Pertama
       </button>
     </div>

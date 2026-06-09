@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   allowedDevOrigins: ["b959-85-109-93-100.ngrok-free.app"],
   experimental: {
-    optimizePackageImports: ["@tabler/icons-react", "lucide-react"],
+    optimizePackageImports: ["@tabler/icons-react"],
   },
 };
 

@@ -28,11 +28,11 @@ const ValidateNameField = () => {
       setLoading(true);
 
       const matched = await completeProfile(value.nomor_siswa, value.nama_siswa);
-      if (matched.status === "success") {
-        toast.success("Berhasil", { description: matched.msg });
+      if (matched.success) {
+        toast.success("Berhasil", { description: matched.message });
         router.push("/home");
       } else {
-        toast.error("Gagal", { description: matched.msg });
+        toast.error("Gagal", { description: matched.error });
       }
 
       setLoading(false);

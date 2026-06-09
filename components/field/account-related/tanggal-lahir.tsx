@@ -30,7 +30,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CalendarDays, ChevronDown } from "lucide-react";
+import { IconCalendarMonth, IconChevronDown } from "@tabler/icons-react";
 import { formattedDate } from "@/utils/date-format";
 
 export function TanggalLahitField({
@@ -67,7 +67,7 @@ export function TanggalLahitField({
         <span className={cn("truncate text-muted-foreground", value && "") }>
           {value ? formattedDate(value) : "Pick a date"}
         </span>
-        <CalendarDays
+        <IconCalendarMonth
           aria-hidden="true"
           className="group-hover:text-foreground shrink-0 transition-colors"
         />
@@ -207,7 +207,7 @@ function MonthGrid({
                         className="px-2"
                         onClick={() => setSelectedYear(null)}
                       >
-                        <ChevronDown
+                        <IconChevronDown
                           className="mr-1 size-4 rotate-90"
                         />
                         {selectedYear}
@@ -269,7 +269,7 @@ function CaptionLabel({
       variant="ghost"
     >
       {children}
-      <ChevronDown
+      <IconChevronDown
         aria-hidden="true"
         className="text-muted-foreground/80 shrink-0 transition-transform duration-200"
       />

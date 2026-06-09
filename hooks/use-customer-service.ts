@@ -42,8 +42,8 @@ export const useDeleteTicket = () => {
   return useMutation({
     mutationFn: (id: string) => deleteTicket(id),
     onSuccess: (data) => {
-      if (data.status === "error") {
-        toast.error(data.msg);
+      if (!data.success) {
+        toast.error(data.error);
         return;
       }
       queryClient.invalidateQueries({ queryKey: ["customerServiceTickets"] });

@@ -17,6 +17,7 @@ import { Drawer } from "@/components/ui/drawer";
 import { authClient } from "@/lib/auth/client";
 import { imageUrl } from "@/utils/image-url";
 import { useEventBySlug } from "@/hooks/use-events";
+import type { TgetEventBySlug } from "@/server/data/events";
 import { LoaderOneDemo } from "@/components/loader";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AlertDEelete } from "@/components/shared/confirm-delete-dialog";
@@ -64,9 +65,11 @@ const processHtmlContent = (rawText: string, customAnchorClass?: string) => {
 export const EventDetail = ({
   slug,
   readOnly = false,
+  initialData,
 }: {
   slug: string;
   readOnly?: boolean;
+  initialData?: TgetEventBySlug;
 }) => {
   const { data: session } = authClient.useSession();
   const router = useRouter();
@@ -88,7 +91,7 @@ export const EventDetail = ({
     };
   }, []);
 
-  const { data, isLoading } = useEventBySlug({ slug });
+  const { data, isLoading } = useEventBySlug({ slug, initialData });
 
   const cleanDeskripsi = useMemo(
     () => processHtmlContent(data?.deskripsi || ""),

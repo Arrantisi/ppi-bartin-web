@@ -45,12 +45,12 @@ export const getTicketById = async (id: string) => {
       },
     });
 
-    if (!ticket) return { status: "error" as const, msg: "Tiket tidak ditemukan" };
+    if (!ticket) return { success: false, error: "Tiket tidak ditemukan" };
 
-    return { status: "success" as const, data: ticket };
+    return { success: true, data: ticket };
   } catch (error) {
     console.error(error);
-    return { status: "error" as const, msg: "gagal mengambil data tiket" };
+    return { success: false, error: "gagal mengambil data tiket" };
   }
 };
 
@@ -87,10 +87,10 @@ export const getTickets = async () => {
       },
     });
 
-    return { status: "success" as const, data: tickets };
+    return { success: true, data: tickets };
   } catch (error) {
     console.error(error);
-    return { status: "error" as const, msg: "gagal mengambil data", data: [] };
+    return { success: false, error: "gagal mengambil data" };
   }
 };
 
@@ -119,10 +119,10 @@ export const updateTicketStatus = async ({
       data,
     });
 
-    return { msg: "status berhasil diperbarui", status: "success" };
+    return { message: "status berhasil diperbarui", success: true, data: undefined };
   } catch (error) {
     console.error(error);
-    return { msg: "gagal memperbarui status", status: "error" };
+    return { error: "gagal memperbarui status", success: false };
   }
 };
 
@@ -137,7 +137,7 @@ export const deleteTicket = async (
       include: { files: { select: { fileKey: true } } },
     });
     if (!ticket) {
-      return { status: "error", msg: "Tiket tidak ditemukan" };
+      return { success: false, error: "Tiket tidak ditemukan" };
     }
 
     await Promise.allSettled(
@@ -146,9 +146,9 @@ export const deleteTicket = async (
 
     await prisma.customerService.delete({ where: { id } });
 
-    return { status: "success", msg: "Tiket berhasil dihapus" };
+    return { success: true, data: undefined, message: "Tiket berhasil dihapus" };
   } catch (error) {
     console.error(error);
-    return { status: "error", msg: "Gagal menghapus tiket" };
+    return { success: false, error: "Gagal menghapus tiket" };
   }
 };

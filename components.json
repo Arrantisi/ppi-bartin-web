@@ -10,7 +10,7 @@
     "cssVariables": true,
     "prefix": ""
   },
-  "iconLibrary": "lucide",
+  "iconLibrary": "@tabler/icons-react",
   "rtl": false,
   "aliases": {
     "components": "@/components",

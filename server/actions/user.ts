@@ -30,14 +30,15 @@ export const completeProfile = async ({
     });
 
     return {
-      msg: "Berhasil Memperbarui Profile",
-      status: "success",
+      message: "Berhasil Memperbarui Profile",
+      success: true,
+      data: undefined,
     };
   } catch (error) {
     console.error({ error });
     return {
-      msg: "ada masalah di server mohon segera hubungi admin atau tulis pesan di umpan balik",
-      status: "error",
+      error: "ada masalah di server mohon segera hubungi admin atau tulis pesan di umpan balik",
+      success: false,
     };
   }
 };
@@ -87,14 +88,15 @@ export const updateProfile = async ({
     }
 
     return {
-      status: "success",
-      msg: "berhasil update profile",
+      success: true,
+      data: undefined,
+      message: "berhasil update profile",
     };
   } catch (error) {
     console.error(error);
     return {
-      status: "error",
-      msg: "masalah pada server update profile, hubungi admin ppi bartin",
+      success: false,
+      error: "masalah pada server update profile, hubungi admin ppi bartin",
     };
   }
 };
@@ -110,14 +112,15 @@ export const postUsername = async ({
       data: { username },
     });
     return {
-      status: "success",
-      msg: `anda terdaftar sebagai ${username}`,
+      success: true,
+      data: undefined,
+      message: `anda terdaftar sebagai ${username}`,
     };
   } catch (error) {
     console.error(error);
     return {
-      status: "error",
-      msg: "masalah pada server post username",
+      success: false,
+      error: "masalah pada server post username",
     };
   }
 };

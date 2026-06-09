@@ -12,7 +12,7 @@ import { deleteUploadedFile } from "./delete-upload";
 export const cancelParticipant = async (
   eventId: string,
   participantsId: string, // Tetap kita terima untuk validasi extra
-): Promise<TServerPrompt> => {
+) => {
   const MAX_CANCEL_PER_EVENT = 2;
 
   try {
@@ -28,8 +28,8 @@ export const cancelParticipant = async (
 
     if (cancelCount > MAX_CANCEL_PER_EVENT) {
       return {
-        msg: `Kamu sudah mencapai batas maksimal pembatalan ${cancelCount + 1}/${MAX_CANCEL_PER_EVENT} untuk event ini.`,
-        status: "error",
+        success: false,
+        error: `Kamu sudah mencapai batas maksimal pembatalan ${cancelCount + 1}/${MAX_CANCEL_PER_EVENT} untuk event ini.`,
       };
     }
 
@@ -52,14 +52,15 @@ export const cancelParticipant = async (
     revalidatePath("/home/events");
 
     return {
-      msg: `Kamu telah membatalkan sebanyak ${cancelCount + 1}/${MAX_CANCEL_PER_EVENT}; setelah itu pendaftaran akan diblokir.`,
-      status: "success",
+      message: `Kamu telah membatalkan sebanyak ${cancelCount + 1}/${MAX_CANCEL_PER_EVENT}; setelah itu pendaftaran akan diblokir.`,
+      success: true,
+      data: undefined,
     };
   } catch (error) {
     console.error("Error cancelParticipant:", error);
     return {
-      msg: "Terjadi masalah pada server saat membatalkan partisipasi",
-      status: "error",
+      error: "Terjadi masalah pada server saat membatalkan partisipasi",
+      success: false,
     };
   }
 };
@@ -103,14 +104,15 @@ export const createAcara = async ({
     }
 
     return {
-      status: "success",
-      msg: "berhasil membuat acara",
+      success: true,
+      data: undefined,
+      message: "berhasil membuat acara",
     };
   } catch (error) {
     console.error(error);
     return {
-      status: "error",
-      msg: "masalah pada server create acara, silahkan hubungi admin",
+      success: false,
+      error: "masalah pada server create acara, silahkan hubungi admin",
     };
   }
 };
@@ -138,8 +140,8 @@ export const updateAcara = async (
     });
     if (!ownedEvent) {
       return {
-        status: "error",
-        msg: "Kamu tidak memiliki akses untuk mengubah acara ini",
+        success: false,
+        error: "Kamu tidak memiliki akses untuk mengubah acara ini",
       };
     }
 
@@ -164,14 +166,15 @@ export const updateAcara = async (
 
     revalidatePath("/home/acara");
     return {
-      status: "success",
-      msg: "Acara berhasil di update",
+      success: true,
+      data: undefined,
+      message: "Acara berhasil di update",
     };
   } catch (error) {
     console.error(error);
     return {
-      status: "error",
-      msg: "masalah pada server update acara",
+      success: false,
+      error: "masalah pada server update acara",
     };
   }
 };
@@ -186,7 +189,7 @@ export const deleteEvent = async (eventId: string): Promise<TServerPrompt> => {
     });
 
     if (!event) {
-      return { status: "error", msg: "Acara tidak ditemukan" };
+      return { success: false, error: "Acara tidak ditemukan" };
     }
 
     await prisma.events.delete({
@@ -198,14 +201,15 @@ export const deleteEvent = async (eventId: string): Promise<TServerPrompt> => {
     }
 
     return {
-      status: "success",
-      msg: "Acara telah di hapus dari draft",
+      success: true,
+      data: undefined,
+      message: "Acara telah di hapus dari draft",
     };
   } catch (error) {
     console.error(error);
     return {
-      status: "error",
-      msg: "masalah pada server delete acara",
+      success: false,
+      error: "masalah pada server delete acara",
     };
   }
 };
@@ -224,8 +228,8 @@ export const joinEvent = async (eventId: string): Promise<TServerPrompt> => {
 
   if (cancelCount > MAX_CANCEL_PER_EVENT - 1) {
     return {
-      status: "error",
-      msg: "Kamu sudah di blokir dari event ini",
+      success: false,
+      error: "Kamu sudah di blokir dari event ini",
     };
   }
 
@@ -245,22 +249,22 @@ export const joinEvent = async (eventId: string): Promise<TServerPrompt> => {
 
   if (!event) {
     return {
-      msg: "event tidak di temukan",
-      status: "error",
+      error: "event tidak di temukan",
+      success: false,
     };
   }
 
   if (event.participants.length > 0) {
     return {
-      status: "error",
-      msg: "kamu telah join event",
+      success: false,
+      error: "kamu telah join event",
     };
   }
 
   if (event._count.participants >= event.maxCapacity) {
     return {
-      msg: "event sudah penuh",
-      status: "error",
+      error: "event sudah penuh",
+      success: false,
     };
   }
 
@@ -273,14 +277,15 @@ export const joinEvent = async (eventId: string): Promise<TServerPrompt> => {
     });
 
     return {
-      status: "success",
-      msg: "kamu sudah berhasil join acara",
+      success: true,
+      data: undefined,
+      message: "kamu sudah berhasil join acara",
     };
   } catch (error) {
     console.error(error);
     return {
-      status: "error",
-      msg: "masalah pada server join acara",
+      success: false,
+      error: "masalah pada server join acara",
     };
   }
 };
@@ -295,8 +300,8 @@ export const publishAcara = async (slug: string): Promise<TServerPrompt> => {
     });
     if (!ownedEvent) {
       return {
-        status: "error",
-        msg: "Kamu tidak memiliki akses untuk publish acara ini",
+        success: false,
+        error: "Kamu tidak memiliki akses untuk publish acara ini",
       };
     }
 
@@ -306,14 +311,15 @@ export const publishAcara = async (slug: string): Promise<TServerPrompt> => {
     });
 
     return {
-      status: "success",
-      msg: "acara berhasil di publish",
+      success: true,
+      data: undefined,
+      message: "acara berhasil di publish",
     };
   } catch (error) {
     console.error(error);
     return {
-      status: "error",
-      msg: "masalah pada server publish acara",
+      success: false,
+      error: "masalah pada server publish acara",
     };
   }
 };
