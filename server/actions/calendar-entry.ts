@@ -34,12 +34,12 @@ export const createEntry = async (
 
     revalidatePath("/home/profile");
 
-    return { status: "success", msg: "Kegiatan berhasil ditambahkan" };
+    return { success: true, data: undefined, message: "Kegiatan berhasil ditambahkan" };
   } catch (error) {
     console.error("Error createEntry:", error);
     return {
-      status: "error",
-      msg: "Gagal menambahkan kegiatan",
+      success: false,
+      error: "Gagal menambahkan kegiatan",
     };
   }
 };
@@ -57,8 +57,8 @@ export const updateEntry = async (
 
     if (!existing) {
       return {
-        status: "error",
-        msg: "Kegiatan tidak ditemukan",
+        success: false,
+        error: "Kegiatan tidak ditemukan",
       };
     }
 
@@ -76,12 +76,12 @@ export const updateEntry = async (
 
     revalidatePath("/home/profile");
 
-    return { status: "success", msg: "Kegiatan berhasil diperbarui" };
+    return { success: true, data: undefined, message: "Kegiatan berhasil diperbarui" };
   } catch (error) {
     console.error("Error updateEntry:", error);
     return {
-      status: "error",
-      msg: "Gagal memperbarui kegiatan",
+      success: false,
+      error: "Gagal memperbarui kegiatan",
     };
   }
 };
@@ -96,8 +96,8 @@ export const deleteEntry = async (id: string): Promise<TServerPrompt> => {
 
     if (!existing) {
       return {
-        status: "error",
-        msg: "Kegiatan tidak ditemukan",
+        success: false,
+        error: "Kegiatan tidak ditemukan",
       };
     }
 
@@ -105,12 +105,12 @@ export const deleteEntry = async (id: string): Promise<TServerPrompt> => {
 
     revalidatePath("/home/profile");
 
-    return { status: "success", msg: "Kegiatan berhasil dihapus" };
+    return { success: true, data: undefined, message: "Kegiatan berhasil dihapus" };
   } catch (error) {
     console.error("Error deleteEntry:", error);
     return {
-      status: "error",
-      msg: "Gagal menghapus kegiatan",
+      success: false,
+      error: "Gagal menghapus kegiatan",
     };
   }
 };

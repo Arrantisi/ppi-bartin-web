@@ -699,6 +699,12 @@
   min-width: 0;
 }
 
+/* Performance: content-visibility for long lists */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 200px;
+}
+
 /* Mencegah jumping saat modal/drawer dibuka */
 body[data-vaul-drawer-wrapper] {
   filter: none !important; /* Kadang scaling effect bikin bug di PWA */

@@ -26,7 +26,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronsLeft, ChevronsRight } from "lucide-react";
+import { IconChevronsLeft, IconChevronsRight } from "@tabler/icons-react";
 import {
   Select,
   SelectContent,
@@ -205,7 +205,7 @@ export const DataTable = () => {
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
-            <ChevronsLeft />
+            <IconChevronsLeft />
           </Button>
           <Button
             variant="outline"
@@ -230,7 +230,7 @@ export const DataTable = () => {
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
-            <ChevronsRight />
+            <IconChevronsRight />
           </Button>
         </div>
       </div>

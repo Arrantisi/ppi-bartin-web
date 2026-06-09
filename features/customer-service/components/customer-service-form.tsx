@@ -1,6 +1,6 @@
 "use client";
 
-import { customerServiceSchema, TcustomerServiceSchema } from "@/schemas";
+import { customerServiceSchema, TcustomerServiceSchema } from "@/schemas/customer-service";
 import { customerService } from "@/server/actions/customer-service";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
@@ -111,10 +111,10 @@ export const CustomerServiceForm = () => {
       setIsLoading(true);
       const payload = { ...value, fileKeys: files.map((f) => f.key) };
       const fetch = await customerService(payload);
-      if (fetch.status === "error") {
-        toast.error(fetch.msg);
-      } else if (fetch.status === "success") {
-        toast.success(fetch.msg);
+      if (!fetch.success) {
+        toast.error(fetch.error);
+      } else if (fetch.success) {
+        toast.success(fetch.message);
         router.push("/home/profile");
         form.reset();
       }

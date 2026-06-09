@@ -1,4 +1,4 @@
-import { Clock3, FileText, ShieldAlert } from "lucide-react";
+import { IconClock, IconFileText, IconShieldExclamation } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -29,7 +29,7 @@ export const FinanceSection = () => {
                   key={item}
                   className="flex items-center gap-3 body text-text-primary"
                 >
-                  <Clock3 className="text-warning w-5 h-5" /> {item}
+                  <IconClock className="text-warning w-5 h-5" /> {item}
                 </li>
               ))}
             </ul>
@@ -60,7 +60,7 @@ export const FinanceSection = () => {
               <div className="space-y-4">
                 <div className="p-4 bg-muted/30 rounded-2xl border border-border flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center text-warning">
-                    <ShieldAlert className="w-5 h-5" />
+                    <IconShieldExclamation className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="body text-text-primary font-semibold">
@@ -74,7 +74,7 @@ export const FinanceSection = () => {
 
                 <div className="p-4 bg-muted/30 rounded-2xl border border-border flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-foreground">
-                    <FileText className="w-5 h-5" />
+                    <IconFileText className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="body text-text-primary font-semibold">

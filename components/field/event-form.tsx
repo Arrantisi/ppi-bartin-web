@@ -1,13 +1,13 @@
 "use client";
 
 import { createAcara, updateAcara } from "@/server/actions/acara";
-import { TcreateEventSchema, createEventSchema } from "@/schemas";
+import { TcreateEventSchema, createEventSchema } from "@/schemas/event";
 import { TupdateEventProps } from "@/types";
 import { DatePickerField } from "../dates/date-picker-future";
 import { Button, buttonVariants } from "../ui/button";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
-import { RichTextEditor } from "../ui/rich-text-editor";
+import { RichTextEditor } from "../ui/rich-text-editor-dynamic";
 import { Spinner } from "../ui/spinner";
 import { Textarea } from "../ui/textarea";
 import { useForm } from "@tanstack/react-form";
@@ -23,9 +23,9 @@ import {
 import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { getCurrentUserRole } from "@/server/actions/account";
+import { useCurrentUserRole } from "@/hooks/use-current-role";
 import { UploaderPhoto } from "@/features/uploads/upload-event-news";
 import { mergeTime } from "@/utils/date-format";
 import {
@@ -62,12 +62,8 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [lengthOfDeskripsi, setLengthOfDeskripsi] = useState(0);
   const [isDate, setIsDate] = useState<Date>(new Date());
-  const [role, setRole] = useState<string>("USER");
-
-  useEffect(() => {
-    getCurrentUserRole().then(setRole);
-  }, []);
-  const envOptions = ENVIRONMENT_OPTIONS[role] || [];
+  const { data: role } = useCurrentUserRole();
+  const envOptions = ENVIRONMENT_OPTIONS[role ?? "USER"] || [];
 
   const today = new Date();
   const router = useRouter();
@@ -129,9 +125,9 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
               batasDaftar: mergedBatasDaftar,
             });
 
-      if (matched.status === "error") {
+      if (!matched.success) {
         toast.error("ada kesalahan", {
-          description: matched.msg,
+          description: matched.error,
         });
       } else {
         toast.success(

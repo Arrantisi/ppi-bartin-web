@@ -1,6 +1,6 @@
 "use client";
 
-import { type LucideIcon } from "lucide-react";
+import * as React from "react";
 
 import {
   SidebarGroup,
@@ -18,7 +18,7 @@ export function NavMain({
   items: {
     title: string;
     url: string;
-    icon?: LucideIcon;
+    icon?: React.ComponentType<{ className?: string }>;
     isActive?: boolean;
     items?: {
       title: string;

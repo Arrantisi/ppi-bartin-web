@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { TcustomerServiceSchema } from "@/schemas";
+import { TcustomerServiceSchema } from "@/schemas/customer-service";
 import { TServerPrompt } from "@/types";
 import { studentAccount } from "./account";
 import { sendPushToRole } from "@/lib/push/server";
@@ -19,7 +19,7 @@ export const customerService = async ({
       const session = await studentAccount();
       user = session.user;
     } catch {
-      return { msg: "kamu harus login", status: "error" };
+      return { error: "kamu harus login", success: false };
     }
 
     await prisma.customerService.create({
@@ -49,14 +49,15 @@ export const customerService = async ({
     });
 
     return {
-      msg: "pesan kamu telah di kirim",
-      status: "success",
+      message: "pesan kamu telah di kirim",
+      success: true,
+      data: undefined,
     };
   } catch (error) {
     console.error(error);
     return {
-      msg: "maaf ada kendala",
-      status: "error",
+      error: "maaf ada kendala",
+      success: false,
     };
   }
 };

@@ -12,11 +12,12 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { formattedDate, formatDateTime } from "@/utils/date-format";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Drawer } from "@/components/ui/drawer";
 import { authClient } from "@/lib/auth/client";
 import { imageUrl } from "@/utils/image-url";
 import { useEventBySlug } from "@/hooks/use-events";
+import type { TgetEventBySlug } from "@/server/data/events";
 import { LoaderOneDemo } from "@/components/loader";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AlertDEelete } from "@/components/shared/confirm-delete-dialog";
@@ -38,16 +39,6 @@ import { getTwoWords } from "@/utils/get-twowords";
 import { cn } from "@/lib/utils";
 import AvatarParticipant from "@/features/events/acara/avatars/avatar-participant";
 import { DialogTableParticipant } from "@/features/events/acara/avatars/table-participant";
-
-// REGISTER HOOK DOMPURIFY SEKALI SAJA (Next.js SSR Safe)
-if (typeof window !== "undefined") {
-  DOMPurify.addHook("afterSanitizeAttributes", (node) => {
-    if ("target" in node && node.tagName === "A") {
-      node.setAttribute("target", "_blank");
-      node.setAttribute("rel", "noopener noreferrer");
-    }
-  });
-}
 
 /**
  * REUSABLE UTILITY FUNCTION
@@ -74,9 +65,11 @@ const processHtmlContent = (rawText: string, customAnchorClass?: string) => {
 export const EventDetail = ({
   slug,
   readOnly = false,
+  initialData,
 }: {
   slug: string;
   readOnly?: boolean;
+  initialData?: TgetEventBySlug;
 }) => {
   const { data: session } = authClient.useSession();
   const router = useRouter();
@@ -86,7 +79,24 @@ export const EventDetail = ({
   const [isOpenImageDialog, setIsOpenImageDialog] = useState(false);
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
 
-  const { data, isLoading } = useEventBySlug({ slug });
+  useEffect(() => {
+    DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+      if ("target" in node && node.tagName === "A") {
+        node.setAttribute("target", "_blank");
+        node.setAttribute("rel", "noopener noreferrer");
+      }
+    });
+    return () => {
+      DOMPurify.removeHook("afterSanitizeAttributes");
+    };
+  }, []);
+
+  const { data, isLoading } = useEventBySlug({ slug, initialData });
+
+  const cleanDeskripsi = useMemo(
+    () => processHtmlContent(data?.deskripsi || ""),
+    [data?.deskripsi],
+  );
 
   if (isLoading) return <LoaderOneDemo />;
   if (!data)
@@ -95,7 +105,7 @@ export const EventDetail = ({
   const myParticipation = data.participants.find(
     (p) => p.user.id === session?.user.id,
   );
-  const isJoined = !myParticipation;
+  const isJoined = !!myParticipation;
 
   const handleOpenDelete = () => {
     setIsOpenDrawer(false);
@@ -109,9 +119,6 @@ export const EventDetail = ({
         : "Tekan dan tahan tombol daftar dibawah!",
     });
   };
-
-  // 1. PROSES KONTEN DESKRIPSI UTAMA
-  const cleanDeskripsi = processHtmlContent(data.deskripsi || "");
 
   // 2. PROSES LOGIKA SENSOR / EKSTRAKSI LOKASI META
   const renderLokasiContent = () => {

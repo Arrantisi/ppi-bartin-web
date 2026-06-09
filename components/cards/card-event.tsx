@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { differenceInCalendarDays, format } from "date-fns";
 import { id } from "date-fns/locale";
 import Image from "next/image";
@@ -148,4 +149,4 @@ const CardEvent = ({
   );
 };
 
-export default CardEvent;
+export default memo(CardEvent);

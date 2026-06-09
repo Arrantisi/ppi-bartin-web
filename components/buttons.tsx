@@ -34,11 +34,11 @@ export const HoldButtonCancel = ({
   const handleCancelEvent = async () => {
     setOnLoading(true);
     const respons = await cancelParticipant(eventId, participantId);
-    if (respons.status === "error") {
-      toast.error("Gagal", { description: respons.msg });
-    } else if (respons.status === "success") {
+    if (!respons.success) {
+      toast.error("Gagal", { description: respons.error });
+    } else if (respons.success) {
       toast.warning("Partisipasi anda telah dibatalkan!", {
-        description: respons.msg,
+        description: respons.message,
       });
     }
     setOnLoading(false);
@@ -78,8 +78,8 @@ export const HoldButtonJoin = ({
     setOnLoading(true);
     try {
       const fetch = await joinEvent(eventId);
-      if (fetch.status === "error") {
-        toast.error(`Maaf ${fetch.msg}`);
+      if (!fetch.success) {
+        toast.error(`Maaf ${fetch.error}`);
       } else {
         toast.success("Selamat, kamu sudah join event");
       }

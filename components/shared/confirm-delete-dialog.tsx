@@ -41,11 +41,11 @@ export const AlertDEelete = ({
     const deleteData =
       type === "acara" ? await deleteEvent(id) : await deleteNews(id);
 
-    if (deleteData.status === "success") {
-      toast.success(deleteData.msg);
+    if (deleteData.success) {
+      toast.success(deleteData.message);
       router.push(href);
     } else {
-      toast.error(deleteData.msg);
+      toast.error(deleteData.error);
     }
 
     handleClose();

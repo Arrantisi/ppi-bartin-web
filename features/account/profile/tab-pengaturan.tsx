@@ -8,8 +8,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { PushNotificationSwitch } from "@/components/push-notification-switch";
-import { getCurrentUserRole } from "@/server/actions/account";
-import { useEffect, useState } from "react";
+import { useCurrentUserRole } from "@/hooks/use-current-role";
 import {
   IconUser,
   IconMail,
@@ -127,13 +126,9 @@ export const TabPengaturan = ({ user }: Props) => {
   const router = useRouter();
   const { setTheme, theme } = useTheme();
   const { replayTour } = usePWAInstallTourContext();
-  const [role, setRole] = useState<string | null>(null);
+  const { data: role } = useCurrentUserRole();
 
-  useEffect(() => {
-    getCurrentUserRole().then(setRole);
-  }, []);
-
-  const isAdminOrPengurus = role === "ADMIN" || role === "PENGURUS";
+  const isAdminOrPengurus = (role ?? "") === "ADMIN" || role === "PENGURUS";
 
   const handleLogout = async () => {
     await authClient.signOut({

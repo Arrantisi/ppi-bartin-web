@@ -2,6 +2,7 @@
 
 import {
   getTickets,
+  getTicketById,
   updateTicketStatus,
   deleteTicket,
 } from "@/server/actions/customer-service-admin";
@@ -27,14 +28,22 @@ export const useUpdateTicketStatus = () => {
   });
 };
 
+export const useTicketById = (id: string) => {
+  return useQuery({
+    queryKey: ["customerServiceTicket", id],
+    queryFn: () => getTicketById(id),
+    enabled: !!id,
+  });
+};
+
 export const useDeleteTicket = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (id: string) => deleteTicket(id),
     onSuccess: (data) => {
-      if (data.status === "error") {
-        toast.error(data.msg);
+      if (!data.success) {
+        toast.error(data.error);
         return;
       }
       queryClient.invalidateQueries({ queryKey: ["customerServiceTickets"] });
