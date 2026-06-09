@@ -56,6 +56,7 @@ const catagoryLabel: Record<string, string> = {
 export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
   const { data, isLoading } = useCustomerServiceTickets();
   const updateStatus = useUpdateTicketStatus();
+  const { mutateAsync: removeTicket, isPending: isDeleting } = useDeleteTicket();
   const router = useRouter();
 
   if (isLoading) {
@@ -80,7 +81,6 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
   }
 
   const status = statusMeta[ticket.status] ?? statusMeta.PENDING;
-  const { mutateAsync: removeTicket, isPending: isDeleting } = useDeleteTicket();
 
   const handleStatusUpdate = async (newStatus: string) => {
     const res = await updateStatus.mutateAsync({ id: ticket.id, status: newStatus });

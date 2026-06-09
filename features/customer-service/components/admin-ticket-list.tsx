@@ -13,7 +13,10 @@ import {
 } from "@tabler/icons-react";
 import { imageUrl } from "@/utils/image-url";
 
-const statusConfig: Record<string, { label: string; icon: React.ReactNode; className: string }> = {
+const statusConfig: Record<
+  string,
+  { label: string; icon: React.ReactNode; className: string }
+> = {
   PENDING: {
     label: "Pending",
     icon: <IconAlertCircle className="size-3.5" />,
@@ -34,17 +37,36 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode; class
 const levelBadge: Record<string, { label: string; className: string }> = {
   rendah: { label: "Rendah", className: "text-text-disabled border-border" },
   sedang: { label: "Sedang", className: "text-warning border-warning/30" },
-  darurat: { label: "Darurat", className: "text-destructive border-destructive/30" },
+  darurat: {
+    label: "Darurat",
+    className: "text-destructive border-destructive/30",
+  },
 };
 
-const UserAvatar = ({ user }: { user: { name?: string | null; username?: string | null; image?: string | null } }) => {
+const UserAvatar = ({
+  user,
+}: {
+  user: {
+    name?: string | null;
+    username?: string | null;
+    image?: string | null;
+  };
+}) => {
   const initial = (user.name || user.username || "?").charAt(0).toUpperCase();
 
   if (user.image) {
-    const src = user.image.startsWith("http") ? user.image : imageUrl(user.image);
+    const src = user.image.startsWith("http")
+      ? user.image
+      : imageUrl(user.image);
     return (
       <div className="size-11 md:size-10 rounded-full overflow-hidden shrink-0 border border-border">
-        <Image src={src} alt="" width={44} height={44} className="object-cover size-full" />
+        <Image
+          src={src}
+          alt=""
+          width={44}
+          height={44}
+          className="object-cover size-full"
+        />
       </div>
     );
   }
@@ -85,7 +107,9 @@ export const AdminTicketList = () => {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <IconMessage className="size-12 text-text-disabled mb-4" />
-        <p className="text-text-secondary text-sm">Belum ada pesan customer service</p>
+        <p className="text-text-secondary text-sm">
+          Belum ada pesan customer service
+        </p>
       </div>
     );
   }
@@ -100,7 +124,9 @@ export const AdminTicketList = () => {
           <button
             key={ticket.id}
             type="button"
-            onClick={() => router.push(`/home/profile/customer-service/list/${ticket.id}`)}
+            onClick={() =>
+              router.push(`/home/profile/customer-service/list/${ticket.id}`)
+            }
             className="w-full text-left p-4 border border-border rounded-xl hover:bg-surface-hover transition-colors"
           >
             <div className="flex flex-col md:flex-row md:items-center gap-3">
@@ -115,25 +141,43 @@ export const AdminTicketList = () => {
                     <span className="text-sm font-medium text-text-primary truncate leading-snug">
                       {ticket.subject}
                     </span>
-                    <span className={"shrink-0 " + level.className + " text-[0.625rem] uppercase tracking-wider font-medium px-1.5 py-0.5 rounded border"}>
+                    <span
+                      className={
+                        "shrink-0 " +
+                        level.className +
+                        " text-[0.625rem] uppercase tracking-wider font-medium px-1.5 py-0.5 rounded border"
+                      }
+                    >
                       {level.label}
                     </span>
                   </div>
                   {/* Row 2 mobile: sender + date */}
                   <div className="flex md:hidden items-center gap-1.5 mt-1">
-                    <span className="text-xs text-text-disabled truncate max-w-[160px]">
+                    <span className="text-xs text-text-disabled truncate max-w-40">
                       {ticket.user.name || ticket.user.username || "Unknown"}
                     </span>
                     <span className="text-text-disabled shrink-0">·</span>
                     <span className="text-xs text-text-disabled shrink-0">
-                      {new Date(ticket.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                      {new Date(ticket.createdAt).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </span>
                   </div>
                   {/* Row 2 desktop: sender + date + files (original) */}
                   <div className="hidden md:flex items-center gap-2 text-xs text-text-disabled mt-0.5">
-                    <span>{ticket.user.name || ticket.user.username || "Unknown"}</span>
+                    <span>
+                      {ticket.user.name || ticket.user.username || "Unknown"}
+                    </span>
                     <span>·</span>
-                    <span>{new Date(ticket.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</span>
+                    <span>
+                      {new Date(ticket.createdAt).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </span>
                     {ticket.files && ticket.files.length > 0 && (
                       <>
                         <span>·</span>
@@ -145,20 +189,32 @@ export const AdminTicketList = () => {
               </div>
               {/* Desktop: status + chevron (original, right side) */}
               <div className="hidden md:flex items-center gap-2 shrink-0">
-                <div className={"inline-flex items-center gap-1 text-[0.625rem] uppercase tracking-wider font-medium px-2 py-0.5 rounded-full border " + status.className}>
+                <div
+                  className={
+                    "inline-flex items-center gap-1 text-[0.625rem] uppercase tracking-wider font-medium px-2 py-0.5 rounded-full border " +
+                    status.className
+                  }
+                >
                   {status.icon}
                   {status.label}
                 </div>
                 <IconChevronRight className="size-4 text-text-disabled" />
               </div>
               {/* Mobile: Row 3 — attachment + status */}
-              <div className="flex md:hidden items-center justify-between pl-[56px]">
+              <div className="flex md:hidden items-center justify-between pl-14">
                 <div>
                   {ticket.files && ticket.files.length > 0 && (
-                    <span className="text-xs text-text-disabled">{ticket.files.length} foto</span>
+                    <span className="text-xs text-text-disabled">
+                      {ticket.files.length} foto
+                    </span>
                   )}
                 </div>
-                <div className={"inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium " + status.className}>
+                <div
+                  className={
+                    "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium " +
+                    status.className
+                  }
+                >
                   {status.icon}
                   {status.label}
                 </div>

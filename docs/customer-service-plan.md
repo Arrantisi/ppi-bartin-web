@@ -8,27 +8,33 @@ Customer Service (Umpan Balik) feature for PPI Bartin app. Users submit complain
 
 ## Database
 
-### `CustomerService` — existing, added `files` relation
+### `CustomerService` — has `files` relation + read/resolved tracking
 
 ```prisma
 model CustomerService {
-  id         String               @id @default(cuid())
-  catagory   String
-  subject    String
-  message    String
-  status     String               // PENDING, READ, RESOLVED
-  level      String               // rendah, sedang, darurat
-  createdAt  DateTime             @default(now())
-  resolvedAt DateTime?
-  userId     String
-  user       User                 @relation(fields: [userId], references: [id])
-  files      CustomerServiceFile[]
+  id           String               @id @default(cuid())
+  catagory     String
+  subject      String
+  message      String
+  status       String               // PENDING, READ, RESOLVED
+  level        String               // rendah, sedang, darurat
+  createdAt    DateTime             @default(now())
+  resolvedAt   DateTime?
+  userId       String
+  user         User                 @relation(fields: [userId], references: [id])
+  readById     String?
+  readBy       User?                @relation("ReadTicket", fields: [readById], references: [id])
+  resolvedById String?
+  resolvedBy   User?                @relation("ResolvedTicket", fields: [resolvedById], references: [id])
+  files        CustomerServiceFile[]
 
   @@index([userId])
   @@index([status])
   @@map("customerService")
 }
 ```
+
+> `readBy` / `resolvedBy` melacak siapa admin/pengurus yang membaca atau menyelesaikan tiket.
 
 ### `CustomerServiceFile` — new model for uploaded images
 
@@ -71,11 +77,37 @@ Max 5 images, 4MB each, for customer service photo attachments.
 - **`customerService()`** — accepts optional `fileKeys: string[]`, creates ticket + `CustomerServiceFile` records + push notification to ADMIN/PENGURUS
 
 ### `server/actions/customer-service-admin.ts` — Modified
-- **`getTickets()`** — now includes `files` relation in query
-- **`updateTicketStatus()`** — unchanged
+- **`getTickets()`** — includes `files`, `readBy`, `resolvedBy` relations; role-gated via `authorizeAdmin()` helper
+- **`updateTicketStatus()`** — sets `readById` when `READ`, `resolvedAt + resolvedById` when `RESOLVED`
+- **`deleteTicket()`** — hapus ticket + cleanup file dari UploadThing. Detail implementasi:
+
+```ts
+export const deleteTicket = async (id: string): Promise<TServerPrompt> => {
+  await authorizeAdmin();
+
+  const ticket = await prisma.customerService.findUnique({
+    where: { id },
+    include: { files: { select: { fileKey: true } } },
+  });
+  if (!ticket) return { status: "error", msg: "Tiket tidak ditemukan" };
+
+  // Hapus semua file dari UploadThing — pakai allSettled biar 1 file gagal
+  // tidak abort keseluruhan (file mungkin sudah orphan di UT)
+  await Promise.allSettled(
+    ticket.files.map((file) => deleteUploadedFile(file.fileKey)),
+  );
+
+  await prisma.customerService.delete({ where: { id } });
+
+  revalidatePath("/home/profile/customer-service/list");
+  return { status: "success", msg: "Tiket berhasil dihapus" };
+};
+```
+
+> ⚠️ `const { user } = await studentAccount()` dihapus — variable `user` tidak dipakai, dan `authorizeAdmin()` sudah cukup.
 
 ### `server/data/customer-service.ts` — Modified
-- **`getCustomerServiceData()`** — now includes `files` relation
+- **`getCustomerServiceData()`** — includes `files`, `readBy`, `resolvedBy` relations; exports `TgetCustomerServiceData` type
 
 ---
 
@@ -98,8 +130,32 @@ export const customerServiceSchema = z.object({
 ## Hooks
 
 ### `hooks/use-customer-service.ts`
-- **`useCustomerServiceTickets()`** — React Query hook (includes file data)
-- **`useUpdateTicketStatus()`** — mutation hook
+- **`useCustomerServiceTickets()`** — React Query hook (includes files + readBy/resolvedBy)
+- **`useUpdateTicketStatus()`** — mutation hook, invalidates `["customerServiceTickets"]`
+- **`useDeleteTicket()`** — mutation hook:
+
+```ts
+export const useDeleteTicket = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deleteTicket(id),
+    onSuccess: (data) => {
+      if (data.status === "error") {
+        toast.error(data.msg);
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ["customerServiceTickets"] });
+      // ✅ Navigation tidak dilakukan di sini — dilakukan di komponen via
+      // callback onSuccess kedua di handleDelete (lihat admin-ticket-detail.tsx)
+    },
+    onError: () => {
+      toast.error("Gagal menghapus tiket, coba lagi");
+    },
+  });
+};
+```
+
+> ⚠️ Server action yang return `TServerPrompt` tidak throw error untuk kasus logis (tiket tidak ditemukan) — dia return `{ status: "error" }`. Kalau `onSuccess` tidak cek `data.status`, error dari server action akan silently ignored.
 
 ---
 
@@ -137,18 +193,61 @@ features/customer-service/
 
 ### Admin detail features:
 - Full ticket info with sender details
-- Photo gallery grid (clickable to open full size)
+- Shows who read (`readBy`) and who resolved (`resolvedBy`) the ticket
+- Photo gallery grid (opens in new tab)
 - Status update actions (Tandai Dibaca / Tandai Selesai)
+- Delete ticket button with **AlertDialog** confirmation (bukan `confirm()` native):
+
+```tsx
+<AlertDialog>
+  <AlertDialogTrigger asChild>
+    <Button variant="destructive">Hapus Tiket</Button>
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Hapus tiket ini?</AlertDialogTitle>
+      <AlertDialogDescription>
+        Semua file terkait akan ikut dihapus. Tindakan ini tidak bisa dibatalkan.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Batal</AlertDialogCancel>
+      <AlertDialogAction onClick={handleDelete} disabled={isPending}>
+        {isPending ? "Menghapus..." : "Hapus"}
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+`handleDelete`:
+
+```ts
+const { mutate: deleteTicket, isPending } = useDeleteTicket();
+const handleDelete = () => {
+  deleteTicket(ticket.id, {
+    onSuccess: (data) => {
+      if (data.status === "success")
+        router.push("/home/profile/customer-service/list");
+    },
+  });
+};
+```
+
+Tombol "Hapus Tiket" dipisah secara visual dari tombol status (misal di bawah separator).
 
 ---
 
-## Routes (all under profile, no dashboard)
+## Routes
 
 | Route | File | Access |
 |---|---|---|
-| `/home/profile/customer-service` | `app/(protected)/home/profile/customer-service/page.tsx` | All users — form |
+| `/home/customer-service` | `app/(protected)/home/customer-service/page.tsx` | All users — bantuan form (no file upload) |
+| `/home/profile/customer-service` | `app/(protected)/home/profile/customer-service/page.tsx` | All users — CS form (with file upload) |
 | `/home/profile/customer-service/list` | `app/(protected)/home/profile/customer-service/list/page.tsx` | Admin & Pengurus — list |
 | `/home/profile/customer-service/list/[id]` | `app/(protected)/home/profile/customer-service/list/[id]/page.tsx` | Admin & Pengurus — detail |
+
+> **Two form routes:** `/home/customer-service` (simpler "Bantuan" form via `BantuanCreate`, no photo upload) and `/home/profile/customer-service` (full CS form with drag-drop photo upload via `CustomerServiceForm`). Keduanya menggunakan server action `customerService()` yang sama.
 
 ---
 

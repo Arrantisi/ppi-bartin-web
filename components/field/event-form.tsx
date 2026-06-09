@@ -99,6 +99,7 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
         | "preview"
         | "production",
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     validators: { onSubmit: createEventSchema as any },
     onSubmit: async ({ value }: { value: TcreateEventSchema }) => {
       setIsLoading(true);
@@ -203,7 +204,7 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
             }}
           </form.Field>
 
-          <div className="flex items-center justify-center gap-3">
+          <div className="space-y-4">
             <form.Field name="date">
               {(field) => {
                 const isInvalid =
@@ -215,38 +216,42 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                       Tanggal Acara
                       <span className="text-destructive">*</span>
                     </FieldLabel>
-                    <DatePickerField
-                      onChange={(e) => {
-                        if (e) {
-                          field.handleChange(e);
-                          setIsDate(e);
-                        }
-                      }}
-                      disabled={[{ before: today }]}
-                      value={field.state.value}
-                    />
-                    <form.Subscribe
-                      selector={(state: any) => state.values.dateTime}
-                    >
-                      {(dateTime: string) => (
-                        <>
-                          <label className="block text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-text-disabled mt-2 mb-1">
-                            Jam Mulai
-                          </label>
-                          <Input
-                            type="time"
-                            value={dateTime}
-                            onChange={(e) =>
-                              form.setFieldValue(
-                                "dateTime",
-                                e.target.value,
-                              )
+                    <div className="flex flex-col sm:flex-row gap-2 sm:items-end">
+                      <div className="min-w-0 flex-1">
+                        <DatePickerField
+                          onChange={(e) => {
+                            if (e) {
+                              field.handleChange(e);
+                              setIsDate(e);
                             }
-                            className="focus-visible:ring-primary"
-                          />
-                        </>
-                      )}
-                    </form.Subscribe>
+                          }}
+                          disabled={[{ before: today }]}
+                          value={field.state.value}
+                        />
+                      </div>
+                      <form.Subscribe
+                        selector={(state) => ({ dateTime: state.values.dateTime })}
+                      >
+                        {({ dateTime }) => (
+                          <div className="sm:w-36 shrink-0">
+                            <label className="block text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-text-disabled mb-1">
+                              Jam Mulai
+                            </label>
+                            <Input
+                              type="time"
+                              value={dateTime ?? ""}
+                              onChange={(e) =>
+                                form.setFieldValue(
+                                  "dateTime",
+                                  e.target.value,
+                                )
+                              }
+                              className="focus-visible:ring-primary"
+                            />
+                          </div>
+                        )}
+                      </form.Subscribe>
+                    </div>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
@@ -265,36 +270,39 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                       <IconCalendar size={18} className="text-primary" />
                       Batas Daftar <span className="text-destructive">*</span>
                     </FieldLabel>
-
-                    <DatePickerField
-                      onChange={(e) => {
-                        if (e) field.handleChange(e);
-                      }}
-                      disabled={[{ before: today }, { after: isDate }]}
-                      value={field.state.value}
-                    />
-                    <form.Subscribe
-                      selector={(state: any) => state.values.batasDaftarTime}
-                    >
-                      {(batasDaftarTime: string) => (
-                        <>
-                          <label className="block text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-text-disabled mt-2 mb-1">
-                            Jam Tutup
-                          </label>
-                          <Input
-                            type="time"
-                            value={batasDaftarTime}
-                            onChange={(e) =>
-                              form.setFieldValue(
-                                "batasDaftarTime",
-                                e.target.value,
-                              )
-                            }
-                            className="focus-visible:ring-primary"
-                          />
-                        </>
-                      )}
-                    </form.Subscribe>
+                    <div className="flex flex-col sm:flex-row gap-2 sm:items-end">
+                      <div className="min-w-0 flex-1">
+                        <DatePickerField
+                          onChange={(e) => {
+                            if (e) field.handleChange(e);
+                          }}
+                          disabled={[{ before: today }, { after: isDate }]}
+                          value={field.state.value}
+                        />
+                      </div>
+                      <form.Subscribe
+                        selector={(state) => ({ batasDaftarTime: state.values.batasDaftarTime })}
+                      >
+                        {({ batasDaftarTime }) => (
+                          <div className="sm:w-36 shrink-0">
+                            <label className="block text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-text-disabled mb-1">
+                              Jam Tutup
+                            </label>
+                            <Input
+                              type="time"
+                              value={batasDaftarTime ?? ""}
+                              onChange={(e) =>
+                                form.setFieldValue(
+                                  "batasDaftarTime",
+                                  e.target.value,
+                                )
+                              }
+                              className="focus-visible:ring-primary"
+                            />
+                          </div>
+                        )}
+                      </form.Subscribe>
+                    </div>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}

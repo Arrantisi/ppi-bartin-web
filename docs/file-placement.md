@@ -39,10 +39,18 @@ app/
 │   └── login/
 ├── (protected)/
 │   └── home/
+│       ├── customer-service/        # Bantuan (CS form sederhana, tanpa upload)
 │       ├── acara/
 │       ├── berita/
 │       └── profile/
+│           └── customer-service/    # CS form (dengan upload) + admin list/detail
+│               └── list/
+│                   └── [id]/
 ├── api/
+│   ├── auth/
+│   ├── export/participants/
+│   ├── subscribe/
+│   └── uploadthing/
 ├── globals.css
 ├── layout.tsx
 └── page.tsx
@@ -60,7 +68,7 @@ components/
 ├── layout/           # Layout wrappers: home-layout, responsive-page-container
 ├── shared/           # Cross-cutting: share-popover, delete-dialog, nav-main-event
 ├── cards/            # Reusable cards: card-event, card-news
-├── field/            # Form fields: event-form, calendar-event-form, news-form, create-bantuan
+├── field/            # Form fields: event-form, calendar-event-form, news-form, create-bantuan (Bantuan/CS form sederhana tanpa upload)
 ├── providers/        # React context: realtime, tanstack-query, theme
 ├── sections/         # Landing page: navbar, hero, features, footer
 ├── skeletons/        # Loading skeletons
@@ -103,6 +111,15 @@ features/
 │   ├── news-detail/
 │   ├── components.ts
 │   └── news-page.tsx
+├── customer-service/         # CS form + admin list/detail
+│   ├── components/
+│   │   ├── customer-service-form.tsx
+│   │   ├── admin-ticket-list.tsx
+│   │   └── admin-ticket-detail.tsx
+│   ├── customer-service-page.tsx
+│   ├── admin-list-page.tsx
+│   ├── admin-detail-page.tsx
+│   └── index.ts
 ├── home/
 │   ├── events/
 │   ├── news/
@@ -128,8 +145,11 @@ hooks/
 ├── use-events.ts
 ├── use-news.ts
 ├── use-users.ts
+├── use-customer-service.ts
 ├── use-mobile.ts
 ├── use-construct-url.ts
+├── use-push-notifications.ts
+├── use-pwa-install-tour.ts
 └── ...
 ```
 
@@ -176,12 +196,15 @@ server/
 │   ├── user.ts            # User management
 │   ├── profile.ts         # Profile update
 │   ├── calendar-entry.ts  # CRUD personal calendar entries
+│   ├── customer-service.ts# CS ticket creation + push notification
+│   ├── customer-service-admin.ts  # Admin: getTickets, updateStatus, deleteTicket
 │   ├── subscribe-notification.ts
 │   └── ...
 ├── data/              # Data access / query functions
 │   ├── users.ts
 │   ├── events.ts
-│   └── news.ts
+│   ├── news.ts
+│   └── customer-service.ts
 └── adapters/
     └── index.ts
 ```
