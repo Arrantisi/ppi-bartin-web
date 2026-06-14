@@ -144,7 +144,7 @@ export const Hero = () => {
             <h3 className="text-[0.9375rem] font-semibold text-text-primary">
               Notifikasi langsung
             </h3>
-            <p className="text-[0.8125rem] leading-[1.6] text-text-primary">
+            <p className="text-[0.8125rem] leading-[1.6] text-[--text-secondary]">
               Ada berita atau acara baru? Notifikasi muncul di HP kamu, real
               time.
             </p>
