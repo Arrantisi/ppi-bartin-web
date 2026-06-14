@@ -15,7 +15,7 @@ export const Hero = () => {
   const { data: newsData, isLoading: newsLoading } = useNews();
   const { data: eventsData, isLoading: eventsLoading } = useEvents();
 
-  const recentNews = newsData?.slice(0, 3) ?? [];
+  const recentNews = newsData?.slice(0, 6) ?? [];
   const upcomingEvents = eventsData?.slice(0, 2) ?? [];
 
   return (
