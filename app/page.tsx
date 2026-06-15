@@ -8,7 +8,6 @@ export default function PublicHomePage() {
     <div className="min-h-screen z-20">
       <Navbar />
       <Hero />
-      <NewsSection />
       <Footer />
     </div>
   );
