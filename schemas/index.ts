@@ -186,7 +186,7 @@ export const formSchema = z.object({
   nama_siswa: z
     .string()
     .min(5, "Nama lengkap minimal 5 karakter")
-    .max(32, "Nama terlalu panjang, maksimal 32 karakter"),
+    .max(64, "Nama terlalu panjang, maksimal 64 karakter"),
 });
 
 export type FormSchema = z.infer<typeof formSchema>;
@@ -195,7 +195,7 @@ export const gantiNamaSiswaSchema = z.object({
   nama_siswa: z
     .string()
     .min(5, "Nama baru minimal 5 karakter")
-    .max(32, "Nama maksimal 32 karakter"),
+    .max(64, "Nama maksimal 64 karakter"),
 });
 
 export type GantiNamaSiswaSchema = z.infer<typeof gantiNamaSiswaSchema>;
