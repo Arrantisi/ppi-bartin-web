@@ -5,40 +5,32 @@ import {
   getEventBySlug,
   getEventParticipants,
 } from "@/server/data/events";
+import type { TgetEventBySlug } from "@/server/data/events";
 import { useQuery } from "@tanstack/react-query";
 
 export const useEvents = () => {
-  const query = useQuery({
+  return useQuery({
     queryKey: ["events"],
     queryFn: () => getAllEvents(),
   });
-
-  return query;
 };
 
-export const useEventsHome = () => {
-  const query = useQuery({
-    queryKey: ["events_home"], // Key spesifik home
-    queryFn: () => getAllEvents(),
-  });
+// Aliases — share same query key so React Query deduplicates fetches
+export const useEventsHome = useEvents;
+export const useEventsPage = useEvents;
 
-  return query;
-};
-
-export const useEventsPage = () => {
-  const query = useQuery({
-    queryKey: ["events_list"], // Key spesifik list page
-    queryFn: () => getAllEvents(),
-  });
-
-  return query;
-};
-
-export const useEventBySlug = ({ slug }: { slug: string }) => {
+export const useEventBySlug = ({
+  slug,
+  initialData,
+}: {
+  slug: string;
+  initialData?: TgetEventBySlug;
+}) => {
   return useQuery({
     queryKey: ["events_by_slug", slug],
     queryFn: () => getEventBySlug(slug),
     enabled: !!slug && slug !== "undefined",
+    initialData,
   });
 };
 

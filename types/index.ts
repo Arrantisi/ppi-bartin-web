@@ -38,10 +38,9 @@ export type TCatagory = {
   catagory: "events" | "news";
 };
 
-export type TServerPrompt = {
-  status: "error" | "success";
-  msg: string;
-};
+export type TServerPrompt<T = void> =
+  | { success: true; data: T; message?: string }
+  | { success: false; error: string; fieldErrors?: Record<string, string[]> };
 
 export type TcatagoryDialogEvent = {
   catagory: "berita" | "acara";

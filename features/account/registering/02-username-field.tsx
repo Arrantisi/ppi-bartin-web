@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { formUsername, type FormUsername } from "@/schemas";
+import { formUsername, type FormUsername } from "@/schemas/auth";
 import { postUsername } from "@/server/actions/user";
 import { useForm } from "@tanstack/react-form";
 import { IconAt, IconSparkles } from "@tabler/icons-react";
@@ -29,11 +29,11 @@ const UsernameField = () => {
       try {
         const result = await postUsername(value);
 
-        if (result.status === "success") {
-          toast.success("Username tersimpan", { description: result.msg });
+        if (result.success) {
+          toast.success("Username tersimpan", { description: result.message });
           router.push("/complete-profile");
         } else {
-          toast.error("Gagal menyimpan username", { description: result.msg });
+          toast.error("Gagal menyimpan username", { description: result.error });
         }
       } finally {
         setLoading(false);

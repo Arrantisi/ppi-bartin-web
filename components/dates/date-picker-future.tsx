@@ -43,7 +43,7 @@ export const DatePickerField = ({
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          className="group/pick-date w-60 justify-between rounded-xl text-sm"
+          className="group/pick-date w-full md:w-60 justify-between rounded-xl text-sm"
           variant={"outline"}
         >
           <span

@@ -87,8 +87,8 @@ export const getUsers = async () => {
 export type TgetUsers = Awaited<ReturnType<typeof getUsers>>[0];
 
 export const checkNoSiswa = async () => {
-  const session = await studentAccount();
-
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return null;
   return await prisma.user.findUnique({ where: { id: session.user.id } });
 };
 

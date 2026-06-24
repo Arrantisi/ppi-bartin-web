@@ -3,11 +3,54 @@
 import { prisma } from "@/lib/db";
 import { TServerPrompt } from "@/types";
 import { getCurrentUserRole, studentAccount } from "./account";
+import { deleteUploadedFile } from "./delete-upload";
 
 const authorizeAdmin = async () => {
   const role = await getCurrentUserRole();
   if (role !== "ADMIN" && role !== "PENGURUS") {
     throw new Error("Forbidden");
+  }
+};
+
+export const getTicketById = async (id: string) => {
+  try {
+    await authorizeAdmin();
+
+    const ticket = await prisma.customerService.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            image: true,
+            email: true,
+          },
+        },
+        files: {
+          select: {
+            id: true,
+            fileKey: true,
+            fileUrl: true,
+            name: true,
+          },
+        },
+        readBy: {
+          select: { id: true, name: true, image: true, role: true },
+        },
+        resolvedBy: {
+          select: { id: true, name: true, image: true, role: true },
+        },
+      },
+    });
+
+    if (!ticket) return { success: false, error: "Tiket tidak ditemukan" };
+
+    return { success: true, data: ticket };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "gagal mengambil data tiket" };
   }
 };
 
@@ -44,10 +87,10 @@ export const getTickets = async () => {
       },
     });
 
-    return { status: "success" as const, data: tickets };
+    return { success: true, data: tickets };
   } catch (error) {
     console.error(error);
-    return { status: "error" as const, msg: "gagal mengambil data", data: [] };
+    return { success: false, error: "gagal mengambil data" };
   }
 };
 
@@ -76,9 +119,36 @@ export const updateTicketStatus = async ({
       data,
     });
 
-    return { msg: "status berhasil diperbarui", status: "success" };
+    return { message: "status berhasil diperbarui", success: true, data: undefined };
   } catch (error) {
     console.error(error);
-    return { msg: "gagal memperbarui status", status: "error" };
+    return { error: "gagal memperbarui status", success: false };
+  }
+};
+
+export const deleteTicket = async (
+  id: string,
+): Promise<TServerPrompt> => {
+  try {
+    await authorizeAdmin();
+
+    const ticket = await prisma.customerService.findUnique({
+      where: { id },
+      include: { files: { select: { fileKey: true } } },
+    });
+    if (!ticket) {
+      return { success: false, error: "Tiket tidak ditemukan" };
+    }
+
+    await Promise.allSettled(
+      ticket.files.map((file) => deleteUploadedFile(file.fileKey)),
+    );
+
+    await prisma.customerService.delete({ where: { id } });
+
+    return { success: true, data: undefined, message: "Tiket berhasil dihapus" };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "Gagal menghapus tiket" };
   }
 };

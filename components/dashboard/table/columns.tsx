@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { TgetUsers } from "@/server/data/users";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { IconDots } from "@tabler/icons-react";
 
 export const columns: ColumnDef<TgetUsers>[] = [
   {
@@ -52,7 +52,7 @@ export const columns: ColumnDef<TgetUsers>[] = [
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
+              <IconDots className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

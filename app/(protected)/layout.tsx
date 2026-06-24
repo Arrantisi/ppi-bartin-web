@@ -9,11 +9,12 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const [session, student] = await Promise.all([
+    auth.api.getSession({ headers: await headers() }),
+    checkNoSiswa(),
+  ]);
 
   if (!session) redirect("/login");
-
-  const student = await checkNoSiswa();
   if (!student?.nomorSiswa) {
     redirect("/register-profile");
   }

@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { GlobeIcon } from "lucide-react";
+import { IconGlobe } from "@tabler/icons-react";
 
 type PhoneInputSize = "sm" | "default" | "lg";
 
@@ -214,7 +214,7 @@ function FlagComponent({ country, countryName }: BasePhoneInput.FlagProps) {
       {Flag ? (
         <Flag title={countryName} />
       ) : (
-        <GlobeIcon className="size-4 opacity-60" />
+        <IconGlobe className="size-4 opacity-60" />
       )}
     </span>
   );

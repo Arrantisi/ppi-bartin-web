@@ -8,20 +8,19 @@ import { useEffect } from "react";
 import { EditorContent, useEditor, BubbleMenu } from "@tiptap/react";
 import BubbleMenuExtension from "@tiptap/extension-bubble-menu";
 
-// 1. IMPORT ICON DARI LUCIDE
 import {
-  Bold,
-  Italic,
-  Heading2,
-  Heading3,
-  List,
-  ListOrdered,
-  Undo2,
-  Redo2,
-  Eraser,
-} from "lucide-react";
+  IconBold,
+  IconItalic,
+  IconH2,
+  IconH3,
+  IconList,
+  IconListNumbers,
+  IconArrowBackUp,
+  IconArrowForwardUp,
+  IconEraser,
+} from "@tabler/icons-react";
 
-type RichTextEditorProps = {
+export type RichTextEditorProps = {
   value: string;
   onChange: (val: string) => void;
   placeholder?: string;
@@ -114,7 +113,7 @@ export const RichTextEditor = ({
             )}
             onClick={() => editor.chain().focus().toggleBold().run()}
           >
-            <Bold className="h-4 w-4" />
+            <IconBold className="h-4 w-4" />
           </button>
           <button
             type="button"
@@ -126,7 +125,7 @@ export const RichTextEditor = ({
             )}
             onClick={() => editor.chain().focus().toggleItalic().run()}
           >
-            <Italic className="h-4 w-4" />
+            <IconItalic className="h-4 w-4" />
           </button>
 
           <div className="h-4 w-[1px] bg-border mx-1" />
@@ -143,7 +142,7 @@ export const RichTextEditor = ({
               editor.chain().focus().toggleHeading({ level: 2 }).run()
             }
           >
-            <Heading2 className="h-4 w-4" />
+            <IconH2 className="h-4 w-4" />
           </button>
           <button
             type="button"
@@ -157,7 +156,7 @@ export const RichTextEditor = ({
               editor.chain().focus().toggleHeading({ level: 3 }).run()
             }
           >
-            <Heading3 className="h-4 w-4" />
+            <IconH3 className="h-4 w-4" />
           </button>
 
           <div className="h-4 w-[1px] bg-border mx-1" />
@@ -173,7 +172,7 @@ export const RichTextEditor = ({
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             title="Bullet List"
           >
-            <List className="h-4 w-4" />
+            <IconList className="h-4 w-4" />
           </button>
 
           <button
@@ -187,7 +186,7 @@ export const RichTextEditor = ({
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             title="Ordered List"
           >
-            <ListOrdered className="h-4 w-4" />
+            <IconListNumbers className="h-4 w-4" />
           </button>
         </div>
       </BubbleMenu>
@@ -227,7 +226,7 @@ export const RichTextEditor = ({
           onClick={() => editor.chain().focus().toggleBold().run()}
           title="Bold"
         >
-          <Bold className="h-4 w-4" />
+          <IconBold className="h-4 w-4" />
         </button>
 
         <button
@@ -241,7 +240,7 @@ export const RichTextEditor = ({
           onClick={() => editor.chain().focus().toggleItalic().run()}
           title="Italic"
         >
-          <Italic className="h-4 w-4" />
+          <IconItalic className="h-4 w-4" />
         </button>
 
         <div className="h-5 w-[1px] bg-border mx-0.5" />
@@ -259,7 +258,7 @@ export const RichTextEditor = ({
           }
           title="Heading 2"
         >
-          <Heading2 className="h-4 w-4" />
+          <IconH2 className="h-4 w-4" />
         </button>
 
         <button
@@ -275,7 +274,7 @@ export const RichTextEditor = ({
           }
           title="Heading 3"
         >
-          <Heading3 className="h-4 w-4" />
+          <IconH3 className="h-4 w-4" />
         </button>
 
         <div className="h-5 w-[1px] bg-border mx-0.5" />
@@ -291,7 +290,7 @@ export const RichTextEditor = ({
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           title="Bullet List"
         >
-          <List className="h-4 w-4" />
+          <IconList className="h-4 w-4" />
         </button>
 
         <button
@@ -305,7 +304,7 @@ export const RichTextEditor = ({
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           title="Ordered List"
         >
-          <ListOrdered className="h-4 w-4" />
+          <IconListNumbers className="h-4 w-4" />
         </button>
 
         <div className="h-5 w-[1px] bg-border mx-0.5" />
@@ -321,7 +320,7 @@ export const RichTextEditor = ({
           onClick={() => editor.chain().focus().undo().run()}
           title="Undo"
         >
-          <Undo2 className="h-4 w-4" />
+          <IconArrowBackUp className="h-4 w-4" />
         </button>
 
         <button
@@ -335,7 +334,7 @@ export const RichTextEditor = ({
           onClick={() => editor.chain().focus().redo().run()}
           title="Redo"
         >
-          <Redo2 className="h-4 w-4" />
+          <IconArrowForwardUp className="h-4 w-4" />
         </button>
 
         <button
@@ -349,7 +348,7 @@ export const RichTextEditor = ({
           onClick={() => editor.chain().focus().clearNodes().run()}
           title="Clear Nodes"
         >
-          <Eraser className="h-4 w-4" />
+          <IconEraser className="h-4 w-4" />
         </button>
       </div>
     </div>

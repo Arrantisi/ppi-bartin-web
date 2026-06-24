@@ -1,13 +1,9 @@
 "use server";
 
+import { TServerPrompt } from "@/types";
 import { headers } from "next/headers";
 import { auth } from "../../lib/auth";
 import { prisma } from "@/lib/db";
-
-interface IServerPrompt {
-  status: "error" | "success";
-  msg: string;
-}
 
 const normalizeToUsLayout = (value: string) =>
   value
@@ -23,7 +19,7 @@ const normalizeToUsLayout = (value: string) =>
 export const student = async (
   no_siswa: string,
   nama_siswa: string,
-): Promise<IServerPrompt> => {
+): Promise<TServerPrompt> => {
   try {
     const inputNoSiswa = normalizeToUsLayout(no_siswa);
     const inputNamaSiswa = normalizeToUsLayout(nama_siswa);
@@ -34,8 +30,8 @@ export const student = async (
 
     if (!noSiswa)
       return {
-        status: "error",
-        msg: "nomor siswa tidak ada di database, cek kembali atau hubungi ADK PPI Bartin",
+        success: false,
+        error: "nomor siswa tidak ada di database, cek kembali atau hubungi ADK PPI Bartin",
       };
 
     const dbNoSiswa = normalizeToUsLayout(noSiswa.id_siswa);
@@ -45,19 +41,20 @@ export const student = async (
 
     if (dbNoSiswa !== inputNoSiswa || dbNamaSiswa !== inputNamaSiswa)
       return {
-        status: "error",
-        msg: "data siswa tidak cocok dengan data di database, cek kembali atau hubungi ADK PPI Bartin",
+        success: false,
+        error: "data siswa tidak cocok dengan data di database, cek kembali atau hubungi ADK PPI Bartin",
       };
 
     return {
-      status: "success",
-      msg: "berhasil",
+      success: true,
+      data: undefined,
+      message: "berhasil",
     };
   } catch (error) {
     console.error(error);
     return {
-      status: "error",
-      msg: "masalah pada server student",
+      success: false,
+      error: "masalah pada server student",
     };
   }
 };
@@ -65,7 +62,7 @@ export const student = async (
 export const completeProfile = async (
   no_siswa: string,
   nama_siswa: string,
-): Promise<IServerPrompt> => {
+): Promise<TServerPrompt> => {
   try {
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) throw new Error("Unauthorized");
@@ -73,8 +70,8 @@ export const completeProfile = async (
     // Langkah 1: Validasi kecocokan data ke tabel dataSiswa
     const verification = await student(no_siswa, nama_siswa);
 
-    if (verification.status === "error") {
-      return { status: "error", msg: verification.msg };
+    if (!verification.success) {
+      return { success: false, error: verification.error };
     }
 
     const userExistNoSiswa = await prisma.user.findUnique({
@@ -83,8 +80,8 @@ export const completeProfile = async (
 
     if (userExistNoSiswa) {
       return {
-        status: "error",
-        msg: "no siswa sudah terdaftar, coba login menggunakan email yang digunakan sebelumnya",
+        success: false,
+        error: "no siswa sudah terdaftar, coba login menggunakan email yang digunakan sebelumnya",
       };
     }
 
@@ -98,8 +95,9 @@ export const completeProfile = async (
     });
 
     return {
-      status: "success",
-      msg: "Profile kamu sudah cocok",
+      success: true,
+      data: undefined,
+      message: "Profile kamu sudah cocok",
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -109,12 +107,12 @@ export const completeProfile = async (
 
     // Jika error berasal dari Prisma (misal kolom tidak ada)
     if (error.code === "P2025") {
-      return { status: "error", msg: "User tidak ditemukan di database" };
+      return { success: false, error: "User tidak ditemukan di database" };
     }
 
     return {
-      status: "error",
-      msg: "Terjadi kesalahan pada server",
+      success: false,
+      error: "Terjadi kesalahan pada server",
     };
   }
 };

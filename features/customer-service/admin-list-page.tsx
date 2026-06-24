@@ -1,26 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { HomeLayoutComponent } from "@/components/layout/home-layout";
 import { AdminTicketList } from "./components/admin-ticket-list";
-import { getCurrentUserRole } from "@/server/actions/account";
+import { useCurrentUserRole } from "@/hooks/use-current-role";
 
 const AdminListPage = () => {
   const router = useRouter();
-  const [authorized, setAuthorized] = useState<boolean | null>(null);
+  const { data: role, isLoading } = useCurrentUserRole();
 
   useEffect(() => {
-    getCurrentUserRole().then((role) => {
-      if (role !== "ADMIN" && role !== "PENGURUS") {
-        router.replace("/home/profile");
-      } else {
-        setAuthorized(true);
-      }
-    });
-  }, [router]);
+    if (!isLoading && role !== "ADMIN" && role !== "PENGURUS") {
+      router.replace("/home/profile");
+    }
+  }, [role, isLoading, router]);
 
-  if (authorized !== true) return null;
+  if (isLoading) return null;
 
   return (
     <HomeLayoutComponent>

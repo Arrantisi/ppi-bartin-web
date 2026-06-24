@@ -2,7 +2,7 @@
 
 import { DayPicker, type DayButtonProps } from "react-day-picker";
 import { id } from "date-fns/locale/id";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { hasEventOnDate } from "@/utils/calendar-utils";
 import type { CalendarEvent } from "@/types/calendar";
 
@@ -70,9 +70,9 @@ export const CalendarMini = ({ selectedDate, onSelect, events }: Props) => {
         DayButton: DotDayButton,
         Chevron: ({ orientation }) => {
           if (orientation === "left") {
-            return <ChevronLeftIcon className="size-4" />;
+            return <IconChevronLeft className="size-4" />;
           }
-          return <ChevronRightIcon className="size-4" />;
+          return <IconChevronRight className="size-4" />;
         },
       }}
       modifiers={{

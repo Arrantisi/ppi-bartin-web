@@ -3,7 +3,7 @@
 import NavMainEvent from "@/components/shared/navigation/nav-main-event";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
 
 export const HomeLayoutComponent = ({

@@ -12,7 +12,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { authClient } from "@/lib/auth/client";
 import { SignOutSessionButton } from "./buttons";
-import { Settings2 } from "lucide-react";
+import { IconSettings } from "@tabler/icons-react";
 import Link from "next/link";
 
 const ButtonUser = () => {
@@ -53,7 +53,7 @@ const ButtonUser = () => {
         <DropdownMenuGroup>
           <Link href={"/dashboard/settings"}>
             <DropdownMenuItem>
-              <Settings2 />
+              <IconSettings />
               Setting
             </DropdownMenuItem>
           </Link>

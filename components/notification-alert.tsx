@@ -11,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/animate-ui/components/base/alert-dialog"; // Pastikan path ini sesuai projectmu
-import { BellRing } from "lucide-react";
+import { IconBellRinging } from "@tabler/icons-react";
 import { registerPushSubscription } from "@/lib/push/client";
 import { toast } from "sonner";
 import { saveNotificationSubscription } from "@/server/actions/subscribe-notification";
@@ -65,7 +65,7 @@ export function NotificationAlert() {
       <AlertDialogPopup>
         <AlertDialogHeader className="flex flex-col items-center text-center">
           <div className="bg-info-subtle p-3 rounded-full mb-2">
-            <BellRing className="h-6 w-6 text-info" />
+            <IconBellRinging className="h-6 w-6 text-info" />
           </div>
           <AlertDialogTitle>Aktifkan Notifikasi?</AlertDialogTitle>
           <AlertDialogDescription>

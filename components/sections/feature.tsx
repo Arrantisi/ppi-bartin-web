@@ -1,9 +1,9 @@
 import {
-  BellRing,
-  CalendarDays,
-  Image as ImageIcon,
-  ShieldCheck,
-} from "lucide-react";
+  IconBellRinging,
+  IconCalendarMonth,
+  IconPhoto,
+  IconShieldCheck,
+} from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -12,25 +12,25 @@ const features = [
     title: "Masuk dengan mudah",
     description:
       "Anggota dapat login dengan akun Google lalu melengkapi profil secara bertahap.",
-    icon: <ShieldCheck className="w-8 h-8 text-primary" />,
+    icon: <IconShieldCheck className="w-8 h-8 text-primary" />,
   },
   {
     title: "Acara dan berita",
     description:
       "Informasi terkait organisasi, agenda, dan pengumuman penting ditampilkan di satu tempat.",
-    icon: <CalendarDays className="w-8 h-8 text-primary" />,
+    icon: <IconCalendarMonth className="w-8 h-8 text-primary" />,
   },
   {
     title: "Unggah foto kegiatan",
     description:
       "Dokumentasi acara dan berita bisa ditambahkan dengan cepat agar arsip tetap rapi.",
-    icon: <ImageIcon className="w-8 h-8 text-primary" />,
+    icon: <IconPhoto className="w-8 h-8 text-primary" />,
   },
   {
     title: "Notifikasi web",
     description:
       "Pengumuman penting dapat muncul langsung di browser anggota yang sudah mengizinkan.",
-    icon: <BellRing className="w-8 h-8 text-primary" />,
+    icon: <IconBellRinging className="w-8 h-8 text-primary" />,
   },
 ];
 

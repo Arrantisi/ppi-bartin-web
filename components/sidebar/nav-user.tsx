@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, Settings2 } from "lucide-react";
+import { IconSelector, IconSettings } from "@tabler/icons-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -49,7 +49,7 @@ const NavUser = () => {
                 </span>
                 <span className="truncate text-xs">{session?.user.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <IconSelector className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -81,7 +81,7 @@ const NavUser = () => {
             <DropdownMenuGroup>
               <Link href={"/dashboard/settings"}>
                 <DropdownMenuItem>
-                  <Settings2 />
+                  <IconSettings />
                   Setting
                 </DropdownMenuItem>
               </Link>

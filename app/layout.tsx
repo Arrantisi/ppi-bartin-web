@@ -26,8 +26,14 @@ export const metadata: Metadata = {
   title: "Portal PPI Bartin",
   description: "Portal Resmi Perhimpunan Pelajar Indonesia di Bartin",
   icons: {
-    icon: "/logo-ppi.png",
-    apple: "/logo-ppi.png",
+    icon: [
+      { url: "/logo-ppi-webp.webp", type: "image/webp" },
+      { url: "/logo-ppi.png", type: "image/png" },
+    ],
+    apple: [
+      { url: "/logo-ppi-webp.webp", type: "image/webp" },
+      { url: "/logo-ppi.png", type: "image/png" },
+    ],
   },
   manifest: "/manifest.json",
   appleWebApp: {

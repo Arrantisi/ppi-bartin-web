@@ -2,7 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
-import { LoaderCircle } from "lucide-react";
+import { IconLoader } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -197,7 +197,7 @@ export const EventForm = ({
             className="flex-1"
           >
             {isSubmitting ? (
-              <LoaderCircle className="size-4 animate-spin" />
+              <IconLoader className="size-4 animate-spin" />
             ) : null}
             {isSubmitting ? "Menyimpan..." : event ? "Simpan" : "Tambah"}
           </Button>
@@ -225,7 +225,7 @@ export const EventForm = ({
           className="flex items-center justify-center gap-2 self-center text-xs text-danger hover:text-danger/80 active:text-danger/60 transition-colors mt-1 hover:bg-danger/10 active:bg-danger/15 w-full py-1.5 rounded-lg disabled:opacity-50"
         >
           {isDeleting ? (
-            <LoaderCircle className="size-3.5 animate-spin" />
+            <IconLoader className="size-3.5 animate-spin" />
           ) : null}
           {isDeleting ? "Menghapus..." : "Hapus event"}
         </button>

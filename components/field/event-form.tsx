@@ -1,13 +1,13 @@
 "use client";
 
 import { createAcara, updateAcara } from "@/server/actions/acara";
-import { TcreateEventSchema, createEventSchema } from "@/schemas";
+import { TcreateEventSchema, createEventSchema } from "@/schemas/event";
 import { TupdateEventProps } from "@/types";
 import { DatePickerField } from "../dates/date-picker-future";
 import { Button, buttonVariants } from "../ui/button";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
-import { RichTextEditor } from "../ui/rich-text-editor";
+import { RichTextEditor } from "../ui/rich-text-editor-dynamic";
 import { Spinner } from "../ui/spinner";
 import { Textarea } from "../ui/textarea";
 import { useForm } from "@tanstack/react-form";
@@ -20,12 +20,14 @@ import {
   IconUsers,
   IconWorld,
 } from "@tabler/icons-react";
+import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { getCurrentUserRole } from "@/server/actions/account";
+import { useCurrentUserRole } from "@/hooks/use-current-role";
 import { UploaderPhoto } from "@/features/uploads/upload-event-news";
+import { mergeTime } from "@/utils/date-format";
 import {
   Select,
   SelectContent,
@@ -60,12 +62,8 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [lengthOfDeskripsi, setLengthOfDeskripsi] = useState(0);
   const [isDate, setIsDate] = useState<Date>(new Date());
-  const [role, setRole] = useState<string>("USER");
-
-  useEffect(() => {
-    getCurrentUserRole().then(setRole);
-  }, []);
-  const envOptions = ENVIRONMENT_OPTIONS[role] || [];
+  const { data: role } = useCurrentUserRole();
+  const envOptions = ENVIRONMENT_OPTIONS[role ?? "USER"] || [];
 
   const today = new Date();
   const router = useRouter();
@@ -73,6 +71,13 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
   console.log(role);
 
   const formId = mode === "update" ? "update-acara-form" : "create-acara-form";
+
+  const extractTime = (date?: Date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    if (d.getHours() === 0 && d.getMinutes() === 0) return "";
+    return format(d, "HH:mm");
+  };
 
   const form = useForm({
     defaultValues: {
@@ -82,24 +87,47 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
       deskripsi: data?.deskripsi || "",
       maxCapacity: data?.maxCapacity || 0,
       batasDaftar: data?.batasDaftar || new Date(),
+      dateTime: extractTime(data?.date),
+      batasDaftarTime: extractTime(data?.batasDaftar),
       fileKey: data?.fileKey || "",
       environment: (data?.environment || "production") as
         | "local"
         | "preview"
         | "production",
     },
-    validators: { onSubmit: createEventSchema },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    validators: { onSubmit: createEventSchema as any },
     onSubmit: async ({ value }: { value: TcreateEventSchema }) => {
       setIsLoading(true);
 
+      const mergedDate = mergeTime(value.date, value.dateTime);
+      const mergedBatasDaftar = mergeTime(
+        value.batasDaftar,
+        value.batasDaftarTime,
+      );
+
+      if (mergedBatasDaftar > mergedDate) {
+        toast.error("Batas pendaftaran tidak boleh melewati tanggal acara");
+        setIsLoading(false);
+        return;
+      }
+
       const matched =
         mode === "update" && slug
-          ? await updateAcara(slug, value)
-          : await createAcara(value);
+          ? await updateAcara(slug, {
+              ...value,
+              date: mergedDate,
+              batasDaftar: mergedBatasDaftar,
+            })
+          : await createAcara({
+              ...value,
+              date: mergedDate,
+              batasDaftar: mergedBatasDaftar,
+            });
 
-      if (matched.status === "error") {
+      if (!matched.success) {
         toast.error("ada kesalahan", {
-          description: matched.msg,
+          description: matched.error,
         });
       } else {
         toast.success(
@@ -172,7 +200,7 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
             }}
           </form.Field>
 
-          <div className="flex items-center justify-center gap-3">
+          <div className="space-y-4">
             <form.Field name="date">
               {(field) => {
                 const isInvalid =
@@ -184,17 +212,42 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                       Tanggal Acara
                       <span className="text-destructive">*</span>
                     </FieldLabel>
-                    <DatePickerField
-                      onChange={(e) => {
-                        if (e) {
-                          field.handleChange(e);
-                          setIsDate(e);
-                        }
-                      }}
-                      disabled={[{ before: today }]}
-                      value={field.state.value}
-                    />
-
+                    <div className="flex flex-col sm:flex-row gap-2 sm:items-end">
+                      <div className="min-w-0 flex-1">
+                        <DatePickerField
+                          onChange={(e) => {
+                            if (e) {
+                              field.handleChange(e);
+                              setIsDate(e);
+                            }
+                          }}
+                          disabled={[{ before: today }]}
+                          value={field.state.value}
+                        />
+                      </div>
+                      <form.Subscribe
+                        selector={(state) => ({ dateTime: state.values.dateTime })}
+                      >
+                        {({ dateTime }) => (
+                          <div className="sm:w-36 shrink-0">
+                            <label className="block text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-text-disabled mb-1">
+                              Jam Mulai
+                            </label>
+                            <Input
+                              type="time"
+                              value={dateTime ?? ""}
+                              onChange={(e) =>
+                                form.setFieldValue(
+                                  "dateTime",
+                                  e.target.value,
+                                )
+                              }
+                              className="focus-visible:ring-primary"
+                            />
+                          </div>
+                        )}
+                      </form.Subscribe>
+                    </div>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
@@ -213,15 +266,39 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                       <IconCalendar size={18} className="text-primary" />
                       Batas Daftar <span className="text-destructive">*</span>
                     </FieldLabel>
-
-                    <DatePickerField
-                      onChange={(e) => {
-                        if (e) field.handleChange(e);
-                      }}
-                      disabled={[{ before: today }, { after: isDate }]}
-                      value={field.state.value}
-                    />
-
+                    <div className="flex flex-col sm:flex-row gap-2 sm:items-end">
+                      <div className="min-w-0 flex-1">
+                        <DatePickerField
+                          onChange={(e) => {
+                            if (e) field.handleChange(e);
+                          }}
+                          disabled={[{ before: today }, { after: isDate }]}
+                          value={field.state.value}
+                        />
+                      </div>
+                      <form.Subscribe
+                        selector={(state) => ({ batasDaftarTime: state.values.batasDaftarTime })}
+                      >
+                        {({ batasDaftarTime }) => (
+                          <div className="sm:w-36 shrink-0">
+                            <label className="block text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-text-disabled mb-1">
+                              Jam Tutup
+                            </label>
+                            <Input
+                              type="time"
+                              value={batasDaftarTime ?? ""}
+                              onChange={(e) =>
+                                form.setFieldValue(
+                                  "batasDaftarTime",
+                                  e.target.value,
+                                )
+                              }
+                              className="focus-visible:ring-primary"
+                            />
+                          </div>
+                        )}
+                      </form.Subscribe>
+                    </div>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}

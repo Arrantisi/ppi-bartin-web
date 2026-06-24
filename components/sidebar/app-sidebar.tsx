@@ -1,8 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Settings2 } from "lucide-react";
-
 import { NavMain } from "@/components/sidebar/nav-main";
 
 import {
@@ -15,7 +13,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { IconInnerShadowTop } from "@tabler/icons-react";
+import { IconInnerShadowTop, IconSettings } from "@tabler/icons-react";
 import NavUser from "./nav-user";
 import Link from "next/link";
 
@@ -43,7 +41,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             {
               title: "Settings",
               url: "/dashboard/settings",
-              icon: Settings2,
+              icon: IconSettings,
             },
           ]}
         />

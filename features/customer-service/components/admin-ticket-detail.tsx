@@ -1,6 +1,6 @@
 "use client";
 
-import { useCustomerServiceTickets, useUpdateTicketStatus } from "@/hooks/use-customer-service";
+import { useTicketById, useUpdateTicketStatus, useDeleteTicket } from "@/hooks/use-customer-service";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -17,8 +17,20 @@ import {
   IconMessage,
   IconPhoto,
   IconCheck,
+  IconTrash,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogPopup,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/animate-ui/components/base/alert-dialog";
 
 const statusMeta: Record<string, { label: string; icon: React.ReactNode }> = {
   PENDING: { label: "Pending", icon: <IconAlertCircle className="size-4" /> },
@@ -42,8 +54,9 @@ const catagoryLabel: Record<string, string> = {
 };
 
 export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
-  const { data, isLoading } = useCustomerServiceTickets();
+  const { data, isLoading } = useTicketById(ticketId);
   const updateStatus = useUpdateTicketStatus();
+  const { mutateAsync: removeTicket, isPending: isDeleting } = useDeleteTicket();
   const router = useRouter();
 
   if (isLoading) {
@@ -54,8 +67,7 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
     );
   }
 
-  const ticket = data?.data?.find((t) => t.id === ticketId);
-  if (!ticket) {
+  if (!data || !data.success) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <IconMessage className="size-12 text-text-disabled mb-4" />
@@ -67,14 +79,23 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
     );
   }
 
+  const ticket = data.data!;
   const status = statusMeta[ticket.status] ?? statusMeta.PENDING;
 
   const handleStatusUpdate = async (newStatus: string) => {
     const res = await updateStatus.mutateAsync({ id: ticket.id, status: newStatus });
-    if (res.status === "success") {
-      toast.success(res.msg);
+    if (res.success) {
+      toast.success(res.message);
     } else {
-      toast.error(res.msg);
+      toast.error(res.error);
+    }
+  };
+
+  const handleDeleteTicket = async () => {
+    const res = await removeTicket(ticket.id);
+    if (res.success) {
+      toast.success(res.message);
+      router.push("/home/profile/customer-service/list");
     }
   };
 
@@ -257,6 +278,32 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
             <span>Pesan ini telah diselesaikan</span>
           </div>
         )}
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-border">
+        <AlertDialog>
+          <AlertDialogTrigger
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-destructive px-3 py-1.5 text-xs font-medium text-destructive-foreground hover:bg-destructive/90 disabled:pointer-events-none disabled:opacity-50"
+            disabled={isDeleting}
+          >
+            {isDeleting ? <Spinner /> : <IconTrash className="size-4" />}
+            Hapus Tiket
+          </AlertDialogTrigger>
+          <AlertDialogPopup>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Hapus tiket ini?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Semua file terkait akan ikut dihapus. Tindakan ini tidak bisa dibatalkan.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Batal</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteTicket} disabled={isDeleting}>
+                {isDeleting ? "Menghapus..." : "Hapus"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogPopup>
+        </AlertDialog>
       </div>
     </div>
   );

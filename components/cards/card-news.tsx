@@ -1,15 +1,16 @@
 "use client";
 
+import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formattedDateNews } from "@/utils/date-format";
 import { imageUrl } from "@/utils/image-url";
 import { TgetNews } from "@/server/data/news";
 
-export const FrameNews = ({
+export const FrameNews = memo(function FrameNews({
   hrefBase = "/berita",
   ...news
-}: TgetNews & { hrefBase?: string }) => {
+}: TgetNews & { hrefBase?: string }) {
   return (
     <Link
       href={`${hrefBase}/${news.slug}`}
@@ -44,4 +45,4 @@ export const FrameNews = ({
       </div>
     </Link>
   );
-};
+});
