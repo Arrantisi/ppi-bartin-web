@@ -4,7 +4,6 @@ import { z } from "zod";
 export const env = createEnv({
 	server: {
 		DATABASE_URL: z.url(),
-		DIRECT_URL: z.url(),
 		SHADOW_DATABASE_URL: z.url(),
 		BETTER_AUTH_URL: z.url(),
 		BETTER_AUTH_SECRET: z.string().min(1),
@@ -19,7 +18,6 @@ export const env = createEnv({
 	clientPrefix: "NEXT_PUBLIC_",
 	runtimeEnv: {
 		DATABASE_URL: process.env.DATABASE_URL,
-		DIRECT_URL: process.env.DIRECT_URL,
 		SHADOW_DATABASE_URL: process.env.SHADOW_DATABASE_URL,
 		BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
 		BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
