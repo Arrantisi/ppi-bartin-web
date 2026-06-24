@@ -18,16 +18,26 @@ export async function generateMetadata({
     return { title: "Berita Tidak Ditemukan", description: "Berita tidak ditemukan" };
   }
 
+  // Fungsi helper untuk menghilangkan tag HTML
+  function stripHtml(html: string) {
+    return html
+      .replace(/<[^>]*>/g, '') // Menghapus semua tag HTML seperti <p>, </p>, dll.
+      .replace(/\s+/g, ' ')    // Mengubah multiple spasi/newline menjadi satu spasi biasa
+      .trim();                 // Menghapus spasi di awal dan akhir
+  }
+
+  const description = stripHtml(news.desckripsi).substring(0, 200) + "...";
+
   const ogImage = news.fileKey
     ? { url: imageUrl(news.fileKey), width: 1200, height: 630, alt: news.judul }
     : defaultOgImage;
 
   return {
     title: news.judul,
-    description: news.ringkasan,
+    description,
     openGraph: {
       title: news.judul,
-      description: news.ringkasan,
+      description,
       url: absoluteUrl(`/berita/${slug}`),
       type: "article",
       publishedTime: news.createdAt.toISOString(),
@@ -36,7 +46,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: news.judul,
-      description: news.ringkasan,
+      description,
       images: [ogImage.url],
     },
   };

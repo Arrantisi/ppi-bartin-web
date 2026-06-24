@@ -18,7 +18,15 @@ export async function generateMetadata({
     return { title: "Acara Tidak Ditemukan", description: "Acara tidak ditemukan" };
   }
 
-  const description = event.deskripsi.length > 160 ? event.deskripsi.slice(0, 157) + "..." : event.deskripsi;
+  // Fungsi helper untuk menghilangkan tag HTML
+function stripHtml(html: string) {
+  return html
+    .replace(/<[^>]*>/g, '') // Menghapus semua tag HTML seperti <p>, </p>, dll.
+    .replace(/\s+/g, ' ')    // Mengubah multiple spasi/newline menjadi satu spasi biasa
+    .trim();                 // Menghapus spasi di awal dan akhir
+}
+
+  const description = stripHtml(event.deskripsi).substring(0, 200) + "...";
 
   const ogImage = event.fileKey
     ? { url: imageUrl(event.fileKey), width: 1200, height: 630, alt: event.judul }
