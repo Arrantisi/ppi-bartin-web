@@ -25,7 +25,11 @@ export const UploadPhotoProfile = ({
     if (!value || deleting) return;
     setDeleting(true);
     try {
-      await deleteUploadedFile(value);
+      const result = await deleteUploadedFile(value);
+      if (!result.success) {
+        toast.error(result.error || "Gagal menghapus foto");
+        return;
+      }
       onValueChange?.("");
       setPreview(null);
       toast.info("Foto profil telah dihapus");

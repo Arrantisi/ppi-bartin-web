@@ -61,7 +61,11 @@ export const UploaderPhoto = ({
     if (deleting) return;
     setDeleting(true);
     try {
-      await deleteUploadedFile(value);
+      const result = await deleteUploadedFile(value);
+      if (!result.success) {
+        toast.error(result.error || "Gagal menghapus foto");
+        return;
+      }
       onChange?.("");
       setPreview(null);
       toast.info("Foto telah dihapus");
