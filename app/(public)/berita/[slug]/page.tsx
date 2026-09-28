@@ -7,6 +7,7 @@ import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { absoluteUrl, defaultOgImage } from "@/lib/og";
 import { imageUrl } from "@/utils/image-url";
+import { toMetaDescription } from "@/utils/meta-description";
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -39,16 +40,18 @@ export async function generateMetadata({
     return { title: "Berita", description: "Berita PPI Bartın" };
   }
 
+  const description = toMetaDescription(news.desckripsi);
+
   const ogImage = news.fileKey
     ? { url: imageUrl(news.fileKey), width: 1200, height: 630, alt: news.judul }
     : defaultOgImage;
 
   return {
     title: news.judul,
-    description: news.ringkasan,
+    description,
     openGraph: {
       title: news.judul,
-      description: news.ringkasan,
+      description,
       url: absoluteUrl(`/berita/${slug}`),
       type: "article",
       publishedTime: news.createdAt.toISOString(),
@@ -57,7 +60,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: news.judul,
-      description: news.ringkasan,
+      description,
       images: [ogImage.url],
     },
   };

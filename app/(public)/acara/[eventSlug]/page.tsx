@@ -7,6 +7,7 @@ import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { absoluteUrl, defaultOgImage } from "@/lib/og";
 import { imageUrl } from "@/utils/image-url";
+import { toMetaDescription } from "@/utils/meta-description";
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -40,7 +41,7 @@ export async function generateMetadata({
     return { title: "Acara", description: "Informasi acara PPI Bartın" };
   }
 
-  const description = event.deskripsi.length > 160 ? event.deskripsi.slice(0, 157) + "..." : event.deskripsi;
+  const description = toMetaDescription(event.deskripsi);
 
   const ogImage = event.fileKey
     ? { url: imageUrl(event.fileKey), width: 1200, height: 630, alt: event.judul }
