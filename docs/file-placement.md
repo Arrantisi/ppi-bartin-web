@@ -181,8 +181,25 @@ utils/
 ├── slug.ts                 # Slug generation
 ├── image-url.ts            # URL image helpers
 ├── copy-link.ts            # Clipboard helpers
-└── get-twowords.ts         # Text helpers
+├── get-twowords.ts         # Text helpers
+└── meta-description.ts     # HTML rich-text -> meta/OG description
 ```
+
+### `meta-description.ts`
+
+Untuk `generateMetadata` halaman yang isinya rich-text Tiptap (acara, berita).
+
+Jangan menulis helper ini inline di dalam `generateMetadata`. Dua halaman
+memerlukan proses yang sama persis, dan versi inline pernah salah dalam tiga
+hal: tag HTML dihapus tanpa diganti spasi (sehingga `</p><p>` menempel dua
+paragraf jadi satu kata), ellipsis ditambahkan tanpa syarat sehingga deskripsi
+pendek tetap berakhiran `"..."`, dan panjang hasil melebihi `maxLength` karena
+ellipsis ditambahkan sesudah pemotongan.
+
+`stripHtml()` mengganti tag block-level dengan **spasi**, membuang seluruh
+isi `<script>`/`<style>` (bukan hanya tagnya), dan decode entity HTML.
+`toMetaDescription()` additionally memotong di batas kata dan hanya
+menambahkan `"..."` bila teksnya benar-benar dipotong.
 
 ---
 
