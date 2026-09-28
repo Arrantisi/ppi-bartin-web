@@ -256,6 +256,35 @@ schemas/
 | Zod schema | `schemas/` | `schemas/index.ts` |
 | Prisma schema | `prisma/` | `prisma/schema.prisma` |
 | Config/client | `lib/` | `lib/db/index.ts` |
+| Resilient DB helper | `lib/db/` | `lib/db/safe.ts` |
 | Docs | `docs/` | `docs/file-placement.md` |
 
 **Golden rule:** hooks, types, dan utils milik sebuah feature tidak boleh disembunyikan di dalam `features/<name>/`. Taruh di root `hooks/`, `types/`, `utils/` agar mudah ditemukan dan dipakai lintas fitur.
+
+### `lib/db/safe.ts` — helper query yang boleh gagal diam-diam
+
+`next build` meng-*prerender* route saat build. Kalau satu query throw karena database tidak
+terjangkau, **seluruh build gagal** — bahkan untuk perubahan yang tidak menyentuh database.
+`safeDb` dan `safeStaticParams` membuat kegagalan itu turun jadi "data kosong" supaya deploy tetap jalan.
+
+```ts
+// instead of
+const events = await getAllEvents();
+
+// use this
+const events = await safeDb(() => getAllEvents(), [], "acara list");
+```
+
+| Helper | Kegunaan |
+| --- | --- |
+| `safeDb(op, fallback, context?)` | bungkus satu query, kembalikan `fallback` kalau error |
+| `safeStaticParams(op, context?)` | `generateStaticParams` yang tidak pernah menggagalkan build |
+
+> ⚠️ **Jangan dipakai untuk jalur auth atau operasi kritis.** Di auth, kegagalan harus menghasilkan
+> error, bukan `[]` — kalau tidak, "gagal cek" akan terlihat sama dengan "tidak punya akses".
+> Gunakan `prisma` langsung untuk: auth check, mutasi, dan apa pun yang kegagalannya tidak boleh
+> ditelan diam-diam.
+
+> ⚠️ Jangan sampai mengembalikan metadata "Tidak Ditemukan" saat query gagal — itu berbeda dari
+> record memang tidak ada. Di `generateMetadata`, warnalah `null` sebagai fallback dan pakai
+> metadata netral.
