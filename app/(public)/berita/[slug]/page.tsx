@@ -1,7 +1,7 @@
 import { NewsDetailComponent } from "@/features/news/components";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { safeDb, safeStaticParams } from "@/lib/db/safe";
+import { safeDb } from "@/lib/db/safe";
 import { getNewsBySlug } from "@/server/data/news";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
@@ -9,19 +9,9 @@ import { absoluteUrl, defaultOgImage } from "@/lib/og";
 import { imageUrl } from "@/utils/image-url";
 import { toMetaDescription } from "@/utils/meta-description";
 
-export const revalidate = 60;
-export const dynamicParams = true;
-
-export async function generateStaticParams() {
-  return safeStaticParams(
-    () =>
-      prisma.news.findMany({
-        select: { slug: true },
-        where: { environment: "production" },
-      }),
-    "berita/[slug]",
-  );
-}
+// Sengaja TIDAK ada generateStaticParams / revalidate di sini.
+// Lihat catatan identik di /acara/[eventSlug]/page.tsx: body halaman
+// memanggil headers() sehingga route wajib dinamis.
 
 export async function generateMetadata({
   params,

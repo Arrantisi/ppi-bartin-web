@@ -1,7 +1,7 @@
 import { EventDetail } from "@/features/events/components";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { safeDb, safeStaticParams } from "@/lib/db/safe";
+import { safeDb } from "@/lib/db/safe";
 import { getEventBySlug } from "@/server/data/events";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
@@ -9,19 +9,13 @@ import { absoluteUrl, defaultOgImage } from "@/lib/og";
 import { imageUrl } from "@/utils/image-url";
 import { toMetaDescription } from "@/utils/meta-description";
 
-export const revalidate = 60;
-export const dynamicParams = true;
-
-export async function generateStaticParams() {
-  return safeStaticParams(
-    () =>
-      prisma.events.findMany({
-        select: { slug: true },
-        where: { environment: "production" },
-      }),
-    "acara/[eventSlug]",
-  );
-}
+// Sengaja TIDAK ada generateStaticParams / revalidate di sini.
+//
+// Body halaman ini memanggil headers() untuk membaca session, sehingga
+// route wajib dirender dinamis. Kalau generateStaticParams ditambahkan,
+// Next menandai route sebagai SSG, prerender dibatalkan karena
+// DYNAMIC_SERVER_USAGE, tidak ada HTML yang dihasilkan, dan setiap
+// request berikutnya ending 500.
 
 export async function generateMetadata({
   params,
