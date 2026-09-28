@@ -839,8 +839,65 @@ wajib dinamis karena bergantung pada session. `safeDb` di `generateMetadata` dan
 DYNAMIC_SERVER_USAGE di log                    0
 ```
 
-Aturan pencegahannya sudah ditulis di `docs/file-placement.md`,termasuk perintah verifikasi
+Aturan pencegahannya sudah ditulis di `docs/file-placement.md`, termasuk perintah verifikasi
 wajib sebelum deploy.
+
+---
+
+## P0.5 — Build Vercel gagal: import map Turbopack rusak (28 Sep 2026)
+
+### Gejala
+
+Deploy ke `main` gagal dengan 28 error, semuanya pola sama:
+
+```
+Module not found: Can't resolve '@vercel/turbopack-next/internal/font/google/font'
+Error while looking up import map: next/font/google queries have exactly one entry
+```
+
+Satu error per `@font-face` (4 weight Inter + 2 weight JetBrains_Mono, lintas subset).
+
+### Diagnosis
+
+Bukan masalah `next/font/google`. Yang penting:
+
+| Pemeriksaan | Hasil |
+| --- | --- |
+| Pemanggilan di `app/layout.tsx` | Benar - `Inter` + `JetBrains_Mono`, `subsets: ["latin"]`, tanpa loop, tanpa dynamic import |
+| Build lokal dengan `.next` di-cache | Lolos |
+| Build lokal setelah `.next` dihapus total | Lolos |
+| `pnpm install --frozen-lockfile` | Lockfile sinkron |
+| `next@16.2.2` di package.json vs terinstall | Sama |
+| Jumlah salinan `next` di `node_modules` | Satu |
+| `packageManager` di package.json | **Tidak ada** |
+
+Penyebab terkuat: `experimental.optimizePackageImports: ["@tabler/icons-react"]` - satu-satunya
+perubahan Turbopack-specific di deploy ini. Opsi itu memaksa Turbopack menganalisis seluruh barrel
+package (ribuan export) dan **memanipulasi import map**. Import map yang rusak membuat resolver
+gagal mencari `@vercel/turbopack-next/internal/font/google/font`, yaitu virtual module milik
+Turbopack sendiri. Manifestasinya sebagai error font karena font loader juga di-resolve lewat
+import map yang sama.
+
+Mengapa hanya di Vercel: build lokal memakai Turbopack yang sama dan lolos, jadi ini
+environmental - rusak karena konfigurasi di environment Vercel, bukan karena kode.
+
+### Perbaikan
+
+1. Hapus `experimental.optimizePackageImports`. Barrel `@tabler/icons-react` (65 file pemakai)
+   tidak cocok untuk option ini.
+2. Pin `packageManager: "pnpm@10.29.2"` di `package.json`. Sebelumnya field ini tidak ada,
+   sehingga Vercel memakai pnpm default-nya yang bisa berbeda dari versi lokal.
+
+### Belum terverifikasi
+
+Perubahan ini **belum bisa dibuktikan di sisi Vercel** dari mesin ini. Kalau build masih gagal,
+langkah berikutnya: pindahkan font ke `next/font/local` supaya build tidak bergantung pada
+unduhan dari Google sama sekali.
+
+### Catatan lanjutan
+
+`@tabler/icons-react` masih dipakai di 65 file, `lucide-react` di 1 file. Konsolidasi icon yang
+diklaim selesai di `docs/performance-plan.md` ternyata tidak terealisasi.
 
 ### Yang belum dikerjakan (perlu credential / keputusan)
 
