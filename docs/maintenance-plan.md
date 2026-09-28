@@ -783,6 +783,65 @@ pnpm exec tsc --noEmit → 0 error
 pnpm build             → sukses, 23/23 static pages
 ```
 
+---
+
+## P0.4 — Route detail acara & berita 500 di produksi (28 Sep 2026)
+
+Ditemukan saat verifikasi pra-deploy ke `main`, **bukan** oleh `pnpm build`.
+
+### Gejala
+
+`GET /acara/<slug>` → **500** untuk semua slug, termasuk slug yang benar-benar ada di DB.
+`GET /berita/<slug>` → 200 (route-nya kebetulan diklasifikasi dynamic, jadi tidak terkena).
+
+### Akar masalah
+
+`generateStaticParams` + `revalidate` + `dynamicParams` sudah ditambahkan ke kedua route, padahal
+body halaman memanggil `auth.api.getSession({ headers: await headers() })`. Keduanya tidak bisa
+coexist:
+
+| Tahap | Yang terjadi |
+| --- | --- |
+| Build | Next menandai route SSG (`●`) |
+| Prerender | `headers()` memicu `DYNAMIC_SERVER_USAGE`, prerender **dibatalkan** |
+| Artefak | **0 file HTML** di `.next/server/app` untuk `/acara` maupun `/berita` |
+| Runtime | Route tetap SSG → on-demand render → lempar `DYNAMIC_SERVER_USAGE` lagi → **500** |
+
+`pnpm build` tetap hijau karena Next mencetak `Generating static pages (44/44)` tanpa menandai
+route itu gagal.
+
+### Kenapa lolos dari audit awal
+
+Audit 26 Sep hanya menjalankan `lint` + `build`. `pnpm dev` **tidak** menunjukkan masalah ini
+karena dev server tidak melakukan prerender. Yang dibutuhkan adalah `next start` terhadap build
+production.
+
+### Status regresi
+
+`origin/main` (196805b) **tidak** punya `generateStaticParams` di kedua file tersebut — dikonfirmasi
+via `git diff`. Jadi ini regresi yang hendak ikut naik ke `main`, bukan kerusakan lama.
+
+### Perbaikan
+
+Hapus `generateStaticParams`, `revalidate`, `dynamicParams` dari kedua route. Halaman detail
+wajib dinamis karena bergantung pada session. `safeDb` di `generateMetadata` dan
+`utils/meta-description.ts` tetap dipakai.
+
+### Verifikasi (production build + `next start` + DB production)
+
+```
+/ /berita /acara /login                        200
+/berita/indikasi-penipuan                      200
+6 acara dari DB (slug asli)                    200, title asli bukan fallback
+/acara/<slug ngawur>                           200 (handled client-side)
+/api/export/participants tanpa auth             401
+/home/* tanpa auth                             200 shell, tanpa data di HTML
+DYNAMIC_SERVER_USAGE di log                    0
+```
+
+Aturan pencegahannya sudah ditulis di `docs/file-placement.md`,termasuk perintah verifikasi
+wajib sebelum deploy.
+
 ### Yang belum dikerjakan (perlu credential / keputusan)
 
 - **`.env` masih berisi Supabase project yang sudah tidak hidup** — tidak bisa diperbaiki tanpa `DATABASE_URL` baru dari user.

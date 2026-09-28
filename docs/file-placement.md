@@ -305,3 +305,38 @@ const events = await safeDb(() => getAllEvents(), [], "acara list");
 > ⚠️ Jangan sampai mengembalikan metadata "Tidak Ditemukan" saat query gagal — itu berbeda dari
 > record memang tidak ada. Di `generateMetadata`, warnalah `null` sebagai fallback dan pakai
 > metadata netral.
+
+#### 🚨 `generateStaticParams` DILARANG di route yang membaca session
+
+`safeStaticParams` membuat build tahan gagal, tapi ia **bukan** jaminan route aman. Kalau route
+sekaligus punya `generateStaticParams` dan memanggil dynamic API di body-nya — `headers()`,
+`cookies()`, `auth.api.getSession()` — hasilnya route 500 di produksi, bukan build gagal.
+
+Mekanismenya:
+
+1. `generateStaticParams` menandai route sebagai SSG (`●`)
+2. saat prerender, dynamic API memicu `DYNAMIC_SERVER_USAGE`
+3. prerender dibatalkan, **tidak ada HTML yang dihasilkan**
+4. route tetap terklasifikasi SSG, jadi request runtime memakai on-demand render yang melempar
+   `DYNAMIC_SERVER_USAGE` lagi → **500 di setiap request**
+
+Build tetap terlihat hijau: Next mencetak `Generating static pages (44/44)` tanpa menandai route
+itu gagal. Kegagalan baru ketahuan saat production build dijalankan dengan `next start`, atau saat
+route diakses. `/acara/[eventSlug]` dan `/berita/[slug]` pernah seperti ini karena keduanya memanggil
+`auth.api.getSession({ headers: await headers() })`.
+
+**Aturan:** kalau `page.tsx` (atau komponen yang dipanggilnya) memanggil `headers()`, `cookies()`,
+atau `auth.api.getSession()`, maka route itu **wajib dinamis** — jangan tambahkan
+`generateStaticParams`, `revalidate`, atau `dynamicParams`.
+
+Kalau memang butuh static shell sementara halaman tetap butuh session, session-nya harus dibaca di
+komponen client, bukan di server page.
+
+**Cara verifikasi sebelum deploy** — build saja tidak cukup:
+
+```bash
+pnpm build && PORT=3111 pnpm start      # WAJIB, bukan `pnpm dev`
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:3111/acara/<slug-asli>
+```
+
+`pnpm dev` tidak akan menunjukkan masalah ini karena dev server tidak melakukan prerender.
