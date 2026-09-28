@@ -901,6 +901,13 @@ diklaim selesai di `docs/performance-plan.md` ternyata tidak terealisasi.
 
 ### Yang belum dikerjakan (perlu credential / keputusan)
 
-- **`.env` masih berisi Supabase project yang sudah tidak hidup** — tidak bisa diperbaiki tanpa `DATABASE_URL` baru dari user.
+- ~~`.env` masih berisi Supabase project yang sudah tidak hidup~~ — **sudah selesai 28 Sep 2026.**
+  `.env` sudah menunjuk ke DB production `jhuazrfwbuimzuaktalb` (port 6543 + parameter pgbouncer),
+  drift nol terhadap `prisma/schema.prisma`, dan data terbaca di runtime.
+- **Password DB production belum dirotasi** — nilainya sempat tampil di riwayat chat. Perlu lewat
+  Supabase Dashboard, lalu update `DATABASE_URL` + `SHADOW_DATABASE_URL` di `.env` (dan **restart
+  `pnpm dev`**, karena Next.js memuat `.env` hanya sekali saat start).
+- **`BETTER_AUTH_URL` di Vercel belum diverifikasi** — di `.env` lokal nilainya `http://localhost:3000`.
+  Kalau Vercel juga begitu, login Google akan gagal karena callback URL salah.
 - P1–P5 belum mulai.
 
