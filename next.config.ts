@@ -19,9 +19,19 @@ const nextConfig: NextConfig = {
   },
   reactCompiler: true,
   allowedDevOrigins: ["b959-85-109-93-100.ngrok-free.app"],
-  experimental: {
-    optimizePackageImports: ["@tabler/icons-react"],
-  },
+  // optimizePackageImports untuk @tabler/icons-react sengaja DIHAPUS.
+  //
+  // Opsi itu membuat Turbopack menganalisis seluruh barrel package (ribuan
+  // export) dan memanipulasi import map. Di Vercel itu berakhir jadi
+  // "Error while looking up import map: next/font/google queries have
+  // exactly one entry" + 28x "Can't resolve
+  // '@vercel/turbopack-next/internal/font/google/font'", sehingga build
+  // gagal total padahal `next/font/google` di layout.tsx pemanggilannya
+  // benar dan build lokal lolos.
+  //
+  // Kalau nanti bundle icon jadi masalah, jalur yang benar adalah
+  // mengonsolidasikan ke satu library (lihat docs/performance-plan.md),
+  // bukan lewat optimizePackageImports.
 };
 
 export default nextConfig;
