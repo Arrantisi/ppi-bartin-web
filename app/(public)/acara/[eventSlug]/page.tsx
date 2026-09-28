@@ -1,6 +1,7 @@
 import { EventDetail } from "@/features/events/components";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { safeDb, safeStaticParams } from "@/lib/db/safe";
 import { getEventBySlug } from "@/server/data/events";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
@@ -11,11 +12,14 @@ export const revalidate = 60;
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  const allEvents = await prisma.events.findMany({
-    select: { slug: true },
-    where: { environment: "production" },
-  });
-  return allEvents.map((item) => ({ eventSlug: item.slug }));
+  return safeStaticParams(
+    () =>
+      prisma.events.findMany({
+        select: { slug: true },
+        where: { environment: "production" },
+      }),
+    "acara/[eventSlug]",
+  );
 }
 
 export async function generateMetadata({
@@ -24,10 +28,16 @@ export async function generateMetadata({
   params: Promise<{ eventSlug: string }>;
 }): Promise<Metadata> {
   const { eventSlug } = await params;
-  const event = await prisma.events.findUnique({ where: { slug: eventSlug } });
+  const event = await safeDb(
+    () => prisma.events.findUnique({ where: { slug: eventSlug } }),
+    null,
+    "acara/[eventSlug] metadata",
+  );
 
+  // Query gagal ≠ event tidak ada. Jangan tampilkan "Tidak Ditemukan" kalau
+  // masalahnya cuma database tidak terjangkau saat build.
   if (!event) {
-    return { title: "Acara Tidak Ditemukan", description: "Acara tidak ditemukan" };
+    return { title: "Acara", description: "Informasi acara PPI Bartın" };
   }
 
   const description = event.deskripsi.length > 160 ? event.deskripsi.slice(0, 157) + "..." : event.deskripsi;

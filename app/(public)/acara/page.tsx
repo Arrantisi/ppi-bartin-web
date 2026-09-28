@@ -1,11 +1,12 @@
 import { getAllEvents } from "@/server/data/events";
+import { safeDb } from "@/lib/db/safe";
 import CardEvent from "@/components/cards/card-event";
 import { DataKosong } from "@/components/data-kosong";
 
 export const revalidate = 60;
 
 export default async function PublicEventPage() {
-  const events = await getAllEvents();
+  const events = await safeDb(() => getAllEvents(), [], "acara list");
 
   if (!events || events.length === 0) {
     return (

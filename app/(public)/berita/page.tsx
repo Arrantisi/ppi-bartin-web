@@ -1,11 +1,12 @@
 import { getNews } from "@/server/data/news";
+import { safeDb } from "@/lib/db/safe";
 import { FrameNews } from "@/components/cards/card-news";
 import { DataKosong } from "@/components/data-kosong";
 
 export const revalidate = 60;
 
 export default async function PublicNewsPage() {
-  const news = await getNews();
+  const news = await safeDb(() => getNews(), [], "berita list");
 
   if (!news || news.length === 0) {
     return (

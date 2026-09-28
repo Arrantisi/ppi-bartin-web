@@ -1,6 +1,7 @@
 import { NewsDetailComponent } from "@/features/news/components";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { safeDb, safeStaticParams } from "@/lib/db/safe";
 import { getNewsBySlug } from "@/server/data/news";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
@@ -11,11 +12,14 @@ export const revalidate = 60;
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  const allNews = await prisma.news.findMany({
-    select: { slug: true },
-    where: { environment: "production" },
-  });
-  return allNews.map((item) => ({ slug: item.slug }));
+  return safeStaticParams(
+    () =>
+      prisma.news.findMany({
+        select: { slug: true },
+        where: { environment: "production" },
+      }),
+    "berita/[slug]",
+  );
 }
 
 export async function generateMetadata({
@@ -24,10 +28,15 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const news = await prisma.news.findUnique({ where: { slug } });
+  const news = await safeDb(
+    () => prisma.news.findUnique({ where: { slug } }),
+    null,
+    "berita/[slug] metadata",
+  );
 
+  // Query gagal ≠ berita tidak ada — jangan beri metadata "Tidak Ditemukan".
   if (!news) {
-    return { title: "Berita Tidak Ditemukan", description: "Berita tidak ditemukan" };
+    return { title: "Berita", description: "Berita PPI Bartın" };
   }
 
   const ogImage = news.fileKey
