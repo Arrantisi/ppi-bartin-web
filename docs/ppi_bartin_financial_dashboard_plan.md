@@ -10,7 +10,7 @@ Stack: Next.js App Router, TypeScript, `googleapis`, TanStack Query, Shadcn UI, 
 
 ### Rollout bertahap
 
-- **Phase 1 — Quick link (sudah diimplementasikan):** `FinanceSection` dipasang di `app/page.tsx` antara `Hero` dan `Footer`, dengan akses dari nav `/#finance` dan footer. Tombol di `components/sections/finance-section.tsx` membuka URL Google Sheets dari env `NEXT_PUBLIC_FINANCE_SHEET_URL` dengan `target="_blank" rel="noopener noreferrer"`; render-nya dipisah ke client component `components/shared/finance-sheet-link.tsx` agar prop elemen `<a>` tidak melintas dari Server Component ke Client Component. Env bersifat opsional agar build tetap lolos sebelum link dari bendahara tersedia; jika kosong, tombol fallback "Menunggu Peluncuran" dalam keadaan disabled. Perlu deploy setelah `NEXT_PUBLIC_FINANCE_SHEET_URL` diisi di Vercel.
+- **Phase 1 — Quick link (sudah diimplementasikan):** `FinanceSection` dipasang di `app/page.tsx` antara `Hero` dan `Footer`, dengan akses dari nav `/#finance` dan footer. Shortcut serupa juga dipasang di portal `/home` lewat `features/home/finance-shortcut.tsx`. Tombol membuka URL Google Sheets dari env `NEXT_PUBLIC_FINANCE_SHEET_URL` dengan `target="_blank" rel="noopener noreferrer"`; render-nya dipisah ke client component `components/shared/finance-sheet-link.tsx` agar prop elemen `<a>` tidak melintas dari Server Component ke Client Component. Env bersifat opsional agar build tetap lolos sebelum link dari bendahara tersedia; jika kosong, tombol fallback "Menunggu Peluncuran" dalam keadaan disabled. Perlu deploy setelah `NEXT_PUBLIC_FINANCE_SHEET_URL` diisi di Vercel.
 - **Phase 2 — Google Cloud & Sheet (sedang dikerjakan):**
   - Buat/aktifkan project GCP `ppi-bartin-finance` dan aktifkan Google Sheets API.
   - Buat Service Account, download key JSON, catat `client_email` dan `private_key`.
@@ -88,6 +88,7 @@ Shared pendukung: `hooks/use-finance.ts` (`useQuery` + `useMutation` dengan `inv
 | URL | Akses | Layout |
 | --- | --- | --- |
 | `/` (section `#finance`) | public | Landing page — tombol Phase 1 membuka `NEXT_PUBLIC_FINANCE_SHEET_URL` |
+| `/home` | student | HomeLayoutComponent — shortcut laporan keuangan di `HomeContent` |
 | `/home/finance` | student | HomeLayoutComponent |
 | `/api/finance` | student (GET) | Route Handler (JSON, dipakai `useQuery`) |
 
@@ -115,7 +116,7 @@ Setelah Phase 5, tombol di landing page diganti `Link` ke `/home/finance`.
 
 ## Testing Checklist
 
-- [ ] **Phase 1:** dengan `NEXT_PUBLIC_FINANCE_SHEET_URL` terisi, tombol "Lihat Laporan Keuangan" muncul dan membuka sheet di tab baru; tanpa env, tombol fallback disabled muncul tanpa error build.
+- [ ] **Phase 1:** dengan `NEXT_PUBLIC_FINANCE_SHEET_URL` terisi, tombol "Lihat Laporan Keuangan" muncul di landing page **dan** portal `/home`, serta membuka sheet di tab baru; tanpa env, tombol fallback disabled muncul tanpa error build.
 - [ ] **Role BENDAHARA:** enum Prisma sudah dimigrasi; user `BENDAHARA` (dan `ADMIN`) bisa CRUD, role lain ditolak.
 - [ ] **Happy path — read:** sheet berisi data → tabel dan 3 kartu summary tampil, angka sesuai perhitungan baris.
 - [ ] **Happy path — create:** admin tambah transaksi → baris baru muncul di Sheets dan di dashboard setelah `invalidateQueries`.

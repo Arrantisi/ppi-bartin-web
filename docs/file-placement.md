@@ -124,6 +124,7 @@ features/
 ├── home/
 │   ├── events/
 │   ├── news/
+│   ├── finance-shortcut.tsx
 │   └── home-page.tsx
 ├── uploads/
 ├── dashboard/
