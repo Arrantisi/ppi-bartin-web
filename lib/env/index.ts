@@ -14,6 +14,8 @@ export const env = createEnv({
 	client: {
 		NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
 		NEXT_PUBLIC_SUPABASE_URL: z.url(),
+		// Phase 1 finale: opsional agar build tetap lolos sebelum link dari bendahara tersedia.
+		NEXT_PUBLIC_FINANCE_SHEET_URL: z.url().optional(),
 	},
 	clientPrefix: "NEXT_PUBLIC_",
 	runtimeEnv: {
@@ -25,6 +27,8 @@ export const env = createEnv({
 		GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
 		NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
 		NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+		NEXT_PUBLIC_FINANCE_SHEET_URL:
+			process.env.NEXT_PUBLIC_FINANCE_SHEET_URL,
 		UPLOADTHING_TOKEN: process.env.UPLOADTHING_TOKEN,
 	},
 	emptyStringAsUndefined: true,

@@ -19,6 +19,7 @@ prisma/           # Skema database
 schemas/          # Zod validation schemas
 public/           # Aset statis (manifest, service worker, ikon, logo)
 docs/             # Dokumentasi fitur dan panduan
+.env.example      # Template environment variables (source of truth: lib/env/index.ts)
 icons/            # Custom icon components (index.tsx + SVGs)
 props/            # JSON mock data untuk form fields
 ```
@@ -66,7 +67,7 @@ Hanya komponen yang bisa dipakai ulang lintas fitur. Jangan taruh komponen spesi
 components/
 ├── ui/               # Atomic: button, input, dialog, select, card, badge, table, sidebar, dll.
 ├── layout/           # Layout wrappers: home-layout, responsive-page-container
-├── shared/           # Cross-cutting: share-popover, delete-dialog, nav-main-event
+├── shared/           # Cross-cutting: share-popover, delete-dialog, nav-main-event, finance-sheet-link
 ├── cards/            # Reusable cards: card-event, card-news
 ├── field/            # Form fields: event-form, calendar-event-form, news-form, create-bantuan (Bantuan/CS form sederhana tanpa upload)
 ├── providers/        # React context: realtime, tanstack-query, theme
@@ -242,6 +243,13 @@ lib/
 ├── utils.ts           # General lib helpers
 └── og.ts              # Open Graph helpers
 ```
+
+### `lib/env/index.ts` — validasi environment variables
+
+Semua env variable didefinisikan dan divalidasi di sini (Zod), lalu dicerminkan
+di `.env.example` pada root. Variable baru wajib ditambahkan ke **keduanya**.
+Contoh: `NEXT_PUBLIC_FINANCE_SHEET_URL` untuk tombol laporan keuangan di
+`components/sections/finance-section.tsx`.
 
 ---
 

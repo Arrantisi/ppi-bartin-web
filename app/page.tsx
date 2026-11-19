@@ -1,3 +1,4 @@
+import { FinanceSection } from "@/components/sections/finance-section";
 import { Footer } from "@/components/sections/footer";
 import { Hero } from "@/components/sections/hero";
 import { Navbar } from "@/components/sections/navbar";
@@ -7,6 +8,7 @@ export default function PublicHomePage() {
     <div className="min-h-screen z-20">
       <Navbar />
       <Hero />
+      <FinanceSection />
       <Footer />
     </div>
   );

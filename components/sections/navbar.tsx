@@ -39,6 +39,12 @@ export const Navbar = () => {
               Acara
             </Link>
             <Link
+              href="/#finance"
+              className="hover:text-text-primary transition-colors"
+            >
+              Keuangan
+            </Link>
+            <Link
               href="/home"
               className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-surface-hover hover:text-text-primary transition-all"
             >
