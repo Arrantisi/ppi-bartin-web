@@ -6,25 +6,30 @@ Menampilkan laporan keuangan PPI Bartın secara transparan dengan sinkronisasi d
 
 Stack: Next.js App Router, TypeScript, `googleapis`, TanStack Query, Shadcn UI, Tailwind CSS, Vercel, Better Auth.
 
-**Asumsi sementara (dikonfirmasi sebelum implementasi):** dashboard ditempatkan di `/home/finance` dengan `HomeLayoutComponent`; role penulis adalah `ADMIN` / `PENGURUS` (belum ada `BENDAHARA` di `prisma/schema.prisma`); konflik edit memakai *last-write-wins*; `DELETE` mengosongkan nilai baris via `values.clear` daripada menghapus baris fisik agar `rowNumber` tetap stabil.
+**Keputusan sudah dikonfirmasi:** dashboard ditempatkan di `/home/finance` dengan `HomeLayoutComponent`; role penulis adalah `BENDAHARA` baru (perlu migrasi enum `Role`), dengan `ADMIN` tetap diizinkan sebagai superuser; konflik edit memakai *last-write-wins*; `DELETE` mengosongkan nilai baris via `values.clear` daripada menghapus baris fisik agar `rowNumber` tetap stabil.
 
 ### Rollout bertahap
 
 - **Phase 1 — Quick link (sudah diimplementasikan):** `FinanceSection` dipasang di `app/page.tsx` antara `Hero` dan `Footer`, dengan akses dari nav `/#finance` dan footer. Tombol di `components/sections/finance-section.tsx` membuka URL Google Sheets dari env `NEXT_PUBLIC_FINANCE_SHEET_URL` dengan `target="_blank" rel="noopener noreferrer"`; render-nya dipisah ke client component `components/shared/finance-sheet-link.tsx` agar prop elemen `<a>` tidak melintas dari Server Component ke Client Component. Env bersifat opsional agar build tetap lolos sebelum link dari bendahara tersedia; jika kosong, tombol fallback "Menunggu Peluncuran" dalam keadaan disabled. Perlu deploy setelah `NEXT_PUBLIC_FINANCE_SHEET_URL` diisi di Vercel.
-- **Phase 2 — Google Cloud & Sheet:** buat project GCP, aktifkan Google Sheets API, buat Service Account + key JSON, *share* sheet ke `client_email` sebagai **Editor**, catat `GOOGLE_SHEET_ID`, dan finalisasi struktur kolom (posisi tidak diubah lagi).
+- **Phase 2 — Google Cloud & Sheet (sedang dikerjakan):**
+  - Buat/aktifkan project GCP `ppi-bartin-finance` dan aktifkan Google Sheets API.
+  - Buat Service Account, download key JSON, catat `client_email` dan `private_key`.
+  - *Share* spreadsheet ke `client_email` sebagai **Editor**.
+  - Catat `SPREADSHEET_ID` dari URL sheet sebagai `GOOGLE_SHEET_ID`.
+  - Finalisasi struktur kolom (posisi tidak diubah lagi) dan kirim contoh 3 baris ke agent.
 - **Phase 3 — Backend:** `pnpm add googleapis`; helper `lib/google-sheets.ts`; env didaftarkan di `lib/env/index.ts` **dan** `.env.example`; Zod schema di `schemas/finance.ts`; tipe di `types/finance.ts`; server action + route handler `GET`.
 - **Phase 4 — Frontend:** dashboard di `features/finance/`, hook `hooks/use-finance.ts`, `useQuery` dengan `refetchInterval: 5000` hanya saat tab aktif dan cache server ~30 detik untuk menjaga kuota Google Sheets API; `useMutation` + `invalidateQueries` untuk tulisan dari web.
 - **Phase 5 — Testing & migrasi:** uji sinkronisasi dua arah, deploy + verifikasi env produksi, lalu tombol Phase 1 diganti navigasi ke `/home/finance`.
 
 ### File pendukung di luar `features/`
 
-`lib/google-sheets.ts`, `lib/env/index.ts` (sudah ditambah `NEXT_PUBLIC_FINANCE_SHEET_URL`), `.env.example` (sudah dibuat), `schemas/finance.ts`, `types/finance.ts`, `hooks/use-finance.ts`, `app/api/finance/route.ts`, `app/(protected)/home/finance/page.tsx`, `components/skeletons/finance-skeleton.tsx`, dan update `docs/file-placement.md` saat kode dibuat. `components/sections/finance-section.tsx` sudah dimodifikasi untuk Phase 1.
+`lib/google-sheets.ts`, `lib/env/index.ts` (sudah ditambah `NEXT_PUBLIC_FINANCE_SHEET_URL`), `.env.example` (sudah dibuat), `prisma/schema.prisma` (enum `Role` + `BENDAHARA`), `schemas/finance.ts`, `types/finance.ts`, `hooks/use-finance.ts`, `app/api/finance/route.ts`, `app/(protected)/home/finance/page.tsx`, `components/skeletons/finance-skeleton.tsx`, dan update `docs/file-placement.md` saat kode dibuat. `components/sections/finance-section.tsx` sudah dimodifikasi untuk Phase 1.
 
 ## Database Model (Prisma)
 
 Tidak ada model Prisma baru. Google Sheets adalah satu-satunya penyimpanan transaksi, jadi tidak ada tabel/relasi baru dan tidak ada migrasi schema untuk data keuangan.
 
-Role check memakai enum `Role` yang sudah ada di `prisma/schema.prisma` (`USER`, `ADMIN`, `PENGURUS`) melalui kolom `User.role`. Jika "bendahara" harus menjadi role terpisah, tambahkan `BENDAHARA` ke enum + migrasi Prisma **sebelum** implementasi; plan ini masih memetakan bendahara ke `PENGURUS`.
+Role check memakai enum `Role` pada `prisma/schema.prisma` melalui kolom `User.role`. Perlu ditambah nilai `BENDAHARA` (migrasi Prisma) sebelum implementasi. Penulis transaksi adalah `BENDAHARA`, dengan `ADMIN` sebagai superuser. Tidak ada tabel keuangan baru.
 
 Kontrak data sementara (menyesuaikan contoh sheet yang belum diterima):
 
@@ -54,9 +59,9 @@ Semua action memakai `"use server"`, memvalidasi input dengan Zod di server, dan
 | Action | Path | Input | Output | Auth |
 | --- | --- | --- | --- | --- |
 | getFinanceSnapshot | server/actions/finance.ts | `void` | `TServerPrompt<TFinanceSnapshot>` | student |
-| createFinanceTransaction | server/actions/finance.ts | `CreateFinanceTransactionSchema` | `TServerPrompt<TFinanceTransaction>` | ADMIN/PENGURUS |
-| updateFinanceTransaction | server/actions/finance.ts | `UpdateFinanceTransactionSchema` | `TServerPrompt<TFinanceTransaction>` | ADMIN/PENGURUS |
-| deleteFinanceTransaction | server/actions/finance.ts | `DeleteFinanceTransactionSchema` | `TServerPrompt<void>` | ADMIN/PENGURUS |
+| createFinanceTransaction | server/actions/finance.ts | `CreateFinanceTransactionSchema` | `TServerPrompt<TFinanceTransaction>` | BENDAHARA/ADMIN |
+| updateFinanceTransaction | server/actions/finance.ts | `UpdateFinanceTransactionSchema` | `TServerPrompt<TFinanceTransaction>` | BENDAHARA/ADMIN |
+| deleteFinanceTransaction | server/actions/finance.ts | `DeleteFinanceTransactionSchema` | `TServerPrompt<void>` | BENDAHARA/ADMIN |
 
 - `app/api/finance/route.ts` hanya menangani `GET` untuk polling `useQuery` dan mengembalikan `TFinanceSnapshot` sebagai JSON HTTP (bukan `TServerPrompt`). `POST`/`PUT`/`DELETE` tidak dipakai di route handler — semuanya lewat server action di atas.
 - `CreateFinanceTransactionSchema` / `UpdateFinanceTransactionSchema`: `tanggal` (ISO date), `keterangan` (min. 2 karakter), `pemasukan` dan `pengeluaran` (`number` non-negatif, salah satu harus > 0). `UpdateFinanceTransactionSchema` menambahkan `rowNumber` (int positif). `DeleteFinanceTransactionSchema`: `rowNumber` (int positif) yang diverifikasi masih ada di sheet sebelum `values.clear`.
@@ -90,8 +95,8 @@ Setelah Phase 5, tombol di landing page diganti `Link` ke `/home/finance`.
 
 ## Security
 
-- **Auth check di server:** `getFinanceSnapshot()` dan route handler `GET` memanggil `studentAccount()`; jika belum login → redirect ke halaman login. Server action mutasi memanggil `getCurrentUserRole()` dan hanya mengizinkan `ADMIN` / `PENGURUS`. Karena `getCurrentUserRole()` mengembalikan `"USER"` saat error, perlakunya tetap **fail-closed** (ditolak).
-- **Role-based UI:** tombol tambah/edit/hapus hanya dirender untuk `ADMIN`/`PENGURUS` (via `hooks/use-current-role.ts`), tapi penyembunyian UI bukan pengganti pengecekan di server.
+- **Auth check di server:** `getFinanceSnapshot()` dan route handler `GET` memanggil `studentAccount()`; jika belum login → redirect ke halaman login. Server action mutasi memanggil `getCurrentUserRole()` dan hanya mengizinkan `BENDAHARA` / `ADMIN`. Karena `getCurrentUserRole()` mengembalikan `"USER"` saat error, perlakunya tetap **fail-closed** (ditolak).
+- **Role-based UI:** tombol tambah/edit/hapus hanya dirender untuk `BENDAHARA`/`ADMIN` (via `hooks/use-current-role.ts`), tapi penyembunyian UI bukan pengganti pengecekan di server.
 - **Ownership:** data bersifat organisasi, bukan milik per user — tidak ada ownership check, tetapi role check wajib pada setiap mutasi.
 - **Validasi server side:** semua input melewati Zod di `schemas/finance.ts`; `rowNumber` harus int positif dan diverifikasi terhadap daftar baris yang sedang dibaca sebelum update/clear.
 - **Formula injection:** string dari user yang diawali `=`, `+`, `-`, atau `@` diawali `'` sebelum ditulis ke Sheets.
@@ -111,6 +116,7 @@ Setelah Phase 5, tombol di landing page diganti `Link` ke `/home/finance`.
 ## Testing Checklist
 
 - [ ] **Phase 1:** dengan `NEXT_PUBLIC_FINANCE_SHEET_URL` terisi, tombol "Lihat Laporan Keuangan" muncul dan membuka sheet di tab baru; tanpa env, tombol fallback disabled muncul tanpa error build.
+- [ ] **Role BENDAHARA:** enum Prisma sudah dimigrasi; user `BENDAHARA` (dan `ADMIN`) bisa CRUD, role lain ditolak.
 - [ ] **Happy path — read:** sheet berisi data → tabel dan 3 kartu summary tampil, angka sesuai perhitungan baris.
 - [ ] **Happy path — create:** admin tambah transaksi → baris baru muncul di Sheets dan di dashboard setelah `invalidateQueries`.
 - [ ] **Happy path — update:** admin edit `rowNumber` tertentu → hanya baris itu berubah di Sheets, baris lain tidak bergeser.
