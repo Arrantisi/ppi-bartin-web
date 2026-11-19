@@ -48,9 +48,9 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <span>
-                  Transparansi Keuangan <span className="text-warning">(segera hadir)</span>
-                </span>
+                <Link href="/#finance" className="hover:text-text-primary transition-colors">
+                  Transparansi Keuangan
+                </Link>
               </li>
             </ul>
           </div>
