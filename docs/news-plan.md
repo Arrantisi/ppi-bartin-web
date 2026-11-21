@@ -4,6 +4,15 @@
 
 News/Berita feature untuk PPI Bartin web. Users bisa membuat, melihat, memperbarui, dan menghapus berita. Berita memiliki kategori, thumbnail, ringkasan, dan konten rich text. Tersedia di halaman publik (`/berita`) dan halaman protected (`/home/berita`) dengan fitur CRUD.
 
+## Changelog
+
+### 2026-11-21 — Pewarnaan label kategori (token only)
+
+- `utils/news-category.ts`: `getNewsCategoryTone()` memetakan kategori ke nada `urgent`/`accent`/`info`/`success`/`neutral`, lengkap dengan kelas teks dan titik berbasis CSS token.
+- `components/cards/card-news.tsx` & `features/news/news-detail/index.tsx`: label kategori kini punya titik warna + teks berwarna (warna bukan satu-satunya penanda).
+- `features/news/berita-catagory.tsx`: tab aktif memakai `accent/10` + border `accent/30`, tiap tab punya titik nada kategori.
+- Unit test: `__tests__/news-category.test.ts`.
+
 ---
 
 ## Database Model (Prisma)

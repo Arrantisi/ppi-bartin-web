@@ -8,6 +8,10 @@ import { useNews } from "@/hooks/use-news";
 import { DataKosong } from "@/components/data-kosong";
 import { ButtonCreate } from "@/components/buttons";
 import { useMemo, useTransition } from "react";
+import {
+  getNewsCategoryTone,
+  newsCategoryDotStyles,
+} from "@/utils/news-category";
 
 const catagoryTrigger = [
   { ctg: "all" },
@@ -72,10 +76,19 @@ const BeritaCatagory = () => {
                 value={item.ctg}
                 onClick={() => startTransition(() => {})}
                 className={cn(
-                  "rounded-full border border-border bg-surface px-6 py-2.5 capitalize transition-colors",
-                  "data-[state=active]:bg-surface-active data-[state=active]:text-text-primary",
+                  "inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-6 py-2.5 capitalize transition-colors",
+                  "data-[state=active]:border-accent/30 data-[state=active]:bg-accent/10 data-[state=active]:text-accent",
                 )}
               >
+                <span
+                  aria-hidden
+                  className={cn(
+                    "size-1.5 shrink-0 rounded-full",
+                    newsCategoryDotStyles[
+                      item.ctg === "all" ? "neutral" : getNewsCategoryTone(item.ctg)
+                    ],
+                  )}
+                />
                 {item.ctg}
               </TabsTrigger>
             ))}

@@ -234,7 +234,8 @@ utils/
 ├── image-url.ts            # URL image helpers
 ├── copy-link.ts            # Clipboard helpers
 ├── get-twowords.ts         # Text helpers
-└── meta-description.ts     # HTML rich-text -> meta/OG description
+├── meta-description.ts     # HTML rich-text -> meta/OG description
+└── news-category.ts        # getNewsCategoryTone + kelas warna token untuk label kategori berita
 ```
 
 ### `meta-description.ts`
