@@ -4,13 +4,10 @@ import { cn } from "@/lib/utils";
 import {
   Icon,
   IconCalendarWeek,
-  IconChartBar,
-  IconLayoutDashboard,
   IconNews,
   IconSmartHome,
   IconUser,
 } from "@tabler/icons-react";
-import { useCurrentUserRole } from "@/hooks/use-current-role";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
@@ -38,17 +35,6 @@ const navItems: NavItem[] = [
   { title: "Berita", icon: IconNews, url: "/home/berita" },
   { title: "Profil", icon: IconUser, url: "/home/profile" },
 ];
-
-const desktopNavItems: NavItem[] = [
-  ...navItems,
-  { title: "Keuangan", icon: IconChartBar, url: "/home/finance" },
-];
-
-const adminNavItem: NavItem = {
-  title: "Panel Admin",
-  icon: IconLayoutDashboard,
-  url: "/dashboard",
-};
 
 const BottomNav = ({ show, items }: { show: boolean; items: NavItem[] }) => {
   const params = usePathname();
@@ -182,19 +168,12 @@ const DesktopSidebar = ({
 
 const NavMainEvent = ({ show = true }: { show?: boolean }) => {
   const isMobile = useIsMobile();
-  const { data: role } = useCurrentUserRole();
-  const isAdmin = role === "ADMIN";
-
-  const mobileItems = isAdmin ? [...navItems, adminNavItem] : navItems;
-  const desktopItems = isAdmin
-    ? [...desktopNavItems, adminNavItem]
-    : desktopNavItems;
 
   if (isMobile) {
-    return <BottomNav show={show} items={mobileItems} />;
+    return <BottomNav show={show} items={navItems} />;
   }
 
-  return <DesktopSidebar variant="sidebar" items={desktopItems} />;
+  return <DesktopSidebar variant="sidebar" items={navItems} />;
 };
 
 export default NavMainEvent;
