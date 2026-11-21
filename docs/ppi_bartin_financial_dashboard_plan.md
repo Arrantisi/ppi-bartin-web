@@ -63,7 +63,7 @@ Aturan parser:
 
 Tidak ada model Prisma baru untuk transaksi. Google Sheets adalah satu-satunya penyimpanan transaksi, jadi tidak ada tabel/relasi data keuangan.
 
-Role check memakai enum `Role` pada `prisma/schema.prisma` melalui kolom `User.role`. Perlu ditambah nilai `BENDAHARA` (migrasi Prisma) sebelum implementasi. Penulis transaksi adalah `BENDAHARA`, dengan `ADMIN` sebagai superuser. Tidak ada tabel keuangan baru.
+Role check memakai enum `Role` pada `prisma/schema.prisma` melalui kolom `User.role`. Nilai `BENDAHARA` sudah ditambahkan ke enum database (21 Nov 2026). Penulis transaksi adalah `BENDAHARA`, dengan `ADMIN` sebagai superuser. Tidak ada tabel keuangan baru.
 
 Kontrak data final (menyesuaikan sheet bendahara):
 
@@ -170,7 +170,8 @@ Setelah Phase 5, tombol di landing page diganti `Link` ke `/home/finance`.
 ## Testing Checklist
 
 - [ ] **Phase 1:** dengan `NEXT_PUBLIC_FINANCE_SHEET_URL` terisi, tombol "Lihat Laporan Keuangan" muncul di landing page **dan** portal `/home`, serta membuka sheet di tab baru; tanpa env, tombol fallback disabled muncul tanpa error build.
-- [ ] **Role BENDAHARA:** enum Prisma sudah dimigrasi; user `BENDAHARA` (dan `ADMIN`) bisa CRUD, role lain ditolak.
+- [x] **Role BENDAHARA:** enum Prisma sudah dimigrasi ke database (21 Nov 2026).
+- [ ] User `BENDAHARA` (dan `ADMIN`) bisa CRUD, role lain ditolak.
 - [ ] **Parser:** 3 baris contoh bendahara terbaca menjadi 3 transaksi; `₺1.500,00` → `1500`, `Rp10.242.331` → `10242331`, `3/15/2026` → `2026-03-15`, `=HYPERLINK(...)` → URL `https`.
 - [ ] **Happy path — read:** sheet berisi data → tabel dan kartu summary per mata uang tampil, angka sesuai perhitungan baris.
 - [ ] **Happy path — create:** admin tambah transaksi → baris baru muncul di `BUKU BESAR KEUANGAN` dan di dashboard setelah `invalidateQueries`; `DASHBOARD` tidak berubah langsung.

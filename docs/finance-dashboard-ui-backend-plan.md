@@ -8,7 +8,7 @@ Rencana implementasi lanjutan Phase 3–4 untuk `Financial Dashboard`. Tujuannya
 
 File plan ini melengkapi `docs/ppi_bartin_financial_dashboard_plan.md` dengan detail **tampilan**, **interaksi**, dan **alur backend** sebelum kode ditulis.
 
-Catatan implementasi: skrip `build` di `package.json` menaikkan `NODE_OPTIONS=--max-old-space-size=8192` karena tipe dari `googleapis` membuat pemeriksaan tipe Next.js kehabisan memori pada batas default 2 GB. Prasyarat eksternal yang masih menunggu admin: env `GOOGLE_*`, sheet dibagikan ke service account, migrasi `BENDAHARA` di database produksi, dan email user bendahara.
+Catatan implementasi: skrip `build` di `package.json` menaikkan `NODE_OPTIONS=--max-old-space-size=8192` karena tipe dari `googleapis` membuat pemeriksaan tipe Next.js kehabisan memori pada batas default 2 GB. Prasyarat eksternal yang masih menunggu admin: env `GOOGLE_*`, sheet dibagikan ke service account, dan email user bendahara. Migrasi enum `BENDAHARA` sudah dijalankan ke database (21 Nov 2026).
 
 Keputusan yang dipakai:
 
@@ -36,7 +36,7 @@ enum Role {
 }
 ```
 
-Migrasi: `prisma/migrations/20261119000000_add_bendahara_role/migration.sql` berisi `ALTER TYPE "Role" ADD VALUE IF NOT EXISTS 'BENDAHARA';`. Migrasi **belum dijalankan ke database**; akan dijalankan sebelum deploy lewat `pnpm exec prisma migrate deploy`.
+Migrasi: `prisma/migrations/20261119000000_add_bendahara_role/migration.sql` berisi `ALTER TYPE "Role" ADD VALUE IF NOT EXISTS 'BENDAHARA';`. Migrasi **sudah dijalankan ke database** pada 21 Nov 2026 lewat SQL yang sama (idempoten). Enum `Role` terverifikasi: `USER`, `ADMIN`, `PENGURUS`, `BENDAHARA`.
 
 Tidak ada tabel `FinanceTransaction`, tidak ada relasi baru, dan tidak ada kolom baru di `User`. Role diambil dari `User.role` lewat `getCurrentUserRole()`.
 
@@ -230,7 +230,8 @@ Route `GET` mengembalikan `TFinanceSnapshot` langsung, bukan `TServerPrompt`. He
 
 ## Testing Checklist
 
-- [ ] Migrasi `BENDAHARA` dijalankan; user `BENDAHARA` dan `ADMIN` bisa CRUD, role `USER`/`PENGURUS` ditolak oleh server action.
+- [x] Migrasi `BENDAHARA` dijalankan ke database (21 Nov 2026).
+- [ ] Verifikasi user `BENDAHARA` dan `ADMIN` bisa CRUD, role `USER`/`PENGURUS` ditolak oleh server action.
 - [ ] `GET /api/finance` tanpa login → redirect/login; dengan login → JSON `TFinanceSnapshot` valid.
 - [ ] Parser 3 baris contoh bendahara → 3 transaksi; `₺1.500,00` → `1500`, `Rp10.242.331` → `10242331`, `3/15/2026` → `2026-03-15`.
 - [ ] Happy path read: 6 kartu KPI dan tabel tampil; total IDR/TRY sesuai perhitungan fallback.
