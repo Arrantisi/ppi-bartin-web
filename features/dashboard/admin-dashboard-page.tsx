@@ -37,8 +37,11 @@ export async function AdminDashboardPage() {
             Pantau anggota, acara, berita, dan pesan masuk dari satu tempat.
           </p>
         </div>
-        <div className="w-fit space-y-1 rounded-xl border border-border bg-card px-4 py-2 text-right">
-          <p className="footnote">Diperbarui {formatDateShort(snapshot.generatedAt)}</p>
+        <div className="w-fit space-y-1 rounded-xl border border-accent/20 bg-accent/5 px-4 py-2 text-right">
+          <p className="footnote flex items-center justify-end gap-1.5">
+            <span aria-hidden className="size-1.5 rounded-full bg-accent" />
+            Diperbarui {formatDateShort(snapshot.generatedAt)}
+          </p>
           <p className="text-xs text-text-secondary">
             {scopeLabels[snapshot.accessScope]}
           </p>

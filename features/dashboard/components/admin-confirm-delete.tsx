@@ -23,6 +23,9 @@ type TAdminConfirmDeleteProps = {
   disabled?: boolean;
   onConfirm: () => Promise<void> | void;
   children?: React.ReactNode;
+  /** Mode terkontrol dipakai dari dalam dropdown menu. */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export function AdminConfirmDelete({
@@ -32,8 +35,18 @@ export function AdminConfirmDelete({
   disabled = false,
   onConfirm,
   children,
+  open,
+  onOpenChange,
 }: TAdminConfirmDeleteProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const isControlled = open !== undefined;
+  const currentOpen = isControlled ? open : internalOpen;
+
+  const setOpen = (next: boolean) => {
+    if (!isControlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
 
   const handleConfirm = async () => {
     setIsLoading(true);
@@ -45,13 +58,15 @@ export function AdminConfirmDelete({
   };
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger
-        className={cn(buttonVariants({ variant: "destructive", size: "sm" }))}
-        disabled={disabled || isLoading}
-      >
-        {children ?? confirmLabel}
-      </AlertDialogTrigger>
+    <AlertDialog open={currentOpen} onOpenChange={setOpen}>
+      {!isControlled ? (
+        <AlertDialogTrigger
+          className={cn(buttonVariants({ variant: "destructive", size: "sm" }))}
+          disabled={disabled || isLoading}
+        >
+          {children ?? confirmLabel}
+        </AlertDialogTrigger>
+      ) : null}
       <AlertDialogPopup>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>

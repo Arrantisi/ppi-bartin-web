@@ -1,12 +1,15 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import {
   deleteEvent,
   deleteNews,
   deleteUser,
+  getAdminEventDetailAction,
+  getAdminNewsDetailAction,
+  getAdminUserDetailAction,
   setEventEnvironment,
   setNewsEnvironment,
   setUserBan,
@@ -34,7 +37,10 @@ function useAdminAction<TInput>(
         toast.success(result.message ?? fallbackMessage);
         return;
       }
-      toast.error(result.error);
+      const firstFieldError = Object.values(result.fieldErrors ?? {}).flat()[0];
+      toast.error(
+        firstFieldError ? `${result.error}: ${firstFieldError}` : result.error,
+      );
     },
     onError: () => {
       toast.error("Terjadi kesalahan server");
@@ -68,3 +74,35 @@ export const useSetNewsEnvironment = () =>
 
 export const useDeleteNews = () =>
   useAdminAction<TDeleteNewsInput>(deleteNews, "Berita berhasil dihapus");
+
+function useAdminDetail<T>(
+  queryKey: string,
+  id: string | null,
+  load: (id: string) => Promise<TServerPrompt<T | null>>,
+) {
+  return useQuery<T | null>({
+    queryKey: ["admin", queryKey, id],
+    queryFn: async () => {
+      if (!id) return null;
+      const result = await load(id);
+      if (!result.success) throw new Error(result.error);
+      return result.data;
+    },
+    enabled: id !== null,
+    // Detail harus selalu segar: null dari percobaan sebelumnya tidak boleh
+    // bertahan saat kartu dibuka ulang.
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: "always",
+  });
+}
+
+export const useAdminUserDetail = (userId: string | null) =>
+  useAdminDetail("user-detail", userId, getAdminUserDetailAction);
+
+export const useAdminEventDetail = (eventId: string | null) =>
+  useAdminDetail("event-detail", eventId, getAdminEventDetailAction);
+
+export const useAdminNewsDetail = (newsId: string | null) =>
+  useAdminDetail("news-detail", newsId, getAdminNewsDetailAction);
+

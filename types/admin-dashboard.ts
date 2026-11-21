@@ -1,6 +1,15 @@
 /** Cakupan environment yang boleh dilihat role saat ini. */
 export type TAdminDashboardAccessScope = "all" | "preview" | "production";
 
+/** Hasil tabel admin dengan filter dan pagination yang dijalankan di server. */
+export type TAdminTablePage<T> = {
+  rows: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+};
+
 export type TAdminKpis = {
   totalUsers: number;
   verifiedUsers: number;
@@ -123,4 +132,60 @@ export type TAdminDashboardSnapshot = {
   };
   actionQueue: TAdminActionQueues;
   capacity: TAdminCapacityItem[];
+};
+
+/** Detail user yang diambil saat kartu detail dibuka (bukan saat memuat tabel). */
+export type TAdminUserDetail = {
+  id: string;
+  name: string | null;
+  username: string | null;
+  email: string;
+  nomorSiswa: string | null;
+  noTelephone: string | null;
+  angkatan: string | null;
+  jurusan: string | null;
+  fakultas: string | null;
+  jenisKelamin: string | null;
+  alamat: string | null;
+  bio: string | null;
+  statusPelajar: string | null;
+  role: string;
+  emailVerified: boolean;
+  banned: boolean | null;
+  banReason: string | null;
+  banExpires: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TAdminEventDetail = {
+  id: string;
+  title: string;
+  slug: string;
+  catagory: string | null;
+  lokasi: string;
+  deskripsi: string;
+  persyaratan: string | null;
+  date: string;
+  batasDaftar: string;
+  environment: string;
+  capacity: number;
+  joined: number;
+  cancelled: number;
+  creatorName: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TAdminNewsDetail = {
+  id: string;
+  judul: string;
+  slug: string;
+  catagory: string;
+  ringkasan: string;
+  desckripsi: string;
+  environment: string;
+  creatorName: string | null;
+  createdAt: string;
+  updatedAt: string;
 };

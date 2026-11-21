@@ -20,10 +20,27 @@ const shortDateFormatter = new Intl.DateTimeFormat("id-ID", {
   timeZone: "UTC",
 });
 
+const fullDateFormatter = new Intl.DateTimeFormat("id-ID", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "UTC",
+});
+
 export function formatDateShort(value: string | Date): string {
   const date = typeof value === "string" ? new Date(value) : value;
   if (Number.isNaN(date.getTime())) return "—";
   return shortDateFormatter.format(date);
+}
+
+/** Tanggal lengkap untuk kartu detail admin. */
+export function formatDateFull(value: string | Date | null | undefined): string {
+  if (!value) return "—";
+  const date = typeof value === "string" ? new Date(value) : value;
+  if (Number.isNaN(date.getTime())) return "—";
+  return fullDateFormatter.format(date);
 }
 
 export function formatDurationHours(hours: number | null): string {
@@ -97,4 +114,53 @@ export function getMissingProfileFields(row: TProfileCompletenessInput): string[
     const value = row[key];
     return !value || String(value).trim() === "";
   }).map(([, label]) => label);
+}
+
+/** Query param Next.js bisa berupa string, array, atau undefined. */
+export function firstSearchParam(
+  value: string | string[] | undefined,
+): string {
+  if (Array.isArray(value)) return value[0] ?? "";
+  return value ?? "";
+}
+
+/** Halaman invalid jadi 1; batas atas tetap dinormalisasi di data function. */
+export function parseAdminPage(value: string): number {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : 1;
+}
+
+export type TPaginationItem = number | "ellipsis";
+
+/**
+ * Deretan halaman untuk navigasi tabel: selalu ada halaman pertama & terakhir,
+ * plus tetangga halaman aktif. Celah besar ditandai ellipsis.
+ */
+export function getPaginationItems(
+  current: number,
+  total: number,
+): TPaginationItem[] {
+  if (!Number.isFinite(current) || !Number.isFinite(total) || total < 1) {
+    return [1];
+  }
+
+  const active = Math.min(Math.max(1, Math.floor(current)), total);
+  if (total <= 7) return Array.from({ length: total }, (_, index) => index + 1);
+
+  const pages = new Set<number>([1, total, active]);
+  const from = Math.max(2, active - 1);
+  const to = Math.min(total - 1, active + 1);
+  for (let page = from; page <= to; page += 1) pages.add(page);
+
+  // Jika yang terlewat hanya satu halaman, tampilkan langsung (tanpa ellipsis).
+  if (from - 2 === 1) pages.add(2);
+  if (total - 1 - to === 1) pages.add(total - 1);
+
+  const sorted = Array.from(pages).sort((a, b) => a - b);
+  const items: TPaginationItem[] = [];
+  sorted.forEach((page, index) => {
+    if (index > 0 && page - sorted[index - 1] > 1) items.push("ellipsis");
+    items.push(page);
+  });
+  return items;
 }

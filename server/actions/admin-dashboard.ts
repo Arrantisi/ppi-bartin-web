@@ -20,16 +20,51 @@ import {
   type TUpdateUserRoleInput,
 } from "@/schemas/admin-dashboard";
 import type { TServerPrompt } from "@/types";
+import type {
+  TAdminEventDetail,
+  TAdminNewsDetail,
+  TAdminUserDetail,
+} from "@/types/admin-dashboard";
 
+import {
+  getAdminEventDetail,
+  getAdminNewsDetail,
+  getAdminUserDetail,
+} from "../data/admin-dashboard";
 import { getCurrentUserRole, studentAccount } from "./account";
 import { deleteUploadedFile } from "./delete-upload";
 
 const ADMIN_ROLES = new Set(["ADMIN"]);
 
+class ForbiddenError extends Error {
+  constructor() {
+    super("Forbidden");
+    this.name = "ForbiddenError";
+  }
+}
+
 const authorizeAdmin = async () => {
   const role = await getCurrentUserRole();
-  if (!ADMIN_ROLES.has(role)) throw new Error("Forbidden");
+  if (!ADMIN_ROLES.has(role)) throw new ForbiddenError();
   return studentAccount();
+};
+
+const failFromError = (scope: string, error: unknown): TServerPrompt<void> => {
+  if (error instanceof ForbiddenError) return fail("Forbidden");
+  console.error(`[admin-dashboard] ${scope}:`, error);
+  return fail("Terjadi kesalahan server");
+};
+
+const isLastActiveAdmin = async (target: {
+  id: string;
+  role: string;
+  banned: boolean | null;
+}): Promise<boolean> => {
+  if (target.role !== "ADMIN" || target.banned === true) return false;
+  const activeAdmins = await prisma.user.count({
+    where: { role: "ADMIN", banned: { not: true } },
+  });
+  return activeAdmins <= 1;
 };
 
 const fieldErrorsFrom = (error: {
@@ -41,10 +76,47 @@ const fieldErrorsFrom = (error: {
   );
 };
 
-const fail = (error: string): TServerPrompt<void> => ({
+const failPrompt = <T>(error: string): TServerPrompt<T> => ({
   success: false,
   error,
 });
+
+const fail = (error: string): TServerPrompt<void> => failPrompt(error);
+
+/** Detail dibaca lewat server action agar client tidak mengimpor Prisma. */
+async function readDetail<T>(
+  scope: string,
+  load: () => Promise<T | null>,
+): Promise<TServerPrompt<T | null>> {
+  try {
+    await authorizeAdmin();
+    return { success: true, data: await load() };
+  } catch (error) {
+    if (error instanceof ForbiddenError) return failPrompt("Forbidden");
+    console.error(`[admin-dashboard] ${scope}:`, error);
+    return failPrompt("Terjadi kesalahan server");
+  }
+}
+
+export async function getAdminUserDetailAction(
+  userId: string,
+): Promise<TServerPrompt<TAdminUserDetail | null>> {
+  return readDetail("getAdminUserDetailAction", () => getAdminUserDetail(userId));
+}
+
+export async function getAdminEventDetailAction(
+  eventId: string,
+): Promise<TServerPrompt<TAdminEventDetail | null>> {
+  return readDetail("getAdminEventDetailAction", () =>
+    getAdminEventDetail(eventId),
+  );
+}
+
+export async function getAdminNewsDetailAction(
+  newsId: string,
+): Promise<TServerPrompt<TAdminNewsDetail | null>> {
+  return readDetail("getAdminNewsDetailAction", () => getAdminNewsDetail(newsId));
+}
 
 export async function updateUserRole(
   input: TUpdateUserRoleInput,
@@ -67,23 +139,19 @@ export async function updateUserRole(
 
     const target = await prisma.user.findUnique({
       where: { id: userId },
-      select: { role: true },
+      select: { id: true, role: true, banned: true },
     });
     if (!target) return fail("User tidak ditemukan");
 
-    if (target.role === "ADMIN" && role !== "ADMIN") {
-      const adminCount = await prisma.user.count({ where: { role: "ADMIN" } });
-      if (adminCount <= 1) {
-        return fail("Tidak dapat menurunkan satu-satunya ADMIN");
-      }
+    if (role !== "ADMIN" && (await isLastActiveAdmin(target))) {
+      return fail("Tidak dapat menurunkan satu-satunya ADMIN aktif");
     }
 
     await prisma.user.update({ where: { id: userId }, data: { role } });
     revalidatePath("/dashboard/users");
     return { success: true, data: undefined, message: "Role berhasil diperbarui" };
   } catch (error) {
-    console.error("[admin-dashboard] updateUserRole:", error);
-    return fail("Terjadi kesalahan server");
+    return failFromError("updateUserRole", error);
   }
 }
 
@@ -127,8 +195,7 @@ export async function setUserBan(
       message: banned ? "User berhasil diblokir" : "Blokir user dibatalkan",
     };
   } catch (error) {
-    console.error("[admin-dashboard] setUserBan:", error);
-    return fail("Terjadi kesalahan server");
+    return failFromError("setUserBan", error);
   }
 }
 
@@ -154,7 +221,9 @@ export async function deleteUser(
     const target = await prisma.user.findUnique({
       where: { id: userId },
       select: {
+        id: true,
         role: true,
+        banned: true,
         image: true,
         news: { select: { fileKey: true } },
         events: { select: { fileKey: true } },
@@ -165,11 +234,8 @@ export async function deleteUser(
     });
     if (!target) return fail("User tidak ditemukan");
 
-    if (target.role === "ADMIN") {
-      const adminCount = await prisma.user.count({ where: { role: "ADMIN" } });
-      if (adminCount <= 1) {
-        return fail("Tidak dapat menghapus satu-satunya ADMIN");
-      }
+    if (await isLastActiveAdmin(target)) {
+      return fail("Tidak dapat menghapus satu-satunya ADMIN aktif");
     }
 
     const fileKeys = new Set<string>();
@@ -180,16 +246,32 @@ export async function deleteUser(
       for (const file of ticket.files) if (file.fileKey) fileKeys.add(file.fileKey);
     }
 
-    await prisma.user.delete({ where: { id: userId } });
-    await Promise.allSettled([...fileKeys].map((key) => deleteUploadedFile(key)));
+    // CustomerService.user tidak punya onDelete: Cascade, jadi tiket buatan target
+    // harus dihapus lebih dulu di transaksi yang sama dengan user.delete().
+    await prisma.$transaction(async (tx) => {
+      await tx.customerService.updateMany({
+        where: { OR: [{ readById: userId }, { resolvedById: userId }] },
+        data: { readById: null, resolvedById: null },
+      });
+      await tx.customerService.deleteMany({ where: { userId } });
+      await tx.user.delete({ where: { id: userId } });
+    });
+
+    const cleanupResults = await Promise.allSettled(
+      [...fileKeys].map((key) => deleteUploadedFile(key)),
+    );
+    for (const result of cleanupResults) {
+      if (result.status === "rejected" || !result.value.success) {
+        console.error("[admin-dashboard] gagal membersihkan file:", result);
+      }
+    }
 
     revalidatePath("/dashboard/users");
     revalidatePath("/dashboard/events");
     revalidatePath("/dashboard/news");
     return { success: true, data: undefined, message: "User berhasil dihapus" };
   } catch (error) {
-    console.error("[admin-dashboard] deleteUser:", error);
-    return fail("Terjadi kesalahan server");
+    return failFromError("deleteUser", error);
   }
 }
 
@@ -223,8 +305,7 @@ export async function setEventEnvironment(
     revalidatePath("/acara");
     return { success: true, data: undefined, message: "Status event diperbarui" };
   } catch (error) {
-    console.error("[admin-dashboard] setEventEnvironment:", error);
-    return fail("Terjadi kesalahan server");
+    return failFromError("setEventEnvironment", error);
   }
 }
 
@@ -257,8 +338,7 @@ export async function deleteEvent(
     revalidatePath("/acara");
     return { success: true, data: undefined, message: "Event berhasil dihapus" };
   } catch (error) {
-    console.error("[admin-dashboard] deleteEvent:", error);
-    return fail("Terjadi kesalahan server");
+    return failFromError("deleteEvent", error);
   }
 }
 
@@ -292,8 +372,7 @@ export async function setNewsEnvironment(
     revalidatePath("/berita");
     return { success: true, data: undefined, message: "Status berita diperbarui" };
   } catch (error) {
-    console.error("[admin-dashboard] setNewsEnvironment:", error);
-    return fail("Terjadi kesalahan server");
+    return failFromError("setNewsEnvironment", error);
   }
 }
 
@@ -326,7 +405,6 @@ export async function deleteNews(
     revalidatePath("/berita");
     return { success: true, data: undefined, message: "Berita berhasil dihapus" };
   } catch (error) {
-    console.error("[admin-dashboard] deleteNews:", error);
-    return fail("Terjadi kesalahan server");
+    return failFromError("deleteNews", error);
   }
 }

@@ -73,7 +73,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
             </Breadcrumb>
           </div>
         </header>
-        <div className="h-screen m-3">{children}</div>
+        <div className="h-screen m-3 min-w-0">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

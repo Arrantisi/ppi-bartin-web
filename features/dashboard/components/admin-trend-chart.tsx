@@ -48,11 +48,11 @@ export function AdminTrendChart({ items }: TAdminTrendChartProps) {
                 >
                   <div className="flex h-full items-end gap-0.5">
                     <div
-                      className="w-1/2 rounded-t bg-chart-1"
+                      className="w-1/2 rounded-t bg-chart-3"
                       style={{ height: `${(item.users / max) * 100}%` }}
                     />
                     <div
-                      className="w-1/2 rounded-t bg-chart-2"
+                      className="w-1/2 rounded-t bg-chart-4"
                       style={{ height: `${(item.participants / max) * 100}%` }}
                     />
                   </div>
@@ -64,11 +64,11 @@ export function AdminTrendChart({ items }: TAdminTrendChartProps) {
             </div>
             <div className="flex items-center gap-4 text-xs text-text-secondary">
               <span className="flex items-center gap-2">
-                <span aria-hidden className="size-2 rounded-sm bg-chart-1" />
+                <span aria-hidden className="size-2 rounded-sm bg-chart-3" />
                 Anggota baru
               </span>
               <span className="flex items-center gap-2">
-                <span aria-hidden className="size-2 rounded-sm bg-chart-2" />
+                <span aria-hidden className="size-2 rounded-sm bg-chart-4" />
                 Pendaftar event
               </span>
             </div>

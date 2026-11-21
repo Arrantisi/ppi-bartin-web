@@ -157,6 +157,7 @@ features/
 ├── uploads/
 ├── dashboard/
 │   ├── admin-dashboard-page.tsx     # Server component: role gate + agregasi snapshot
+│   ├── settings-page.tsx            # Halaman pengaturan admin
 │   └── components/
 │       ├── admin-kpi-grid.tsx       # KPI cards + status sistem
 │       ├── admin-action-queue.tsx   # Antrean tiket/user/event/berita/ban
@@ -166,10 +167,14 @@ features/
 │       ├── admin-quick-actions.tsx
 │       ├── admin-empty-state.tsx
 │       ├── admin-management-shell.tsx # Header halaman manajemen
-│       ├── admin-confirm-delete.tsx   # Dialog konfirmasi destruktif
-│       ├── admin-users-table.tsx      # Role/ban/hapus user
-│       ├── admin-events-table.tsx     # Environment/export/hapus event
-│       ├── admin-news-table.tsx       # Publish/hapus berita
+│       ├── admin-confirm-delete.tsx   # Dialog konfirmasi destruktif (mode controlled dari dropdown)
+│       ├── admin-row-actions.tsx      # Satu tombol "…" untuk detail/aksi tambahan/hapus
+│       ├── admin-table-pagination.tsx # Navigasi halaman: prev/next + nomor + ellipsis
+│       ├── admin-column-toggle.tsx    # Customize Column (show/hide kolom data)
+│       ├── admin-detail-dialog.tsx    # Kartu detail generik + section/stats/field + tombol muat ulang
+│       ├── admin-users-table.tsx      # Role/ban/hapus + filter/pagination 10 baris + kolom + detail
+│       ├── admin-events-table.tsx     # Environment/export/hapus + pagination + kolom + detail
+│       ├── admin-news-table.tsx       # Publish/hapus + pagination + kolom + detail
 │       ├── admin-tickets-page.tsx     # Wrapper CS admin (basePath /dashboard)
 │       └── admin-finance-page.tsx     # Wrapper finance (tanpa HomeLayout)
 ├── notifications/
@@ -187,7 +192,7 @@ Semua custom React hooks yang dipakai lintas fitur atau dalam satu fitur tapi pe
 
 ```
 hooks/
-├── use-admin-dashboard.ts   # Mutasi panel admin (role/ban/hapus/environment)
+├── use-admin-dashboard.ts   # Mutasi + query detail admin, toast fieldErrors
 ├── use-calendar.ts
 ├── use-events.ts
 ├── use-finance.ts           # Phase 4: polling + mutate transaksi keuangan
@@ -213,7 +218,7 @@ Semua type/interface yang dipakai lintas fitur.
 ```
 types/
 ├── index.ts          # Tparticipants, TupdateEventProps, TCatagory, TServerPrompt, dll.
-├── admin-dashboard.ts # Snapshot KPI + TAdminUserRow/TAdminEventRow/TAdminNewsRow
+├── admin-dashboard.ts # Snapshot KPI, TAdminTablePage<T>, baris & detail admin
 ├── calendar.ts       # CalendarEvent, Category, ViewType, DialogState
 └── finance.ts        # TFinanceTransaction, TFinanceTotals, TFinanceSnapshot
 ```
@@ -226,7 +231,7 @@ Fungsi utility murni (tanpa side effect, tanpa React) yang dipakai lintas fitur.
 
 ```
 utils/
-├── admin-dashboard.ts      # toPercent, buildDailyTrend, format ringkas (pure)
+├── admin-dashboard.ts      # toPercent, buildDailyTrend, formatDateFull, firstSearchParam, parseAdminPage (pure)
 ├── calendar-utils.ts       # date-fns helpers untuk calendar
 ├── date-format.ts          # Format tanggal umum
 ├── finance-parser.ts       # Parser tanggal/nominal/link + total BUKU BESAR KEUANGAN
@@ -269,7 +274,7 @@ server/
 │   ├── customer-service.ts# CS ticket creation + push notification
 │   ├── customer-service-admin.ts  # Admin: getTickets, updateStatus, deleteTicket
 │   ├── finance.ts                # CRUD transaksi ke Sheets (BENDAHARA/ADMIN)
-│   ├── admin-dashboard.ts        # Mutasi ADMIN-only (role, ban, hapus, publish)
+│   ├── admin-dashboard.ts        # Mutasi + action detail ADMIN-only (role, ban, hapus, publish)
 │   ├── subscribe-notification.ts
 │   └── ...
 ├── data/              # Data access / query functions
@@ -278,7 +283,7 @@ server/
 │   ├── news.ts
 │   ├── finance.ts                # getFinanceSnapshot (React.cache)
 │   ├── finance-dummy.ts          # Data contoh read-only untuk preview UI
-│   ├── admin-dashboard.ts        # Snapshot + tabel admin (React.cache, ADMIN saja)
+│   ├── admin-dashboard.ts        # Snapshot + tabel pagination 10 + detail (React.cache, ADMIN saja)
 │   └── customer-service.ts
 └── adapters/
     └── index.ts
@@ -317,7 +322,7 @@ Zod schemas untuk form validation.
 
 ```
 schemas/
-├── admin-dashboard.ts # Schema mutasi admin: role, ban, hapus, environment
+├── admin-dashboard.ts # Schema mutasi admin + adminUserIdSchema (ID Better Auth non-UUID) + adminDetailIdSchema
 ├── index.ts           # createEventSchema, dll.
 ├── finance.ts         # Schema CRUD transaksi keuangan
 └── utils.ts           # Schema utilities

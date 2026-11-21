@@ -27,12 +27,13 @@ import { formatCompactNumber, formatDurationHours } from "@/utils/admin-dashboar
 
 type TTone = "neutral" | "success" | "warning" | "danger" | "info";
 
-const toneStyles: Record<TTone, string> = {
-  neutral: "text-text-secondary",
-  success: "text-success",
-  warning: "text-warning",
-  danger: "text-danger",
-  info: "text-info",
+/** Chip ikon diberi tint tipis supaya kartu tidak monoton, tetap pakai token. */
+const chipStyles: Record<TTone, string> = {
+  neutral: "bg-surface-hover text-text-secondary",
+  success: "bg-success/10 text-success",
+  warning: "bg-warning/10 text-warning",
+  danger: "bg-danger/10 text-danger",
+  info: "bg-info/10 text-info",
 };
 
 type TKpi = {
@@ -146,8 +147,8 @@ export function AdminKpiGrid({ kpis }: TAdminKpiGridProps) {
             </div>
             <span
               className={cn(
-                "flex size-9 shrink-0 items-center justify-center rounded-xl bg-surface-hover",
-                toneStyles[kpi.tone],
+                "flex size-9 shrink-0 items-center justify-center rounded-xl",
+                chipStyles[kpi.tone],
               )}
             >
               {kpi.icon}
@@ -174,16 +175,19 @@ export function AdminSystemStrip({ kpis }: TAdminSystemStripProps) {
       label: "Subscriber push",
       value: formatCompactNumber(kpis.pushSubscribers),
       icon: <IconBell className="size-4" aria-hidden />,
+      tone: "info" as TTone,
     },
     {
       label: "Sesi aktif",
       value: formatCompactNumber(kpis.activeSessions),
       icon: <IconUsers className="size-4" aria-hidden />,
+      tone: "success" as TTone,
     },
     {
       label: "Akun diblokir",
       value: formatCompactNumber(kpis.bannedUsers),
       icon: <IconBan className="size-4" aria-hidden />,
+      tone: "danger" as TTone,
     },
   ];
 
@@ -198,7 +202,14 @@ export function AdminSystemStrip({ kpis }: TAdminSystemStripProps) {
           className="flex items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3"
         >
           <span className="flex items-center gap-2 text-sm text-text-secondary">
-            <span className="text-text-disabled">{item.icon}</span>
+            <span
+              className={cn(
+                "flex size-7 items-center justify-center rounded-lg",
+                chipStyles[item.tone],
+              )}
+            >
+              {item.icon}
+            </span>
             {item.label}
           </span>
           <span className="font-mono text-sm font-semibold text-text-primary">

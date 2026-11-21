@@ -1,13 +1,19 @@
 import { cache } from "react";
 
 import { prisma } from "@/lib/db";
+import type { Prisma, Role } from "@/lib/generated/prisma/client";
+import { adminDetailIdSchema } from "@/schemas/admin-dashboard";
 import { getCurrentUserRole } from "@/server/actions/account";
 import type {
   TAdminCapacityItem,
   TAdminDashboardAccessScope,
   TAdminDashboardSnapshot,
+  TAdminEventDetail,
   TAdminEventRow,
+  TAdminNewsDetail,
   TAdminNewsRow,
+  TAdminTablePage,
+  TAdminUserDetail,
   TAdminUserRow,
   TDashboardDistributionItem,
 } from "@/types/admin-dashboard";
@@ -18,8 +24,9 @@ import {
 } from "@/utils/admin-dashboard";
 
 const ADMIN_ROLES = new Set(["ADMIN"]);
-
+const ADMIN_TABLE_PAGE_SIZE = 10;
 const ALL_ENVIRONMENTS = ["local", "preview", "production"];
+const ALL_ROLES = ["USER", "ADMIN", "PENGURUS", "BENDAHARA"];
 
 const getAccessScope = async (): Promise<{
   scope: TAdminDashboardAccessScope;
@@ -33,6 +40,17 @@ const authorizeAdminRead = async (): Promise<void> => {
   const role = await getCurrentUserRole();
   if (!ADMIN_ROLES.has(role)) throw new Error("Forbidden");
 };
+
+const normalizePage = (page: number): number =>
+  Number.isFinite(page) && page >= 1 ? Math.floor(page) : 1;
+
+const normalizeFilter = (value: string, options: string[]): string =>
+  options.includes(value) ? value : "ALL";
+
+const contains = (value: string) => ({
+  contains: value,
+  mode: "insensitive" as const,
+});
 
 const emptyProfileWhere = {
   OR: [
@@ -183,7 +201,7 @@ export const getAdminDashboardSnapshot = cache(
       prisma.user.findMany({
         where: {
           banned: true,
-          banExpires: { not: null, lte: until30Days },
+          banExpires: { not: null, gte: now, lte: until30Days },
         },
         select: {
           id: true,
@@ -297,6 +315,7 @@ export const getAdminDashboardSnapshot = cache(
           event.percent < 50
         );
       })
+      .sort((a, b) => a.percent - b.percent)
       .slice(0, 5);
 
     const resolutionHours = resolvedRows
@@ -317,7 +336,7 @@ export const getAdminDashboardSnapshot = cache(
         verifiedUsers,
         unverifiedEmails: totalUsers - verifiedUsers,
         newUsers30d,
-        incompleteProfilePercent: toPercent(totalUsers - incompleteCount, totalUsers),
+        incompleteProfilePercent: toPercent(incompleteCount, totalUsers),
         activeEvents,
         upcomingEvents,
         totalParticipants,
@@ -404,9 +423,35 @@ export const getAdminDashboardSnapshot = cache(
 
 /** Baris tabel user untuk panel admin. Field sensitif sengaja tidak di-select. */
 export const getAdminUsers = cache(
-  async (): Promise<TAdminUserRow[]> => {
+  async (
+    requestedPage = 1,
+    rawQuery = "",
+    rawRole = "ALL",
+  ): Promise<TAdminTablePage<TAdminUserRow>> => {
     await authorizeAdminRead();
+
+    const needle = rawQuery.trim();
+    const roleFilter = normalizeFilter(rawRole, ALL_ROLES);
+    const where: Prisma.UserWhereInput = {
+      ...(roleFilter !== "ALL" ? { role: roleFilter as Role } : {}),
+      ...(needle
+        ? {
+            OR: [
+              { name: contains(needle) },
+              { email: contains(needle) },
+              { username: contains(needle) },
+              { nomorSiswa: contains(needle) },
+            ],
+          }
+        : {}),
+    };
+
+    const total = await prisma.user.count({ where });
+    const totalPages = Math.max(1, Math.ceil(total / ADMIN_TABLE_PAGE_SIZE));
+    const page = Math.min(normalizePage(requestedPage), totalPages);
+
     const users = await prisma.user.findMany({
+      where,
       select: {
         id: true,
         name: true,
@@ -421,21 +466,53 @@ export const getAdminUsers = cache(
         fakultas: true,
       },
       orderBy: { createdAt: "desc" },
-      take: 200,
+      skip: (page - 1) * ADMIN_TABLE_PAGE_SIZE,
+      take: ADMIN_TABLE_PAGE_SIZE,
     });
 
-    return users.map((user) => ({
-      ...user,
-      createdAt: user.createdAt.toISOString(),
-      banExpires: user.banExpires?.toISOString() ?? null,
-    }));
+    return {
+      rows: users.map((user) => ({
+        ...user,
+        createdAt: user.createdAt.toISOString(),
+        banExpires: user.banExpires?.toISOString() ?? null,
+      })),
+      total,
+      page,
+      pageSize: ADMIN_TABLE_PAGE_SIZE,
+      totalPages,
+    };
   },
 );
 
 export const getAdminEvents = cache(
-  async (): Promise<TAdminEventRow[]> => {
+  async (
+    requestedPage = 1,
+    rawQuery = "",
+    rawEnvironment = "ALL",
+  ): Promise<TAdminTablePage<TAdminEventRow>> => {
     await authorizeAdminRead();
+
+    const needle = rawQuery.trim();
+    const environmentFilter = normalizeFilter(rawEnvironment, ALL_ENVIRONMENTS);
+    const where: Prisma.EventsWhereInput = {
+      ...(environmentFilter !== "ALL" ? { environment: environmentFilter } : {}),
+      ...(needle
+        ? {
+            OR: [
+              { judul: contains(needle) },
+              { slug: contains(needle) },
+              { creator: { name: contains(needle) } },
+            ],
+          }
+        : {}),
+    };
+
+    const total = await prisma.events.count({ where });
+    const totalPages = Math.max(1, Math.ceil(total / ADMIN_TABLE_PAGE_SIZE));
+    const page = Math.min(normalizePage(requestedPage), totalPages);
+
     const events = await prisma.events.findMany({
+      where,
       select: {
         id: true,
         judul: true,
@@ -448,27 +525,60 @@ export const getAdminEvents = cache(
         _count: { select: { participants: true } },
       },
       orderBy: { date: "desc" },
-      take: 200,
+      skip: (page - 1) * ADMIN_TABLE_PAGE_SIZE,
+      take: ADMIN_TABLE_PAGE_SIZE,
     });
 
-    return events.map((event) => ({
-      id: event.id,
-      title: event.judul,
-      slug: event.slug,
-      date: event.date.toISOString(),
-      batasDaftar: event.batasDaftar.toISOString(),
-      environment: event.environment,
-      capacity: event.maxCapacity,
-      joined: event._count.participants,
-      creatorName: event.creator.name,
-    }));
+    return {
+      rows: events.map((event) => ({
+        id: event.id,
+        title: event.judul,
+        slug: event.slug,
+        date: event.date.toISOString(),
+        batasDaftar: event.batasDaftar.toISOString(),
+        environment: event.environment,
+        capacity: event.maxCapacity,
+        joined: event._count.participants,
+        creatorName: event.creator.name,
+      })),
+      total,
+      page,
+      pageSize: ADMIN_TABLE_PAGE_SIZE,
+      totalPages,
+    };
   },
 );
 
 export const getAdminNews = cache(
-  async (): Promise<TAdminNewsRow[]> => {
+  async (
+    requestedPage = 1,
+    rawQuery = "",
+    rawEnvironment = "ALL",
+  ): Promise<TAdminTablePage<TAdminNewsRow>> => {
     await authorizeAdminRead();
+
+    const needle = rawQuery.trim();
+    const environmentFilter = normalizeFilter(rawEnvironment, ALL_ENVIRONMENTS);
+    const where: Prisma.NewsWhereInput = {
+      ...(environmentFilter !== "ALL" ? { environment: environmentFilter } : {}),
+      ...(needle
+        ? {
+            OR: [
+              { judul: contains(needle) },
+              { slug: contains(needle) },
+              { catagory: contains(needle) },
+              { creator: { name: contains(needle) } },
+            ],
+          }
+        : {}),
+    };
+
+    const total = await prisma.news.count({ where });
+    const totalPages = Math.max(1, Math.ceil(total / ADMIN_TABLE_PAGE_SIZE));
+    const page = Math.min(normalizePage(requestedPage), totalPages);
+
     const news = await prisma.news.findMany({
+      where,
       select: {
         id: true,
         judul: true,
@@ -479,17 +589,176 @@ export const getAdminNews = cache(
         creator: { select: { name: true } },
       },
       orderBy: { updatedAt: "desc" },
-      take: 200,
+      skip: (page - 1) * ADMIN_TABLE_PAGE_SIZE,
+      take: ADMIN_TABLE_PAGE_SIZE,
     });
 
-    return news.map((item) => ({
-      id: item.id,
-      judul: item.judul,
-      slug: item.slug,
-      category: item.catagory,
-      environment: item.environment,
-      updatedAt: item.updatedAt.toISOString(),
-      creatorName: item.creator.name,
-    }));
+    return {
+      rows: news.map((item) => ({
+        id: item.id,
+        judul: item.judul,
+        slug: item.slug,
+        category: item.catagory,
+        environment: item.environment,
+        updatedAt: item.updatedAt.toISOString(),
+        creatorName: item.creator.name,
+      })),
+      total,
+      page,
+      pageSize: ADMIN_TABLE_PAGE_SIZE,
+      totalPages,
+    };
   },
 );
+
+/**
+ * Detail lengkap user, diambil hanya saat kartu detail dibuka.
+ * Tidak memakai `cache()`: detail dipanggil dari Server Action, dan hasil null
+ * dari percobaan sebelumnya tidak boleh terbawa ke percobaan berikutnya.
+ */
+export async function getAdminUserDetail(
+  userId: string,
+): Promise<TAdminUserDetail | null> {
+  await authorizeAdminRead();
+  const parsed = adminDetailIdSchema.safeParse(userId);
+  if (!parsed.success) {
+    console.warn("[admin-dashboard] getAdminUserDetail: id tidak valid");
+    return null;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: parsed.data },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      nomorSiswa: true,
+      noTelephone: true,
+      angkatan: true,
+      jurusan: true,
+      fakultas: true,
+      jenisKelamin: true,
+      alamat: true,
+      bio: true,
+      statusPelajar: true,
+      role: true,
+      emailVerified: true,
+      banned: true,
+      banReason: true,
+      banExpires: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+  if (!user) {
+    console.warn("[admin-dashboard] getAdminUserDetail: user tidak ditemukan");
+    return null;
+  }
+
+  return {
+    ...user,
+    banExpires: user.banExpires?.toISOString() ?? null,
+    createdAt: user.createdAt.toISOString(),
+    updatedAt: user.updatedAt.toISOString(),
+  };
+}
+
+export async function getAdminEventDetail(
+  eventId: string,
+): Promise<TAdminEventDetail | null> {
+  await authorizeAdminRead();
+  const parsed = adminDetailIdSchema.safeParse(eventId);
+  if (!parsed.success) {
+    console.warn("[admin-dashboard] getAdminEventDetail: id tidak valid");
+    return null;
+  }
+
+  const event = await prisma.events.findUnique({
+    where: { id: parsed.data },
+    select: {
+      id: true,
+      judul: true,
+      slug: true,
+      catagory: true,
+      lokasi: true,
+      deskripsi: true,
+      persyaratan: true,
+      date: true,
+      batasDaftar: true,
+      environment: true,
+      maxCapacity: true,
+      creator: { select: { name: true } },
+      _count: { select: { participants: true, cancelLogs: true } },
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+  if (!event) {
+    console.warn("[admin-dashboard] getAdminEventDetail: event tidak ditemukan");
+    return null;
+  }
+
+  return {
+    id: event.id,
+    title: event.judul,
+    slug: event.slug,
+    catagory: event.catagory,
+    lokasi: event.lokasi,
+    deskripsi: event.deskripsi,
+    persyaratan: event.persyaratan,
+    date: event.date.toISOString(),
+    batasDaftar: event.batasDaftar.toISOString(),
+    environment: event.environment,
+    capacity: event.maxCapacity,
+    joined: event._count.participants,
+    cancelled: event._count.cancelLogs,
+    creatorName: event.creator.name,
+    createdAt: event.createdAt.toISOString(),
+    updatedAt: event.updatedAt.toISOString(),
+  };
+}
+
+export async function getAdminNewsDetail(
+  newsId: string,
+): Promise<TAdminNewsDetail | null> {
+  await authorizeAdminRead();
+  const parsed = adminDetailIdSchema.safeParse(newsId);
+  if (!parsed.success) {
+    console.warn("[admin-dashboard] getAdminNewsDetail: id tidak valid");
+    return null;
+  }
+
+  const news = await prisma.news.findUnique({
+    where: { id: parsed.data },
+    select: {
+      id: true,
+      judul: true,
+      slug: true,
+      catagory: true,
+      ringkasan: true,
+      desckripsi: true,
+      environment: true,
+      creator: { select: { name: true } },
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+  if (!news) {
+    console.warn("[admin-dashboard] getAdminNewsDetail: berita tidak ditemukan");
+    return null;
+  }
+
+  return {
+    id: news.id,
+    judul: news.judul,
+    slug: news.slug,
+    catagory: news.catagory,
+    ringkasan: news.ringkasan,
+    desckripsi: news.desckripsi,
+    environment: news.environment,
+    creatorName: news.creator.name,
+    createdAt: news.createdAt.toISOString(),
+    updatedAt: news.updatedAt.toISOString(),
+  };
+}

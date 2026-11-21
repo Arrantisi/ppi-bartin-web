@@ -13,13 +13,22 @@ export const adminEnvironmentSchema = z.enum([
   "production",
 ]);
 
+/**
+ * ID user dibuat Better Auth (32 karakter alfanumerik), bukan UUID dari Prisma.
+ * Event dan News memakai @default(uuid()), jadi tetap tervalidasi dengan z.uuid().
+ */
+export const adminUserIdSchema = z
+  .string()
+  .min(1, "ID user tidak valid")
+  .max(128, "ID user tidak valid");
+
 export const updateUserRoleSchema = z.object({
-  userId: z.uuid("ID user tidak valid"),
+  userId: adminUserIdSchema,
   role: adminRoleSchema,
 });
 
 export const setUserBanSchema = z.object({
-  userId: z.uuid("ID user tidak valid"),
+  userId: adminUserIdSchema,
   banned: z.boolean(),
   banReason: z.string().trim().max(300).nullable().optional(),
   banExpires: z
@@ -34,8 +43,18 @@ export const setUserBanSchema = z.object({
 });
 
 export const deleteUserSchema = z.object({
-  userId: z.uuid("ID user tidak valid"),
+  userId: adminUserIdSchema,
 });
+
+/**
+ * ID untuk query detail. Sengaja terpisah dari schema mutasi agar perubahan
+ * aturan hapus/blokir tidak pernah membuat kartu detail gagal dibuka.
+ */
+export const adminDetailIdSchema = z
+  .string()
+  .trim()
+  .min(1, "ID tidak valid")
+  .max(128, "ID tidak valid");
 
 export const setEventEnvironmentSchema = z.object({
   eventId: z.uuid("ID event tidak valid"),

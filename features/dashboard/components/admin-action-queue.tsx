@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import type { TAdminActionQueues } from "@/types/admin-dashboard";
 import { formatDateShort } from "@/utils/admin-dashboard";
 
@@ -28,6 +29,7 @@ type TQueueSection = {
   rows: TQueueRow[];
   emptyHref?: string;
   emptyCta?: string;
+  badgeClass: string;
 };
 
 type TAdminActionQueueProps = {
@@ -48,6 +50,7 @@ export function AdminActionQueue({ queue }: TAdminActionQueueProps) {
       })),
       emptyHref: "/dashboard/tickets",
       emptyCta: "Lihat semua pesan",
+      badgeClass: "border-danger/30 text-danger",
     },
     {
       key: "unverified",
@@ -58,6 +61,7 @@ export function AdminActionQueue({ queue }: TAdminActionQueueProps) {
         label: user.name ?? user.email,
         meta: `${user.email} · ${formatDateShort(user.createdAt)}`,
       })),
+      badgeClass: "border-warning/30 text-warning",
     },
     {
       key: "profiles",
@@ -68,6 +72,7 @@ export function AdminActionQueue({ queue }: TAdminActionQueueProps) {
         label: user.name ?? "Tanpa nama",
         meta: `Kurang: ${user.missingFields.join(", ")}`,
       })),
+      badgeClass: "border-warning/30 text-warning",
     },
     {
       key: "events",
@@ -81,6 +86,7 @@ export function AdminActionQueue({ queue }: TAdminActionQueueProps) {
       })),
       emptyHref: "/dashboard/events",
       emptyCta: "Lihat semua acara",
+      badgeClass: "border-info/30 text-info",
     },
     {
       key: "news",
@@ -94,6 +100,7 @@ export function AdminActionQueue({ queue }: TAdminActionQueueProps) {
       })),
       emptyHref: "/dashboard/news",
       emptyCta: "Lihat semua berita",
+      badgeClass: "border-info/30 text-info",
     },
     {
       key: "bans",
@@ -104,6 +111,7 @@ export function AdminActionQueue({ queue }: TAdminActionQueueProps) {
         label: user.name ?? "Tanpa nama",
         meta: `Berlaku sampai ${formatDateShort(user.banExpires)}`,
       })),
+      badgeClass: "border-danger/30 text-danger",
     },
   ];
 
@@ -129,7 +137,12 @@ export function AdminActionQueue({ queue }: TAdminActionQueueProps) {
                     {section.description}
                   </CardDescription>
                 </div>
-                <span className="shrink-0 rounded-full border border-border px-2 py-0.5 font-mono text-xs text-text-secondary">
+                <span
+                  className={cn(
+                    "shrink-0 rounded-full border px-2 py-0.5 font-mono text-xs",
+                    section.badgeClass,
+                  )}
+                >
                   {section.rows.length}
                 </span>
               </div>

@@ -13,9 +13,10 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import Image from "next/image";
+
 import {
   IconCalendarEvent,
-  IconInnerShadowTop,
   IconLayoutDashboard,
   IconNews,
   IconSettings,
@@ -36,9 +37,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <Link href="/dashboard">
-                <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold">PPI Bartin</span>
+              <Link href="/dashboard" className="flex items-center gap-2">
+                <Image
+                  src="/logo-ppi-webp.webp"
+                  alt="Logo PPI Bartin"
+                  width={200}
+                  height={200}
+                  className="size-7"
+                />
+                <span className="text-base font-semibold">PPI Bartın</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
