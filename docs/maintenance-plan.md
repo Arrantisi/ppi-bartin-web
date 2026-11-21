@@ -134,7 +134,7 @@ Error: Failed to collect page data for /acara/[eventSlug]
 **(b) Arsitektur: `next build` hard-dependency ke database.** Halaman `/acara/[eventSlug]` di-*generate* saat build, jadi `next build` harus query DB. Kalau DB tidak terjangkau selama 1 menit, **deploy gagal total** — bahkan untuk perubahan yang sama sekali tidak menyentuh database.
 
 **Fix:**
-1. **Pisahkan env lokal vs produksi** — `.env.local` untuk dev dengan DB dev, dan dokumentasikan bahwa build production butuh akses DB
+1. **Pisahkan env lokal vs produksi** — `.env` untuk dev dengan DB dev, dan dokumentasikan bahwa build production butuh akses DB
 2. Tandai route yang datanya berubah cepat agar tidak di-*prerender* saat build
 3. Andalkan ISR (`export const revalidate = N`) untuk halaman yang cocok, dan `force-dynamic` untuk yang benar-benar dynamic
 4. Alternatif lebih bersih: pindahkan fetching ke Client Component + React Query, sehingga `next build` tidak perlu DB sama sekali
