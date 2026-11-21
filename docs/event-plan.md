@@ -6,6 +6,10 @@ status: done
 
 ## Changelog
 
+### 2026-11-21 — Status deadline pada kartu
+
+- `components/cards/card-event.tsx`: teks status deadline sudah berwarna (danger/warning/neutral); kini ditambah titik warna yang sama supaya status lebih cepat dikenali. Teks status tetap tampil, jadi warna bukan satu-satunya indikator.
+
 ### 2026-06-09 — Responsive layout fix (mobile/PWA)
 
 - **`components/field/event-form.tsx`**:
