@@ -50,6 +50,13 @@ const CardEvent = ({
       : daysLeft <= 7
         ? "text-warning"
         : "text-text-disabled";
+  const deadlineDot = isClosed
+    ? "bg-text-disabled"
+    : daysLeft <= 1
+      ? "bg-danger"
+      : daysLeft <= 7
+        ? "bg-warning"
+        : "bg-text-disabled";
 
   const card = (
     <Card className="gap-0 overflow-hidden rounded-[10px] border border-border bg-surface py-0 shadow-none flex flex-col h-full">
@@ -90,7 +97,16 @@ const CardEvent = ({
             {showActions ? props.lokasi : "Masuk untuk detail lokasi"}
           </div>
 
-          <div className={cn("card-meta line-clamp-1", deadlineTone)}>
+          <div
+            className={cn(
+              "card-meta inline-flex items-center gap-1.5 line-clamp-1",
+              deadlineTone,
+            )}
+          >
+            <span
+              aria-hidden
+              className={cn("size-1.5 shrink-0 rounded-full", deadlineDot)}
+            />
             {deadlineCopy}
           </div>
         </CardContent>

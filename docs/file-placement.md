@@ -19,6 +19,8 @@ prisma/           # Skema database
 schemas/          # Zod validation schemas
 public/           # Aset statis (manifest, service worker, ikon, logo)
 docs/             # Dokumentasi fitur dan panduan
+design-guideline.md  # Token warna, tipografi, spacing, aturan komponen UI
+__tests__/        # Unit test Vitest (finance-parser.ts, finance-dummy.ts)
 .env.example      # Template environment variables (source of truth: lib/env/index.ts)
 icons/            # Custom icon components (index.tsx + SVGs)
 props/            # JSON mock data untuk form fields
@@ -39,10 +41,23 @@ app/
 │   ├── berita/
 │   └── login/
 ├── (protected)/
+│   ├── dashboard/               # Panel ADMIN (role gate di layout)
+│   │   ├── layout.tsx
+│   │   ├── page.tsx             # Overview/KPI
+│   │   ├── loading.tsx
+│   │   ├── users/               # Kelola user: role, ban, hapus
+│   │   ├── events/              # Kelola acara: environment, export, hapus
+│   │   ├── acara/create/        # Buat acara tanpa keluar ke /home
+│   │   ├── news/                # Kelola berita: publish, hapus
+│   │   ├── berita/create/       # Buat berita tanpa keluar ke /home
+│   │   ├── tickets/             # Pesan masuk + [id]
+│   │   ├── finance/             # Ringkasan keuangan
+│   │   └── settings/
 │   └── home/
 │       ├── customer-service/        # Bantuan (CS form sederhana, tanpa upload)
 │       ├── acara/
 │       ├── berita/
+│       ├── finance/                 # Dashboard keuangan (client query + CRUD)
 │       └── profile/
 │           └── customer-service/    # CS form (dengan upload) + admin list/detail
 │               └── list/
@@ -50,6 +65,7 @@ app/
 ├── api/
 │   ├── auth/
 │   ├── export/participants/
+│   ├── finance/                     # GET snapshot keuangan (JSON)
 │   ├── subscribe/
 │   └── uploadthing/
 ├── globals.css
@@ -72,7 +88,7 @@ components/
 ├── field/            # Form fields: event-form, calendar-event-form, news-form, create-bantuan (Bantuan/CS form sederhana tanpa upload)
 ├── providers/        # React context: realtime, tanstack-query, theme
 ├── sections/         # Landing page: navbar, hero, features, footer
-├── skeletons/        # Loading skeletons
+├── skeletons/        # Loading skeletons (finance, admin-* per halaman /dashboard)
 ├── sidebar/          # App sidebar: nav-user, nav-main, app-sidebar
 ├── dashboard/        # Dashboard: data-table, columns
 ├── dates/            # Date picker
@@ -121,6 +137,18 @@ features/
 │   ├── admin-list-page.tsx
 │   ├── admin-detail-page.tsx
 │   └── index.ts
+├── finance/                  # Dashboard keuangan
+│   ├── components/
+│   │   ├── finance-dashboard.tsx       # Orkestrasi query, filter, dialog
+│   │   ├── finance-summary-cards.tsx   # 6 kartu KPI IDR + TRY
+│   │   ├── finance-toolbar.tsx         # Search + filter + tombol Tambah
+│   │   ├── finance-data-table.tsx      # Tabel + pagination
+│   │   ├── finance-columns.tsx         # Definisi kolom TanStack Table
+│   │   ├── finance-transaction-form.tsx# Form tambah/edit
+│   │   ├── finance-action-dialog.tsx   # Dialog tambah/edit
+│   │   ├── finance-delete-dialog.tsx   # Konfirmasi hapus nilai baris
+│   │   └── finance-empty-state.tsx     # Empty state + CTA
+│   └── finance-page.tsx               # Wrapper HomeLayoutComponent
 ├── home/
 │   ├── events/
 │   ├── news/
@@ -128,6 +156,27 @@ features/
 │   └── home-page.tsx
 ├── uploads/
 ├── dashboard/
+│   ├── admin-dashboard-page.tsx     # Server component: role gate + agregasi snapshot
+│   ├── settings-page.tsx            # Halaman pengaturan admin
+│   └── components/
+│       ├── admin-kpi-grid.tsx       # KPI cards + status sistem
+│       ├── admin-action-queue.tsx   # Antrean tiket/user/event/berita/ban
+│       ├── admin-trend-chart.tsx    # Grafik batang 14 hari (CSS)
+│       ├── admin-distribution-chart.tsx
+│       ├── admin-capacity-list.tsx
+│       ├── admin-quick-actions.tsx
+│       ├── admin-empty-state.tsx
+│       ├── admin-management-shell.tsx # Header halaman manajemen
+│       ├── admin-confirm-delete.tsx   # Dialog konfirmasi destruktif (mode controlled dari dropdown)
+│       ├── admin-row-actions.tsx      # Satu tombol "…" untuk detail/aksi tambahan/hapus
+│       ├── admin-table-pagination.tsx # Navigasi halaman: prev/next + nomor + ellipsis
+│       ├── admin-column-toggle.tsx    # Customize Column (show/hide kolom data)
+│       ├── admin-detail-dialog.tsx    # Kartu detail generik + section/stats/field + tombol muat ulang
+│       ├── admin-users-table.tsx      # Role/ban/hapus + filter/pagination 10 baris + kolom + detail
+│       ├── admin-events-table.tsx     # Environment/export/hapus + pagination + kolom + detail
+│       ├── admin-news-table.tsx       # Publish/hapus + pagination + kolom + detail
+│       ├── admin-tickets-page.tsx     # Wrapper CS admin (basePath /dashboard)
+│       └── admin-finance-page.tsx     # Wrapper finance (tanpa HomeLayout)
 ├── notifications/
 └── realtime/
 ```
@@ -143,8 +192,10 @@ Semua custom React hooks yang dipakai lintas fitur atau dalam satu fitur tapi pe
 
 ```
 hooks/
+├── use-admin-dashboard.ts   # Mutasi + query detail admin, toast fieldErrors
 ├── use-calendar.ts
 ├── use-events.ts
+├── use-finance.ts           # Phase 4: polling + mutate transaksi keuangan
 ├── use-news.ts
 ├── use-users.ts
 ├── use-customer-service.ts
@@ -167,7 +218,9 @@ Semua type/interface yang dipakai lintas fitur.
 ```
 types/
 ├── index.ts          # Tparticipants, TupdateEventProps, TCatagory, TServerPrompt, dll.
-└── calendar.ts       # CalendarEvent, Category, ViewType, DialogState
+├── admin-dashboard.ts # Snapshot KPI, TAdminTablePage<T>, baris & detail admin
+├── calendar.ts       # CalendarEvent, Category, ViewType, DialogState
+└── finance.ts        # TFinanceTransaction, TFinanceTotals, TFinanceSnapshot
 ```
 
 ---
@@ -178,13 +231,16 @@ Fungsi utility murni (tanpa side effect, tanpa React) yang dipakai lintas fitur.
 
 ```
 utils/
+├── admin-dashboard.ts      # toPercent, buildDailyTrend, formatDateFull, firstSearchParam, parseAdminPage (pure)
 ├── calendar-utils.ts       # date-fns helpers untuk calendar
 ├── date-format.ts          # Format tanggal umum
+├── finance-parser.ts       # Parser tanggal/nominal/link + total BUKU BESAR KEUANGAN
 ├── slug.ts                 # Slug generation
 ├── image-url.ts            # URL image helpers
 ├── copy-link.ts            # Clipboard helpers
 ├── get-twowords.ts         # Text helpers
-└── meta-description.ts     # HTML rich-text -> meta/OG description
+├── meta-description.ts     # HTML rich-text -> meta/OG description
+└── news-category.ts        # getNewsCategoryTone + kelas warna token untuk label kategori berita
 ```
 
 ### `meta-description.ts`
@@ -217,12 +273,17 @@ server/
 │   ├── calendar-entry.ts  # CRUD personal calendar entries
 │   ├── customer-service.ts# CS ticket creation + push notification
 │   ├── customer-service-admin.ts  # Admin: getTickets, updateStatus, deleteTicket
+│   ├── finance.ts                # CRUD transaksi ke Sheets (BENDAHARA/ADMIN)
+│   ├── admin-dashboard.ts        # Mutasi + action detail ADMIN-only (role, ban, hapus, publish)
 │   ├── subscribe-notification.ts
 │   └── ...
 ├── data/              # Data access / query functions
 │   ├── users.ts
 │   ├── events.ts
 │   ├── news.ts
+│   ├── finance.ts                # getFinanceSnapshot (React.cache)
+│   ├── finance-dummy.ts          # Data contoh read-only untuk preview UI
+│   ├── admin-dashboard.ts        # Snapshot + tabel pagination 10 + detail (React.cache, ADMIN saja)
 │   └── customer-service.ts
 └── adapters/
     └── index.ts
@@ -241,6 +302,7 @@ lib/
 ├── uploadthing/       # UploadThing config
 ├── push/              # Web push helpers
 ├── generated/         # Auto-generated Prisma client
+├── google-sheets.ts   # Phase 3: auth + batchGet/append/update/clear Sheets
 ├── utils.ts           # General lib helpers
 └── og.ts              # Open Graph helpers
 ```
@@ -260,7 +322,9 @@ Zod schemas untuk form validation.
 
 ```
 schemas/
+├── admin-dashboard.ts # Schema mutasi admin + adminUserIdSchema (ID Better Auth non-UUID) + adminDetailIdSchema
 ├── index.ts           # createEventSchema, dll.
+├── finance.ts         # Schema CRUD transaksi keuangan
 └── utils.ts           # Schema utilities
 ```
 
@@ -281,6 +345,8 @@ schemas/
 | Data query | `server/data/` | `server/data/users.ts` |
 | Zod schema | `schemas/` | `schemas/index.ts` |
 | Prisma schema | `prisma/` | `prisma/schema.prisma` |
+| Prisma migration | `prisma/migrations/` | `prisma/migrations/20261119000000_add_bendahara_role/migration.sql` |
+| Unit test | `__tests__/` | `__tests__/finance-parser.test.ts` |
 | Config/client | `lib/` | `lib/db/index.ts` |
 | Resilient DB helper | `lib/db/` | `lib/db/safe.ts` |
 | Docs | `docs/` | `docs/file-placement.md` |

@@ -36,7 +36,7 @@ const navItems: NavItem[] = [
   { title: "Profil", icon: IconUser, url: "/home/profile" },
 ];
 
-const BottomNav = ({ show }: { show: boolean }) => {
+const BottomNav = ({ show, items }: { show: boolean; items: NavItem[] }) => {
   const params = usePathname();
 
   return (
@@ -50,7 +50,7 @@ const BottomNav = ({ show }: { show: boolean }) => {
       )}
     >
       <div className="flex items-stretch justify-center px-1 gap-1 w-full h-full">
-        {navItems.map((e) => {
+        {items.map((e) => {
           const isActive = params === e.url || (e.url !== "/home" && params.startsWith(e.url + "/"));
 
           return (
@@ -94,7 +94,10 @@ const BottomNav = ({ show }: { show: boolean }) => {
   );
 };
 
-const DesktopSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
+const DesktopSidebar = ({
+  items,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { items: NavItem[] }) => {
   const params = usePathname();
 
   return (
@@ -119,7 +122,7 @@ const DesktopSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
       <SidebarContent className="mx-3">
         <SidebarGroupLabel>Menu</SidebarGroupLabel>
         <SidebarMenu>
-          {navItems.map((e) => {
+          {items.map((e) => {
             const isActive = params === e.url || (e.url !== "/home" && params.startsWith(e.url + "/"));
 
             return (
@@ -167,10 +170,10 @@ const NavMainEvent = ({ show = true }: { show?: boolean }) => {
   const isMobile = useIsMobile();
 
   if (isMobile) {
-    return <BottomNav show={show} />;
+    return <BottomNav show={show} items={navItems} />;
   }
 
-  return <DesktopSidebar variant="sidebar" />;
+  return <DesktopSidebar variant="sidebar" items={navItems} />;
 };
 
 export default NavMainEvent;

@@ -6,6 +6,16 @@ status: done
 
 ## Changelog
 
+### 2026-11-21 — Batas 10 acara per tampilan
+
+- `features/events/acara/content.tsx`: daftar `/home/acara` dibatasi `slice(0, 10)` sebelum dirender.
+- `app/(public)/acara/page.tsx`: daftar publik juga dibatasi 10 acara terbaru.
+- Beranda (`features/home/events/render-event.tsx`) tetap menampilkan 3 pratinjau.
+
+### 2026-11-21 — Status deadline pada kartu
+
+- `components/cards/card-event.tsx`: teks status deadline sudah berwarna (danger/warning/neutral); kini ditambah titik warna yang sama supaya status lebih cepat dikenali. Teks status tetap tampil, jadi warna bukan satu-satunya indikator.
+
 ### 2026-06-09 — Responsive layout fix (mobile/PWA)
 
 - **`components/field/event-form.tsx`**:

@@ -12,11 +12,13 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { authClient } from "@/lib/auth/client";
 import { SignOutSessionButton } from "./buttons";
-import { IconSettings } from "@tabler/icons-react";
+import { IconLayoutDashboard, IconSettings } from "@tabler/icons-react";
 import Link from "next/link";
+import { useCurrentUserRole } from "@/hooks/use-current-role";
 
 const ButtonUser = () => {
   const { data: session } = authClient.useSession();
+  const { data: role } = useCurrentUserRole();
 
   return (
     <DropdownMenu>
@@ -51,12 +53,29 @@ const ButtonUser = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href={"/dashboard/settings"}>
-            <DropdownMenuItem>
-              <IconSettings />
-              Setting
-            </DropdownMenuItem>
-          </Link>
+          {role === "ADMIN" && (
+            <Link href="/dashboard">
+              <DropdownMenuItem>
+                <IconLayoutDashboard />
+                Panel Admin
+              </DropdownMenuItem>
+            </Link>
+          )}
+          {role === "ADMIN" ? (
+            <Link href="/dashboard/settings">
+              <DropdownMenuItem>
+                <IconSettings />
+                Pengaturan Admin
+              </DropdownMenuItem>
+            </Link>
+          ) : (
+            <Link href="/home/profile">
+              <DropdownMenuItem>
+                <IconSettings />
+                Profil
+              </DropdownMenuItem>
+            </Link>
+          )}
         </DropdownMenuGroup>
         <SignOutSessionButton />
       </DropdownMenuContent>

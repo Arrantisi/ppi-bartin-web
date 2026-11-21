@@ -37,13 +37,21 @@ function Avatar({
 
 function AvatarImage({
   className,
+  src,
   ...props
 }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
+  // src kosong membuat browser meng-download ulang halaman. Tanpa gambar,
+  // elemen tidak dirender sama sekali agar AvatarFallback yang tampil.
+  if (!src || (typeof src === "string" && src.trim().length === 0)) {
+    return null;
+  }
+
   return (
     <div className={cn("relative overflow-hidden rounded-full", className)}>
       <AvatarPrimitive.Image
         data-slot="avatar-image"
         className={cn("aspect-square h-full w-full")}
+        src={src}
         {...props}
       />
     </div>

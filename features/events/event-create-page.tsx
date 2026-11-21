@@ -1,7 +1,11 @@
 import { CreateEventComponent } from "./components";
 
-const EventCreatePage = () => {
-  return <CreateEventComponent />;
+const EventCreatePage = ({
+  backHref,
+}: {
+  backHref?: string;
+}) => {
+  return <CreateEventComponent backHref={backHref} />;
 };
 
 export default EventCreatePage;

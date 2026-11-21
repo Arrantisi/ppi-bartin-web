@@ -20,6 +20,7 @@ export function NavMain({
     url: string;
     icon?: React.ComponentType<{ className?: string }>;
     isActive?: boolean;
+    matchPrefixes?: string[];
     items?: {
       title: string;
       url: string;
@@ -27,16 +28,15 @@ export function NavMain({
   }[];
 }) {
   const pathname = usePathname();
-  const lastSegment = pathname.split("/").pop() || "";
 
-  const formatTitle = (text: string) => {
-    return text
-      .split("-")
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(" ");
+  const isItemActive = (item: (typeof items)[number]) => {
+    if (item.isActive !== undefined) return item.isActive;
+    if (item.url === "/dashboard") return pathname === "/dashboard";
+
+    return [item.url, ...(item.matchPrefixes ?? [])].some(
+      (url) => pathname === url || pathname.startsWith(`${url}/`),
+    );
   };
-
-  const isPathname = formatTitle(lastSegment);
 
   return (
     <SidebarGroup>
@@ -47,7 +47,7 @@ export function NavMain({
             <Link href={item.url}>
               <SidebarMenuButton
                 tooltip={item.title}
-                isActive={item.title === isPathname}
+                isActive={isItemActive(item)}
               >
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>

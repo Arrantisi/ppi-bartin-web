@@ -19,6 +19,12 @@ import parse from "html-react-parser";
 import DOMPurify from "isomorphic-dompurify";
 import { getTwoWords } from "@/utils/get-twowords";
 import linkifyHtml from "linkify-html";
+import { cn } from "@/lib/utils";
+import {
+  getNewsCategoryTone,
+  newsCategoryDotStyles,
+  newsCategoryToneStyles,
+} from "@/utils/news-category";
 
 export const NewsDetailComponent = ({
   slug,
@@ -49,6 +55,8 @@ export const NewsDetailComponent = ({
       DOMPurify.removeHook("afterSanitizeAttributes");
     };
   }, []);
+
+  const categoryTone = getNewsCategoryTone(data?.catagory);
 
   const clean = useMemo(() => {
     const htmlWithLinks = linkifyHtml(data?.desckripsi || "", {
@@ -131,7 +139,19 @@ export const NewsDetailComponent = ({
               <div className="flex items-center gap-2 footnote text-text-secondary">
                 <span>{formattedDate(data.createdAt)}</span>
                 <div className="size-1 rounded-full bg-muted-foreground" />
-                <span className="mono text-xs text-text-disabled uppercase tracking-wider">
+                <span
+                  className={cn(
+                    "mono inline-flex items-center gap-1.5 text-xs uppercase tracking-wider",
+                    newsCategoryToneStyles[categoryTone],
+                  )}
+                >
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "size-1.5 rounded-full",
+                      newsCategoryDotStyles[categoryTone],
+                    )}
+                  />
                   {data.catagory}
                 </span>
               </div>

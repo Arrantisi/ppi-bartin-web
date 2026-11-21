@@ -32,7 +32,7 @@ export default async function PublicEventPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {events.map((event) => (
+        {events.slice(0, 10).map((event) => (
           <CardEvent key={event.id} {...event} hrefBase="/acara" showActions={false} />
         ))}
       </div>

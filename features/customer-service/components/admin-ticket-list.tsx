@@ -78,7 +78,11 @@ const UserAvatar = ({
   );
 };
 
-export const AdminTicketList = () => {
+export const AdminTicketList = ({
+  basePath = "/home/profile/customer-service/list",
+}: {
+  basePath?: string;
+}) => {
   const { data, isLoading } = useCustomerServiceTickets();
   const router = useRouter();
 
@@ -125,7 +129,7 @@ export const AdminTicketList = () => {
             key={ticket.id}
             type="button"
             onClick={() =>
-              router.push(`/home/profile/customer-service/list/${ticket.id}`)
+              router.push(`${basePath}/${ticket.id}`)
             }
             className="w-full text-left p-4 border border-border rounded-xl hover:bg-surface-hover transition-colors"
           >

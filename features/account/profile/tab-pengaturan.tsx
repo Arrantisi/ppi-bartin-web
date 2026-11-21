@@ -21,6 +21,8 @@ import {
   IconLogout,
   IconDownload,
   IconInbox,
+  IconLayoutDashboard,
+  IconChartBar,
 } from "@tabler/icons-react";
 import { usePWAInstallTourContext } from "@/hooks/pwa-install-tour-context";
 import { cn } from "@/lib/utils";
@@ -128,7 +130,8 @@ export const TabPengaturan = ({ user }: Props) => {
   const { replayTour } = usePWAInstallTourContext();
   const { data: role } = useCurrentUserRole();
 
-  const isAdminOrPengurus = (role ?? "") === "ADMIN" || role === "PENGURUS";
+  const isAdmin = role === "ADMIN";
+  const isAdminOrPengurus = isAdmin || role === "PENGURUS";
 
   const handleLogout = async () => {
     await authClient.signOut({
@@ -196,6 +199,20 @@ export const TabPengaturan = ({ user }: Props) => {
       <div>
         <GroupHeader title="Lainnya" />
         <div className="rounded-xl border border-border bg-card overflow-hidden">
+          <ClickRow
+            icon={<IconChartBar className="size-4.5" />}
+            label="Keuangan"
+            subtitle="Laporan pemasukan dan pengeluaran PPI Bartın"
+            href="/home/finance"
+          />
+          {isAdmin && (
+            <ClickRow
+              icon={<IconLayoutDashboard className="size-4.5" />}
+              label="Panel Admin"
+              subtitle="Kelola pengguna, acara, berita, dan pesan masuk"
+              href="/dashboard"
+            />
+          )}
           <ClickRow
             icon={<IconMessage className="size-4.5" />}
             label="Customer Service"

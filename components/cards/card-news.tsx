@@ -6,11 +6,19 @@ import Link from "next/link";
 import { formattedDateNews } from "@/utils/date-format";
 import { imageUrl } from "@/utils/image-url";
 import { TgetNews } from "@/server/data/news";
+import { cn } from "@/lib/utils";
+import {
+  getNewsCategoryTone,
+  newsCategoryDotStyles,
+  newsCategoryToneStyles,
+} from "@/utils/news-category";
 
 export const FrameNews = memo(function FrameNews({
   hrefBase = "/berita",
   ...news
 }: TgetNews & { hrefBase?: string }) {
+  const categoryTone = getNewsCategoryTone(news.catagory);
+
   return (
     <Link
       href={`${hrefBase}/${news.slug}`}
@@ -33,7 +41,19 @@ export const FrameNews = memo(function FrameNews({
       </div>
 
       <div className="min-w-0 flex-1 space-y-1.5">
-        <div className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.05em] text-text-disabled">
+        <div
+          className={cn(
+            "flex items-center gap-1.5 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.05em]",
+            newsCategoryToneStyles[categoryTone],
+          )}
+        >
+          <span
+            aria-hidden
+            className={cn(
+              "size-1.5 shrink-0 rounded-full",
+              newsCategoryDotStyles[categoryTone],
+            )}
+          />
           {news.catagory}
         </div>
         <div className="line-clamp-2 text-[0.875rem] font-semibold leading-[1.35] tracking-[-0.01em] text-text-primary">

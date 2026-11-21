@@ -1,10 +1,14 @@
 import { CreateNewsContent } from "./content";
 import { ButtonHeaderField } from "@/components/buttons";
 
-export const CreateNewsComponent = () => {
+export const CreateNewsComponent = ({
+  backHref = "/home/berita",
+}: {
+  backHref?: string;
+} = {}) => {
   return (
     <div>
-      <ButtonHeaderField href="/home/berita" label="Buat Berita" />
+      <ButtonHeaderField href={backHref} label="Buat Berita" />
       <CreateNewsContent />
     </div>
   );
