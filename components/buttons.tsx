@@ -1,0 +1,298 @@
+"use client";
+
+import React, { useState } from "react";
+import { Button } from "./ui/button";
+import { Spinner } from "./ui/spinner";
+import {
+  IconArrowLeft,
+  IconArrowLeftDashed,
+  IconHandClick,
+  IconLogout,
+  IconMoon,
+  IconPlus,
+  IconSun,
+} from "@tabler/icons-react";
+import { authClient } from "@/lib/auth/client";
+import { DropdownMenuItem } from "./ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import HoldButton from "./kokonutui/hold-button";
+import { cancelParticipant, joinEvent } from "@/server/actions/acara";
+import { toast } from "sonner";
+
+export const HoldButtonCancel = ({
+  eventId,
+  participantId,
+}: {
+  eventId: string;
+  participantId: string;
+}) => {
+  const [onLoading, setOnLoading] = useState(false);
+
+  const handleCancelEvent = async () => {
+    setOnLoading(true);
+    const respons = await cancelParticipant(eventId, participantId);
+    if (!respons.success) {
+      toast.error("Gagal", { description: respons.error });
+    } else if (respons.success) {
+      toast.warning("Partisipasi anda telah dibatalkan!", {
+        description: respons.message,
+      });
+    }
+    setOnLoading(false);
+  };
+
+  return (
+    <HoldButton
+      holdDuration={1500}
+      variant={"outline"}
+      className="inline-flex w-fit rounded-full border border-destructive/30 px-4 py-2.5 text-center text-sm capitalize text-destructive select-none"
+      onComplete={() => handleCancelEvent()}
+      disabled={onLoading}
+    >
+      {onLoading ? (
+        <h1 className="flex gap-2 items-center">
+          <Spinner className="size-4" /> Memproses
+        </h1>
+      ) : (
+        <h1 className="flex gap-2 items-center">
+          <IconHandClick className="size-4" /> <span>Tekan Untuk Batal</span>
+        </h1>
+      )}
+    </HoldButton>
+  );
+};
+
+export const HoldButtonJoin = ({
+  children,
+  eventId,
+}: {
+  eventId: string;
+  children: React.ReactNode;
+}) => {
+  const [onLoading, setOnLoading] = useState(false);
+
+  const handleJoinEvent = async () => {
+    setOnLoading(true);
+    try {
+      const fetch = await joinEvent(eventId);
+      if (!fetch.success) {
+        toast.error(`Maaf ${fetch.error}`);
+      } else {
+        toast.success("Selamat, kamu sudah join event");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setOnLoading(false);
+    }
+  };
+  return (
+    <HoldButton
+      holdDuration={1500}
+      variant={"default"}
+      className="inline-flex w-fit rounded-full px-4 py-2.5 text-center text-sm capitalize select-none"
+      onComplete={() => handleJoinEvent()}
+      disabled={onLoading}
+    >
+      {onLoading ? (
+        <span className="flex gap-2 items-center">
+          <Spinner className="size-4" /> Memproses
+        </span>
+      ) : (
+        <span className="flex gap-2 items-center">
+          <IconHandClick className="size-4" /> <span>{children}</span>
+        </span>
+      )}
+    </HoldButton>
+  );
+};
+
+export const ButtonHeaderField = ({
+  href,
+  label,
+}: {
+  href: string;
+  label: string;
+}) => {
+  const router = useRouter();
+
+  return (
+    <div className="relative flex items-center justify-center my-5">
+      <Button
+        onClick={() => router.push(href)}
+        variant={"outline"}
+        className="absolute left-2 rounded-full border border-border/70 bg-background/80 shadow-sm"
+      >
+        <IconArrowLeft />
+      </Button>
+      <h1 className="title-tiga">{label}</h1>
+    </div>
+  );
+};
+
+export const ButtonCreate = ({
+  catagory,
+}: {
+  catagory: "berita" | "acara";
+}) => {
+  return (
+    <Link
+      href={`/home/${catagory}/create`}
+      className={"rounded-full border border-border bg-primary p-1.5 text-primary-foreground"}
+    >
+      <IconPlus />
+    </Link>
+  );
+};
+
+export const ButtonSettings = ({
+  children,
+  ...props
+}: React.ComponentProps<typeof Button>) => {
+  return (
+    <Button
+      {...props}
+      className="min-w-20"
+    >
+      {children}
+    </Button>
+  );
+};
+
+export const ButtonField = ({
+  formId,
+  loading,
+}: {
+  formId: string;
+  loading: boolean;
+}) => {
+  return (
+    <Button
+      type="submit"
+      variant={"default"}
+      form={formId}
+      disabled={loading}
+      className="w-full text-sm capitalize"
+    >
+      {loading && <Spinner />} cocokkan data
+    </Button>
+  );
+};
+
+export const GoogleProvider = () => {
+  const [loading, setLoading] = useState(false);
+
+  const signIn = async () => {
+    setLoading(true);
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/home",
+    });
+    setLoading(false);
+  };
+
+  return (
+    <Button
+      type="button"
+      variant={"outline"}
+      onClick={() => signIn()}
+      disabled={loading}
+      className="w-full py-5"
+    >
+      {loading ? (
+        <Spinner />
+      ) : (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="0.98em"
+          height="1em"
+          viewBox="0 0 256 262"
+        >
+          <path
+            fill="currentColor"
+            d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622l38.755 30.023l2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"
+          ></path>
+          <path
+            fill="currentColor"
+            d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055c-34.523 0-63.824-22.773-74.269-54.25l-1.531.13l-40.298 31.187l-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"
+          ></path>
+          <path
+            fill="currentColor"
+            d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82c0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602z"
+          ></path>
+          <path
+            fill="currentColor"
+            d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"
+          ></path>
+        </svg>
+      )}
+      <span className="text-sm">Sign in with Google</span>
+    </Button>
+  );
+};
+
+export const SignOutSessionButton = () => {
+  const router = useRouter();
+
+  const signout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => router.refresh(),
+      },
+    });
+  };
+
+  return (
+    <DropdownMenuItem onClick={signout}>
+      <IconLogout />
+      Keluar
+    </DropdownMenuItem>
+  );
+};
+
+export const ThemeToggle = () => {
+  const { setTheme, theme } = useTheme();
+
+  const handleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={() => handleTheme()}
+      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+    >
+      <IconSun
+        className={cn(
+          "size-4 transition-all duration-300",
+          theme === "dark"
+            ? "scale-0 -rotate-90 opacity-0"
+            : "scale-100 rotate-0 opacity-100",
+        )}
+      />
+      <IconMoon
+        className={cn(
+          "absolute size-4 transition-all duration-300",
+          theme === "dark"
+            ? "scale-100 rotate-0 opacity-100"
+            : "scale-0 rotate-90 opacity-0",
+        )}
+      />
+      <span className="sr-only">Toggle theme</span>
+    </Button>
+  );
+};
+
+export const ButtonPreviusePage = () => {
+  const router = useRouter();
+
+  return (
+    <Button onClick={() => router.back()}>
+      <IconArrowLeftDashed /> Kembali
+    </Button>
+  );
+};

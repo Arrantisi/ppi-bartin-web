@@ -1,0 +1,36 @@
+{
+  "title": "Buat Acara Baru",
+  "subtitle": "Wujudkan momen spesialmu. Mulai dari detail sederhana untuk hasil yang luar biasa! 🚀",
+  "textarea": [
+    {
+      "label": "Judul Acara",
+      "placeholder": "Contoh: Workshop Desain Digital 2026",
+      "description": "Gunakan nama yang menarik dan mudah diingat."
+    },
+    {
+      "label": "Waktu Pelaksanaan",
+      "placeholder": "Pilih tanggal dan waktu...",
+      "description": "Tentukan jadwal yang tepat bagi peserta."
+    },
+    {
+      "label": "Lokasi",
+      "placeholder": "Nama tempat atau link meeting\n(dimulai dengan https:// atau www.)",
+      "description": "Pastikan lokasi mudah ditemukan atau diakses."
+    },
+    {
+      "label": "Deskripsi",
+      "placeholder": "Jelaskan keseruan acara kamu...",
+      "description": "Caption tentang acara kamu"
+    },
+    {
+      "label": "Slug URL",
+      "placeholder": "contoh-acara-seru",
+      "description": "Alamat unik untuk link acara Anda (hanya huruf, angka, dan strip)."
+    },
+    {
+      "label": "Kapasitas Maksimal",
+      "placeholder": "Contoh: 100",
+      "description": "Batasi jumlah peserta yang dapat mendaftar."
+    }
+  ]
+}

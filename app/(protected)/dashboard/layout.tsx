@@ -1,0 +1,82 @@
+import { redirect } from "next/navigation";
+
+import { DashboardTitle } from "@/components/dashboard/dashboard-title";
+import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import { getCurrentUserRole } from "@/server/actions/account";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "PPI Bartin | Dashboard",
+  description: "Dashboard PPI Bartin",
+  openGraph: {
+    title: "PPI Bartin | Dashboard",
+    description: "Dashboard PPI Bartin",
+    type: "website",
+    images: [{
+      url: "/og-image.jpg",
+      width: 1200,
+      height: 630,
+      alt: "PPI Bartin",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PPI Bartin | Dashboard",
+    description: "Dashboard PPI Bartin",
+    images: ["/og-image.jpg"],
+  },
+};
+
+const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
+  const role = await getCurrentUserRole();
+  if (role !== "ADMIN") redirect("/home");
+
+  return (
+    <SidebarProvider>
+      <AppSidebar variant="floating" />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator
+              orientation="vertical"
+              className="mr-2 data-[orientation=vertical]:h-4"
+            />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">
+                    Building Your Application
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>
+                    <DashboardTitle />
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+        </header>
+        <div className="h-screen m-3">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+};
+
+export default DashboardLayout;

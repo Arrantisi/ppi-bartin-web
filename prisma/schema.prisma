@@ -1,0 +1,237 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                        String                     @id @default(uuid())
+  image                     String?
+  name                      String?
+  username                  String?
+  email                     String                     @unique
+  noTelephone               String?
+  nomorSiswa                String?                    @unique
+  bio                       String?
+  tanggalLahir              DateTime?
+  jenisKelamin              String?
+  alamat                    String?
+  emailVerified             Boolean                    @default(false)
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
+  angkatan                  String?
+  jurusan                   String?
+  fakultas                  String?
+  statusPelajar             String?
+  userNameChanged           DateTime?
+  banExpires                DateTime?
+  banReason                 String?
+  banned                    Boolean?                   @default(false)
+  role                      Role                       @default(USER)
+  accounts                  Account[]
+  cancelLogs                CancelLog[]
+  customerServices          CustomerService[]
+  readTickets               CustomerService[]           @relation("ReadTicket")
+  resolvedTickets           CustomerService[]           @relation("ResolvedTicket")
+  events                    Events[]                   @relation("createdEvent")
+  news                      News[]                     @relation("createdNews")
+  notificationSubscriptions NotificationSubscription[]
+   participants              Participants[]
+  calendarEntries           CalendarEntry[]
+  sessions                  Session[]
+
+  @@map("user")
+}
+
+model Session {
+  id             String   @id
+  expiresAt      DateTime
+  token          String   @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  ipAddress      String?
+  userAgent      String?
+  userId         String
+  impersonatedBy String?
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model dataSiswa {
+  nama_siswa String?
+  id_siswa   String  @id
+
+  @@map("dataSiswa")
+}
+
+model News {
+  id          String   @id @default(uuid())
+  judul       String
+  catagory    String
+  desckripsi  String
+  fileKey     String
+  ringkasan   String
+  slug        String   @unique
+  environment String   @default("production")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  creator     User     @relation("createdNews", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("news")
+}
+
+model Events {
+  id           String         @id @default(uuid())
+  judul        String
+  lokasi       String
+  date         DateTime
+  deskripsi    String
+  maxCapacity  Int
+  catagory     String?
+  batasDaftar  DateTime
+  persyaratan  String?
+  fileKey      String
+  slug         String         @unique
+  environment  String         @default("production")
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  userId       String
+  cancelLogs   CancelLog[]
+  creator      User           @relation("createdEvent", fields: [userId], references: [id], onDelete: Cascade)
+  participants Participants[]
+
+  @@map("events")
+}
+
+model Participants {
+  id        String   @id @default(uuid())
+  userId    String
+  eventId   String
+  createdAt DateTime @default(now())
+  event     Events   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@map("participants")
+}
+
+model NotificationSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique
+  auth      String
+  p256dh    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notificationSubscription")
+}
+
+model CustomerService {
+  id           String               @id @default(cuid())
+  catagory     String
+  subject      String
+  message      String
+  status       String
+  level        String
+  createdAt    DateTime             @default(now())
+  resolvedAt   DateTime?
+  userId       String
+  user       User                 @relation(fields: [userId], references: [id])
+  readById     String?
+  readBy       User?                @relation("ReadTicket", fields: [readById], references: [id])
+  resolvedById String?
+  resolvedBy   User?                @relation("ResolvedTicket", fields: [resolvedById], references: [id])
+  files        CustomerServiceFile[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("customerService")
+}
+
+model CustomerServiceFile {
+  id        String         @id @default(cuid())
+  fileKey   String
+  fileUrl   String
+  name      String?
+  ticketId  String
+  ticket    CustomerService @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  createdAt DateTime       @default(now())
+
+  @@index([ticketId])
+  @@map("customerServiceFile")
+}
+
+model CancelLog {
+  id        String   @id @default(uuid())
+  userId    String
+  eventId   String
+  createdAt DateTime @default(now())
+  event     Events   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, eventId])
+  @@map("cancelLog")
+}
+
+model CalendarEntry {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  date        DateTime
+  time        String?
+  location    String?
+  category    String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("calendarEntry")
+}
+
+enum Role {
+  USER
+  ADMIN
+  PENGURUS
+  BENDAHARA
+}
