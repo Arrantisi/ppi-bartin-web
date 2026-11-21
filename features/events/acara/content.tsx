@@ -36,7 +36,7 @@ const CardAcaras = () => {
         <ButtonCreate catagory="acara" />
       </div>
       <div className="mt-3 gap-6 w-full relative grid grid-cols-1 md:grid-cols-2 justify-center">
-        {data.map((data) => (
+        {data.slice(0, 10).map((data) => (
           <CardEvent {...data} key={data.id} />
         ))}
       </div>

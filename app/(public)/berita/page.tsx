@@ -32,7 +32,7 @@ export default async function PublicNewsPage() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
-        {news.map((item) => (
+        {news.slice(0, 10).map((item) => (
           <FrameNews key={item.slug} {...item} hrefBase="/berita" />
         ))}
       </div>

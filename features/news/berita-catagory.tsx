@@ -40,7 +40,7 @@ const BeritaCatagory = () => {
       const filtered = category.ctg === "all"
         ? data
         : data.filter((news) => news.catagory === category.ctg);
-      map.set(category.ctg, filtered);
+      map.set(category.ctg, filtered.slice(0, 10));
     }
     return map;
   }, [data]);

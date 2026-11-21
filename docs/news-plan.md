@@ -6,6 +6,12 @@ News/Berita feature untuk PPI Bartin web. Users bisa membuat, melihat, memperbar
 
 ## Changelog
 
+### 2026-11-21 — Batas 10 berita per tampilan
+
+- `features/news/berita-catagory.tsx`: hasil filter tiap tab (termasuk "all") dibatasi `slice(0, 10)` sebelum dirender.
+- `app/(public)/berita/page.tsx`: daftar publik juga dibatasi 10 berita terbaru.
+- Beranda (`features/home/news/render-news.tsx`) tetap menampilkan 6 pratinjau.
+
 ### 2026-11-21 — Pewarnaan label kategori (token only)
 
 - `utils/news-category.ts`: `getNewsCategoryTone()` memetakan kategori ke nada `urgent`/`accent`/`info`/`success`/`neutral`, lengkap dengan kelas teks dan titik berbasis CSS token.
