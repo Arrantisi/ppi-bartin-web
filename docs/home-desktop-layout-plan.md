@@ -13,6 +13,10 @@ Keputusan scope:
 
 ## Changelog
 
+### 2026-11-22 — Header transparan
+
+- `components/shared/navigation/nav-main-event.tsx`: header topbar jadi `bg-transparent` tanpa `backdrop-blur`; efek blur tetap hanya di kapsul 4 menu (`bg-surface/90 backdrop-blur-lg`).
+
 ### 2026-11-22 — Kapsul nav melayang
 
 - `components/shared/navigation/nav-main-event.tsx`: border-b header dihilangkan; background jadi `bg-bg/60 backdrop-blur-md`.
@@ -61,7 +65,7 @@ Tidak ada server action baru. Semua data masih berasal dari query yang sudah ada
 
 ## Design Tokens
 
-- Header `bg-bg/60 backdrop-blur-md` tanpa border; kapsul menu `bg-surface/90 backdrop-blur-lg`, `border-border`, `shadow-lg shadow-black/5`.
+- Header `bg-transparent` tanpa blur; kapsul menu `bg-surface/90 backdrop-blur-lg`, `border-border`, `shadow-lg shadow-black/5`.
 - `bg-surface-hover`, `border-border`, `text-text-primary` — active pill & hover.
 - `bg-accent-subtle`, `text-accent` — aksen hero/quick action, tanpa hardcode warna.
 - `text-text-secondary`, `text-text-disabled` — teks pendukung.

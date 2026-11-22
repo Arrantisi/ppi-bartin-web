@@ -1,25 +1,35 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { IconArrowLeft, IconDots } from "@tabler/icons-react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { formattedDate } from "@/utils/date-format";
-import { imageUrl } from "@/utils/image-url";
-import { useNewsBySlug } from "@/hooks/use-news";
-import type { TgetNewsBySlug } from "@/server/data/news";
-import { LoaderOneDemo } from "@/components/loader";
-import { Drawer } from "@/components/ui/drawer";
-import { authClient } from "@/lib/auth/client";
-import { useState, useMemo, useEffect } from "react";
-import { AlertDEelete } from "@/components/shared/confirm-delete-dialog";
-import { DrawerOpsi } from "@/components/shared/content-actions-drawer";
+import Link from "next/link";
 import parse from "html-react-parser";
 import DOMPurify from "isomorphic-dompurify";
-import { getTwoWords } from "@/utils/get-twowords";
 import linkifyHtml from "linkify-html";
+import {
+  IconArrowLeft,
+  IconArrowUpRight,
+  IconChevronRight,
+  IconClock,
+  IconDots,
+  IconNewsOff,
+} from "@tabler/icons-react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Drawer } from "@/components/ui/drawer";
+import { LoaderOneDemo } from "@/components/loader";
+import { SharePopover } from "@/components/shared/share-popover";
+import { AlertDEelete } from "@/components/shared/confirm-delete-dialog";
+import { DrawerOpsi } from "@/components/shared/content-actions-drawer";
+import { RelatedNews } from "./related-news";
+import { useNewsBySlug } from "@/hooks/use-news";
+import type { TgetNewsBySlug } from "@/server/data/news";
+import { authClient } from "@/lib/auth/client";
 import { cn } from "@/lib/utils";
+import { formattedDate } from "@/utils/date-format";
+import { imageUrl } from "@/utils/image-url";
+import { getTwoWords } from "@/utils/get-twowords";
 import {
   getNewsCategoryTone,
   newsCategoryDotStyles,
@@ -37,10 +47,10 @@ export const NewsDetailComponent = ({
 }) => {
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
-  const router = useRouter();
 
   const { data: session } = authClient.useSession();
   const isPublicVisitor = readOnly || !session;
+  const hrefBase = isPublicVisitor ? "/berita" : "/home/berita";
 
   const { data, isLoading } = useNewsBySlug({ slug, initialData });
 
@@ -76,124 +86,174 @@ export const NewsDetailComponent = ({
   }, [data?.desckripsi]);
 
   if (isLoading) return <LoaderOneDemo />;
-  if (!data)
-    return <div className="p-10 text-center">data tidak di temukan</div>;
+
+  if (!data) {
+    return (
+      <div className="mx-auto flex min-h-[60svh] max-w-lg flex-col items-center justify-center gap-4 px-6 text-center">
+        <div className="flex size-16 items-center justify-center rounded-full border border-border bg-surface text-text-secondary">
+          <IconNewsOff className="size-8" aria-hidden />
+        </div>
+        <h1 className="title-tiga text-text-primary">Berita tidak ditemukan</h1>
+        <p className="body text-text-secondary">
+          Berita dengan tautan ini mungkin sudah dihapus atau tidak tersedia.
+        </p>
+        <Link href={hrefBase} className={buttonVariants({ variant: "outline" })}>
+          <IconArrowLeft aria-hidden />
+          Kembali ke berita
+        </Link>
+      </div>
+    );
+  }
+
+  const wordCount = data.desckripsi
+    .replace(/<[^>]*>/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+  const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
 
   const handleOpenDelete = () => {
     setIsOpenDrawer(false);
     setTimeout(() => setIsOpenAlert(true), 300);
   };
+
   return (
     <>
-      <div className="detail-page max-w-2xl mx-auto bg-background min-h-screen pb-10 pt-3">
-        {/* Top Navigation */}
-        <div className="p-2 top-0 left-0 right-0 px-4 flex items-center justify-between">
-          <Button
-            variant="outline"
-            size="icon-xl"
-            className="rounded-md"
-            onClick={() => router.back()}
+      <article className="mx-auto w-full max-w-3xl px-5 pb-16 pt-8 md:px-6">
+        {/* Breadcrumb ringan, menggantikan bar navigasi dobel */}
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-2 text-[0.8125rem] text-text-secondary"
+        >
+          <Link
+            href={hrefBase}
+            className="inline-flex items-center gap-1.5 rounded-sm transition-colors hover:text-text-primary focus-visible:outline-2 focus-visible:outline-ring"
           >
-            <IconArrowLeft size={20} />
-          </Button>
-
-          <h1 className="h-11 px-[calc(--spacing(4)-1px)] text-lg sm:h-10 sm:text-base [&_svg:not([class*='size-'])]:size-5 sm:[&_svg:not([class*='size-'])]:size-4.5 flex justify-center items-center rounded-4xl border border-border bg-background text-text-primary shadow-none">
+            <IconArrowLeft className="size-4" aria-hidden />
             Berita
-          </h1>
+          </Link>
+          <IconChevronRight
+            className="size-3.5 shrink-0 text-text-disabled"
+            aria-hidden
+          />
+          <span className="truncate text-text-disabled capitalize">
+            {data.catagory}
+          </span>
+        </nav>
 
-          <div className="flex gap-2">
-            {!isPublicVisitor && (
-              <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
-                <Button
-                  variant={"outline"}
-                  size={"icon-xl"}
-                  className="rounded-full"
-                  onClick={() => setIsOpenDrawer(true)}
-                >
-                  <IconDots />
-                </Button>
-
-                <DrawerOpsi
-                  userId={session?.user.id || ""}
-                  creatorId={data.creator.id}
-                  slug={data.slug}
-                  title="berita"
-                  onDelete={handleOpenDelete}
-                />
-              </Drawer>
-            )}
+        <header className="mt-8 space-y-5">
+          <div className="flex flex-wrap items-center gap-3">
+            <span
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.08em]",
+                newsCategoryToneStyles[categoryTone],
+              )}
+            >
+              <span
+                aria-hidden
+                className={cn(
+                  "size-1.5 shrink-0 rounded-full",
+                  newsCategoryDotStyles[categoryTone],
+                )}
+              />
+              {data.catagory}
+            </span>
+            <span className="inline-flex items-center gap-1.5 font-mono text-[0.75rem] text-text-disabled">
+              <IconClock className="size-3.5" aria-hidden />
+              {readingMinutes} menit baca
+            </span>
           </div>
-        </div>
 
-        <div className="px-5">
-          {/* Author & Meta */}
-          <div className="flex items-center gap-3 mt-6">
-            <Avatar className="size-10">
-              <AvatarImage src={data.creator.image || ""} />
-              <AvatarFallback>DP</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <p className="body text-text-primary font-semibold capitalize">
-                {getTwoWords(data.creator.name!)}
-              </p>
-              <div className="flex items-center gap-2 footnote text-text-secondary">
-                <span>{formattedDate(data.createdAt)}</span>
-                <div className="size-1 rounded-full bg-muted-foreground" />
-                <span
-                  className={cn(
-                    "mono inline-flex items-center gap-1.5 text-xs uppercase tracking-wider",
-                    newsCategoryToneStyles[categoryTone],
-                  )}
-                >
-                  <span
-                    aria-hidden
-                    className={cn(
-                      "size-1.5 rounded-full",
-                      newsCategoryDotStyles[categoryTone],
-                    )}
-                  />
-                  {data.catagory}
-                </span>
+          <h1 className="title-satu text-text-primary">{data.judul}</h1>
+
+          <div className="flex flex-wrap items-center justify-between gap-4 border-y border-border py-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <Avatar className="size-10 shrink-0">
+                <AvatarImage src={data.creator.image || ""} />
+                <AvatarFallback>
+                  {getTwoWords(data.creator.name || "PP").slice(0, 2)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0">
+                <p className="body truncate font-semibold capitalize text-text-primary">
+                  {getTwoWords(data.creator.name!)}
+                </p>
+                <p className="footnote text-text-secondary">
+                  {formattedDate(data.createdAt)}
+                </p>
               </div>
             </div>
+
+            <div className="flex items-center gap-2">
+              <SharePopover title={data.judul} />
+              {!isPublicVisitor && (
+                <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsOpenDrawer(true)}
+                  >
+                    <IconDots aria-hidden />
+                    Opsi
+                  </Button>
+                  <DrawerOpsi
+                    userId={session?.user.id || ""}
+                    creatorId={data.creator.id}
+                    slug={data.slug}
+                    title="berita"
+                    onDelete={handleOpenDelete}
+                  />
+                </Drawer>
+              )}
+            </div>
           </div>
+        </header>
 
-          {/* Title */}
-          <h1 className="title-satu mt-4 text-text-primary">{data.judul}</h1>
-
-          {/* Hero Image */}
-          <div className="w-full mt-5 overflow-hidden rounded-lg border border-border">
+        <figure className="mt-8 overflow-hidden rounded-3xl border border-border bg-surface">
+          <div className="relative aspect-[16/9] w-full">
             <Image
               src={imageUrl(data.fileKey)}
-              alt="Berita"
-              width={0}
-              height={0}
-              sizes="100vw"
-              className="w-full h-auto object-cover"
+              alt={data.judul}
+              fill
               priority
+              sizes="(max-width: 768px) 100vw, 768px"
+              className="object-cover"
             />
           </div>
+        </figure>
 
-          {/* Article */}
-          <article className="mt-8 mx-auto">
-            <div className="detail-page relative py-3 border-y border-border max-w-full body wrap-anywhere my-4 prose prose-sm dark:prose-invert prose-neutral prose-headings:font-semibold prose-p:text-[--text-secondary] prose-strong:text-[--text-primary] prose-a:text-[--accent] prose-img:rounded-[10px] [&_p]:block [&_strong]:text-text-primary">
-              {parse(clean)}
-            </div>
-          </article>
-
-          {!isPublicVisitor ? (
-            <div></div>
-          ) : (
-            <div className="w-full rounded-2xl border border-dashed border-border bg-muted/20 px-4 py-3 text-sm text-muted-foreground">
-              Anda mengakses laman publik Portal PPI Bartin.{" "}
-              <a href="/login" className="text-primary hover:underline">
-                Masuk</a>{" "}untuk lebih lanjut.
-            </div>
-          )}
+        <div className="detail-page prose prose-sm mt-10 max-w-none wrap-anywhere dark:prose-invert prose-neutral prose-headings:font-semibold prose-headings:text-text-primary prose-p:text-[--text-secondary] prose-strong:text-[--text-primary] prose-a:text-[--accent] prose-img:rounded-2xl [&_p]:block [&_strong]:text-text-primary sm:prose-base">
+          {parse(clean)}
         </div>
-      </div>
 
-      {/* AlertDEelete di luar semua portal — dikontrol via state */}
+        {isPublicVisitor && (
+          <aside className="mt-10 flex flex-col gap-4 rounded-2xl border border-border bg-surface p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent">
+                <IconArrowUpRight className="size-4" aria-hidden />
+              </span>
+              <div className="space-y-1">
+                <p className="body font-medium text-text-primary">
+                  Lanjutkan di portal PPI Bartın
+                </p>
+                <p className="footnote text-text-secondary">
+                  Masuk untuk mengakses fitur portal dan melihat berita lainnya.
+                </p>
+              </div>
+            </div>
+            <Link href="/login" className={buttonVariants({ size: "sm" })}>
+              Masuk
+            </Link>
+          </aside>
+        )}
+
+        <RelatedNews
+          currentSlug={data.slug}
+          category={data.catagory}
+          hrefBase={hrefBase}
+        />
+      </article>
+
       {!isPublicVisitor && (
         <AlertDEelete
           href="/berita"

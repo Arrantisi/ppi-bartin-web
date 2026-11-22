@@ -66,7 +66,7 @@ Tidak ada server action baru. Link Keuangan/Panel Admin memakai route yang sudah
 
 ## Design Tokens
 
-- Navbar: header `bg-bg/60 backdrop-blur-md` tanpa border; kapsul menu `bg-surface/90 backdrop-blur-lg` + `border-border` + `shadow-lg shadow-black/5`; active pill `bg-surface-active` + `text-text-primary` (tidak ada warna baru).
+- Navbar: header `bg-transparent` tanpa blur; kapsul menu `bg-surface/90 backdrop-blur-lg` + `border-border` + `shadow-lg shadow-black/5`; active pill `bg-surface-active` + `text-text-primary` (tidak ada warna baru).
 - Hero beranda: `bg-accent-subtle`, `text-accent`, teks `text-text-secondary` — tanpa shadow statis.
 - Baris Pengaturan memakai `iconWrap` existing (`bg-surface-hover`, `text-text-primary`).
 - Daftar berita/event memakai kartu existing (`bg-surface`, `border-border`).

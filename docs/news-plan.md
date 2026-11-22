@@ -6,6 +6,14 @@ News/Berita feature untuk PPI Bartin web. Users bisa membuat, melihat, memperbar
 
 ## Changelog
 
+### 2026-11-22 — Redesign halaman detail berita
+
+- `features/news/news-detail/index.tsx`: nav dobel dihapus, diganti breadcrumb ringan; hierarki eyebrow → judul → byline + share/aksi → hero `aspect-[16/9]` → artikel → CTA publik → berita terkait.
+- `features/news/news-detail/related-news.tsx`: komponen baru, 3 kartu berita terkait dari `useNews()` (kategori sama, fallback berita lain).
+- `components/shared/navigation/nav-main-event.tsx`: header topbar jadi transparan tanpa blur; blur tetap di kapsul 4 menu.
+- Berlaku juga untuk `/home/berita/[slug]` karena komponen detailnya dipakai bersama.
+- Detail: `docs/news-detail-redesign-plan.md`.
+
 ### 2026-11-22 — Pencarian & pagination daftar berita
 
 - `features/news/berita-catagory.tsx`: placeholder pill di samping `ButtonCreate` diganti `ContentSearch`; tab kategori jadi controlled dan halaman direset saat kategori berubah.
@@ -203,3 +211,6 @@ Same as design-guideline.md (CSS variables, Inter font, 8px grid).
 - [ ] Pagination prev/next + nomor berfungsi, disable di batas
 - [ ] Ganti tab kategori mengembalikan halaman ke 1
 - [ ] Empty state hasil pencarian muncul dengan tombol "Hapus pencarian"
+- [ ] Detail: tidak ada nav dobel, breadcrumb kembali ke daftar yang sesuai
+- [ ] Detail: hero image tidak distort, artikel sanitized, share & aksi penulis berfungsi
+- [ ] Detail: 3 berita terkait tampil tanpa menyertakan artikel saat ini

@@ -126,6 +126,7 @@ features/
 │   ├── create/
 │   ├── update/
 │   ├── news-detail/
+│   │   └── related-news.tsx      # 3 kartu berita terkait di bawah artikel
 │   ├── components.ts
 │   └── news-page.tsx
 ├── customer-service/         # CS form + admin list/detail

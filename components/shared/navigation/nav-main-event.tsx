@@ -102,7 +102,7 @@ const HomeTopbar = ({ show, items }: { show: boolean; items: NavItem[] }) => {
   if (!show) return null;
 
   return (
-    <header className="sticky top-0 z-40 hidden w-full bg-bg/60 backdrop-blur-md md:block">
+    <header className="sticky top-0 z-40 hidden w-full bg-transparent md:block">
       <div className="relative flex h-16 w-full items-center justify-between px-4 md:px-6">
         <Link
           href="/home"
