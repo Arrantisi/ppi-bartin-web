@@ -83,7 +83,7 @@ Hanya komponen yang bisa dipakai ulang lintas fitur. Jangan taruh komponen spesi
 components/
 ├── ui/               # Atomic: button, input, dialog, select, card, badge, table, sidebar, dll.
 ├── layout/           # Layout wrappers: home-layout, responsive-page-container
-├── shared/           # Cross-cutting: share-popover, delete-dialog, nav-main-event, finance-sheet-link
+├── shared/           # Cross-cutting: share-popover, delete-dialog, nav-main-event, finance-sheet-link, content-search, content-pagination
 ├── cards/            # Reusable cards: card-event, card-news
 ├── field/            # Form fields: event-form, calendar-event-form, news-form, create-bantuan (Bantuan/CS form sederhana tanpa upload)
 ├── providers/        # React context: realtime, tanstack-query, theme
@@ -200,6 +200,7 @@ hooks/
 ├── use-users.ts
 ├── use-customer-service.ts
 ├── use-mobile.ts
+├── use-client-list.ts        # Filter + pagination client-side (search + halaman daftar berita/acara)
 ├── use-construct-url.ts
 ├── use-push-notifications.ts
 ├── use-pwa-install-tour.ts

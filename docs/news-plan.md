@@ -6,6 +6,14 @@ News/Berita feature untuk PPI Bartin web. Users bisa membuat, melihat, memperbar
 
 ## Changelog
 
+### 2026-11-22 — Pencarian & pagination daftar berita
+
+- `features/news/berita-catagory.tsx`: placeholder pill di samping `ButtonCreate` diganti `ContentSearch`; tab kategori jadi controlled dan halaman direset saat kategori berubah.
+- `components/shared/content-search.tsx`, `components/shared/content-pagination.tsx`, `hooks/use-client-list.ts`: komponen & hook baru untuk pencarian, empty state hasil cari, dan navigasi halaman client-side.
+- Daftar tidak lagi dibatasi 10 berita total — 10 per halaman, semua bisa diakses lewat pagination.
+- CTA empty state diperbaiki ke `/home/berita/create` (sebelumnya `/home/news/create`).
+- Detail: `docs/news-event-search-pagination-plan.md`.
+
 ### 2026-11-21 — Batas 10 berita per tampilan
 
 - `features/news/berita-catagory.tsx`: hasil filter tiap tab (termasuk "all") dibatasi `slice(0, 10)` sebelum dirender.
@@ -135,6 +143,8 @@ export type TcreateNewsSchema = z.infer<typeof createNewsSchema>;
 | `components/cards/card-news.tsx` | `FrameNews` — card with thumbnail, category badge, title, date |
 | `components/sections/news-section.tsx` | `NewsSection` — landing page section |
 | `components/skeletons/news-catagory-skeleton.tsx` | `NewsCaratogorySkeleton` — loading state |
+| `components/shared/content-search.tsx` | `ContentSearch`, `ContentSearchEmpty` — input pencarian + empty state hasil cari |
+| `components/shared/content-pagination.tsx` | `ContentPagination` — navigasi halaman daftar |
 
 ### Upload
 
@@ -164,6 +174,7 @@ export type TcreateNewsSchema = z.infer<typeof createNewsSchema>;
 | File | Exports |
 |------|---------|
 | `hooks/use-news.ts` | `useNews()`, `useNewsBySlug({ slug })` — TanStack React Query hooks |
+| `hooks/use-client-list.ts` | `useClientList({ items, getSearchText, pageSize })` — filter + pagination client-side |
 
 ---
 
@@ -188,3 +199,7 @@ Same as design-guideline.md (CSS variables, Inter font, 8px grid).
 - [ ] Environment filter — admin sees all envs, user sees production only
 - [ ] Empty state → DataKosong component
 - [ ] Loading state → skeleton
+- [ ] Pencarian judul/kategori berita menyaring daftar & reset ke halaman 1
+- [ ] Pagination prev/next + nomor berfungsi, disable di batas
+- [ ] Ganti tab kategori mengembalikan halaman ke 1
+- [ ] Empty state hasil pencarian muncul dengan tombol "Hapus pencarian"

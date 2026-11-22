@@ -6,6 +6,13 @@ status: done
 
 ## Changelog
 
+### 2026-11-22 — Pencarian & pagination daftar acara
+
+- `features/events/acara/content.tsx`: placeholder pill di samping `ButtonCreate` diganti `ContentSearch` (kode `InputGroup` yang sebelumnya dikomentari kini aktif lewat komponen bersama).
+- `components/shared/content-search.tsx`, `components/shared/content-pagination.tsx`, `hooks/use-client-list.ts`: komponen & hook baru untuk pencarian, empty state hasil cari, dan navigasi halaman client-side.
+- Daftar tidak lagi dibatasi 10 acara total — 10 per halaman, semua bisa diakses lewat pagination.
+- Detail: `docs/news-event-search-pagination-plan.md`.
+
 ### 2026-11-21 — Batas 10 acara per tampilan
 
 - `features/events/acara/content.tsx`: daftar `/home/acara` dibatasi `slice(0, 10)` sebelum dirender.
@@ -145,6 +152,8 @@ Validasi `batasDaftar <= date` dilakukan di `onSubmit` form (setelah `mergeTime`
 | File | Component |
 |------|-----------|
 | `components/cards/card-event.tsx` | `FrameEvent` — event card with date, capacity, deadline |
+| `components/shared/content-search.tsx` | `ContentSearch`, `ContentSearchEmpty` — input pencarian + empty state hasil cari |
+| `components/shared/content-pagination.tsx` | `ContentPagination` — navigasi halaman daftar |
 
 ### Registration
 
@@ -170,6 +179,7 @@ Validasi `batasDaftar <= date` dilakukan di `onSubmit` form (setelah `mergeTime`
 | File | Exports |
 |------|---------|
 | `hooks/use-acara.ts` | `useAcara()`, `useAcaraBySlug()`, `usePesertaBySlug()` — TanStack React Query hooks |
+| `hooks/use-client-list.ts` | `useClientList({ items, getSearchText, pageSize })` — filter + pagination client-side |
 | `hooks/use-daftar-acara.ts` | `useDaftarAcara()`, `useBatalkanDaftarAcara()` — mutation hooks |
 
 ---
@@ -195,3 +205,6 @@ Same as design-guideline.md (CSS variables, Inter font, 8px grid).
 - [ ] Unauthorized access → redirect
 - [ ] Invalid input → error messages
 - [ ] Empty state (no events) → DataKosong component
+- [ ] Pencarian judul/lokasi acara menyaring daftar & reset ke halaman 1
+- [ ] Pagination prev/next + nomor berfungsi, disable di batas
+- [ ] Empty state hasil pencarian muncul dengan tombol "Hapus pencarian"
