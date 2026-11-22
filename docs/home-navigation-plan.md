@@ -4,9 +4,20 @@ status: done
 
 ## Overview
 
-Merapikan navigasi portal `/home`: bottom nav (mobile) dan sidebar (desktop) hanya menampilkan empat menu utama — Beranda, Kegiatan, Berita, dan Profil. Menu tambahan seperti Keuangan dan Panel Admin tidak lagi dipajang di navbar, melainkan dikumpulkan di halaman Profil → tab **Pengaturan** → grup **Lainnya**, supaya navbar tetap ringkas dan semua akses tetap ada.
+Merapikan navigasi portal `/home`: bottom nav (mobile) dan topbar (desktop/tablet) hanya menampilkan empat menu utama — Beranda, Kegiatan, Berita, dan Profil. Topbar menggantikan sidebar desktop yang sebelumnya menyerupai dashboard admin. Menu tambahan seperti Keuangan dan Panel Admin tidak lagi dipajang di navbar, melainkan dikumpulkan di halaman Profil → tab **Pengaturan** → grup **Lainnya**, supaya navbar tetap ringkas dan semua akses tetap ada.
 
 Perubahan kedua: daftar Berita dan Acara dibatasi maksimal **10 item per tampilan** (tab kategori berita dihitung per tab) supaya halaman tidak menampilkan seluruh data sekaligus.
+
+## Changelog
+
+### 2026-11-22 — Topbar desktop & bento grid beranda
+
+- `components/shared/navigation/nav-main-event.tsx`: `DesktopSidebar` diganti `HomeTopbar` (sticky, logo kiri, 4 menu dengan active pill `layoutId`, notifikasi + avatar kanan). `BottomNav` mobile tidak berubah.
+- `components/layout/home-layout.tsx`: lepas `SidebarProvider`/`SidebarInset`, container desktop diperlebar ke `max-w-6xl`.
+- `features/home/header.tsx`: jadi hero greeting + akses cepat; avatar/notifikasi pindah ke topbar.
+- `features/home/content.tsx` + section acara/berita: susunan bento grid 12 kolom, carousel pakai dots, daftar berita 1 kolom di kolom sempit.
+- Karena `HomeLayoutComponent` dipakai juga oleh `(public)/layout.tsx`, topbar desktop ikut muncul di `/berita` dan `/acara` saat user login (disepakati untuk konsistensi).
+- Detail: `docs/home-desktop-layout-plan.md`.
 
 ## Database Model (Prisma)
 
@@ -24,7 +35,10 @@ Tidak ada server action baru. Link Keuangan/Panel Admin memakai route yang sudah
 
 | File | Perubahan |
 | ---- | --------- |
-| `components/shared/navigation/nav-main-event.tsx` | Hapus `desktopNavItems` dan `adminNavItem` dari daftar nav; item navbar cukup `navItems` (4 menu) untuk mobile & desktop |
+| `components/shared/navigation/nav-main-event.tsx` | 4 menu (`navItems`) dipakai bottom nav mobile + `HomeTopbar` desktop; sidebar desktop dihapus |
+| `components/layout/home-layout.tsx` | Tanpa `SidebarProvider`; topbar mobile/desktop dirender sekali, konten desktop `max-w-6xl` |
+| `features/home/header.tsx` | Hero greeting + akses cepat; avatar/notifikasi pindah ke topbar |
+| `features/home/content.tsx`, `features/home/events/*`, `features/home/news/*` | Bento grid 12 kolom, carousel dots, daftar berita 1 kolom |
 | `features/account/profile/tab-pengaturan.tsx` | Tambah baris "Keuangan" (`/home/finance`) di grup Lainnya; "Panel Admin" (`/dashboard`) tetap tampil untuk ADMIN |
 | `features/news/berita-catagory.tsx` | Tiap tab kategori hanya merender 10 berita terbaru |
 | `features/events/acara/content.tsx` | Daftar acara `/home/acara` hanya merender 10 acara terbaru |
@@ -41,7 +55,7 @@ Tidak ada server action baru. Link Keuangan/Panel Admin memakai route yang sudah
 | /home/profile | student | HomeLayoutComponent |
 | /home/finance | student | HomeLayoutComponent (diakses lewat Profil → Pengaturan) |
 | /dashboard | ADMIN | DashboardLayout (diakses lewat Profil → Pengaturan) |
-| /berita, /acara | public | Public layout |
+| /berita, /acara | public | Public layout; saat login memakai `HomeLayoutComponent` (topbar desktop) |
 
 ## Security
 
@@ -52,18 +66,20 @@ Tidak ada server action baru. Link Keuangan/Panel Admin memakai route yang sudah
 
 ## Design Tokens
 
-- Navbar: `bg-surface`, `border-border`, `text-text-disabled`, `text-text-primary` (tidak ada warna baru).
+- Navbar: header `bg-bg/60 backdrop-blur-md` tanpa border; kapsul menu `bg-surface/90 backdrop-blur-lg` + `border-border` + `shadow-lg shadow-black/5`; active pill `bg-surface-active` + `text-text-primary` (tidak ada warna baru).
+- Hero beranda: `bg-accent-subtle`, `text-accent`, teks `text-text-secondary` — tanpa shadow statis.
 - Baris Pengaturan memakai `iconWrap` existing (`bg-surface-hover`, `text-text-primary`).
 - Daftar berita/event memakai kartu existing (`bg-surface`, `border-border`).
 
 ## Testing Checklist
 
-- [ ] Mobile & desktop: navbar hanya Beranda, Kegiatan, Berita, Profil
+- [ ] Mobile: bottom nav hanya Beranda, Kegiatan, Berita, Profil
+- [ ] Desktop/tablet: topbar sticky dengan 4 menu yang sama, active pill mengikuti halaman
 - [ ] Admin: Panel Admin tidak ada di navbar, tapi masih tersedia di Profil → Pengaturan → Lainnya
 - [ ] Non-admin: tidak melihat link Panel Admin di Profil
 - [ ] Keuangan tersedia di Profil → Pengaturan → Lainnya, tidak ada di navbar
-- [ ] `/home/berita`: setiap tab menampilkan maksimal 10 berita
-- [ ] `/home/acara`: maksimal 10 acara
-- [ ] `/berita` dan `/acara` publik: maksimal 10 item
+- [ ] `/home` desktop: hero + bento grid (keuangan, acara, berita) tampil proporsional
+- [ ] `/home/berita` & `/home/acara`: search + pagination 10 item per halaman berfungsi
+- [ ] `/berita` dan `/acara` publik saat login mendapat topbar desktop yang sama
 - [ ] Rute /dashboard tetap menolak non-admin walaupun link disembunyikan
-- [ ] `pnpm lint`, `tsc --noEmit`, `vitest run`, `pnpm build` lolos
+- [ ] `pnpm lint` dan `pnpm build` lolos

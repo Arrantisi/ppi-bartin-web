@@ -7,7 +7,7 @@ export function FinanceShortcut() {
 	const financeSheetUrl = env.NEXT_PUBLIC_FINANCE_SHEET_URL;
 
 	return (
-		<section className="rounded-3xl border border-border bg-card p-6">
+		<section className="rounded-3xl border border-border bg-card p-5 md:p-6">
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div className="flex items-start gap-4">
 					<div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-success/10 text-success">
