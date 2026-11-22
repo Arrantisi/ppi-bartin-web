@@ -6,6 +6,15 @@ status: done
 
 ## Changelog
 
+### 2026-11-22 — Redesign halaman detail acara
+
+- `features/events/acara/event-detail/index.tsx`: nav dobel dihapus, diganti breadcrumb ringan; hierarki eyebrow/status deadline → judul → byline + share/aksi → hero `aspect-[16/9]` → fact strip (tanggal, lokasi, kuota, deadline) → daftar peserta → artikel → CTA pendaftaran/login → acara terkait.
+- `features/events/acara/event-detail/related-events.tsx`: komponen baru, 3 kartu acara terkait dari `useEvents()` (mendatang lebih dulu, tanpa acara saat ini).
+- Perbaikan gating: peserta terdaftar kini melihat link lokasi + artikel penuh; user login belum daftar melihat link disensor + overlay CTA; publik tetap lihat pesan masuk + CTA login. Sebelumnya logikanya terbalik.
+- Redirect setelah hapus acara mengarah ke `/home/acara` untuk user login (sebelumnya `/acara`).
+- Berlaku juga untuk `/home/acara/[eventSlug]` karena komponen detailnya dipakai bersama.
+- Detail: `docs/event-detail-redesign-plan.md`.
+
 ### 2026-11-22 — Pencarian & pagination daftar acara
 
 - `features/events/acara/content.tsx`: placeholder pill di samping `ButtonCreate` diganti `ContentSearch` (kode `InputGroup` yang sebelumnya dikomentari kini aktif lewat komponen bersama).
@@ -145,7 +154,8 @@ Validasi `batasDaftar <= date` dilakukan di `onSubmit` form (setelah `mergeTime`
 | `features/events/acara/event-page.tsx` | `EventPage` — list page with category filter |
 | `features/events/acara/event-create-page.tsx` | `EventCreatePage` — create form wrapper |
 | `features/events/acara/event-update-page.tsx` | `EventUpdatePage` — update form wrapper |
-| `features/events/acara/event-detail/index.tsx` | `EventDetailComponent` — detail page with registration |
+| `features/events/acara/event-detail/index.tsx` | `EventDetail` — detail page with registration + gating peserta |
+| `features/events/acara/event-detail/related-events.tsx` | `RelatedEvents` — 3 kartu acara terkait di bawah artikel |
 
 ### Cards
 
@@ -208,3 +218,7 @@ Same as design-guideline.md (CSS variables, Inter font, 8px grid).
 - [ ] Pencarian judul/lokasi acara menyaring daftar & reset ke halaman 1
 - [ ] Pagination prev/next + nomor berfungsi, disable di batas
 - [ ] Empty state hasil pencarian muncul dengan tombol "Hapus pencarian"
+- [ ] Detail: tidak ada nav dobel, breadcrumb kembali ke daftar yang sesuai
+- [ ] Detail: peserta terdaftar melihat artikel & link lokasi penuh (tanpa overlay)
+- [ ] Detail: user login belum daftar melihat link lokasi disensor + overlay CTA daftar
+- [ ] Detail: publik melihat pesan masuk + 3 acara terkait tampil tanpa acara saat ini

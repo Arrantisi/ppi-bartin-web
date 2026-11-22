@@ -119,7 +119,9 @@ features/
 │   ├── profile/            # tab-kegiatan, profile-header, profile-content
 │   └── registering/        # 01, 02, 03 step pages
 ├── events/
-│   ├── acara/              # event-detail, create, update
+│   ├── acara/              # create, update
+│   │   └── event-detail/
+│   │       └── related-events.tsx   # 3 kartu acara terkait di bawah artikel
 │   ├── components.ts       # barrel export
 │   └── events-page.tsx
 ├── news/
