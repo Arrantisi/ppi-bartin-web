@@ -11,6 +11,7 @@ import { useClientList } from "@/hooks/use-client-list";
 import { DataKosong } from "@/components/data-kosong";
 import { ButtonCreate } from "@/components/buttons";
 import { ContentPagination } from "@/components/shared/content-pagination";
+import { NewsEditorial } from "@/components/shared/news-editorial";
 import {
   ContentSearch,
   ContentSearchEmpty,
@@ -71,9 +72,8 @@ const BeritaCatagory = () => {
     return <DataKosong href="/home/berita/create" catagory="Berita" />;
   }
 
-  const showFeatured =
+  const showEditorial =
     !list.query && activeCategory === "all" && list.pageItems.length > 0;
-  const [firstItem, ...restItems] = list.pageItems;
 
   return (
     <>
@@ -121,18 +121,16 @@ const BeritaCatagory = () => {
           </TabsList>
         </div>
 
-        <TabsContent
-          value={activeCategory}
-          className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
-        >
-          {showFeatured && (
-            <div className="md:col-span-2">
-              <FrameNews {...firstItem} hrefBase="/home/berita" variant="featured" />
+        <TabsContent value={activeCategory} className="mt-4">
+          {showEditorial ? (
+            <NewsEditorial items={list.pageItems} hrefBase="/home/berita" />
+          ) : (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {list.pageItems.map((news) => (
+                <FrameNews key={news.slug} {...news} hrefBase="/home/berita" />
+              ))}
             </div>
           )}
-          {(showFeatured ? restItems : list.pageItems).map((news) => (
-            <FrameNews key={news.slug} {...news} hrefBase="/home/berita" />
-          ))}
           {list.pageItems.length === 0 && (
             <ContentSearchEmpty
               query={list.query}

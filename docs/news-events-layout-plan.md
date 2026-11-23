@@ -12,6 +12,8 @@ Keputusan scope:
 - Form create juga dipakai dashboard (`backHref` berbeda) — perilaku itu dipertahankan.
 - Mobile, tablet, dan desktop ikut diperbaiki.
 
+**Iterasi 2 — daftar berita:** layout daftar berita diubah ke format editorial: satu sorotan utama di kiri, daftar "Terbaru" di kanan, lalu grid artikel sisanya di bawah. Hanya `/home/berita` dan `/berita` yang terkena; form dan detail berita tidak berubah.
+
 ## Database Model (Prisma)
 
 Tidak ada perubahan schema. Semua data masih dari `useNews()`, `useEvents()`, `getNews()`, dan `getAllEvents()`.
@@ -30,12 +32,14 @@ Tidak ada server action baru. `createNews`/`updateNews`/`createAcara`/`updateAca
 | ---- | --------- |
 | `components/shared/content-page-header.tsx` | Baru: header editorial bersama (eyebrow, judul, deskripsi, slot aksi) untuk 4 halaman daftar. |
 | `components/layout/content-form-shell.tsx` | Baru: shell form 2 kolom di desktop — rail kiri (kembali, judul, deskripsi, tips) + kartu form kanan, action bar melekat di bawah. |
-| `components/cards/card-news.tsx` | Tambah `variant="featured"` (gambar atas `aspect-[16/9]`, judul besar); default `compact` tidak berubah. |
+| `components/shared/news-editorial.tsx` | Baru (iterasi 2): sorotan utama + daftar "Terbaru" + grid sisa. Ringkasan hero diambil dari `desckripsi` via `toMetaDescription()` karena `getNews()` tidak menyertakan `ringkasan`. |
+| `components/cards/card-news.tsx` | Kartu kompak tetap dipakai untuk grid. `variant="featured"` (iterasi 1) dihapus karena sudah digantikan `NewsEditorial`. |
 | `components/buttons.tsx` | `ButtonCreate` jadi pill berlabel "Buat berita"/"Buat acara" dengan ikon plus. |
 | `features/news/header.tsx`, `features/events/acara/header.tsx` | Pakai `ContentPageHeader`. |
-| `features/news/berita-catagory.tsx` | Toolbar search + CTA, tab dalam kapsul scrollable, grid 1/2/3 kolom, item pertama `featured` hanya di tab "all" tanpa pencarian. |
+| `features/news/berita-catagory.tsx` | Toolbar search + CTA, tab dalam kapsul scrollable. Tab "all" tanpa pencarian memakai `NewsEditorial`; tab lain/hasil pencarian tetap grid 1/2/3 kolom. |
 | `features/events/acara/content.tsx` | Toolbar search + CTA, grid 1/2/3 kolom, skeleton disesuaikan. |
-| `app/(public)/berita/page.tsx`, `app/(public)/acara/page.tsx` | Pakai `ContentPageHeader`, grid responsif, berita pertama `featured`. |
+| `app/(public)/berita/page.tsx` | Pakai `ContentPageHeader` + `NewsEditorial` (iterasi 2). |
+| `app/(public)/acara/page.tsx` | Pakai `ContentPageHeader`, grid responsif. |
 | `components/field/news-form.tsx`, `components/field/event-form.tsx` | Field dikelompokkan jadi section berjudul, grid 2 kolom di desktop untuk field pendukung, action bar bawah, prop `backHref` opsional. Logika/validasi tidak diubah. |
 | `features/news/create/*`, `features/news/update/*`, `features/events/acara/create/*`, `features/events/acara/update/*` | Pakai `ContentFormShell`, teruskan `backHref` sampai ke form, hapus margin ad-hoc dan header ganda. |
 
@@ -68,7 +72,7 @@ Tidak ada server action baru. `createNews`/`updateNews`/`createAcara`/`updateAca
 
 - [ ] Daftar berita & acara: header, search, CTA, grid 1/2/3 kolom tampil rapi di mobile/tablet/desktop
 - [ ] Tab kategori berita scrollable dengan benar, active state jelas
-- [ ] Berita featured hanya muncul di tab "all" tanpa pencarian
+- [ ] Layout editorial (hero + sidebar + grid) hanya muncul di tab "all" tanpa pencarian; tab lain memakai grid biasa
 - [ ] Pagination 10 item per halaman tetap berfungsi
 - [ ] `/berita` & `/acara` publik memakai header yang sama, grid tidak berantakan
 - [ ] Form create/update: rail kiri + kartu kanan di desktop; satu kolom di mobile

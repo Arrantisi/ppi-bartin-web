@@ -1,8 +1,8 @@
 import { getNews } from "@/server/data/news";
 import { safeDb } from "@/lib/db/safe";
-import { FrameNews } from "@/components/cards/card-news";
 import { DataKosong } from "@/components/data-kosong";
 import { ContentPageHeader } from "@/components/shared/content-page-header";
+import { NewsEditorial } from "@/components/shared/news-editorial";
 
 export const revalidate = 60;
 
@@ -21,20 +21,7 @@ export default async function PublicNewsPage() {
       {items.length === 0 ? (
         <DataKosong href="/login" catagory="Berita" />
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {items.map((item, index) => (
-            <div
-              key={item.slug}
-              className={index === 0 ? "md:col-span-2" : undefined}
-            >
-              <FrameNews
-                {...item}
-                hrefBase="/berita"
-                variant={index === 0 ? "featured" : "compact"}
-              />
-            </div>
-          ))}
-        </div>
+        <NewsEditorial items={items} hrefBase="/berita" />
       )}
     </div>
   );

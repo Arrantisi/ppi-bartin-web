@@ -15,33 +15,16 @@ import {
 
 export const FrameNews = memo(function FrameNews({
   hrefBase = "/berita",
-  variant = "compact",
   ...news
-}: TgetNews & {
-  hrefBase?: string;
-  variant?: "compact" | "featured";
-}) {
+}: TgetNews & { hrefBase?: string }) {
   const categoryTone = getNewsCategoryTone(news.catagory);
-  const isFeatured = variant === "featured";
 
   return (
     <Link
       href={`${hrefBase}/${news.slug}`}
-      className={cn(
-        "group flex w-full overflow-hidden border border-border bg-surface text-left shadow-none transition-colors hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-ring",
-        isFeatured
-          ? "flex-col rounded-2xl"
-          : "items-start gap-2.5 rounded-[10px] p-3",
-      )}
+      className="group flex w-full items-start gap-2.5 rounded-[10px] border border-border bg-surface p-3 text-left shadow-none transition-colors hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-ring"
     >
-      <div
-        className={cn(
-          "relative shrink-0 overflow-hidden bg-muted",
-          isFeatured
-            ? "aspect-[16/9] w-full rounded-t-2xl"
-            : "size-20 rounded-lg",
-        )}
-      >
+      <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-muted">
         {news.environment && news.environment !== "production" && (
           <div className="absolute left-1 top-1 z-10 rounded-[4px] bg-[rgba(0,0,0,.55)] px-1.5 py-[1px] font-mono text-[0.625rem] font-medium leading-[1.4] text-white backdrop-blur-[4px]">
             {news.environment === "local" ? "LOCAL" : "PREVIEW"}
@@ -51,17 +34,12 @@ export const FrameNews = memo(function FrameNews({
           src={imageUrl(news.fileKey)}
           className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
           fill
-          sizes={isFeatured ? "(max-width: 768px) 100vw, 640px" : "80px"}
+          sizes="80px"
           alt=""
         />
       </div>
 
-      <div
-        className={cn(
-          "min-w-0 flex-1",
-          isFeatured ? "space-y-2 p-4" : "space-y-1.5",
-        )}
-      >
+      <div className="min-w-0 flex-1 space-y-1.5">
         <div
           className={cn(
             "flex items-center gap-1.5 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.05em]",
@@ -77,14 +55,7 @@ export const FrameNews = memo(function FrameNews({
           />
           {news.catagory}
         </div>
-        <div
-          className={cn(
-            "line-clamp-2 font-semibold tracking-[-0.01em] text-text-primary",
-            isFeatured
-              ? "text-lg leading-snug md:text-xl"
-              : "text-[0.875rem] leading-[1.35]",
-          )}
-        >
+        <div className="line-clamp-2 text-[0.875rem] font-semibold leading-[1.35] tracking-[-0.01em] text-text-primary">
           {news.judul}
         </div>
         <div className="font-mono text-[0.75rem] font-normal text-text-disabled">
