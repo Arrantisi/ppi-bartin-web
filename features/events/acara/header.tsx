@@ -1,22 +1,15 @@
-"use client";
-
 import { IconHome } from "@/components/shared/icon-home";
+import { ContentPageHeader } from "@/components/shared/content-page-header";
 
 const HeaderAcara = () => {
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="title-satu">Kegiatan</h1>
-          <p className="footnote capitalize">
-            Semua kegiatan seru ada disini
-          </p>
-        </div>
-        <IconHome />
-      </div>
-    </div>
+    <ContentPageHeader
+      eyebrow="Portal kegiatan"
+      title="Kegiatan"
+      description="Temukan kegiatan dan acara PPI Bartın terdekat."
+      action={<IconHome />}
+    />
   );
 };
 
 export default HeaderAcara;
-

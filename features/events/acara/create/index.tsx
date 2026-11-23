@@ -1,4 +1,3 @@
-import { ButtonHeaderField } from "@/components/buttons";
 import { CreateEventContent } from "./content";
 
 export const CreateEventComponent = ({
@@ -6,10 +5,5 @@ export const CreateEventComponent = ({
 }: {
   backHref?: string;
 } = {}) => {
-  return (
-    <div>
-      <ButtonHeaderField href={backHref} label="Buat Acara" />
-      <CreateEventContent />
-    </div>
-  );
+  return <CreateEventContent backHref={backHref} />;
 };

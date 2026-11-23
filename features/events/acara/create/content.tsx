@@ -1,12 +1,27 @@
 import { EventFormField } from "@/components/field/event-form";
+import { ContentFormShell } from "@/components/layout/content-form-shell";
 import { HomeLayoutComponent } from "@/components/layout/home-layout";
 
-export const CreateEventContent = () => {
+export const CreateEventContent = ({
+  backHref = "/home/acara",
+}: {
+  backHref?: string;
+} = {}) => {
   return (
     <HomeLayoutComponent>
-      <div className="mx-3 my-2">
-        <EventFormField mode="create" />
-      </div>
+      <ContentFormShell
+        eyebrow="Manajemen acara"
+        title="Buat acara"
+        description="Susun informasi kegiatan agar peserta mudah mengikuti."
+        backHref={backHref}
+        tips={[
+          "Pastikan batas pendaftaran sebelum tanggal acara.",
+          "Cantumkan lokasi yang mudah ditemukan peserta.",
+          "Cover acara membantu peserta mengenali kegiatan.",
+        ]}
+      >
+        <EventFormField mode="create" backHref={backHref} />
+      </ContentFormShell>
     </HomeLayoutComponent>
   );
 };

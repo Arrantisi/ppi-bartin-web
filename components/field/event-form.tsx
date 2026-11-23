@@ -43,6 +43,7 @@ type EventFormFieldProps = {
   mode: EventFormMode;
   slug?: string;
   data?: TupdateEventProps["data"];
+  backHref?: string;
 };
 
 const ENVIRONMENT_OPTIONS: Record<string, { label: string; value: string }[]> =
@@ -58,7 +59,32 @@ const ENVIRONMENT_OPTIONS: Record<string, { label: string; value: string }[]> =
     ],
   };
 
-export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
+const SectionHeading = ({
+  index,
+  title,
+  description,
+}: {
+  index: string;
+  title: string;
+  description: string;
+}) => (
+  <div className="flex items-start gap-3">
+    <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-border bg-bg font-mono text-[0.6875rem] text-text-secondary">
+      {index}
+    </span>
+    <div className="space-y-1">
+      <h2 className="subheadline text-text-primary">{title}</h2>
+      <p className="footnote text-text-secondary">{description}</p>
+    </div>
+  </div>
+);
+
+export const EventFormField = ({
+  mode,
+  slug,
+  data,
+  backHref = "/home/acara",
+}: EventFormFieldProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [lengthOfDeskripsi, setLengthOfDeskripsi] = useState(0);
   const [isDate, setIsDate] = useState<Date>(new Date());
@@ -67,8 +93,6 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
 
   const today = new Date();
   const router = useRouter();
-
-  console.log(role);
 
   const formId = mode === "update" ? "update-acara-form" : "create-acara-form";
 
@@ -135,7 +159,7 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
             ? "Selamat Kamu Telah Berhasil Memperbarui Acara"
             : "Berhasil Membuat Acara",
         );
-        router.push("/home/acara");
+        router.push(backHref);
       }
 
       setIsLoading(false);
@@ -143,76 +167,119 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
   });
 
   return (
-    <div className="flex flex-col justify-between h-full pb-4">
-      <div>
-        <form
-          className="space-y-6"
-          id={formId}
-          onSubmit={(e) => {
-            e.preventDefault();
-            form.handleSubmit();
-          }}
-        >
-          <form.Field name="fileKey">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field>
-                  <FieldLabel>
-                    <IconUpload size={18} className="text-primary" />
-                    Foto Acara
-                    <span className="text-destructive">*</span>
-                  </FieldLabel>
-                  <UploaderPhoto
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e)}
-                  />
+    <div className="space-y-8">
+      <form
+        id={formId}
+        className="space-y-8"
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+      >
+        <section className="space-y-5">
+          <SectionHeading
+            index="01"
+            title="Detail acara"
+            description="Judul, lokasi, dan deskripsi yang akan dilihat peserta."
+          />
 
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="judul">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field>
-                  <FieldLabel>
-                    <IconTypography size={18} className="text-primary" />
-                    Judul Acara
-                    <span className="text-destructive">*</span>
-                  </FieldLabel>
-
-                  <Textarea
-                    id={field.name}
-                    placeholder={props.textarea[0].placeholder}
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <div className="space-y-4">
-            <form.Field name="date">
+          <div className="grid grid-cols-1 gap-5">
+            <form.Field name="judul">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field>
+                    <FieldLabel htmlFor={field.name}>
+                      <IconTypography size={18} className="text-accent" />
+                      Judul Acara
+                      <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <Textarea
+                      id={field.name}
+                      placeholder={props.textarea[0].placeholder}
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            <form.Field name="lokasi">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>
+                      <IconMapPin size={18} className="text-accent" />
+                      Lokasi <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <Textarea
+                      id={field.name}
+                      placeholder={props.textarea[2].placeholder}
+                      value={field.state.value}
+                      onChange={(e) => {
+                        field.handleChange(e.target.value);
+                      }}
+                    />
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            <form.Field name="deskripsi">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>
+                      <IconFileText size={18} className="text-accent" />
+                      Caption <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <RichTextEditor
+                      onChange={(e) => {
+                        field.handleChange(e);
+                        setLengthOfDeskripsi(e.length);
+                      }}
+                      placeholder="Ketik isi pesan/caption/deskripsi acaramu disini..."
+                      value={field.state.value}
+                    />
+                    <FieldDescription className="text-right">
+                      {lengthOfDeskripsi} kata
+                    </FieldDescription>
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                  </Field>
+                );
+              }}
+            </form.Field>
+          </div>
+        </section>
+
+        <section className="space-y-5 border-t border-border pt-8">
+          <SectionHeading
+            index="02"
+            title="Jadwal & kuota"
+            description="Tentukan waktu acara, batas daftar, dan jumlah peserta."
+          />
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <form.Field name="date">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field className="md:col-span-2">
                     <FieldLabel>
-                      <IconCalendar size={18} className="text-primary" />
+                      <IconCalendar size={18} className="text-accent" />
                       Tanggal Acara
                       <span className="text-destructive">*</span>
                     </FieldLabel>
-                    <div className="flex flex-col sm:flex-row gap-2 sm:items-end">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
                       <div className="min-w-0 flex-1">
                         <DatePickerField
                           onChange={(e) => {
@@ -230,10 +297,14 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                       >
                         {({ dateTime }) => (
                           <div className="sm:w-36 shrink-0">
-                            <label className="block text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-text-disabled mb-1">
+                            <label
+                              htmlFor="event-date-time"
+                              className="mb-1 block text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-text-disabled"
+                            >
                               Jam Mulai
                             </label>
                             <Input
+                              id="event-date-time"
                               type="time"
                               value={dateTime ?? ""}
                               onChange={(e) =>
@@ -242,7 +313,7 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                                   e.target.value,
                                 )
                               }
-                              className="focus-visible:ring-primary"
+                              className="focus-visible:ring-accent"
                             />
                           </div>
                         )}
@@ -261,12 +332,12 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
-                  <Field>
+                  <Field className="md:col-span-2">
                     <FieldLabel>
-                      <IconCalendar size={18} className="text-primary" />
+                      <IconCalendar size={18} className="text-accent" />
                       Batas Daftar <span className="text-destructive">*</span>
                     </FieldLabel>
-                    <div className="flex flex-col sm:flex-row gap-2 sm:items-end">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
                       <div className="min-w-0 flex-1">
                         <DatePickerField
                           onChange={(e) => {
@@ -281,10 +352,14 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                       >
                         {({ batasDaftarTime }) => (
                           <div className="sm:w-36 shrink-0">
-                            <label className="block text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-text-disabled mb-1">
+                            <label
+                              htmlFor="event-deadline-time"
+                              className="mb-1 block text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-text-disabled"
+                            >
                               Jam Tutup
                             </label>
                             <Input
+                              id="event-deadline-time"
                               type="time"
                               value={batasDaftarTime ?? ""}
                               onChange={(e) =>
@@ -293,7 +368,7 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                                   e.target.value,
                                 )
                               }
-                              className="focus-visible:ring-primary"
+                              className="focus-visible:ring-accent"
                             />
                           </div>
                         )}
@@ -306,86 +381,28 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
                 );
               }}
             </form.Field>
-          </div>
 
-          <form.Field name="lokasi">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field>
-                  <FieldLabel>
-                    <IconMapPin size={18} className="text-primary" />
-                    Lokasi <span className="text-destructive">*</span>
-                  </FieldLabel>
-                  <Textarea
-                    id={field.name}
-                    placeholder={props.textarea[2].placeholder}
-                    value={field.state.value}
-                    onChange={(e) => {
-                      field.handleChange(e.target.value);
-                    }}
-                  />
-
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="deskripsi">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field>
-                  <FieldLabel>
-                    <IconFileText size={18} className="text-primary" />
-                    Caption <span className="text-destructive">*</span>
-                  </FieldLabel>
-
-                  <RichTextEditor
-                    onChange={(e) => {
-                      field.handleChange(e);
-                      setLengthOfDeskripsi(e.length);
-                    }}
-                    placeholder="Ketik isi pesan/caption/deskripsi acaramu disini..."
-                    value={field.state.value}
-                  />
-
-                  <FieldDescription className="text-right">
-                    {lengthOfDeskripsi} kata
-                  </FieldDescription>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <div className="flex items-center justify-center gap-3">
             <form.Field name="maxCapacity">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field>
-                    <FieldLabel>
-                      <IconUsers size={18} className="text-primary" />
+                    <FieldLabel htmlFor={field.name}>
+                      <IconUsers size={18} className="text-accent" />
                       Kuota Peserta <span className="text-destructive">*</span>
                     </FieldLabel>
-
                     <Input
                       type="number"
                       id={field.name}
                       inputMode="numeric"
                       placeholder={props.textarea[5].placeholder}
-                      className="focus-visible:ring-primary"
+                      className="focus-visible:ring-accent"
                       value={field.state.value}
                       onChange={(e) =>
                         field.handleChange(e.target.valueAsNumber)
                       }
                     />
-
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
@@ -394,71 +411,96 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
               }}
             </form.Field>
           </div>
+        </section>
 
-          {envOptions.length > 0 && (
-            <form.Field name="environment">
+        <section className="space-y-5 border-t border-border pt-8">
+          <SectionHeading
+            index="03"
+            title="Publikasi"
+            description="Atur sampul acara dan lingkungan publikasi."
+          />
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <form.Field name="fileKey">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field>
                     <FieldLabel>
-                      <IconWorld size={18} className="text-primary" />
-                      Environment
+                      <IconUpload size={18} className="text-accent" />
+                      Foto Acara
                       <span className="text-destructive">*</span>
                     </FieldLabel>
-                    <Select
-                      name={field.name}
+                    <UploaderPhoto
                       value={field.state.value}
-                      onValueChange={(value) =>
-                        field.handleChange(
-                          value as "local" | "preview" | "production",
-                        )
-                      }
-                    >
-                      <SelectTrigger
-                        id="select-environment-event"
-                        data-invalid={isInvalid}
-                        className="rounded-md"
-                      >
-                        <SelectValue placeholder={"Pilih Environment"} />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-2xl">
-                        {envOptions.map(({ label, value }) => (
-                          <SelectItem
-                            key={value}
-                            className="rounded-2xl"
-                            value={value}
-                          >
-                            {label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                      onChange={(e) => field.handleChange(e)}
+                    />
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </Field>
                 );
               }}
             </form.Field>
-          )}
-        </form>
-      </div>
 
-      <div className="flex flex-col-reverse items-center justify-center gap-2 mt-6">
-        <Link
-          href="/home/acara"
-          className={buttonVariants({
-            variant: "outline",
-            className: "text-sm px-4 py-3 w-full",
-          })}
-        >
+            {envOptions.length > 0 && (
+              <form.Field name="environment">
+                {(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+                  return (
+                    <Field>
+                      <FieldLabel htmlFor="select-environment-event">
+                        <IconWorld size={18} className="text-accent" />
+                        Environment
+                        <span className="text-destructive">*</span>
+                      </FieldLabel>
+                      <Select
+                        name={field.name}
+                        value={field.state.value}
+                        onValueChange={(value) =>
+                          field.handleChange(
+                            value as "local" | "preview" | "production",
+                          )
+                        }
+                      >
+                        <SelectTrigger
+                          id="select-environment-event"
+                          data-invalid={isInvalid}
+                          className="rounded-xl"
+                        >
+                          <SelectValue placeholder={"Pilih Environment"} />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-2xl">
+                          {envOptions.map(({ label, value }) => (
+                            <SelectItem
+                              key={value}
+                              className="rounded-xl"
+                              value={value}
+                            >
+                              {label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              </form.Field>
+            )}
+          </div>
+        </section>
+      </form>
+
+      <div className="flex flex-col-reverse gap-2 border-t border-border pt-6 sm:flex-row sm:justify-end">
+        <Link href={backHref} className={buttonVariants({ variant: "outline" })}>
           Batal
         </Link>
         <Button
           disabled={isLoading}
-          className="text-sm px-4 py-3 w-full"
+          className="w-full sm:w-auto"
           form={formId}
           type="submit"
         >
@@ -466,6 +508,8 @@ export const EventFormField = ({ mode, slug, data }: EventFormFieldProps) => {
             <span className="flex items-center gap-1">
               <Spinner /> Publishing
             </span>
+          ) : mode === "update" ? (
+            "Simpan Perubahan"
           ) : (
             "Publish Acara"
           )}

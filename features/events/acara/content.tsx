@@ -27,8 +27,8 @@ const CardAcaras = () => {
 
   if (isLoading) {
     return (
-      <div className="mt-3 gap-6 w-full grid grid-cols-1 md:grid-cols-2">
-        {Array.from({ length: 4 }).map((_, idx) => (
+      <div className="mt-4 grid w-full grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, idx) => (
           <SkeletonCardAcara key={idx} />
         ))}
       </div>
@@ -41,7 +41,7 @@ const CardAcaras = () => {
 
   return (
     <>
-      <div className="flex items-center gap-2 mt-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <ContentSearch
           value={list.query}
           onChange={list.setQuery}
@@ -51,9 +51,9 @@ const CardAcaras = () => {
         <ButtonCreate catagory="acara" />
       </div>
 
-      <div className="mt-3 gap-6 w-full relative grid grid-cols-1 md:grid-cols-2 justify-center">
+      <div className="mt-4 grid w-full grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
         {list.pageItems.map((event) => (
-          <CardEvent {...event} key={event.id} />
+          <CardEvent {...event} key={event.id} hrefBase="/home/acara" />
         ))}
         {list.pageItems.length === 0 && (
           <ContentSearchEmpty

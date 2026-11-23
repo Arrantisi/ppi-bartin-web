@@ -1,13 +1,33 @@
 import { EventFormField } from "@/components/field/event-form";
-import { TupdateEventProps } from "@/types";
+import { ContentFormShell } from "@/components/layout/content-form-shell";
 import { HomeLayoutComponent } from "@/components/layout/home-layout";
+import { TupdateEventProps } from "@/types";
 
-export const UpdateEventContent = ({ slug, data }: TupdateEventProps) => {
+export const UpdateEventContent = ({
+  slug,
+  data,
+  backHref = "/home/acara",
+}: TupdateEventProps & { backHref?: string }) => {
   return (
     <HomeLayoutComponent>
-      <div className="mx-3 my-2">
-        <EventFormField mode="update" slug={slug} data={data} />
-      </div>
+      <ContentFormShell
+        eyebrow="Manajemen acara"
+        title="Edit acara"
+        description="Perbarui detail acara di bawah ini, lalu simpan perubahan."
+        backHref={backHref}
+        tips={[
+          "Periksa kembali jadwal dan kuota peserta.",
+          "Batas pendaftaran tidak boleh melewati tanggal acara.",
+          "Perubahan environment mengubah semua audiens yang melihat acara.",
+        ]}
+      >
+        <EventFormField
+          mode="update"
+          slug={slug}
+          data={data}
+          backHref={backHref}
+        />
+      </ContentFormShell>
     </HomeLayoutComponent>
   );
 };
