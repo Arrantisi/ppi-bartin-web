@@ -1,22 +1,15 @@
-"use client";
-
 import { IconHome } from "@/components/shared/icon-home";
+import { ContentPageHeader } from "@/components/shared/content-page-header";
 
 const HeaderBerita = () => {
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="title-satu">Berita</h1>
-          <p className="footnote capitalize">
-            Semua info penting untuk kamu
-          </p>
-        </div>
-        <IconHome />
-      </div>
-    </div>
+    <ContentPageHeader
+      eyebrow="Portal berita"
+      title="Berita"
+      description="Semua info penting untuk kamu, dirangkum dalam satu tempat."
+      action={<IconHome />}
+    />
   );
 };
 
 export default HeaderBerita;
-

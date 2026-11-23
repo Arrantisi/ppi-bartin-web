@@ -59,7 +59,7 @@ const BeritaCatagory = () => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {Array.from({ length: 6 }).map((_, idx) => (
           <NewsCaratogorySkeleton key={idx} />
         ))}
@@ -71,9 +71,13 @@ const BeritaCatagory = () => {
     return <DataKosong href="/home/berita/create" catagory="Berita" />;
   }
 
+  const showFeatured =
+    !list.query && activeCategory === "all" && list.pageItems.length > 0;
+  const [firstItem, ...restItems] = list.pageItems;
+
   return (
     <>
-      <div className="flex items-center gap-2 mt-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <ContentSearch
           value={list.query}
           onChange={list.setQuery}
@@ -89,18 +93,17 @@ const BeritaCatagory = () => {
           setActiveCategory(value);
           list.setPage(1);
         }}
-        className="w-full mt-3"
+        className="mt-4 w-full"
       >
-        {/* 1. Scrollable Tabs List */}
         <div className="w-full overflow-x-auto overflow-y-hidden scrollbar-none">
-          <TabsList className="bg-transparent h-auto p-0 gap-3 flex justify-start max-w-sm">
+          <TabsList className="flex h-auto w-max gap-1 rounded-full border border-border bg-surface p-1">
             {catagoryTrigger.map((item) => (
               <TabsTrigger
                 key={item.ctg}
                 value={item.ctg}
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-6 py-2.5 capitalize transition-colors",
-                  "data-[state=active]:border-accent/30 data-[state=active]:bg-accent/10 data-[state=active]:text-accent",
+                  "inline-flex items-center gap-1.5 rounded-full px-4 py-2 capitalize transition-colors",
+                  "data-[state=active]:bg-surface-active data-[state=active]:text-text-primary",
                 )}
               >
                 <span
@@ -118,13 +121,17 @@ const BeritaCatagory = () => {
           </TabsList>
         </div>
 
-        {/* 2. Daftar sesuai kategori + pencarian + halaman aktif */}
         <TabsContent
           value={activeCategory}
-          className="mt-0 grid grid-cols-1 xl:grid-cols-2 gap-3"
+          className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
         >
-          {list.pageItems.map((news) => (
-            <FrameNews key={news.slug} {...news} />
+          {showFeatured && (
+            <div className="md:col-span-2">
+              <FrameNews {...firstItem} hrefBase="/home/berita" variant="featured" />
+            </div>
+          )}
+          {(showFeatured ? restItems : list.pageItems).map((news) => (
+            <FrameNews key={news.slug} {...news} hrefBase="/home/berita" />
           ))}
           {list.pageItems.length === 0 && (
             <ContentSearchEmpty

@@ -3,9 +3,14 @@
 import { LoaderOneDemo } from "@/components/loader";
 import { UpdateNewsContent } from "./content";
 import { useNewsBySlug } from "@/hooks/use-news";
-import { ButtonHeaderField } from "@/components/buttons";
 
-export const UpdateNewsComponent = ({ slug }: { slug: string }) => {
+export const UpdateNewsComponent = ({
+  slug,
+  backHref = "/home/berita",
+}: {
+  slug: string;
+  backHref?: string;
+}) => {
   const { data, isLoading } = useNewsBySlug({ slug });
 
   if (isLoading) {
@@ -17,9 +22,6 @@ export const UpdateNewsComponent = ({ slug }: { slug: string }) => {
   }
 
   return (
-    <div>
-      <ButtonHeaderField href="/home/berita" label="Edit Berita" />
-      <UpdateNewsContent slug={slug} data={data} />
-    </div>
+    <UpdateNewsContent slug={slug} data={data} backHref={backHref} />
   );
 };
