@@ -143,7 +143,7 @@ export const ButtonCreate = ({
   return (
     <Link
       href={`/home/${catagory}/create`}
-      className={buttonVariants({ size: "sm" })}
+      className={cn(buttonVariants({ size: "sm" }))}
       aria-label={label}
     >
       <IconPlus aria-hidden />

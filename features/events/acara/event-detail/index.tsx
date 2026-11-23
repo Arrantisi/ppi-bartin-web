@@ -436,7 +436,10 @@ export const EventDetail = ({
                 </p>
               </div>
             </div>
-            <Link href="/login" className={buttonVariants({ size: "sm" })}>
+            <Link
+              href="/login"
+              className={cn(buttonVariants({ size: "sm" }))}
+            >
               Masuk
             </Link>
           </aside>
