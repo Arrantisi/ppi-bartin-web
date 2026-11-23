@@ -29,10 +29,10 @@ export const RenderAcara = () => {
   return (
     <Carousel
       autoplay
-      autoplayDelay={10000}
+      autoplayDelay={5000}
       opts={{
         align: "start",
-        loop: false,
+        loop: true,
       }}
       className="w-full"
     >
