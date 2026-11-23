@@ -111,7 +111,9 @@ const BeritaCatagory = () => {
                   className={cn(
                     "size-1.5 shrink-0 rounded-full",
                     newsCategoryDotStyles[
-                      item.ctg === "all" ? "neutral" : getNewsCategoryTone(item.ctg)
+                      item.ctg === "all"
+                        ? "neutral"
+                        : getNewsCategoryTone(item.ctg)
                     ],
                   )}
                 />
