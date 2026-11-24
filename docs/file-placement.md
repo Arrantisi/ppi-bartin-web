@@ -142,7 +142,7 @@ features/
 │   └── index.ts
 ├── finance/                  # Dashboard keuangan
 │   ├── components/
-│   │   ├── finance-dashboard.tsx       # Orkestrasi query + tab Ringkasan/Anggaran/Buku Besar/Wajib Kas
+│   │   ├── finance-dashboard.tsx       # Orkestrasi query; navigation="tabs" (home) | "sections" (dashboard)
 │   │   ├── finance-report-section.tsx   # Pembagi blok A/B/C/D + anchor untuk submenu sidebar
 │   │   ├── finance-metric-card.tsx     # Kartu satu metrik dengan pasangan nilai IDR + TRY
 │   │   ├── finance-fund-cards.tsx      # Blok A: saldo dana lembaga/darurat/abadi + legenda

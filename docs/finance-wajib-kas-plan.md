@@ -6,7 +6,7 @@
 
 Menampilkan tab `WAJIB KAS` dari spreadsheet DKE asli ke halaman `/home/finance`, sehingga seluruh anggota PPI Bartın bisa melihat siapa yang sudah dan belum membayar kas per bulan. Google Sheets tetap menjadi source of truth; tidak ada tabel Prisma baru.
 
-Bersamaan dengan itu, halaman keuangan menampung 4 blok (A saldo dana & arus kas, B penyerapan anggaran, C buku besar, D wajib kas). Sesuai koreksi 24 Nov 2026, collapse dipindah ke **sidebar dashboard** (`NavMain` → submenu "Keuangan"), bukan ke blok halaman. Koreksi lanjutan: agar `/home/finance` tidak numpuk, keempat blok ditampilkan sebagai **4 tab** (`Ringkasan`, `Anggaran`, `Buku Besar`, `Wajib Kas`) — lihat `docs/finance-tabs-plan.md`. Anchor (`#laporan-dasar`, `#penyerapan-anggaran`, `#buku-besar`, `#wajib-kas`) kini membuka tab yang bersesuaian.
+Bersamaan dengan itu, halaman keuangan menampung 4 blok (A saldo dana & arus kas, B penyerapan anggaran, C buku besar, D wajib kas). Sesuai koreksi 24 Nov 2026, collapse dipindah ke **sidebar dashboard** (`NavMain` → submenu "Keuangan"), bukan ke blok halaman. Koreksi lanjutan: `/home/finance` memakai **4 tab** (`Ringkasan`, `Anggaran`, `Buku Besar`, `Wajib Kas`) agar tidak numpuk, sedangkan `/dashboard/finance` kembali ke section bertumpuk supaya submenu collapse sidebar benar-benar dipakai — lihat `docs/finance-tabs-plan.md`. Anchor (`#laporan-dasar`, `#penyerapan-anggaran`, `#buku-besar`, `#wajib-kas`) membuka tab di home dan menggulir ke blok di dashboard sekaligus menandai submenu aktif.
 
 Keputusan produk 24 Nov 2026:
 - Bendahara **cukup memakai `/home/finance`** yang sudah memberi izin tulis. Layout `/dashboard` tidak dilonggarkan; halaman admin lain tetap `ADMIN`-only.
@@ -47,15 +47,15 @@ Validasi server: `parseWajibKasReport` hanya membaca dan menormalisasi nilai; ti
 
 File baru/diubah di `features/finance/components/`:
 
-- `finance-report-section.tsx` — pembagi blok bernomor A/B/C/D di dalam tiap panel tab, dengan `id` anchor untuk submenu sidebar.
+- `finance-report-section.tsx` — pembagi blok bernomor A/B/C/D (panel tab di home, section di dashboard), dengan `id` anchor untuk submenu sidebar.
 - `finance-wajib-kas.tsx` — ringkasan total/lunas/tunggakan, filter angkatan + status + pencarian nama, tabel 12 bulan dengan centang/dash serta teks status. Key tiap kartu blok memakai angkatan + index karena `penanggungJawab` bisa sama di beberapa angkatan.
-- `finance-dashboard.tsx` — memakai `components/ui/tabs.tsx` untuk 4 tab, `FinanceReportSection` A/B/C/D di dalamnya, dan meneruskan `financeQuery.data?.wajibKas`.
-- `components/skeletons/finance-skeleton.tsx` — skeleton bilah tab + satu panel aktif.
+- `finance-dashboard.tsx` — prop `navigation="tabs"` (home) atau `"sections"` (dashboard); `FinanceReportSection` A/B/C/D dipakai ulang di kedua mode dan meneruskan `financeQuery.data?.wajibKas`.
+- `components/skeletons/finance-skeleton.tsx` — skeleton mengikuti `navigation`: bilah tab + satu panel di home, beberapa placeholder blok di dashboard.
 
 Perubahan di luar fitur:
 
 - `components/ui/collapsible.tsx` — primitif collapse ala shadcn (mendukung `asChild` lewat `Slot` yang sudah ada; tanpa dependency baru).
-- `components/sidebar/nav-main.tsx` — `NavMain` merender submenu dengan `Collapsible`, chevron berputar, dan membuka otomatis saat item aktif.
+- `components/sidebar/nav-main.tsx` — `NavMain` merender submenu dengan `Collapsible`, chevron berputar, membuka otomatis saat item aktif, dan menyalakan submenu yang sesuai hash URL.
 - `components/sidebar/app-sidebar.tsx` — item "Keuangan" mendapat 5 submenu: ringkasan + anchor A/B/C/D.
 - `features/finance/components/finance-collapsible-section.tsx` dihapus karena collapse tidak lagi ada di halaman.
 
@@ -65,7 +65,8 @@ Perubahan di luar fitur:
 | --- | ----- | ------ |
 | /home/finance | semua anggota yang login & profil lengkap; lihat semua data, tulis hanya `BENDAHARA`/`ADMIN` | `HomeLayoutComponent` |
 | /dashboard/finance | `ADMIN` saja (tidak diubah) | `AdminManagementShell` |
-| /home/finance#wajib-kas · /dashboard/finance#laporan-dasar · #penyerapan-anggaran · #buku-besar · #wajib-kas | sesuai halaman; hash memilih tab | layout masing-masing |
+| /home/finance#wajib-kas | hash memilih tab Wajib Kas | `HomeLayoutComponent` |
+| /dashboard/finance#laporan-dasar · #penyerapan-anggaran · #buku-besar · #wajib-kas | hash menggulir ke blok + submenu sidebar aktif | `AdminManagementShell` |
 
 ## Security
 

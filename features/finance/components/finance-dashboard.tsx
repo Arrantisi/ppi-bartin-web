@@ -78,7 +78,13 @@ const HASH_TAB = Object.fromEntries(
   Object.entries(TAB_HASH).map(([tab, hash]) => [hash, tab as TFinanceTab]),
 ) as Record<string, TFinanceTab>;
 
-export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
+export function FinanceDashboard({
+  sheetUrl,
+  navigation = "tabs",
+}: {
+  sheetUrl?: string;
+  navigation?: "tabs" | "sections";
+}) {
   const financeQuery = useFinance();
   const roleQuery = useCurrentUserRole();
   const createMutation = useCreateFinanceTransaction();
@@ -87,26 +93,42 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
 
   const [filters, setFilters] = useState<TFinanceFilters>(EMPTY_FILTERS);
   const [action, setAction] = useState<TActionState>(CLOSED_ACTION);
-  const [deleteTarget, setDeleteTarget] =
-    useState<TFinanceTransaction | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<TFinanceTransaction | null>(
+    null,
+  );
   const [activeTab, setActiveTab] = useState<TFinanceTab>("ringkasan");
 
-  // Anchor dari sidebar /dashboard memilih tab yang bersesuaian.
+  const isDemo = financeQuery.data?.kpiSource === "dummy";
+  const isInitialLoading = financeQuery.isPending && !financeQuery.data;
+
+  // Home: hash memilih tab. Dashboard: hash submenu sidebar menggulir ke blok.
+  // `isInitialLoading` ikut jadi dependency agar anchor tetap bekerja bila hash
+  // diklik sebelum data Sheets selesai dimuat.
   useEffect(() => {
-    const syncTabFromHash = () => {
-      const tab = HASH_TAB[window.location.hash];
-      if (tab) setActiveTab(tab);
+    const syncFromHash = () => {
+      const hash = window.location.hash;
+      if (navigation === "tabs") {
+        const tab = HASH_TAB[hash];
+        if (tab) setActiveTab(tab);
+        return;
+      }
+      if (hash) {
+        document.getElementById(hash.slice(1))?.scrollIntoView({
+          block: "start",
+        });
+      }
     };
-    syncTabFromHash();
-    window.addEventListener("hashchange", syncTabFromHash);
-    return () => window.removeEventListener("hashchange", syncTabFromHash);
-  }, []);
+    syncFromHash();
+    window.addEventListener("hashchange", syncFromHash);
+    return () => window.removeEventListener("hashchange", syncFromHash);
+  }, [navigation, isInitialLoading]);
 
   useEffect(() => {
+    if (navigation !== "tabs") return;
     const hash = window.location.hash;
     if (!hash || HASH_TAB[hash] !== activeTab) return;
     document.getElementById(hash.slice(1))?.scrollIntoView({ block: "start" });
-  }, [activeTab]);
+  }, [activeTab, navigation]);
 
   const handleTabChange = useCallback((value: string) => {
     const tab = value in TAB_HASH ? (value as TFinanceTab) : "ringkasan";
@@ -118,11 +140,9 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
     );
   }, []);
 
-  const isDemo = financeQuery.data?.kpiSource === "dummy";
   const report = financeQuery.data?.report ?? null;
   const canWrite =
-    !isDemo &&
-    (roleQuery.data === "BENDAHARA" || roleQuery.data === "ADMIN");
+    !isDemo && (roleQuery.data === "BENDAHARA" || roleQuery.data === "ADMIN");
   const transactions = useMemo(
     () => financeQuery.data?.transactions ?? [],
     [financeQuery.data],
@@ -160,7 +180,9 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
   const suggestions = useMemo(() => {
     // Sheet asli memiliki transaksi tanpa kategori; Select tidak boleh menerima value="".
     const unique = (values: string[]) =>
-      Array.from(new Set(values.map((value) => value.trim()).filter(Boolean))).sort();
+      Array.from(
+        new Set(values.map((value) => value.trim()).filter(Boolean)),
+      ).sort();
     return {
       categories: unique(transactions.map((item) => item.kategori)),
       penanggungJawab: unique(transactions.map((item) => item.penanggungJawab)),
@@ -203,7 +225,106 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
     setDeleteTarget(null);
   }, [deleteMutation, deleteTarget]);
 
-  const isInitialLoading = financeQuery.isPending && !financeQuery.data;
+  // Satu definisi blok dipakai dua mode: tab di /home, section di /dashboard.
+  const sections = [
+    {
+      value: "ringkasan" as const,
+      label: "Ringkasan",
+      id: "laporan-dasar",
+      number: "A",
+      title: "Laporan Dasar",
+      description: "Saldo dana dan arus kas per mata uang",
+      content: (
+        <>
+          {report ? (
+            <FinanceFundCards funds={report.funds} legend={report.legend} />
+          ) : (
+            <p className="footnote text-text-secondary">
+              Ringkasan dana belum tersedia dari tab DASHBOARD; arus kas di
+              bawah dihitung dari buku besar.
+            </p>
+          )}
+          <FinanceSummaryCards
+            totals={financeQuery.data?.totals ?? EMPTY_TOTALS}
+          />
+        </>
+      ),
+    },
+    {
+      value: "anggaran" as const,
+      label: "Anggaran",
+      id: "penyerapan-anggaran",
+      number: "B",
+      title: "Laporan Penyerapan Anggaran",
+      description: "Pagu, realisasi, dan sisa anggaran per lembaga",
+      content:
+        report && report.budget.length > 0 ? (
+          <FinanceBudgetTable items={report.budget} />
+        ) : (
+          <p className="footnote text-text-secondary">
+            Data penyerapan anggaran belum tersedia di tab DASHBOARD.
+          </p>
+        ),
+    },
+    {
+      value: "buku-besar" as const,
+      label: "Buku Besar",
+      id: "buku-besar",
+      number: "C",
+      title: "Buku Besar Keuangan",
+      description: "Riwayat transaksi dari sheet bendahara",
+      content: (
+        <>
+          <FinanceToolbar
+            filters={filters}
+            onFiltersChange={setFilters}
+            categories={suggestions.categories}
+            canWrite={canWrite}
+            canRefresh={!isDemo}
+            isFetching={financeQuery.isFetching}
+            onRefresh={() => void financeQuery.refetch()}
+            onAdd={handleAdd}
+          />
+
+          {transactions.length === 0 ? (
+            <FinanceEmptyState
+              canWrite={canWrite}
+              sheetUrl={sheetUrl}
+              onAdd={handleAdd}
+            />
+          ) : (
+            <FinanceDataTable
+              data={filteredTransactions}
+              canWrite={canWrite}
+              onEdit={handleEdit}
+              onDelete={setDeleteTarget}
+            />
+          )}
+        </>
+      ),
+    },
+    {
+      value: "wajib-kas" as const,
+      label: "Wajib Kas",
+      id: "wajib-kas",
+      number: "D",
+      title: "Wajib Kas PPI Bartın",
+      description: "Siapa yang sudah dan belum membayar kas per bulan",
+      content: <FinanceWajibKas report={financeQuery.data?.wajibKas ?? null} />,
+    },
+  ];
+
+  const renderSection = (section: (typeof sections)[number]) => (
+    <FinanceReportSection
+      key={section.id}
+      id={section.id}
+      number={section.number}
+      title={section.title}
+      description={section.description}
+    >
+      {section.content}
+    </FinanceReportSection>
+  );
 
   return (
     <div className="space-y-6">
@@ -231,25 +352,27 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
             </p>
           )}
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col items-end gap-4">
+          <div className="flex flex-wrap items-center gap-2">
+            {!isDemo && financeQuery.isFetching && !isInitialLoading && (
+              <span className="footnote text-text-secondary">Memperbarui…</span>
+            )}
+            {isDemo ? (
+              <Badge variant="outline" className="text-warning">
+                Data contoh
+              </Badge>
+            ) : (
+              <>
+                <Badge variant="outline" className="text-text-secondary">
+                  KPI dari buku besar
+                </Badge>
+                <Badge variant="outline" className="text-text-secondary">
+                  Sinkron 5 detik
+                </Badge>
+              </>
+            )}
+          </div>
           <FinanceSheetLink href={sheetUrl} className="h-9 shrink-0 px-4" />
-          {!isDemo && financeQuery.isFetching && !isInitialLoading && (
-            <span className="footnote text-text-secondary">Memperbarui…</span>
-          )}
-          {isDemo ? (
-            <Badge variant="outline" className="text-warning">
-              Data contoh
-            </Badge>
-          ) : (
-            <>
-              <Badge variant="outline" className="text-text-secondary">
-                KPI dari buku besar
-              </Badge>
-              <Badge variant="outline" className="text-text-secondary">
-                Sinkron 5 detik
-              </Badge>
-            </>
-          )}
         </div>
       </header>
 
@@ -296,7 +419,9 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
           </div>
         </div>
       ) : isInitialLoading ? (
-        <FinanceSkeleton />
+        <FinanceSkeleton navigation={navigation} />
+      ) : navigation === "sections" ? (
+        <div className="space-y-8">{sections.map(renderSection)}</div>
       ) : (
         <Tabs
           value={activeTab}
@@ -307,115 +432,26 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
             variant="line"
             className="w-full justify-start gap-0 overflow-x-auto border-b border-border"
           >
-            <TabsTrigger
-              value="ringkasan"
-              className="rounded-none after:bg-text-primary data-[variant=line]:data-active:after:opacity-100"
-            >
-              Ringkasan
-            </TabsTrigger>
-            <TabsTrigger
-              value="anggaran"
-              className="rounded-none after:bg-text-primary data-[variant=line]:data-active:after:opacity-100"
-            >
-              Anggaran
-            </TabsTrigger>
-            <TabsTrigger
-              value="buku-besar"
-              className="rounded-none after:bg-text-primary data-[variant=line]:data-active:after:opacity-100"
-            >
-              Buku Besar
-            </TabsTrigger>
-            <TabsTrigger
-              value="wajib-kas"
-              className="rounded-none after:bg-text-primary data-[variant=line]:data-active:after:opacity-100"
-            >
-              Wajib Kas
-            </TabsTrigger>
+            {sections.map((section) => (
+              <TabsTrigger
+                key={section.value}
+                value={section.value}
+                className="rounded-none after:bg-text-primary data-[variant=line]:data-active:after:opacity-100"
+              >
+                {section.label}
+              </TabsTrigger>
+            ))}
           </TabsList>
 
-          <TabsContent value="ringkasan" className="pt-6">
-            <FinanceReportSection
-              id="laporan-dasar"
-              number="A"
-              title="Laporan Dasar"
-              description="Saldo dana dan arus kas per mata uang"
+          {sections.map((section) => (
+            <TabsContent
+              key={section.value}
+              value={section.value}
+              className="pt-6"
             >
-              {report ? (
-                <FinanceFundCards funds={report.funds} legend={report.legend} />
-              ) : (
-                <p className="footnote text-text-secondary">
-                  Ringkasan dana belum tersedia dari tab DASHBOARD; arus kas di
-                  bawah dihitung dari buku besar.
-                </p>
-              )}
-              <FinanceSummaryCards
-                totals={financeQuery.data?.totals ?? EMPTY_TOTALS}
-              />
-            </FinanceReportSection>
-          </TabsContent>
-
-          <TabsContent value="anggaran" className="pt-6">
-            <FinanceReportSection
-              id="penyerapan-anggaran"
-              number="B"
-              title="Laporan Penyerapan Anggaran"
-              description="Pagu, realisasi, dan sisa anggaran per lembaga"
-            >
-              {report && report.budget.length > 0 ? (
-                <FinanceBudgetTable items={report.budget} />
-              ) : (
-                <p className="footnote text-text-secondary">
-                  Data penyerapan anggaran belum tersedia di tab DASHBOARD.
-                </p>
-              )}
-            </FinanceReportSection>
-          </TabsContent>
-
-          <TabsContent value="buku-besar" className="pt-6">
-            <FinanceReportSection
-              id="buku-besar"
-              number="C"
-              title="Buku Besar Keuangan"
-              description="Riwayat transaksi dari sheet bendahara"
-            >
-              <FinanceToolbar
-                filters={filters}
-                onFiltersChange={setFilters}
-                categories={suggestions.categories}
-                canWrite={canWrite}
-                canRefresh={!isDemo}
-                isFetching={financeQuery.isFetching}
-                onRefresh={() => void financeQuery.refetch()}
-                onAdd={handleAdd}
-              />
-
-              {transactions.length === 0 ? (
-                <FinanceEmptyState
-                  canWrite={canWrite}
-                  sheetUrl={sheetUrl}
-                  onAdd={handleAdd}
-                />
-              ) : (
-                <FinanceDataTable
-                  data={filteredTransactions}
-                  canWrite={canWrite}
-                  onEdit={handleEdit}
-                  onDelete={setDeleteTarget}
-                />
-              )}
-            </FinanceReportSection>
-          </TabsContent>
-
-          <TabsContent value="wajib-kas" className="pt-6">
-            <FinanceReportSection
-              id="wajib-kas"
-              number="D"
-              title="Wajib Kas PPI Bartın"
-              description="Siapa yang sudah dan belum membayar kas per bulan"
-            >
-              <FinanceWajibKas report={financeQuery.data?.wajibKas ?? null} />
-            </FinanceReportSection>
-          </TabsContent>
+              {renderSection(section)}
+            </TabsContent>
+          ))}
         </Tabs>
       )}
 

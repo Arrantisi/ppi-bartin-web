@@ -144,7 +144,7 @@ features/account/profile/tab-pengaturan.tsx     # Pengaturan: baris Panel Admin 
 | /dashboard/berita/create | ADMIN | DashboardLayout |
 | /dashboard/tickets | ADMIN | DashboardLayout |
 | /dashboard/tickets/[id] | ADMIN | DashboardLayout |
-| /dashboard/finance | ADMIN | DashboardLayout |
+| /dashboard/finance | ADMIN | DashboardLayout; empat blok laporan bertumpuk, dinavigasi lewat submenu collapse sidebar "Keuangan" |
 | /dashboard/settings | ADMIN | DashboardLayout |
 
 `DashboardLayout` diberi role check `ADMIN` sehingga seluruh subtree `/dashboard` terlindungi di satu tempat. Data `getAdmin*()` mengulang pengecekan, dan halaman overview juga memanggil `getCurrentUserRole()` secara eksplisit. Halaman manajemen lain bergantung pada role check layout + data function; server action selalu mengulang pengecekan (defense in depth).

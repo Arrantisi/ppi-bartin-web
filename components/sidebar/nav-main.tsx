@@ -37,9 +37,13 @@ type TNavItem = {
 function NavCollapsibleItem({
   item,
   active,
+  activeHash,
+  pathname,
 }: {
   item: TNavItem;
   active: boolean;
+  activeHash: string;
+  pathname: string;
 }) {
   const [open, setOpen] = React.useState(active);
 
@@ -69,15 +73,39 @@ function NavCollapsibleItem({
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub>
-            {subItems.map((subItem) => (
-              <SidebarMenuSubItem key={subItem.title}>
-                <SidebarMenuSubButton asChild>
-                  <Link href={subItem.url}>
-                    <span>{subItem.title}</span>
-                  </Link>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            ))}
+            {subItems.map((subItem) => {
+              // Hash hanya menentukan submenu aktif bila induknya memang aktif,
+              // sehingga anchor finance tidak menyalahi halaman lain.
+              const subActive =
+                active &&
+                (activeHash
+                  ? subItem.url.endsWith(activeHash)
+                  : subItem.url === item.url);
+
+              // Router Next memakai pushState yang tidak memicu `hashchange`.
+              // Anchor dalam halaman yang sama pakai <a> native supaya hash,
+              // status submenu, dan scroll dashboard semuanya ikut berubah.
+              const hashIndex = subItem.url.indexOf("#");
+              const samePageAnchor =
+                hashIndex !== -1 &&
+                subItem.url.slice(0, hashIndex) === pathname;
+
+              return (
+                <SidebarMenuSubItem key={subItem.title}>
+                  <SidebarMenuSubButton asChild isActive={subActive}>
+                    {samePageAnchor ? (
+                      <a href={subItem.url}>
+                        <span>{subItem.title}</span>
+                      </a>
+                    ) : (
+                      <Link href={subItem.url}>
+                        <span>{subItem.title}</span>
+                      </Link>
+                    )}
+                  </SidebarMenuSubButton>
+                </SidebarMenuSubItem>
+              );
+            })}
           </SidebarMenuSub>
         </CollapsibleContent>
       </SidebarMenuItem>
@@ -87,6 +115,14 @@ function NavCollapsibleItem({
 
 export function NavMain({ items }: { items: TNavItem[] }) {
   const pathname = usePathname();
+  const [activeHash, setActiveHash] = React.useState("");
+
+  React.useEffect(() => {
+    const syncHash = () => setActiveHash(window.location.hash);
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, []);
 
   const isItemActive = (item: TNavItem) => {
     if (item.isActive !== undefined) return item.isActive;
@@ -118,7 +154,13 @@ export function NavMain({ items }: { items: TNavItem[] }) {
           }
 
           return (
-            <NavCollapsibleItem key={item.title} item={item} active={active} />
+            <NavCollapsibleItem
+              key={item.title}
+              item={item}
+              active={active}
+              activeHash={activeHash}
+              pathname={pathname}
+            />
           );
         })}
       </SidebarMenu>

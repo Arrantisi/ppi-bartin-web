@@ -2,5 +2,10 @@ import { FinanceDashboard } from "@/features/finance/components/finance-dashboar
 import { env } from "@/lib/env";
 
 export function AdminFinancePage() {
-  return <FinanceDashboard sheetUrl={env.NEXT_PUBLIC_FINANCE_SHEET_URL} />;
+  return (
+    <FinanceDashboard
+      sheetUrl={env.NEXT_PUBLIC_FINANCE_SHEET_URL}
+      navigation="sections"
+    />
+  );
 }
