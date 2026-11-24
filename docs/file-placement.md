@@ -163,7 +163,9 @@ features/
 ├── home/
 │   ├── events/
 │   ├── news/
-│   ├── finance-shortcut.tsx
+│   ├── content.tsx             # Grid 12 kolom + Suspense untuk ringkasan keuangan
+│   ├── finance-shortcut.tsx    # Server async: getFinanceSnapshot + fallback netral
+│   ├── finance-summary.tsx     # Ringkasan DKE server-only (4 kartu + transaksi terbaru)
 │   └── home-page.tsx
 ├── uploads/
 ├── dashboard/

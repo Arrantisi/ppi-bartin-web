@@ -1,3 +1,6 @@
+import { Suspense } from "react";
+
+import { FinanceHomeSkeleton } from "@/components/skeletons/finance-home-skeleton";
 import AcaraMendatang from "./events/acara-mendatang";
 import { FinanceShortcut } from "./finance-shortcut";
 import BeritaTerbaru from "./news/berita-terbaru";
@@ -6,7 +9,9 @@ export const HomeContent = () => {
   return (
     <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-12">
       <div className="lg:col-span-12">
-        <FinanceShortcut />
+        <Suspense fallback={<FinanceHomeSkeleton />}>
+          <FinanceShortcut />
+        </Suspense>
       </div>
       <div className="lg:col-span-7">
         <AcaraMendatang />
