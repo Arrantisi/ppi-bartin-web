@@ -1,12 +1,19 @@
 import type {
-  TArusKas,
+  TBudgetRealization,
+  TFinanceDashboardReport,
+  TFinanceFund,
+  TFinanceLegend,
   TFinanceTotals,
   TFinanceTransaction,
+  TWajibKasBlock,
+  TWajibKasMonth,
+  TWajibKasReport,
+  TArusKas,
   TMataUang,
 } from "@/types/finance";
 
-/** Baris pertama data di tab `BUKU BESAR KEUANGAN` (baris 1–6 adalah banner + header). */
-export const FINANCE_DATA_START_ROW = 7;
+/** Baris pertama data di tab `BUKU BESAR KEUANGAN` (baris 1–7 adalah banner + header). */
+export const FINANCE_DATA_START_ROW = 8;
 
 const INDONESIAN_MONTHS = [
   "Januari",
@@ -26,7 +33,7 @@ const INDONESIAN_MONTHS = [
 type TFinanceCell = unknown;
 
 type TParseRowsOptions = {
-  /** Nomor baris Sheets untuk elemen pertama array. Default: 7. */
+  /** Nomor baris Sheets untuk elemen pertama array. Default: 8. */
   firstRowNumber?: number;
 };
 
@@ -97,8 +104,9 @@ export function monthNameFromIsoDate(isoDate: string): string {
 }
 
 /**
- * Membersihkan `Rp10.242.331`, `₺1.500,00`, `Rp45.000`, dll. menjadi number.
- * Titik diperlakukan sebagai pemisah ribuan; koma sebagai pemisah desimal.
+ * Membersihkan format asli sheet menjadi number:
+ * `Rp10,242,331` (koma ribuan), `Rp45.000` (titik ribuan),
+ * `₺450.00` (titik desimal) dan `₺1.500,00` (titik ribuan + koma desimal).
  */
 export function parseFinanceCurrency(
   value: TFinanceCell,
@@ -116,25 +124,33 @@ export function parseFinanceCurrency(
   body = body.replace(/-/g, "");
   if (!body || !/\d/.test(body)) return 0;
 
-  const lastDot = body.lastIndexOf(".");
-  const lastComma = body.lastIndexOf(",");
+  const dotCount = (body.match(/\./g) ?? []).length;
+  const commaCount = (body.match(/,/g) ?? []).length;
 
   let normalized: string;
-  if (lastDot !== -1 && lastComma !== -1) {
-    const decimalSeparator = lastDot > lastComma ? "." : ",";
+  if (dotCount > 0 && commaCount > 0) {
+    const decimalSeparator = body.lastIndexOf(".") > body.lastIndexOf(",") ? "." : ",";
     const thousandSeparator = decimalSeparator === "." ? "," : ".";
     normalized = body
       .split(thousandSeparator)
       .join("")
       .replace(decimalSeparator, ".");
-  } else if (lastComma !== -1) {
-    normalized = body.replace(/,/g, ".");
-  } else if (lastDot !== -1) {
-    const digitsAfterDot = body.slice(lastDot + 1);
-    const dotCount = body.split(".").length - 1;
-    const looksDecimal =
-      dotCount === 1 && /^\d{1,2}$/.test(digitsAfterDot) && currency === "TRY";
-    normalized = looksDecimal ? body : body.replace(/\./g, "");
+  } else if (commaCount > 1) {
+    normalized = body.replace(/,/g, "");
+  } else if (dotCount > 1) {
+    normalized = body.replace(/\./g, "");
+  } else if (commaCount === 1) {
+    const trailing = body.slice(body.lastIndexOf(",") + 1);
+    normalized =
+      currency === "IDR" || /^\d{3}$/.test(trailing)
+        ? body.replace(",", "")
+        : body.replace(",", ".");
+  } else if (dotCount === 1) {
+    const trailing = body.slice(body.lastIndexOf(".") + 1);
+    normalized =
+      currency === "IDR" || /^\d{3}$/.test(trailing)
+        ? body.replace(".", "")
+        : body;
   } else {
     normalized = body;
   }
@@ -225,16 +241,31 @@ export function parseFinanceRows(
 }
 
 /**
- * Helper untuk hasil `values.get` penuh A:O: memotong baris 1–6 sebelum parsing.
- * Kalau sudah mengambil `A7:O`, gunakan `parseFinanceRows` langsung.
+ * Helper untuk hasil `values.get` penuh A:P: memotong baris 1–7 sebelum parsing.
+ * Kalau sudah mengambil `B8:P`, gunakan `parseFinanceRows` langsung.
  */
 export function parseFinanceSheetValues(
   rows: readonly (readonly TFinanceCell[])[],
-  headerRowCount = 6,
+  headerRowCount = 7,
 ): TFinanceTransaction[] {
   return parseFinanceRows(rows.slice(headerRowCount), {
     firstRowNumber: headerRowCount + 1,
   });
+}
+
+/**
+ * Baris kosong pertama setelah data terakhir pada rentang C:P.
+ * Baris yang hanya berisi NO dari `=sequence(250)` tidak dihitung sebagai data.
+ */
+export function findNextFinanceRow(
+  rows: readonly (readonly TFinanceCell[])[],
+  firstRowNumber = FINANCE_DATA_START_ROW,
+): number {
+  let lastDataIndex = -1;
+  rows.forEach((row, index) => {
+    if (row.some((cell) => cellText(cell) !== "")) lastDataIndex = index;
+  });
+  return firstRowNumber + lastDataIndex + 1;
 }
 
 const roundCurrency = (value: number): number =>
@@ -277,6 +308,235 @@ export function computeFinanceTotals(
   };
 }
 
+/**
+ * Mengambil satu sel dari hasil `values.get`.
+ * Baris memakai nomor sheet 1-based, kolom 0-based (A = 0).
+ */
+const sheetCell = (
+  rows: readonly (readonly TFinanceCell[])[],
+  row: number,
+  column: number,
+): TFinanceCell => rows[row - 1]?.[column] ?? "";
+
+/**
+ * Parse blok ringkasan dari tab `DASHBOARD` bendahara.
+ *
+ * Layout asli yang dipakai:
+ * - saldo dana: label baris 8, IDR baris 10, TRY baris 12 pada kolom E/J/S;
+ * - arus kas: label baris 15, IDR baris 17, TRY baris 19 pada kolom E/J/S;
+ * - legenda: E23:F25;
+ * - penyerapan anggaran: header baris 30, data baris 32, 34, … dengan
+ *   NO di E, LEMBAGA di F/G, PAGU di M, REALISASI di S, SISA di Y.
+ *
+ * Mengembalikan `null` kalau tidak ada angka sama sekali, supaya caller bisa
+ * jatuh ke perhitungan buku besar tanpa menampilkan kartu kosong.
+ */
+export function parseFinanceDashboardReport(
+  rows: readonly (readonly TFinanceCell[])[],
+): TFinanceDashboardReport | null {
+  const fundKeys = ["lembaga", "darurat", "abadi"] as const;
+  const fundLabels = [
+    "Saldo Dana Lembaga",
+    "Saldo Dana Darurat",
+    "Saldo Dana Abadi",
+  ] as const;
+  const fundMarkers = ["*", "**", "***"] as const;
+  // Kolom E, J, S pada sheet.
+  const summaryColumns = [4, 9, 18] as const;
+
+  const funds: TFinanceFund[] = fundKeys.map((key, index) => ({
+    key,
+    label: fundLabels[index],
+    marker: fundMarkers[index],
+    idr: parseFinanceCurrency(
+      sheetCell(rows, 10, summaryColumns[index]),
+      "IDR",
+    ),
+    try: parseFinanceCurrency(
+      sheetCell(rows, 12, summaryColumns[index]),
+      "TRY",
+    ),
+  }));
+
+  const totals: TFinanceTotals = {
+    pemasukanIdr: parseFinanceCurrency(sheetCell(rows, 17, 4), "IDR"),
+    pengeluaranIdr: parseFinanceCurrency(sheetCell(rows, 17, 9), "IDR"),
+    saldoIdr: parseFinanceCurrency(sheetCell(rows, 17, 18), "IDR"),
+    pemasukanTry: parseFinanceCurrency(sheetCell(rows, 19, 4), "TRY"),
+    pengeluaranTry: parseFinanceCurrency(sheetCell(rows, 19, 9), "TRY"),
+    saldoTry: parseFinanceCurrency(sheetCell(rows, 19, 18), "TRY"),
+  };
+
+  const budget: TBudgetRealization[] = [];
+  for (let row = 32; row <= rows.length; row += 2) {
+    const no = Number(cellText(sheetCell(rows, row, 4)));
+    const lembaga = cellText(sheetCell(rows, row, 5));
+    const unit = cellText(sheetCell(rows, row, 6));
+    const label = lembaga || unit;
+    if (!Number.isInteger(no) || no <= 0 || !label) continue;
+
+    const pagu = parseFinanceCurrency(sheetCell(rows, row, 12), "IDR");
+    const realisasi = parseFinanceCurrency(sheetCell(rows, row, 18), "IDR");
+    const sisaCell = parseFinanceCurrency(sheetCell(rows, row, 24), "IDR");
+
+    budget.push({
+      no,
+      lembaga: label,
+      unit: lembaga ? unit : "",
+      pagu,
+      realisasi,
+      // Kolom Y adalah rumus; kalau belum terhitung, turunkan dari Pagu − Realisasi.
+      sisa: sisaCell || roundCurrency(pagu - realisasi),
+    });
+  }
+
+  const legend: TFinanceLegend[] = [23, 24, 25].flatMap((row) => {
+    const marker = cellText(sheetCell(rows, row, 4));
+    const description = cellText(sheetCell(rows, row, 5));
+    return marker && description ? [{ marker, description }] : [];
+  });
+
+  const hasData =
+    funds.some((fund) => fund.idr !== 0 || fund.try !== 0) ||
+    budget.length > 0 ||
+    Object.values(totals).some((value) => value !== 0);
+  if (!hasData) return null;
+
+  return {
+    title: cellText(sheetCell(rows, 1, 1)),
+    department: cellText(sheetCell(rows, 2, 1)),
+    period: cellText(sheetCell(rows, 3, 1)),
+    funds,
+    legend,
+    totals,
+    budget,
+  };
+}
+
+/** Dua lajur blok pada tab `WAJIB KAS`: kiri B:R dan kanan T:AJ. */
+const WAJIB_KAS_LANES = [
+  { no: 1, angkatan: 2, nama: 3, monthStart: 4, tunggakan: 16 },
+  { no: 19, angkatan: 20, nama: 21, monthStart: 22, tunggakan: 34 },
+] as const;
+
+const WAJIB_KAS_MONTHS = [
+  "FEB",
+  "MAR",
+  "APR",
+  "MEI",
+  "JUN",
+  "JUL",
+  "AGU",
+  "SEP",
+  "OKT",
+  "NOV",
+  "DES",
+  "JAN",
+] as const;
+
+const isKasPaid = (value: TFinanceCell): boolean => {
+  if (typeof value === "boolean") return value;
+  const raw = cellText(value).toUpperCase();
+  return raw === "TRUE" || raw === "1" || raw === "✓" || raw === "LUNAS";
+};
+
+/**
+ * Parse tab `WAJIB KAS` bendahara menjadi blok angkatan dan status per anggota.
+ *
+ * Setiap lajur diawali baris `Penanggung Jawab :`, lalu header `NO | ANGKATAN |
+ * NAMA | 12 bulan | TUNGGAKAN`. Baris tanpa ketiga field utama diabaikan,
+ * sehingga header dan baris kosong tidak masuk ke hasil.
+ */
+export function parseWajibKasReport(
+  rows: readonly (readonly TFinanceCell[])[],
+): TWajibKasReport | null {
+  const blocks: TWajibKasBlock[] = [];
+
+  WAJIB_KAS_LANES.forEach((lane) => {
+    let current: TWajibKasBlock | null = null;
+
+    rows.forEach((row, index) => {
+      const rowNumber = index + 1;
+      const marker = cellText(sheetCell(rows, rowNumber, lane.no));
+
+      if (marker === "Penanggung Jawab :") {
+        current = {
+          penanggungJawab: cellText(sheetCell(rows, rowNumber, lane.nama)),
+          members: [],
+        };
+        blocks.push(current);
+        return;
+      }
+
+      if (!current) return;
+
+      const no = Number(marker);
+      const angkatan = Number(
+        cellText(sheetCell(rows, rowNumber, lane.angkatan)),
+      );
+      const nama = cellText(sheetCell(rows, rowNumber, lane.nama));
+      if (!Number.isInteger(no) || no <= 0) return;
+      if (!Number.isInteger(angkatan) || angkatan < 1900) return;
+      if (!nama) return;
+
+      const months: TWajibKasMonth[] = WAJIB_KAS_MONTHS.map(
+        (fallbackLabel, offset) => ({
+          label:
+            cellText(sheetCell(rows, 8, lane.monthStart + offset)) ||
+            fallbackLabel,
+          paid: isKasPaid(
+            sheetCell(rows, rowNumber, lane.monthStart + offset),
+          ),
+        }),
+      );
+
+      const unpaidMonths = months.filter((month) => !month.paid).length;
+      const tunggakanText = cellText(
+        sheetCell(rows, rowNumber, lane.tunggakan),
+      );
+      const rawTunggakan =
+        tunggakanText === "" ? Number.NaN : Number(tunggakanText);
+      const tunggakan = Number.isFinite(rawTunggakan)
+        ? rawTunggakan
+        : unpaidMonths;
+
+      current.members.push({
+        no,
+        angkatan,
+        nama,
+        months,
+        tunggakan,
+        status: tunggakan > 0 ? "tunggakan" : "lunas",
+      });
+    });
+  });
+
+  const filledBlocks = blocks
+    .filter((block) => block.members.length > 0)
+    // Sheet menyusun dua lajur bersebelahan; urutkan kembali oleh angkatan
+    // supaya blok 2020, 2021, 2022, … tampil berurutan di UI.
+    .sort(
+      (a, b) =>
+        a.members[0].angkatan - b.members[0].angkatan ||
+        a.members[0].no - b.members[0].no,
+    );
+  if (filledBlocks.length === 0) return null;
+
+  const members = filledBlocks.flatMap((block) => block.members);
+  return {
+    title: cellText(sheetCell(rows, 1, 1)),
+    department: cellText(sheetCell(rows, 2, 1)),
+    period: cellText(sheetCell(rows, 3, 1)),
+    blocks: filledBlocks,
+    summary: {
+      total: members.length,
+      lunas: members.filter((member) => member.status === "lunas").length,
+      tunggakan: members.filter((member) => member.status === "tunggakan")
+        .length,
+    },
+  };
+}
+
 /** Format angka sesuai mata uang sheet (IDR tanpa desimal, TRY dua desimal). */
 export function formatFinanceAmount(
   value: number,
@@ -303,11 +563,14 @@ export function escapeFinanceCell(value: string): string {
   return /^[=+\-@]/.test(value) ? `'${value}` : value;
 }
 
+/**
+ * Nilai untuk kolom C:P. Kolom A (spacer) dan B (NO dari `=sequence(250)`)
+ * sengaja tidak ditulis supaya nomor otomatis bendahara tetap bekerja.
+ */
 export function buildFinanceSheetRow(
   transaction: TFinanceTransaction,
 ): string[] {
   return [
-    String(transaction.no),
     formatDateForSheet(transaction.tanggal),
     transaction.bulanPelaporan,
     escapeFinanceCell(transaction.keterangan),

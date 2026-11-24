@@ -81,7 +81,7 @@ Hanya komponen yang bisa dipakai ulang lintas fitur. Jangan taruh komponen spesi
 
 ```
 components/
-├── ui/               # Atomic: button, input, dialog, select, card, badge, table, sidebar, dll.
+├── ui/               # Atomic: button, input, dialog, select, card, badge, table, sidebar, collapsible, dll.
 ├── layout/           # Layout wrappers: home-layout, responsive-page-container, content-form-shell (shell form 2 kolom)
 ├── shared/           # Cross-cutting: share-popover, delete-dialog, nav-main-event, finance-sheet-link, content-search, content-pagination, content-page-header (header editorial daftar), news-editorial (hero + sidebar + grid daftar berita)
 ├── cards/            # Reusable cards: card-event, card-news
@@ -89,7 +89,7 @@ components/
 ├── providers/        # React context: realtime, tanstack-query, theme
 ├── sections/         # Landing page: navbar, hero, features, footer
 ├── skeletons/        # Loading skeletons (finance, admin-* per halaman /dashboard)
-├── sidebar/          # App sidebar: nav-user, nav-main, app-sidebar
+├── sidebar/          # App sidebar: nav-main (submenu collapsible), nav-user, app-sidebar
 ├── dashboard/        # Dashboard: data-table, columns
 ├── dates/            # Date picker
 ├── animate-ui/       # Animated: dialog, alert-dialog, tooltip
@@ -142,8 +142,13 @@ features/
 │   └── index.ts
 ├── finance/                  # Dashboard keuangan
 │   ├── components/
-│   │   ├── finance-dashboard.tsx       # Orkestrasi query, filter, dialog
-│   │   ├── finance-summary-cards.tsx   # 6 kartu KPI IDR + TRY
+│   │   ├── finance-dashboard.tsx       # Orkestrasi query, filter, dialog, blok laporan A/B/C/D
+│   │   ├── finance-report-section.tsx   # Pembagi blok A/B/C/D + anchor untuk submenu sidebar
+│   │   ├── finance-metric-card.tsx     # Kartu satu metrik dengan pasangan nilai IDR + TRY
+│   │   ├── finance-fund-cards.tsx      # Blok A: saldo dana lembaga/darurat/abadi + legenda
+│   │   ├── finance-summary-cards.tsx   # Blok A: pendapatan/pengeluaran/total saldo
+│   │   ├── finance-budget-table.tsx    # Blok B: penyerapan anggaran per lembaga
+│   │   ├── finance-wajib-kas.tsx       # Blok D: rekap + tabel status kas anggota (filter)
 │   │   ├── finance-toolbar.tsx         # Search + filter + tombol Tambah
 │   │   ├── finance-data-table.tsx      # Tabel + pagination
 │   │   ├── finance-columns.tsx         # Definisi kolom TanStack Table
@@ -224,7 +229,7 @@ types/
 ├── index.ts          # Tparticipants, TupdateEventProps, TCatagory, TServerPrompt, dll.
 ├── admin-dashboard.ts # Snapshot KPI, TAdminTablePage<T>, baris & detail admin
 ├── calendar.ts       # CalendarEvent, Category, ViewType, DialogState
-└── finance.ts        # TFinanceTransaction, TFinanceTotals, TFinanceSnapshot
+└── finance.ts        # TFinanceTransaction, TFinanceTotals, TFinanceDashboardReport, TWajibKasReport, TFinanceSnapshot
 ```
 
 ---
@@ -238,7 +243,7 @@ utils/
 ├── admin-dashboard.ts      # toPercent, buildDailyTrend, formatDateFull, firstSearchParam, parseAdminPage (pure)
 ├── calendar-utils.ts       # date-fns helpers untuk calendar
 ├── date-format.ts          # Format tanggal umum
-├── finance-parser.ts       # Parser tanggal/nominal/link + total BUKU BESAR KEUANGAN
+├── finance-parser.ts       # Parser tanggal/nominal/link, ringkasan DASHBOARD, WAJIB KAS, total BUKU BESAR KEUANGAN
 ├── slug.ts                 # Slug generation
 ├── image-url.ts            # URL image helpers
 ├── copy-link.ts            # Clipboard helpers
@@ -306,7 +311,7 @@ lib/
 ├── uploadthing/       # UploadThing config
 ├── push/              # Web push helpers
 ├── generated/         # Auto-generated Prisma client
-├── google-sheets.ts   # Phase 3: auth + batchGet/append/update/clear Sheets
+├── google-sheets.ts   # Phase 3: auth + batchGet 3 tab (buku besar, DASHBOARD, WAJIB KAS) + update/clear
 ├── utils.ts           # General lib helpers
 └── og.ts              # Open Graph helpers
 ```

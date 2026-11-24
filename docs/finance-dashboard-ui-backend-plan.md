@@ -1,6 +1,6 @@
 # Financial Dashboard UI/UX & Backend — Plan
 
-> status: done (implementasi selesai; verifikasi produksi menunggu kredensial Google Sheets)
+> status: done (kode selesai); read path produksi terverifikasi dengan service account baru. Sejak 24 Nov 2026 env mengarah ke sheet DKE asli, layout sheet dipetakan ulang, dan service account terverifikasi sebagai Editor. UI mengikuti sheet asli penuh dalam empat blok A/B/C/D yang selalu terlihat; collapse ada di sidebar dashboard (submenu "Keuangan"). Parser `DASHBOARD` dan `WAJIB KAS` terverifikasi pada data asli. Uji CRUD penuh di sheet asli masih menunggu baris uji dari bendahara.
 
 ## Overview
 
@@ -8,16 +8,21 @@ Rencana implementasi lanjutan Phase 3–4 untuk `Financial Dashboard`. Tujuannya
 
 File plan ini melengkapi `docs/ppi_bartin_financial_dashboard_plan.md` dengan detail **tampilan**, **interaksi**, dan **alur backend** sebelum kode ditulis.
 
-Catatan implementasi: skrip `build` di `package.json` menaikkan `NODE_OPTIONS=--max-old-space-size=8192` karena tipe dari `googleapis` membuat pemeriksaan tipe Next.js kehabisan memori pada batas default 2 GB. Prasyarat eksternal yang masih menunggu admin: env `GOOGLE_*`, sheet dibagikan ke service account, dan email user bendahara. Migrasi enum `BENDAHARA` sudah dijalankan ke database (21 Nov 2026).
+Catatan implementasi: skrip `build` di `package.json` menaikkan `NODE_OPTIONS=--max-old-space-size=8192` karena tipe dari `googleapis` membuat pemeriksaan tipe Next.js kehabisan memori pada batas default 2 GB. Prasyarat eksternal yang masih menunggu admin: service account baru (project lama sudah dihapus), sheet dibagikan sebagai Editor, dan email user bendahara. Migrasi enum `BENDAHARA` sudah dijalankan ke database (21 Nov 2026).
+
+Verifikasi lapangan 23 Nov 2026: layout asli ternyata berbeda dari asumsi awal — kolom A = spacer, NO di kolom B dari `=sequence(250)`, subheader baris 7, data mulai baris 8, dan tautan dokumen di kolom P. Range baca/tulis sudah disesuaikan. Service account pertama berhasil membaca lalu project GCP-nya dihapus (`403 Project #351538191773 has been deleted`). Service account pengganti sudah aktif: helper produksi berhasil membaca 193 transaksi dari sheet asli. Uji append/update/clear lolos di spreadsheet dummy sebagai sandbox. Uji CRUD di dummy menemukan bug: `values.append` menggeser penulisan ke kolom B karena `=sequence(250)`, sehingga create diubah memakai `values.update` ke baris kosong pertama (helper murni `findNextFinanceRow` + unit test). Setelah perbaikan, create → baris 11, update, dan clear semuanya lolos.
+
+Verifikasi lanjutan 24 Nov 2026: user mengarahkan env kembali ke spreadsheet DKE asli. Metadata sheet: 3 tab (`DASHBOARD` 176×39, `BUKU BESAR KEUANGAN` 258×17, `WAJIB KAS` 132×37), locale `en_US`. Probe `values.clear` pada sel kosong `Q250` **berhasil**, jadi service account sekarang Editor (hak tulis tidak lagi 403). Buku besar berisi 196 baris: Debit 183/Kredit 13, IDR 123/TRY 73, dominasi `Iuran Kas Anggota` (174) dan `Transfer` (195), 81 transaksi bertautan nota. Layout `DASHBOARD` asli juga dipetakan: blok saldo dana di baris 8–12 (`E/J/S`), blok pendapatan–pengeluaran–total saldo di baris 15–19 (`E/J/S`), legenda di baris 23–25, dan `LAPORAN PENYERAPAN ANGGARAN` di baris 28–40+ dengan kolom `PAGU AWAL`/`REALISASI BELANJA`/`SISA ANGGARAN`. Detail alamat sel ada di `docs/ppi_bartin_financial_dashboard_plan.md`. Temuan ini lalu diterapkan ke UI: user memilih opsi "ikuti sheet asli penuh", sehingga dashboard memakai empat blok bernomor A/B/C/D dan angka KPI dibaca langsung dari sel rumus `DASHBOARD`. Parser `DASHBOARD` diuji terhadap data asli: 14 baris penyerapan anggaran terbaca dengan benar. Tab `WAJIB KAS` juga ikut diparse: 6 blok, 203 anggota angkatan 2020–2025, 75 lunas dan 128 tunggakan.
 
 Keputusan yang dipakai:
 
 - Protected route `/home/finance` dengan `HomeLayoutComponent`.
 - Role penulis: `BENDAHARA` + `ADMIN`; role lain hanya read-only.
 - Email bendahara belum ditentukan → enum sudah disiapkan, update user menyusul.
-- KPI fallback dihitung dari buku besar sampai alamat sel `DASHBOARD` dikirim.
+- KPI dibaca langsung dari sel `DASHBOARD` (24 Nov 2026). `computeFinanceTotals` dari buku besar dipertahankan sebagai fallback bila parser tidak menemukan data, dan sumbernya ditampilkan di badge header.
 - Total TRY dan IDR ditampilkan terpisah, tanpa konversi.
-- Tab `WAJIB KAS` tidak masuk v1.
+- Tab `WAJIB KAS` tampil sebagai blok D dan detail nama/statusnya bisa dilihat semua anggota yang login (keputusan 24 Nov 2026).
+- Bendahara cukup memakai `/home/finance` untuk menulis; layout `/dashboard` sengaja tidak dilonggarkan dari `ADMIN`-only.
 - Hapus = `values.clear` pada baris, bukan delete baris fisik.
 - Mode dummy: `FINANCE_USE_DUMMY_DATA="true"` membuat dashboard menampilkan data contoh berlabel. Mode ini **read-only** — semua mutasi ditolak. Dipakai hanya untuk preview sebelum kredensial Google tersedia.
 
@@ -65,16 +70,18 @@ Jika `FINANCE_USE_DUMMY_DATA="true"`, `getFinanceSnapshot()` mengembalikan `TFin
 
 1. `GET /api/finance` → `studentAccount()` → `getFinanceSnapshot()`.
 2. `getFinanceSnapshot()` → `lib/google-sheets.ts` → `values.batchGet` untuk:
-   - `BUKU BESAR KEUANGAN!A7:O` (data transaksi);
-   - `DASHBOARD!A1:Z80` (cadangan KPI, belum diparse sampai alamat sel tersedia).
+   - `BUKU BESAR KEUANGAN!B8:P` (data transaksi; kolom A spacer dan B NO otomatis dilewati);
+   - `DASHBOARD!A1:Z80` (diparse menjadi `TFinanceDashboardReport`: dana, arus kas, legenda, dan penyerapan anggaran);
+   - `WAJIB KAS!A1:AK140` (diparse menjadi `TWajibKasReport`: blok angkatan, 12 bulan `TRUE/FALSE`, dan `TUNGGAKAN`).
 3. `parseFinanceSheetValues` atau `parseFinanceRows` mengubah baris menjadi `TFinanceTransaction[]`.
-4. `computeFinanceTotals` menghitung 6 angka: pemasukan/pengeluaran/saldo untuk IDR dan TRY.
-5. Response normal: `{ transactions, totals, kpiSource: "fallback", updatedAt }`. Response mode dummy: `kpiSource: "dummy"` dengan struktur sama.
-6. Mutasi:
-   - `create` → validasi → `buildFinanceSheetRow` → `values.append` ke `BUKU BESAR KEUANGAN!A7:O` dengan `USER_ENTERED` + `INSERT_ROWS`.
-   - `update` → verifikasi `rowNumber` masih ada → `values.update` ke `A{row}:O{row}`.
-   - `delete` → verifikasi `rowNumber` masih ada → `values.clear` pada `A{row}:O{row}`.
-7. Client `invalidateQueries(["finance"])` setelah mutasi sukses; **tanpa optimistic update** supaya UI tidak menampilkan angka yang belum pasti tersimpan di Sheets.
+4. `parseFinanceDashboardReport` mengubah nilai `DASHBOARD` menjadi `TFinanceDashboardReport`; `totals`-nya berasal dari sel E/J/S baris 17 dan 19. `computeFinanceTotals` tetap dipakai hanya sebagai fallback.
+5. `parseWajibKasReport` mengubah nilai `WAJIB KAS` menjadi `TWajibKasReport`; blok diurutkan berdasarkan angkatan karena sheet menyusun dua lajur bersebelahan.
+6. Response normal: `{ transactions, totals, report, wajibKas, kpiSource: "dashboard", updatedAt }`. Bila `DASHBOARD` kosong → `report: null`, `kpiSource: "fallback"`. Bila `WAJIB KAS` kosong → `wajibKas: null`. Mode dummy → `kpiSource: "dummy"` dengan struktur sama.
+7. Mutasi:
+   - `create` → validasi → `buildFinanceSheetRow` (14 nilai, tanpa NO) → cari baris kosong di `C:P` lewat `findNextFinanceRow` → `values.update` ke `C{row}:P{row}` dengan `USER_ENTERED`. `values.append` tidak dipakai karena `=sequence(250)` di kolom B menggeser penulisan ke kolom B.
+   - `update` → verifikasi `rowNumber` masih ada → `values.update` ke `C{row}:P{row}`.
+   - `delete` → verifikasi `rowNumber` masih ada → `values.clear` pada `C{row}:P{row}` (kolom B rumus NO tetap utuh).
+8. Client `invalidateQueries(["finance"])` setelah mutasi sukses; **tanpa optimistic update** supaya UI tidak menampilkan angka yang belum pasti tersimpan di Sheets.
 
 ### `lib/google-sheets.ts`
 
@@ -94,8 +101,13 @@ Daftar file yang akan dibuat di `features/finance/`:
 features/finance/
 ├── finance-page.tsx                      # wrapper server component + HomeLayoutComponent
 └── components/
-    ├── finance-dashboard.tsx             # orkestrasi query, filter, dialog
-    ├── finance-summary-cards.tsx         # 6 kartu KPI (IDR + TRY)
+    ├── finance-dashboard.tsx             # orkestrasi query, filter, dialog, blok A/B/C/D
+    ├── finance-report-section.tsx        # pembagi blok A/B/C/D + anchor untuk submenu sidebar
+    ├── finance-metric-card.tsx           # kartu metrik 2 mata uang (dipakai ulang)
+    ├── finance-fund-cards.tsx            # blok A: saldo dana + legenda
+    ├── finance-summary-cards.tsx         # blok A: pendapatan/pengeluaran/total saldo
+    ├── finance-budget-table.tsx          # blok B: penyerapan anggaran
+    ├── finance-wajib-kas.tsx             # blok D: rekap + tabel status kas + filter
     ├── finance-toolbar.tsx               # search + filter + tombol Tambah
     ├── finance-data-table.tsx            # tabel riwayat + pagination
     ├── finance-columns.tsx               # definisi kolom @tanstack/react-table
@@ -118,34 +130,43 @@ Shared pendukung:
 ```
 /home/finance
 ┌───────────────────────────────────────────────────────────────┐
-│ Keuangan PPI Bartın                              [Sinkron 5s] │
+│ DASHBOARD KEUANGAN PPI BARTIN               [KPI DASHBOARD]   │
+│ DEPARTEMEN KEUANGAN DAN EKONOMI - KABINET SUARASA             │
+│ PERIODE 2026 - 2027                                           │
 │ Sumber data: DKE - DATA KEUANGAN KESELURUHAN PPI BARTIN      │
-│ Diperbarui: 19 Nov 2026, 18:12                               │
 ├───────────────────────────────────────────────────────────────┤
-│ [Pemasukan IDR] [Pengeluaran IDR] [Saldo IDR]                 │
-│ [Pemasukan TRY] [Pengeluaran TRY] [Saldo TRY]                 │
+│ A. LAPORAN DASAR (#laporan-dasar)                             │
+│ [Dana Lembaga] [Dana Darurat] [Dana Abadi]                    │
+│   IDR / TRY       IDR / TRY       IDR / TRY                   │
+│ [Pendapatan]   [Pengeluaran]   [Total Saldo]                  │
+│   IDR / TRY       IDR / TRY       IDR / TRY                   │
+│ * legenda definisi dana lembaga / darurat / abadi             │
 ├───────────────────────────────────────────────────────────────┤
-│ [Cari...] [Kategori ▾] [Arus ▾] [Mata uang ▾] [+ Transaksi]  │
 ├───────────────────────────────────────────────────────────────┤
-│ NO | TANGGAL | KETERANGAN | KATEGORI | ARUS | MU | NOMINAL | ⋯│
-│ 1  | 15/03/26 | Hibah PPI Turki | Sponsorship | Debit | TRY | ₺490 | ✎ 🗑│
-│ 2  | 18/03/26 | Dana SUKA IDR | Dana SUKA | Debit | IDR | Rp10.242.331 | ✎ 🗑│
-│ ...                                                           │
-│                                       [<] [1] [2] [>]          │
+│ B. LAPORAN PENYERAPAN ANGGARAN (#penyerapan-anggaran)         │
+├───────────────────────────────────────────────────────────────┤
+│ C. BUKU BESAR KEUANGAN (#buku-besar)                          │
+├───────────────────────────────────────────────────────────────┤
+│ D. WAJIB KAS PPI BARTIN (#wajib-kas)                          │
+│ rekap Total/Lunas/Tunggakan + filter + tabel                  │
 └───────────────────────────────────────────────────────────────┘
 ```
 
-- Desktop: 3 kolom kartu; mobile: 1 kolom, toolbar wraps, tabel horizontal scroll.
+- Desktop: dua grid kartu (dana dan arus kas) masing-masing 3 kolom; mobile: 1 kolom, toolbar wraps, tabel keuangan dan anggaran horizontal scroll.
+- Blok A/B/C/D memakai penanda bernomor + garis bawah tipis, mengikuti konvensi sheet bendahara. Semua blok selalu tampil; collapse berada di sidebar `/dashboard` (`NavMain` → submenu "Keuangan", memakai `components/ui/collapsible.tsx` dengan `aria-expanded`/`aria-controls`) dan submenunya menuju anchor tiap blok.
+- Panel D menampilkan ringkasan total/lunas/tunggakan, filter angkatan + status + nama, serta tabel 12 bulan dengan ikon centang/dash **dan** teks status (tidak bergantung warna saja).
+- Setiap metrik menampilkan pasangan IDR/TRY dalam satu kartu; tidak ada konversi kurs.
 - Angka memakai `--font-mono`; label memakai `--font-sans`.
 - Badge `Debit`/`Kredit`, `TRY`/`IDR` berupa **outline**, bukan fill.
-- Status sinkronisasi memakai ikon + teks, bukan warna saja.
+- Indikator `Terpakai` pada tabel anggaran memakai progress bar monokrom (`--surface-hover` + `--text-primary`) **dan** teks persentase, sehingga tidak bergantung pada warna saja.
+- Status sinkronisasi dan sumber KPI memakai teks, bukan warna saja.
 - `rowNumber` tidak ditampilkan sebagai kolom utama, tapi tersimpan di row data dan dipakai edit/hapus.
 
 ### UI/UX — State
 
 | State | Perlakuan |
 | --- | --- |
-| Loading | `FinanceSkeleton`: 6 kartu abu + 5 baris tabel shimmer. |
+| Loading | `FinanceSkeleton`: 6 kartu metrik, placeholder tabel anggaran, toolbar, dan 5 baris tabel shimmer. |
 | Empty | Teks "Belum ada transaksi" di tengah, `text-disabled`, + 1 CTA. CTA = "Tambah transaksi pertama" untuk BENDAHARA/ADMIN, "Buka Google Sheets" untuk role lain. |
 | Error | Alert inline di atas tabel + tombol "Coba lagi"; toast `sonner` untuk kegagalan mutasi. |
 | Stale | Badge "Memperbarui…" saat `isFetching && !isLoading`, tanpa menghilangkan data lama. |
@@ -233,10 +254,18 @@ Route `GET` mengembalikan `TFinanceSnapshot` langsung, bukan `TServerPrompt`. He
 - [x] Migrasi `BENDAHARA` dijalankan ke database (21 Nov 2026).
 - [ ] Verifikasi user `BENDAHARA` dan `ADMIN` bisa CRUD, role `USER`/`PENGURUS` ditolak oleh server action.
 - [ ] `GET /api/finance` tanpa login → redirect/login; dengan login → JSON `TFinanceSnapshot` valid.
-- [ ] Parser 3 baris contoh bendahara → 3 transaksi; `₺1.500,00` → `1500`, `Rp10.242.331` → `10242331`, `3/15/2026` → `2026-03-15`.
-- [ ] Happy path read: 6 kartu KPI dan tabel tampil; total IDR/TRY sesuai perhitungan fallback.
-- [ ] Happy path create: tambah transaksi TRY → hanya kolom H terisi di `BUKU BESAR KEUANGAN`; kolom I kosong.
-- [ ] Happy path create IDR: tambah transaksi IDR → hanya kolom I terisi; kolom H kosong.
+- [x] Parser 3 baris asli bendahara (baris 8–10) → 3 transaksi; `₺450.00` → `450`, `₺1.500,00` → `1500`, `Rp10,242,331` → `10242331`, `3/15/2026` → `2026-03-15`, serial `46096` → `2026-03-15`.
+- [x] Service account pengganti aktif; helper produksi membaca 193 transaksi dari sheet asli (baris 8–204).
+- [x] CRUD sandbox di spreadsheet dummy: append mengembalikan `rowNumber: 8`, update mengubah baris yang sama, clear mengosongkan nilai tanpa menggeser baris.
+- [x] Service account pengganti sudah Editor di sheet asli (probe `values.clear` pada sel kosong berhasil 24 Nov 2026).
+- [ ] Uji CRUD produksi penuh pada baris uji yang disepakati bendahara (belum dijalankan agar data asli tidak berubah).
+- [x] Pelajari layout `DASHBOARD` asli → user memilih mengikuti sheet penuh; UI memakai blok A/B/C/D dan KPI dari sel rumus.
+- [x] Parser `DASHBOARD` terverifikasi pada data asli: 3 saldo dana, 3 metrik arus kas, 3 legenda, dan 14 baris penyerapan anggaran.
+- [x] Parser `WAJIB KAS` terverifikasi pada data asli: 6 blok angkatan 2020–2025, 203 anggota, 75 lunas, 128 tunggakan.
+- [x] Keputusan akses: bendahara cukup di `/home/finance`; `/dashboard` tetap `ADMIN`-only. Detail kas terlihat semua anggota.
+- [ ] Happy path read: blok A (6 kartu metrik = 3 dana + 3 arus kas), B, C, D tampil sekaligus; submenu sidebar "Keuangan" collapse/expand dan menuju anchor blok; angka KPI sesuai sel `DASHBOARD`, bukan hitungan fallback.
+- [ ] Happy path create: tambah transaksi TRY → hanya kolom I terisi di `BUKU BESAR KEUANGAN`; kolom J kosong; kolom B (NO) tetap dari rumus.
+- [ ] Happy path create IDR: tambah transaksi IDR → hanya kolom J terisi; kolom I kosong.
 - [ ] Happy path update: edit baris 8 → hanya baris 8 berubah; baris 9 tetap.
 - [ ] Happy path delete: hapus baris 8 → baris 8 kosong, baris 9 tidak bergeser.
 - [ ] Formula injection: keterangan `=SUM(A1:A9)` tersimpan sebagai teks, bukan rumus.
@@ -252,5 +281,7 @@ Route `GET` mengembalikan `TFinanceSnapshot` langsung, bukan `TServerPrompt`. He
 - [ ] Mode dummy: 8 transaksi contoh menghasilkan total IDR `21.242.331 / 475.000 / 20.767.331` dan TRY `1.990 / 263,25 / 1.726,75`.
 - [ ] Mode dummy: semua server action mutasi ditolak tanpa memanggil Google API.
 - [ ] Mode dummy dimatikan (`"false"`): dashboard kembali ke data Google Sheets / error state.
-- [ ] Verifikasi wajib: `pnpm exec vitest run`, `pnpm lint`, lalu `pnpm build` lolos.
+- [x] Data sheet asli memuat transaksi tanpa kategori; opsi filter kategori disanitasi supaya tidak ada `Select.Item value=""` (error Runtime Radix Select).
+- [x] Verifikasi wajib: `pnpm exec vitest run` (36 test), `pnpm lint`, lalu `pnpm build` lolos setelah perubahan layout penuh + WAJIB KAS.
+- [ ] Smoke UI produksi: `/home/finance` menampilkan keempat blok; sidebar `/dashboard` punya submenu "Keuangan" yang bisa collapse; blok D menampilkan 203 anggota dari sheet asli dengan badge "KPI dari DASHBOARD".
 - [ ] Smoke produksi: `pnpm build && PORT=3111 pnpm start`, `curl /home/finance` tidak 500.

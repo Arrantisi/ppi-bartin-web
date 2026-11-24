@@ -85,6 +85,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               title: "Keuangan",
               url: "/dashboard/finance",
               icon: IconWallet,
+              items: [
+                { title: "Ringkasan Keuangan", url: "/dashboard/finance" },
+                { title: "Laporan Dasar", url: "/dashboard/finance#laporan-dasar" },
+                {
+                  title: "Penyerapan Anggaran",
+                  url: "/dashboard/finance#penyerapan-anggaran",
+                },
+                { title: "Buku Besar", url: "/dashboard/finance#buku-besar" },
+                { title: "Wajib Kas", url: "/dashboard/finance#wajib-kas" },
+              ],
             },
             {
               title: "Settings",

@@ -7,7 +7,9 @@ import { getDummyFinanceSnapshot } from "@/server/data/finance-dummy";
 import type { TFinanceSnapshot } from "@/types/finance";
 import {
   computeFinanceTotals,
+  parseFinanceDashboardReport,
   parseFinanceRows,
+  parseWajibKasReport,
 } from "@/utils/finance-parser";
 
 /**
@@ -22,13 +24,19 @@ export const getFinanceSnapshot = cache(async (): Promise<TFinanceSnapshot> => {
     return getDummyFinanceSnapshot();
   }
 
-  const { transactions: rawTransactions } = await getFinanceValues();
+  const { transactions: rawTransactions, dashboard, wajibKas: rawWajibKas } =
+    await getFinanceValues();
   const transactions = parseFinanceRows(rawTransactions);
+  const report = parseFinanceDashboardReport(dashboard);
+  const wajibKas = parseWajibKasReport(rawWajibKas);
 
   return {
     transactions,
-    totals: computeFinanceTotals(transactions),
-    kpiSource: "fallback",
+    // Angka sheet dipakai bila tersedia; hitungan buku besar jadi fallback.
+    totals: report?.totals ?? computeFinanceTotals(transactions),
+    report,
+    wajibKas,
+    kpiSource: report ? "dashboard" : "fallback",
     updatedAt: new Date().toISOString(),
   };
 });

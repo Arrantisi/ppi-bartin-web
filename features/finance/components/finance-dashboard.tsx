@@ -25,17 +25,30 @@ import type {
 import type { TFinanceTransaction } from "@/types/finance";
 
 import { FinanceActionDialog } from "./finance-action-dialog";
+import { FinanceBudgetTable } from "./finance-budget-table";
 import { FinanceDataTable } from "./finance-data-table";
 import { FinanceDeleteDialog } from "./finance-delete-dialog";
 import { FinanceEmptyState } from "./finance-empty-state";
+import { FinanceFundCards } from "./finance-fund-cards";
+import { FinanceReportSection } from "./finance-report-section";
 import { FinanceSummaryCards } from "./finance-summary-cards";
 import { FinanceToolbar, type TFinanceFilters } from "./finance-toolbar";
+import { FinanceWajibKas } from "./finance-wajib-kas";
 
 const EMPTY_FILTERS: TFinanceFilters = {
   search: "",
   kategori: "",
   arusKas: "",
   mataUang: "",
+};
+
+const EMPTY_TOTALS = {
+  pemasukanIdr: 0,
+  pengeluaranIdr: 0,
+  saldoIdr: 0,
+  pemasukanTry: 0,
+  pengeluaranTry: 0,
+  saldoTry: 0,
 };
 
 type TActionState = {
@@ -63,6 +76,8 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
     useState<TFinanceTransaction | null>(null);
 
   const isDemo = financeQuery.data?.kpiSource === "dummy";
+  const kpiSource = financeQuery.data?.kpiSource;
+  const report = financeQuery.data?.report ?? null;
   const canWrite =
     !isDemo &&
     (roleQuery.data === "BENDAHARA" || roleQuery.data === "ADMIN");
@@ -101,7 +116,9 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
   }, [filters, transactions]);
 
   const suggestions = useMemo(() => {
-    const unique = (values: string[]) => Array.from(new Set(values)).sort();
+    // Sheet asli memiliki transaksi tanpa kategori; Select tidak boleh menerima value="".
+    const unique = (values: string[]) =>
+      Array.from(new Set(values.map((value) => value.trim()).filter(Boolean))).sort();
     return {
       categories: unique(transactions.map((item) => item.kategori)),
       penanggungJawab: unique(transactions.map((item) => item.penanggungJawab)),
@@ -150,7 +167,15 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
     <div className="space-y-6">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1">
-          <h1 className="title-tiga text-text-primary">Keuangan PPI Bartın</h1>
+          <h1 className="title-tiga text-text-primary">
+            {report?.title ?? "Keuangan PPI Bartın"}
+          </h1>
+          {report?.department ? (
+            <p className="footnote text-text-secondary">{report.department}</p>
+          ) : null}
+          {report?.period ? (
+            <p className="footnote text-text-secondary">{report.period}</p>
+          ) : null}
           <p className="footnote text-text-secondary">
             Sumber data: DKE - DATA KEUANGAN KESELURUHAN PPI BARTIN
           </p>
@@ -164,7 +189,7 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
             </p>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {!isDemo && financeQuery.isFetching && !isInitialLoading && (
             <span className="footnote text-text-secondary">Memperbarui…</span>
           )}
@@ -173,9 +198,16 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
               Data contoh
             </Badge>
           ) : (
-            <Badge variant="outline" className="text-text-secondary">
-              Sinkron 5 detik
-            </Badge>
+            <>
+              <Badge variant="outline" className="text-text-secondary">
+                {kpiSource === "dashboard"
+                  ? "KPI dari DASHBOARD"
+                  : "KPI dari buku besar"}
+              </Badge>
+              <Badge variant="outline" className="text-text-secondary">
+                Sinkron 5 detik
+              </Badge>
+            </>
           )}
         </div>
       </header>
@@ -226,44 +258,81 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
         <FinanceSkeleton />
       ) : (
         <>
-          <FinanceSummaryCards
-            totals={
-              financeQuery.data?.totals ?? {
-                pemasukanIdr: 0,
-                pengeluaranIdr: 0,
-                saldoIdr: 0,
-                pemasukanTry: 0,
-                pengeluaranTry: 0,
-                saldoTry: 0,
-              }
-            }
-          />
+          <FinanceReportSection
+            id="laporan-dasar"
+            number="A"
+            title="Laporan Dasar"
+            description="Saldo dana dan arus kas per mata uang"
+          >
+            {report ? (
+              <FinanceFundCards funds={report.funds} legend={report.legend} />
+            ) : (
+              <p className="footnote text-text-secondary">
+                Ringkasan dana belum tersedia dari tab DASHBOARD; arus kas di
+                bawah dihitung dari buku besar.
+              </p>
+            )}
+            <FinanceSummaryCards
+              totals={financeQuery.data?.totals ?? EMPTY_TOTALS}
+            />
+          </FinanceReportSection>
 
-          <FinanceToolbar
-            filters={filters}
-            onFiltersChange={setFilters}
-            categories={suggestions.categories}
-            canWrite={canWrite}
-            canRefresh={!isDemo}
-            isFetching={financeQuery.isFetching}
-            onRefresh={() => void financeQuery.refetch()}
-            onAdd={handleAdd}
-          />
+          <FinanceReportSection
+            id="penyerapan-anggaran"
+            number="B"
+            title="Laporan Penyerapan Anggaran"
+            description="Pagu, realisasi, dan sisa anggaran per lembaga"
+          >
+            {report && report.budget.length > 0 ? (
+              <FinanceBudgetTable items={report.budget} />
+            ) : (
+              <p className="footnote text-text-secondary">
+                Data penyerapan anggaran belum tersedia di tab DASHBOARD.
+              </p>
+            )}
+          </FinanceReportSection>
 
-          {transactions.length === 0 ? (
-            <FinanceEmptyState
+          <FinanceReportSection
+            id="buku-besar"
+            number="C"
+            title="Buku Besar Keuangan"
+            description="Riwayat transaksi dari sheet bendahara"
+          >
+            <FinanceToolbar
+              filters={filters}
+              onFiltersChange={setFilters}
+              categories={suggestions.categories}
               canWrite={canWrite}
-              sheetUrl={sheetUrl}
+              canRefresh={!isDemo}
+              isFetching={financeQuery.isFetching}
+              onRefresh={() => void financeQuery.refetch()}
               onAdd={handleAdd}
             />
-          ) : (
-            <FinanceDataTable
-              data={filteredTransactions}
-              canWrite={canWrite}
-              onEdit={handleEdit}
-              onDelete={setDeleteTarget}
-            />
-          )}
+
+            {transactions.length === 0 ? (
+              <FinanceEmptyState
+                canWrite={canWrite}
+                sheetUrl={sheetUrl}
+                onAdd={handleAdd}
+              />
+            ) : (
+              <FinanceDataTable
+                data={filteredTransactions}
+                canWrite={canWrite}
+                onEdit={handleEdit}
+                onDelete={setDeleteTarget}
+              />
+            )}
+          </FinanceReportSection>
+
+          <FinanceReportSection
+            id="wajib-kas"
+            number="D"
+            title="Wajib Kas PPI Bartın"
+            description="Siapa yang sudah dan belum membayar kas per bulan"
+          >
+            <FinanceWajibKas report={financeQuery.data?.wajibKas ?? null} />
+          </FinanceReportSection>
         </>
       )}
 

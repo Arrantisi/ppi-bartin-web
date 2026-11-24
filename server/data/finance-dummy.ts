@@ -1,4 +1,10 @@
-import type { TFinanceSnapshot, TFinanceTransaction } from "@/types/finance";
+import type {
+  TFinanceDashboardReport,
+  TFinanceSnapshot,
+  TFinanceTransaction,
+  TWajibKasMember,
+  TWajibKasReport,
+} from "@/types/finance";
 import { computeFinanceTotals } from "../../utils/finance-parser";
 
 /**
@@ -152,9 +158,104 @@ const DUMMY_TRANSACTIONS: TFinanceTransaction[] = [
   },
 ];
 
+/** Ringkasan contoh supaya mode pratinjau menampilkan layout yang sama dengan sheet asli. */
+const DUMMY_REPORT: TFinanceDashboardReport = {
+  title: "DASHBOARD KEUANGAN PPI BARTIN",
+  department: "DEPARTEMEN KEUANGAN DAN EKONOMI - KABINET SUARASA",
+  period: "PERIODE 2026 - 2027",
+  funds: [
+    { key: "lembaga", label: "Saldo Dana Lembaga", marker: "*", idr: 3_685_969, try: 0 },
+    { key: "darurat", label: "Saldo Dana Darurat", marker: "**", idr: 1_100_697, try: 0 },
+    { key: "abadi", label: "Saldo Dana Abadi", marker: "***", idr: 555_348, try: 0 },
+  ],
+  legend: [
+    {
+      marker: "*",
+      description:
+        "Dana yang dialokasikan untuk menunjang kegiatan dan fungsi lembaga dalam PPI Bartin.",
+    },
+    {
+      marker: "**",
+      description:
+        "Dana untuk kondisi tak terduga (force majeure), seperti bantuan mendesak anggota PPI Bartin.",
+    },
+    {
+      marker: "***",
+      description:
+        "Jaring pengaman agar PPI Bartin memiliki jaminan awal kas di periode mendatang.",
+    },
+  ],
+  totals: computeFinanceTotals(DUMMY_TRANSACTIONS),
+  budget: [
+    { no: 1, lembaga: "Badan Pengurus Harian", unit: "Presidium", pagu: 1_940_000, realisasi: 250_000, sisa: 1_690_000 },
+    { no: 2, lembaga: "Departemen Sekretaris", unit: "", pagu: 1_280_000, realisasi: 941_358, sisa: 338_642 },
+    { no: 3, lembaga: "Departemen Keuangan dan Ekonomi", unit: "", pagu: 21_030_000, realisasi: 261_000, sisa: 20_769_000 },
+    { no: 4, lembaga: "Departenmen Akademik Pelajar", unit: "", pagu: 2_148_000, realisasi: 0, sisa: 2_148_000 },
+    { no: 5, lembaga: "Departemen Agama", unit: "", pagu: 3_520_000, realisasi: 560_000, sisa: 2_960_000 },
+  ],
+};
+
+const DUMMY_MONTHS = [
+  "FEB",
+  "MAR",
+  "APR",
+  "MEI",
+  "JUN",
+  "JUL",
+  "AGU",
+  "SEP",
+  "OKT",
+  "NOV",
+  "DES",
+  "JAN",
+] as const;
+
+const dummyKasMember = (
+  no: number,
+  angkatan: number,
+  nama: string,
+  paidThrough: number,
+): TWajibKasMember => ({
+  no,
+  angkatan,
+  nama,
+  months: DUMMY_MONTHS.map((label, index) => ({
+    label,
+    paid: index < paidThrough,
+  })),
+  tunggakan: DUMMY_MONTHS.length - paidThrough,
+  status: paidThrough === DUMMY_MONTHS.length ? "lunas" : "tunggakan",
+});
+
+/** Contoh ringkas supaya pratinjau menampilkan panel WAJIB KAS yang sama dengan sheet asli. */
+const DUMMY_WAJIB_KAS: TWajibKasReport = {
+  title: "DATA WAJIB KAS PPI BARTIN",
+  department: "DEPARTEMEN KEUANGAN DAN EKONOMI - KABINET SUARASA",
+  period: "PERIODE 2026 - 2027",
+  blocks: [
+    {
+      penanggungJawab: "Dinda Mahel Ihelga",
+      members: [
+        dummyKasMember(1, 2020, "Auliya Imtihani Muyasaroh Jatmiko", 12),
+        dummyKasMember(2, 2020, "Alfatul Sarah Utari Putri", 8),
+      ],
+    },
+    {
+      penanggungJawab: "Clara Devi Prasetya Putri",
+      members: [
+        dummyKasMember(1, 2021, "Abdillah Harta Pramulia", 0),
+        dummyKasMember(2, 2021, "Achmad Miftachul Ulum", 6),
+      ],
+    },
+  ],
+  summary: { total: 4, lunas: 1, tunggakan: 3 },
+};
+
 export const getDummyFinanceSnapshot = (): TFinanceSnapshot => ({
   transactions: DUMMY_TRANSACTIONS,
-  totals: computeFinanceTotals(DUMMY_TRANSACTIONS),
+  totals: DUMMY_REPORT.totals,
+  report: DUMMY_REPORT,
+  wajibKas: DUMMY_WAJIB_KAS,
   kpiSource: "dummy",
   updatedAt: new Date().toISOString(),
 });

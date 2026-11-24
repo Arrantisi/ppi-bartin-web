@@ -48,6 +48,9 @@ export function FinanceToolbar({
   const setFilter = (key: keyof TFinanceFilters, value: string) =>
     onFiltersChange({ ...filters, [key]: value === ALL ? "" : value });
 
+  // Pertahanan lapis kedua: Radix Select menolak Select.Item dengan value="".
+  const categoryOptions = categories.filter((category) => category.trim() !== "");
+
   return (
     <section aria-label="Filter transaksi" className="flex flex-col gap-3">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -77,7 +80,7 @@ export function FinanceToolbar({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={ALL}>Semua kategori</SelectItem>
-                {categories.map((category) => (
+                {categoryOptions.map((category) => (
                   <SelectItem key={category} value={category}>
                     {category}
                   </SelectItem>

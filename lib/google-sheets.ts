@@ -1,12 +1,24 @@
 import { google } from "googleapis";
 
 import { env } from "@/lib/env";
+import { findNextFinanceRow } from "@/utils/finance-parser";
 
 const FINANCE_TAB = "BUKU BESAR KEUANGAN";
 const DASHBOARD_TAB = "DASHBOARD";
+const WAJIB_KAS_TAB = "WAJIB KAS";
 
-export const FINANCE_SHEET_RANGE = `'${FINANCE_TAB}'!A7:O`;
+/**
+ * Sheet bendahara: kolom A = spacer, kolom B = NO dari rumus `=sequence(250)`,
+ * header baris 6–7, data mulai baris 8, dan tautan dokumen ada di kolom P.
+ */
+const FINANCE_DATA_START_ROW = 8;
+export const FINANCE_SHEET_RANGE = `'${FINANCE_TAB}'!B${FINANCE_DATA_START_ROW}:P`;
 const DASHBOARD_SHEET_RANGE = `'${DASHBOARD_TAB}'!A1:Z80`;
+/**
+ * Tab `WAJIB KAS` memuat dua lajur blok berdampingan (B:R dan T:AJ).
+ * Sheet saat ini 122 baris; 140 memberi ruang tanpa menambah kuota API.
+ */
+const WAJIB_KAS_SHEET_RANGE = `'${WAJIB_KAS_TAB}'!A1:AK140`;
 
 type TGoogleCredentials = {
   spreadsheetId: string;
@@ -17,6 +29,7 @@ type TGoogleCredentials = {
 export type TFinanceSheetValues = {
   transactions: unknown[][];
   dashboard: unknown[][];
+  wajibKas: unknown[][];
 };
 
 const getCredentials = (): TGoogleCredentials => {
@@ -60,7 +73,7 @@ const getSheets = () => {
 };
 
 const rowRange = (rowNumber: number) =>
-  `'${FINANCE_TAB}'!A${rowNumber}:O${rowNumber}`;
+  `'${FINANCE_TAB}'!C${rowNumber}:P${rowNumber}`;
 
 /** Membaca transaksi dan ringkasan sekaligus untuk menghemat kuota API. */
 export async function getFinanceValues(): Promise<TFinanceSheetValues> {
@@ -68,7 +81,11 @@ export async function getFinanceValues(): Promise<TFinanceSheetValues> {
 
   const response = await getSheets().spreadsheets.values.batchGet({
     spreadsheetId,
-    ranges: [FINANCE_SHEET_RANGE, DASHBOARD_SHEET_RANGE],
+    ranges: [
+      FINANCE_SHEET_RANGE,
+      DASHBOARD_SHEET_RANGE,
+      WAJIB_KAS_SHEET_RANGE,
+    ],
     valueRenderOption: "FORMATTED_VALUE",
     dateTimeRenderOption: "FORMATTED_STRING",
   });
@@ -78,28 +95,37 @@ export async function getFinanceValues(): Promise<TFinanceSheetValues> {
   return {
     transactions: (valueRanges[0]?.values ?? []) as unknown[][],
     dashboard: (valueRanges[1]?.values ?? []) as unknown[][],
+    wajibKas: (valueRanges[2]?.values ?? []) as unknown[][],
   };
 }
 
-/** Append ke A7:O dan mengembalikan nomor baris yang benar-benar dibuat Sheets. */
+/**
+ * Menulis ke baris kosong pertama di C:P.
+ * `values.append` sengaja tidak dipakai: kolom B berisi `=sequence(250)`, sehingga
+ * Sheets mengira tabel sampai baris ~257 dan memindahkan penulisan ke kolom B.
+ */
 export async function appendFinanceRow(row: string[]): Promise<number> {
   const { spreadsheetId } = getCredentials();
+  const sheets = getSheets();
 
-  const response = await getSheets().spreadsheets.values.append({
+  const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: FINANCE_SHEET_RANGE,
+    range: `'${FINANCE_TAB}'!C${FINANCE_DATA_START_ROW}:P`,
+    valueRenderOption: "FORMATTED_VALUE",
+  });
+
+  const rowNumber = findNextFinanceRow(
+    response.data.values ?? [],
+    FINANCE_DATA_START_ROW,
+  );
+  await sheets.spreadsheets.values.update({
+    spreadsheetId,
+    range: rowRange(rowNumber),
     valueInputOption: "USER_ENTERED",
-    insertDataOption: "INSERT_ROWS",
     requestBody: { values: [row] },
   });
 
-  const updatedRange = response.data.updates?.updatedRange;
-  const match = updatedRange?.match(/!A(\d+):O(\d+)$/);
-  if (!match) {
-    throw new Error("Google Sheets tidak mengembalikan nomor baris baru.");
-  }
-
-  return Number(match[1]);
+  return rowNumber;
 }
 
 export async function updateFinanceRow(
