@@ -6,7 +6,7 @@ status: done
 
 Redesign halaman detail berita `/berita/[slug]` (dan otomatis `/home/berita/[slug]` karena memakai komponen yang sama) menjadi tampilan editorial yang modern dan elegan. Fokus: menghilangkan nav dobel, memperbaiki hierarki judul/byline/gambar, typography artikel yang nyaman, serta menambahkan 3 berita terkait.
 
-Perubahan topbar: header tidak memakai `backdrop-blur` lagi (`bg-transparent`); efek blur tetap hanya pada kapsul 4 menu utama.
+Perubahan topbar: header tidak memakai `backdrop-blur` lagi (`bg-transparent`); efek blur tetap hanya pada kapsul menu utama.
 
 ## Database Model (Prisma)
 
@@ -44,7 +44,7 @@ Tidak ada server action baru. `getNewsBySlug()` dan `getNews()` sudah tersedia.
 ## Design Tokens
 
 - `bg-transparent` — header topbar (tanpa blur).
-- `bg-surface/90 backdrop-blur-lg`, `border-border`, `shadow-lg shadow-black/5` — kapsul 4 menu.
+- `bg-surface/90 backdrop-blur-lg`, `border-border`, `shadow-lg shadow-black/5` — kapsul menu utama.
 - `border-border`, `bg-surface`, `bg-surface-hover` — breadcrumb, byline, kartu terkait, CTA.
 - `newsCategoryToneStyles` / `newsCategoryDotStyles` — label kategori (tetap token, bukan hardcode).
 - `title-satu`, `subheadline`, `body`, `footnote`, `prose` — tipografi.

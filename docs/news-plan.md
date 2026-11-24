@@ -10,7 +10,7 @@ News/Berita feature untuk PPI Bartin web. Users bisa membuat, melihat, memperbar
 
 - `features/news/news-detail/index.tsx`: nav dobel dihapus, diganti breadcrumb ringan; hierarki eyebrow → judul → byline + share/aksi → hero `aspect-[16/9]` → artikel → CTA publik → berita terkait.
 - `features/news/news-detail/related-news.tsx`: komponen baru, 3 kartu berita terkait dari `useNews()` (kategori sama, fallback berita lain).
-- `components/shared/navigation/nav-main-event.tsx`: header topbar jadi transparan tanpa blur; blur tetap di kapsul 4 menu.
+- `components/shared/navigation/nav-main-event.tsx`: header topbar jadi transparan tanpa blur; blur tetap di kapsul menu utama.
 - Berlaku juga untuk `/home/berita/[slug]` karena komponen detailnya dipakai bersama.
 - Detail: `docs/news-detail-redesign-plan.md`.
 

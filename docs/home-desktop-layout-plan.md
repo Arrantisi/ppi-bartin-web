@@ -15,13 +15,13 @@ Keputusan scope:
 
 ### 2026-11-22 — Header transparan
 
-- `components/shared/navigation/nav-main-event.tsx`: header topbar jadi `bg-transparent` tanpa `backdrop-blur`; efek blur tetap hanya di kapsul 4 menu (`bg-surface/90 backdrop-blur-lg`).
+- `components/shared/navigation/nav-main-event.tsx`: header topbar jadi `bg-transparent` tanpa `backdrop-blur`; efek blur tetap hanya di kapsul menu utama (`bg-surface/90 backdrop-blur-lg`).
 
 ### 2026-11-22 — Kapsul nav melayang
 
 - `components/shared/navigation/nav-main-event.tsx`: border-b header dihilangkan; background jadi `bg-bg/60 backdrop-blur-md`.
 - Logo kiri dan notifikasi/profil kanan jadi elemen polos tanpa border/kartu; teks logo & nama profil hanya tampil di `lg` untuk menghindari tabrakan di `md`.
-- 4 menu utama dibungkus kapsul `absolute left-1/2` dengan `bg-surface/90 backdrop-blur-lg` + `shadow-lg shadow-black/5`; active pill memakai `bg-surface-active` + `border-border`.
+- 5 menu utama (Beranda, Kegiatan, Berita, Keuangan, Profil) dibungkus kapsul `absolute left-1/2` dengan `bg-surface/90 backdrop-blur-lg` + `shadow-lg shadow-black/5`; active pill memakai `bg-surface-active` + `border-border`.
 - Container topbar sekarang `w-full px-4 md:px-6` tanpa `max-w-6xl`, menghilangkan margin samping yang sebelumnya membuat nav terasa sempit.
 
 ## Database Model (Prisma)
@@ -40,7 +40,7 @@ Tidak ada server action baru. Semua data masih berasal dari query yang sudah ada
 
 | File | Perubahan |
 | ---- | --------- |
-| `components/shared/navigation/nav-main-event.tsx` | `DesktopSidebar` diganti `HomeTopbar`: logo kiri, 4 link tengah dengan active pill `layoutId`, notifikasi + avatar kanan. `BottomNav` tetap. |
+| `components/shared/navigation/nav-main-event.tsx` | `DesktopSidebar` diganti `HomeTopbar`: logo kiri, 5 link tengah dengan active pill `layoutId`, notifikasi + avatar kanan. `BottomNav` tetap. |
 | `components/layout/home-layout.tsx` | Lepas `SidebarProvider`/`SidebarInset`; render `NavMainEvent` sekali + `motion.main` dengan container konten desktop `max-w-6xl` (topbar sendiri full width). |
 | `features/home/header.tsx` | Berubah jadi hero greeting card (nama, sapaan, tanggal, akses cepat). Avatar & notifikasi dipindah ke topbar. |
 | `features/home/content.tsx` | Grid 12 kolom di `lg`: keuangan full, acara ~7, berita ~5. |
@@ -74,7 +74,7 @@ Tidak ada server action baru. Semua data masih berasal dari query yang sudah ada
 
 ## Testing Checklist
 
-- [ ] Desktop/tablet: topbar sticky tampil, 4 menu sesuai, active state benar
+- [ ] Desktop/tablet: topbar sticky tampil, 5 menu sesuai, active state benar
 - [ ] Mobile: bottom nav tetap tampil, topbar tidak muncul
 - [ ] Klik notifikasi & avatar profil berfungsi / tidak error
 - [ ] Hero greeting menampilkan nama + sapaan + tanggal

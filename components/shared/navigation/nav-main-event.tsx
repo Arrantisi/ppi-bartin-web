@@ -8,6 +8,7 @@ import {
   Icon,
   IconBell,
   IconCalendarWeek,
+  IconChartBar,
   IconNews,
   IconSmartHome,
   IconUser,
@@ -28,6 +29,7 @@ const navItems: NavItem[] = [
   { title: "Beranda", icon: IconSmartHome, url: "/home" },
   { title: "Kegiatan", icon: IconCalendarWeek, url: "/home/acara" },
   { title: "Berita", icon: IconNews, url: "/home/berita" },
+  { title: "Keuangan", icon: IconChartBar, url: "/home/finance" },
   { title: "Profil", icon: IconUser, url: "/home/profile" },
 ];
 
