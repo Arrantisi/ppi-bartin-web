@@ -28,7 +28,7 @@ export function FinanceInfoHint({
           <IconHelp aria-hidden className="size-3.5" />
         </button>
       </TooltipTrigger>
-      <TooltipContent side="top" className="max-w-64 text-balance">
+      <TooltipContent side="right" className="max-w-64 text-balance">
         {children}
       </TooltipContent>
     </Tooltip>
