@@ -14,7 +14,8 @@ Tidak ada perubahan schema maupun tabel baru. Snapshot yang sudah ada tetap dipa
 
 | Field `TFinanceSnapshot` | Dipakai tab | Sumber |
 | ------------------------ | ----------- | ------ |
-| `report.funds`, `report.legend`, `totals` | Ringkasan | tab `DASHBOARD` |
+| `report.funds`, `report.legend` | Ringkasan | tab `DASHBOARD` |
+| `transactions` → `totals` | Ringkasan | dihitung dari `BUKU BESAR KEUANGAN` (lihat `finance-kpi-from-ledger-plan.md`) |
 | `report.budget` | Anggaran | tab `DASHBOARD` |
 | `transactions` | Buku Besar | tab `BUKU BESAR KEUANGAN` |
 | `wajibKas` | Wajib Kas | tab `WAJIB KAS` |

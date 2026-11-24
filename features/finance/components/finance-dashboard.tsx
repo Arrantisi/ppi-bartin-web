@@ -118,7 +118,6 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
   }, []);
 
   const isDemo = financeQuery.data?.kpiSource === "dummy";
-  const kpiSource = financeQuery.data?.kpiSource;
   const report = financeQuery.data?.report ?? null;
   const canWrite =
     !isDemo &&
@@ -242,9 +241,7 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
           ) : (
             <>
               <Badge variant="outline" className="text-text-secondary">
-                {kpiSource === "dashboard"
-                  ? "KPI dari DASHBOARD"
-                  : "KPI dari buku besar"}
+                KPI dari buku besar
               </Badge>
               <Badge variant="outline" className="text-text-secondary">
                 Sinkron 5 detik

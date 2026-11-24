@@ -32,11 +32,11 @@ export const getFinanceSnapshot = cache(async (): Promise<TFinanceSnapshot> => {
 
   return {
     transactions,
-    // Angka sheet dipakai bila tersedia; hitungan buku besar jadi fallback.
-    totals: report?.totals ?? computeFinanceTotals(transactions),
+    // KPI selalu dihitung dari buku besar: sel DASHBOARD bersifat statis.
+    totals: computeFinanceTotals(transactions),
     report,
     wajibKas,
-    kpiSource: report ? "dashboard" : "fallback",
+    kpiSource: "buku-besar",
     updatedAt: new Date().toISOString(),
   };
 });

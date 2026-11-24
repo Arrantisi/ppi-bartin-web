@@ -125,7 +125,7 @@ export type TFinanceSnapshot = {
   report: TFinanceDashboardReport | null;
   /** Data kas anggota dari tab WAJIB KAS; null bila sheet kosong. */
   wajibKas: TWajibKasReport | null;
-  /** "dashboard" = angka dari sheet; "fallback" = hitungan buku besar; "dummy" = preview. */
-  kpiSource: "fallback" | "dashboard" | "dummy";
+  /** "buku-besar" = KPI dihitung dari transaksi; "dummy" = pratinjau data contoh. */
+  kpiSource: "buku-besar" | "dummy";
   updatedAt: string;
 };

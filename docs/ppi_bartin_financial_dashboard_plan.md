@@ -15,7 +15,7 @@ Stack: Next.js App Router, TypeScript, `googleapis`, TanStack Query, Shadcn UI, 
 - Email bendahara belum ditentukan → migrasi enum dilakukan dulu, update role menyusul.
 - Konflik edit memakai *last-write-wins*.
 - `DELETE` mengosongkan nilai baris via `values.clear`, bukan menghapus baris fisik, agar `rowNumber` stabil.
-- KPI `DASHBOARD` dibaca langsung dari sel rumus (lihat bagian "Kontrak Google Sheets"). Fallback dari `BUKU BESAR KEUANGAN` tetap ada hanya bila parser tidak menemukan data. Angka sheet dan angka hitungan buku besar sengaja tidak dicampur; sumber ditampilkan di badge header.
+- Probe 24 Nov 2026 menunjukkan sel KPI `DASHBOARD` (`E10`, `E17`, `S17`, dll.) berisi **angka statis**, bukan rumus. Keputusan terbaru: KPI arus kas (pemasukan/pengeluaran/saldo IDR & TRY) **dihitung aplikasi dari `BUKU BESAR KEUANGAN`** agar langsung berubah setelah bendahara menambah transaksi. Tab `DASHBOARD` tetap dipakai untuk saldo dana, legenda, dan penyerapan anggaran; badge header menampilkan "KPI dari buku besar".
 - Tab `WAJIB KAS` ikut ditampilkan sebagai blok D dan dapat dilihat semua anggota yang login (nama + status pembayaran). Sesuai keputusan 24 Nov 2026, bendahara cukup memakai `/home/finance` yang sudah memberi izin tulis; layout `/dashboard` tidak dilonggarkan.
 - Total TRY dan IDR ditampilkan **terpisah**, tanpa konversi kurs.
 - Mode preview: `FINANCE_USE_DUMMY_DATA="true"` menampilkan data contoh berlabel di `/home/finance` sebelum kredensial Google tersedia. Mode ini read-only dan tidak boleh dipakai di produksi.
@@ -166,7 +166,7 @@ TFinanceDashboardReport = {
   period: string;
   funds: TFinanceFund[];
   legend: { marker: string; description: string }[];
-  totals: TFinanceTotals;   // angka dari sel rumus sheet
+  totals: TFinanceTotals;   // angka statis sheet (dipertahankan untuk referensi, bukan KPI utama)
   budget: TBudgetRealization[];
 };
 
@@ -197,7 +197,7 @@ TFinanceSnapshot = {
   totals: TFinanceTotals;
   report: TFinanceDashboardReport | null;
   wajibKas: TWajibKasReport | null;
-  kpiSource: "fallback" | "dashboard" | "dummy";
+  kpiSource: "buku-besar" | "dummy";
   updatedAt: string; // ISO datetime
 };
 ```
@@ -278,7 +278,7 @@ Setelah Phase 5, tombol di landing page diganti `Link` ke `/home/finance`.
 - [x] **Parser:** 3 baris asli bendahara (baris 8–10) terbaca menjadi 3 transaksi; `₺450.00` → `450`, `₺1.500,00` → `1500`, `Rp10,242,331` → `10242331`, `3/15/2026` → `2026-03-15`, serial `46096` → `2026-03-15`, `=HYPERLINK(...)` → URL `https`.
 - [x] **Read produksi:** helper `getFinanceValues()` + parser membaca 193 transaksi dari sheet asli dengan kredensial baru.
 - [x] **Parser DASHBOARD asli:** 3 saldo dana, 3 metrik arus kas, 3 legenda, dan 14 baris anggaran terbaca langsung dari sheet; contoh `E10 = 3.685.969`, `S17 = 10.653.258,78`, `S19 = 16.590,77`.
-- [x] **Tampilan empat blok sebagai tab:** A (saldo dana + arus kas) → `Ringkasan`, B → `Anggaran`, C → `Buku Besar`, D → `Wajib Kas`; hanya satu panel aktif. Sidebar dashboard menyediakan submenu collapse yang membuka tab terkait; badge header menampilkan sumber KPI "KPI dari DASHBOARD".
+- [x] **Tampilan empat blok sebagai tab:** A (saldo dana + arus kas) → `Ringkasan`, B → `Anggaran`, C → `Buku Besar`, D → `Wajib Kas`; hanya satu panel aktif. Sidebar dashboard menyediakan submenu collapse yang membuka tab terkait; badge header menampilkan sumber KPI "KPI dari buku besar"; saldo dana/legenda/anggaran tetap dari `DASHBOARD`.
 - [x] **Parser WAJIB KAS asli:** 6 blok, 203 anggota angkatan 2020–2025, 75 lunas dan 128 tunggakan terbaca langsung dari sheet; blok diurutkan berdasarkan angkatan.
 - [x] **Akses & privasi:** detail nama/status kas sengaja terlihat semua anggota; bendahara tetap memakai `/home/finance` untuk menulis, layout `/dashboard` tidak diubah.
 - [x] **Kategori kosong dari sheet asli:** 2 transaksi tanpa `kategori` tidak lagi menghasilkan `Select.Item value=""`; opsi filter dan datalist dibersihkan di `finance-dashboard.tsx` dan `finance-toolbar.tsx`.
