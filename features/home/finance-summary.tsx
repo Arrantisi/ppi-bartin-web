@@ -4,8 +4,6 @@ import {
   IconArrowUpRight,
   IconChartBar,
   IconCircleCheck,
-  IconFileInvoice,
-  IconFileOff,
   IconUsers,
   IconWallet,
 } from "@tabler/icons-react";
@@ -15,7 +13,7 @@ import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { TFinanceSnapshot, TFinanceTransaction } from "@/types/finance";
+import type { TFinanceSnapshot } from "@/types/finance";
 import { formatFinanceAmount } from "@/utils/finance-parser";
 
 function SummaryBlock({
@@ -95,53 +93,11 @@ function KasStat({
   );
 }
 
-function TransactionRow({ transaction }: { transaction: TFinanceTransaction }) {
-  const amount =
-    transaction.mataUang === "TRY"
-      ? (transaction.nominalTry ?? 0)
-      : (transaction.nominalIdr ?? 0);
-  const date = new Date(`${transaction.tanggal}T00:00:00`);
-  const hasDocument = Boolean(transaction.tautanDokumen);
-
-  return (
-    <li className="flex flex-col gap-2 rounded-2xl border border-border p-3">
-      <div className="flex items-center justify-between gap-2">
-        <time
-          className="font-mono text-xs text-text-secondary"
-          dateTime={transaction.tanggal}
-        >
-          {format(date, "d MMM yyyy", { locale: idLocale })}
-        </time>
-        <span className="flex items-center gap-1 text-xs text-text-secondary">
-          {transaction.arusKas === "Debit" ? (
-            <IconArrowDownLeft aria-hidden className="size-3 text-success" />
-          ) : (
-            <IconArrowUpRight aria-hidden className="size-3 text-danger" />
-          )}
-          {transaction.arusKas}
-        </span>
-      </div>
-      <p
-        className="body truncate text-text-primary"
-        title={transaction.keterangan}
-      >
-        {transaction.keterangan}
-      </p>
-      <div className="flex items-center justify-between gap-2">
-        <span className="font-mono text-sm text-text-primary">
-          {formatFinanceAmount(amount, transaction.mataUang)}
-        </span>
-        <span className="flex items-center gap-1 text-xs text-text-secondary">
-          {hasDocument ? (
-            <IconFileInvoice aria-hidden className="size-3 text-text-secondary" />
-          ) : (
-            <IconFileOff aria-hidden className="size-3 text-text-disabled" />
-          )}
-          {hasDocument ? "Ada nota" : "Tanpa nota"}
-        </span>
-      </div>
-    </li>
-  );
+/** `date-fns/format` melempar RangeError pada Invalid Date; jaga footer tetap render. */
+function formatUpdatedAt(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "-";
+  return format(date, "d MMM yyyy, HH:mm", { locale: idLocale });
 }
 
 /** Ringkasan server-only untuk kartu Transparansi Keuangan di /home. */
@@ -150,12 +106,6 @@ export function FinanceSummary({ snapshot }: { snapshot: TFinanceSnapshot }) {
   const budget = snapshot.report?.budget ?? [];
   const kas = snapshot.wajibKas?.summary;
   const totals = snapshot.totals;
-  const latestTransactions = [...snapshot.transactions]
-    .sort(
-      (a, b) =>
-        b.tanggal.localeCompare(a.tanggal) || b.rowNumber - a.rowNumber,
-    )
-    .slice(0, 3);
 
   const pagu = budget.reduce((sum, row) => sum + row.pagu, 0);
   const realisasi = budget.reduce((sum, row) => sum + row.realisasi, 0);
@@ -321,29 +271,9 @@ export function FinanceSummary({ snapshot }: { snapshot: TFinanceSnapshot }) {
         </SummaryBlock>
       </div>
 
-      <section className="flex flex-col gap-3 rounded-2xl border border-border p-4">
-        <h3 className="text-sm font-medium text-text-primary">
-          Transaksi terbaru
-        </h3>
-        {latestTransactions.length ? (
-          <ul className="grid gap-3 md:grid-cols-3">
-            {latestTransactions.map((transaction) => (
-              <TransactionRow
-                key={`${transaction.rowNumber}-${transaction.no}`}
-                transaction={transaction}
-              />
-            ))}
-          </ul>
-        ) : (
-          <p className="footnote text-text-disabled">Belum ada transaksi.</p>
-        )}
-      </section>
-
       <p className="footnote text-text-secondary">
         Sumber Google Sheets DKE · diperbarui{" "}
-        {format(new Date(snapshot.updatedAt), "d MMM yyyy, HH:mm", {
-          locale: idLocale,
-        })}
+        <span className="font-mono">{formatUpdatedAt(snapshot.updatedAt)}</span>
       </p>
     </div>
   );

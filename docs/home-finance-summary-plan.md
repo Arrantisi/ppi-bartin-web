@@ -1,12 +1,14 @@
-> status: done — diimplementasikan 24 Nov 2026. Ringkasan DKE (saldo dana, arus kas, Wajib Kas, anggaran, 3 transaksi terbaru) digabung ke kartu Transparansi Keuangan di `/home` lewat server component + Suspense. `pnpm exec vitest run` (36 test), `pnpm lint`, dan `pnpm build` lolos.
+> status: done — koreksi 24 Nov 2026: blok "Transaksi terbaru" dihapus sesuai permintaan (juga menghilangkan `RangeError: Invalid time value` dari tanggal transaksi sheet), format tanggal footer diamankan bila `updatedAt` tidak valid. `pnpm exec vitest run` (36 test), `pnpm lint`, dan `pnpm build` lolos.
 
 # Ringkasan DKE di Halaman Home — Plan
 
 ## Overview
 
-Kartu **Transparansi Keuangan** di `/home` saat ini hanya berisi judul, satu kalimat, dan tautan eksternal ke Google Sheet. Pengguna harus membuka sheet atau `/home/finance` untuk melihat angka. Fitur ini menggabungkan ringkasan DKE langsung ke kartu shortcut yang sudah ada: saldo dana + arus kas, rekap Wajib Kas, penyerapan anggaran, dan 3 transaksi terbaru. Tidak ada section baru terpisah, tidak ada tabel Prisma baru, dan Google Sheets tetap single source of truth.
+Kartu **Transparansi Keuangan** di `/home` saat ini hanya berisi judul, satu kalimat, dan tautan eksternal ke Google Sheet. Pengguna harus membuka sheet atau `/home/finance` untuk melihat angka. Fitur ini menggabungkan ringkasan DKE langsung ke kartu shortcut yang sudah ada: saldo dana + arus kas, rekap Wajib Kas, dan penyerapan anggaran. **Transaksi terbaru sengaja tidak ditampilkan di `/home`** — rincian tetap di `/home/finance` dan sheet bendahara. Tidak ada section baru terpisah, tidak ada tabel Prisma baru, dan Google Sheets tetap single source of truth.
 
 Data diambil sekali di server dengan `getFinanceSnapshot()` (sudah `React.cache()` dan auth) lalu diteruskan ke komponen presentasional server-only. Tidak ada polling di `/home`; polling 5 detik tetap hanya di `/home/finance`.
+
+Koreksi runtime: beberapa baris buku besar memiliki nilai `tanggal` yang tidak bisa dikonversi ke `Date` valid, sehingga `date-fns/format` melempar `RangeError: Invalid time value` di `TransactionRow`. Karena blok transaksi memang tidak diperlukan di beranda, komponen dan sorting-nya dihapus total. Format tanggal di footer juga dijaga agar tidak pernah menerima `Invalid Date`.
 
 ## Database Model (Prisma)
 
@@ -23,12 +25,12 @@ Tidak ada server action baru dan tidak ada penulisan ke sheet.
 ## Client Components
 
 - `features/home/finance-shortcut.tsx` — diubah jadi server component `async`; memanggil `getFinanceSnapshot()` dalam `try/catch`, merender `FinanceSummary` bila data tersedia, dan fallback netral + `FinanceSheetLink` bila gagal. Header kartu dan CTA existing dipertahankan.
-- `features/home/finance-summary.tsx` (baru, server-only) — menerima `TFinanceSnapshot`, merender empat kartu ringkas plus satu blok transaksi:
+- `features/home/finance-summary.tsx` (baru, server-only) — menerima `TFinanceSnapshot`, merender empat kartu ringkas:
   1. **Saldo dana** dari `report.funds` (label + IDR, plus TRY bila > 0).
   2. **Arus kas** dari `snapshot.totals` (**bukan** `report.totals` yang statis): pemasukan/pengeluaran/saldo IDR dan TRY, ikon arus memakai `--success`/`--danger`.
   3. **Wajib Kas** dari `wajibKas.summary`: total / lunas / tunggakan.
   4. **Penyerapan anggaran** dari `report.budget`: agregat pagu/realisasi/sisa + persentase realisasi.
-  5. **Transaksi terbaru**: 3 transaksi diurutkan `tanggal` desc + `rowNumber` desc; hanya tanggal, keterangan, arus kas, nominal, dan badge teks "Ada nota"/"Tanpa nota" (URL dokumen tidak dirender).
+  - Tidak merender `snapshot.transactions` sama sekali. Footer meta memakai helper `formatUpdatedAt` yang mengembalikan `"-"` bila `updatedAt` bukan tanggal valid.
 - `features/home/content.tsx` — membungkus `FinanceShortcut` dengan `Suspense` agar acara/berita tetap tampil saat data finance dimuat.
 - `components/skeletons/finance-home-skeleton.tsx` (baru) — skeleton kecil berbentuk kartu shortcut, bukan `FinanceSkeleton` penuh.
 - `components/shared/finance-sheet-link.tsx` — tidak diubah; tetap dipakai sebagai CTA laporan lengkap.
@@ -63,7 +65,9 @@ Tidak ada route atau `force-dynamic` baru. `(protected)/layout.tsx` tetap menjad
 
 - [x] `/home` menampilkan 4 blok ringkasan di dalam kartu Transparansi Keuangan yang sudah ada (tanpa section baru terpisah).
 - [x] Saldo dana dan arus kas menampilkan angka sesuai sheet; KPI arus kas berasal dari `snapshot.totals`, bukan `report.totals`.
-- [x] Ringkasan Wajib Kas, agregat penyerapan anggaran, dan 3 transaksi terbaru tampil benar; urutan transaksi tanggal terbaru lebih dulu.
+- [x] Ringkasan Wajib Kas dan agregat penyerapan anggaran tampil benar.
+- [x] Tidak ada blok/daftar transaksi di HTML `/home`, sehingga tanggal transaksi yang tidak valid tidak bisa memicu `RangeError`.
+- [x] Footer tetap render (`-` sebagai waktu) bila `updatedAt` tidak valid.
 - [x] Tidak ada nama anggota, PIC, penerima/pengirim, rekening, tautan dokumen, atau `rowNumber` yang bocor di HTML `/home`.
 - [x] Badge "Data contoh" muncul when `FINANCE_USE_DUMMY_DATA=true`.
 - [x] Google Sheets gagal → fallback netral "Ringkasan belum tersedia" + CTA, halaman home tidak 500.

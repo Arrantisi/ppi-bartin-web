@@ -33,14 +33,7 @@ export function FinanceHomeSkeleton() {
             </div>
           ))}
         </div>
-        <div className="flex flex-col gap-3 rounded-2xl border border-border p-4">
-          <Skeleton className="h-4 w-32" />
-          <div className="grid gap-3 md:grid-cols-3">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <Skeleton key={`tx-${index}`} className="h-20 rounded-2xl" />
-            ))}
-          </div>
-        </div>
+        <Skeleton className="h-3 w-64" />
       </div>
 
       <span className="sr-only">Memuat ringkasan keuangan…</span>
