@@ -1,16 +1,12 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -27,6 +23,19 @@ import {
   type TUpdateFinanceTransaction,
 } from "@/schemas/finance";
 import type { TFinanceTransaction } from "@/types/finance";
+
+const FinanceDatePicker = dynamic(
+  () =>
+    import("./finance-date-picker").then(
+      (module) => module.FinanceDatePicker,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-9 w-full rounded-xl border border-border bg-surface" />
+    ),
+  },
+);
 
 type TFinanceSuggestions = {
   categories: string[];
@@ -75,17 +84,8 @@ const toErrorList = (errors: unknown[]) =>
 const isFieldInvalid = (field: TFinanceFieldLike) =>
   field.state.meta.isTouched && !field.state.meta.isValid;
 
-const describedBy = (
-  field: TFinanceFieldLike,
-  id: string,
-  hasHint = false,
-) =>
-  [
-    isFieldInvalid(field) ? `${id}-error` : "",
-    hasHint ? `${id}-hint` : "",
-  ]
-    .filter(Boolean)
-    .join(" ") || undefined;
+const describedBy = (field: TFinanceFieldLike, id: string) =>
+  isFieldInvalid(field) ? `${id}-error` : undefined;
 
 function FieldMessage({
   id,
@@ -97,28 +97,6 @@ function FieldMessage({
   if (!isFieldInvalid(field)) return null;
 
   return <FieldError id={id} errors={toErrorList(field.state.meta.errors)} />;
-}
-
-function FormSection({
-  index,
-  title,
-  description,
-}: {
-  index: string;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="flex items-start gap-3">
-      <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-border bg-bg font-mono text-[0.6875rem] text-text-secondary">
-        {index}
-      </span>
-      <div className="space-y-1">
-        <h2 className="subheadline text-text-primary">{title}</h2>
-        <p className="footnote text-text-secondary">{description}</p>
-      </div>
-    </div>
-  );
 }
 
 const todayIso = () => new Date().toISOString().slice(0, 10);
@@ -173,95 +151,345 @@ export function FinanceTransactionForm({
 
   return (
     <form
-      className="flex flex-col gap-6"
+      className="flex flex-col gap-4"
       onSubmit={(event) => {
         event.preventDefault();
         void form.handleSubmit();
       }}
     >
-      <div className="flex flex-col gap-4">
-        <FormSection
-          index="01"
-          title="Informasi transaksi"
-          description="Tanggal, metode, dan keterangan sesuai buku besar."
-        />
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <form.Field name="tanggal">
-            {(field) => {
-              const id = "finance-tanggal";
-              const invalid = isFieldInvalid(field);
-
-              return (
-                <Field data-invalid={invalid}>
-                  <FieldLabel id={`${id}-label`} htmlFor={id}>
-                    Tanggal
-                  </FieldLabel>
-                  <Input
-                    id={id}
-                    type="date"
-                    value={field.state.value}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    onBlur={field.handleBlur}
-                    aria-invalid={invalid || undefined}
-                    aria-describedby={describedBy(field, id)}
-                  />
-                  <FieldMessage id={`${id}-error`} field={field} />
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="metodeTransaksi">
-            {(field) => {
-              const id = "finance-metode";
-              const invalid = isFieldInvalid(field);
-
-              return (
-                <Field data-invalid={invalid}>
-                  <FieldLabel id={`${id}-label`} htmlFor={id}>
-                    Metode transaksi
-                  </FieldLabel>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={(value) => field.handleChange(value)}
-                  >
-                    <SelectTrigger
-                      id={id}
-                      aria-label="Metode transaksi"
-                      aria-labelledby={`${id}-label`}
-                      aria-invalid={invalid || undefined}
-                      aria-describedby={describedBy(field, id)}
-                      onBlur={field.handleBlur}
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Cash">Cash</SelectItem>
-                      <SelectItem value="Transfer">Transfer</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FieldMessage id={`${id}-error`} field={field} />
-                </Field>
-              );
-            }}
-          </form.Field>
-        </div>
-
-        <form.Field name="keterangan">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <form.Field name="tanggal">
           {(field) => {
-            const id = "finance-keterangan";
+            const id = "finance-tanggal";
             const invalid = isFieldInvalid(field);
 
             return (
               <Field data-invalid={invalid}>
                 <FieldLabel id={`${id}-label`} htmlFor={id}>
-                  Keterangan
+                  Tanggal
                 </FieldLabel>
-                <Textarea
+                <FinanceDatePicker
                   id={id}
-                  rows={3}
                   value={field.state.value}
+                  onChange={field.handleChange}
+                  onBlur={field.handleBlur}
+                  invalid={invalid}
+                  describedBy={describedBy(field, id)}
+                  labelledBy={`${id}-label`}
+                />
+                <FieldMessage id={`${id}-error`} field={field} />
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name="metodeTransaksi">
+          {(field) => {
+            const id = "finance-metode";
+            const invalid = isFieldInvalid(field);
+
+            return (
+              <Field data-invalid={invalid}>
+                <FieldLabel id={`${id}-label`} htmlFor={id}>
+                  Metode transaksi
+                </FieldLabel>
+                <Select
+                  value={field.state.value}
+                  onValueChange={(value) => field.handleChange(value)}
+                >
+                  <SelectTrigger
+                    id={id}
+                    aria-label="Metode transaksi"
+                    aria-labelledby={`${id}-label`}
+                    aria-invalid={invalid || undefined}
+                    aria-describedby={describedBy(field, id)}
+                    onBlur={field.handleBlur}
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Cash">Cash</SelectItem>
+                    <SelectItem value="Transfer">Transfer</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FieldMessage id={`${id}-error`} field={field} />
+              </Field>
+            );
+          }}
+        </form.Field>
+      </div>
+
+      <form.Field name="keterangan">
+        {(field) => {
+          const id = "finance-keterangan";
+          const invalid = isFieldInvalid(field);
+
+          return (
+            <Field data-invalid={invalid}>
+              <FieldLabel id={`${id}-label`} htmlFor={id}>
+                Keterangan
+              </FieldLabel>
+              <Textarea
+                id={id}
+                rows={2}
+                value={field.state.value}
+                onChange={(event) => field.handleChange(event.target.value)}
+                onBlur={field.handleBlur}
+                aria-invalid={invalid || undefined}
+                aria-describedby={describedBy(field, id)}
+              />
+              <FieldMessage id={`${id}-error`} field={field} />
+            </Field>
+          );
+        }}
+      </form.Field>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <form.Field name="kategori">
+          {(field) => {
+            const id = "finance-kategori";
+            const invalid = isFieldInvalid(field);
+
+            return (
+              <Field data-invalid={invalid}>
+                <FieldLabel id={`${id}-label`} htmlFor={id}>
+                  Kategori
+                </FieldLabel>
+                <Input
+                  id={id}
+                  list={`${id}-options`}
+                  value={field.state.value}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  onBlur={field.handleBlur}
+                  aria-invalid={invalid || undefined}
+                  aria-describedby={describedBy(field, id)}
+                />
+                <datalist id={`${id}-options`}>
+                  {suggestions.categories.map((category) => (
+                    <option key={category} value={category} />
+                  ))}
+                </datalist>
+                <FieldMessage id={`${id}-error`} field={field} />
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name="penanggungJawab">
+          {(field) => {
+            const id = "finance-pic";
+            const invalid = isFieldInvalid(field);
+
+            return (
+              <Field data-invalid={invalid}>
+                <FieldLabel id={`${id}-label`} htmlFor={id}>
+                  Penanggung jawab
+                </FieldLabel>
+                <Input
+                  id={id}
+                  list={`${id}-options`}
+                  value={field.state.value}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  onBlur={field.handleBlur}
+                  aria-invalid={invalid || undefined}
+                  aria-describedby={describedBy(field, id)}
+                />
+                <datalist id={`${id}-options`}>
+                  {suggestions.penanggungJawab.map((name) => (
+                    <option key={name} value={name} />
+                  ))}
+                </datalist>
+                <FieldMessage id={`${id}-error`} field={field} />
+              </Field>
+            );
+          }}
+        </form.Field>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        <form.Field name="arusKas">
+          {(field) => {
+            const id = "finance-arus-kas";
+            const invalid = isFieldInvalid(field);
+
+            return (
+              <Field data-invalid={invalid}>
+                <FieldLabel id={`${id}-label`} htmlFor={id}>
+                  Arus kas
+                </FieldLabel>
+                <Select
+                  value={field.state.value}
+                  onValueChange={(value) =>
+                    field.handleChange(value as "Debit" | "Kredit")
+                  }
+                >
+                  <SelectTrigger
+                    id={id}
+                    aria-label="Arus kas"
+                    aria-labelledby={`${id}-label`}
+                    aria-invalid={invalid || undefined}
+                    aria-describedby={describedBy(field, id)}
+                    onBlur={field.handleBlur}
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Debit">Debit</SelectItem>
+                    <SelectItem value="Kredit">Kredit</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FieldMessage id={`${id}-error`} field={field} />
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name="mataUang">
+          {(field) => {
+            const id = "finance-mata-uang";
+            const invalid = isFieldInvalid(field);
+
+            return (
+              <Field data-invalid={invalid}>
+                <FieldLabel id={`${id}-label`} htmlFor={id}>
+                  Mata uang
+                </FieldLabel>
+                <Select
+                  value={field.state.value}
+                  onValueChange={(value) =>
+                    field.handleChange(value as "IDR" | "TRY")
+                  }
+                >
+                  <SelectTrigger
+                    id={id}
+                    aria-label="Mata uang"
+                    aria-labelledby={`${id}-label`}
+                    aria-invalid={invalid || undefined}
+                    aria-describedby={describedBy(field, id)}
+                    onBlur={field.handleBlur}
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="IDR">IDR</SelectItem>
+                    <SelectItem value="TRY">TRY</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FieldMessage id={`${id}-error`} field={field} />
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Subscribe selector={(state) => state.values.mataUang}>
+          {(mataUang) => (
+            <form.Field
+              name={mataUang === "TRY" ? "nominalTry" : "nominalIdr"}
+            >
+              {(field) => {
+                const id = "finance-nominal";
+                const invalid = isFieldInvalid(field);
+
+                return (
+                  <Field data-invalid={invalid}>
+                    <FieldLabel id={`${id}-label`} htmlFor={id}>
+                      Nominal ({mataUang})
+                    </FieldLabel>
+                    <Input
+                      id={id}
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      inputMode="decimal"
+                      value={field.state.value ?? ""}
+                      onChange={(event) =>
+                        field.handleChange(
+                          event.target.value === ""
+                            ? undefined
+                            : Number(event.target.value),
+                        )
+                      }
+                      onBlur={field.handleBlur}
+                      aria-invalid={invalid || undefined}
+                      aria-describedby={describedBy(field, id)}
+                    />
+                    <FieldMessage id={`${id}-error`} field={field} />
+                  </Field>
+                );
+              }}
+            </form.Field>
+          )}
+        </form.Subscribe>
+      </div>
+
+      <form.Field name="rekeningPenampung">
+        {(field) => {
+          const id = "finance-rekening";
+          const invalid = isFieldInvalid(field);
+
+          return (
+            <Field data-invalid={invalid}>
+              <FieldLabel id={`${id}-label`} htmlFor={id}>
+                Rekening penampung
+              </FieldLabel>
+              <Input
+                id={id}
+                list={`${id}-options`}
+                value={field.state.value}
+                onChange={(event) => field.handleChange(event.target.value)}
+                onBlur={field.handleBlur}
+                aria-invalid={invalid || undefined}
+                aria-describedby={describedBy(field, id)}
+              />
+              <datalist id={`${id}-options`}>
+                {suggestions.rekeningPenampung.map((rekening) => (
+                  <option key={rekening} value={rekening} />
+                ))}
+              </datalist>
+              <FieldMessage id={`${id}-error`} field={field} />
+            </Field>
+          );
+        }}
+      </form.Field>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <form.Field name="penerima">
+          {(field) => {
+            const id = "finance-penerima";
+            const invalid = isFieldInvalid(field);
+
+            return (
+              <Field data-invalid={invalid}>
+                <FieldLabel id={`${id}-label`} htmlFor={id}>
+                  Penerima
+                </FieldLabel>
+                <Input
+                  id={id}
+                  value={field.state.value ?? ""}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  onBlur={field.handleBlur}
+                  aria-invalid={invalid || undefined}
+                  aria-describedby={describedBy(field, id)}
+                />
+                <FieldMessage id={`${id}-error`} field={field} />
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name="pengirim">
+          {(field) => {
+            const id = "finance-pengirim";
+            const invalid = isFieldInvalid(field);
+
+            return (
+              <Field data-invalid={invalid}>
+                <FieldLabel id={`${id}-label`} htmlFor={id}>
+                  Pengirim
+                </FieldLabel>
+                <Input
+                  id={id}
+                  value={field.state.value ?? ""}
                   onChange={(event) => field.handleChange(event.target.value)}
                   onBlur={field.handleBlur}
                   aria-invalid={invalid || undefined}
@@ -274,320 +502,31 @@ export function FinanceTransactionForm({
         </form.Field>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <FormSection
-          index="02"
-          title="Nominal & klasifikasi"
-          description="Kategori dan rekening mengikuti nilai yang sudah ada di sheet."
-        />
+      <form.Field name="tautanDokumen">
+        {(field) => {
+          const id = "finance-dokumen";
+          const invalid = isFieldInvalid(field);
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <form.Field name="kategori">
-            {(field) => {
-              const id = "finance-kategori";
-              const invalid = isFieldInvalid(field);
-
-              return (
-                <Field data-invalid={invalid}>
-                  <FieldLabel id={`${id}-label`} htmlFor={id}>
-                    Kategori
-                  </FieldLabel>
-                  <Input
-                    id={id}
-                    list={`${id}-options`}
-                    value={field.state.value}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    onBlur={field.handleBlur}
-                    aria-invalid={invalid || undefined}
-                    aria-describedby={describedBy(field, id, true)}
-                  />
-                  <datalist id={`${id}-options`}>
-                    {suggestions.categories.map((category) => (
-                      <option key={category} value={category} />
-                    ))}
-                  </datalist>
-                  <FieldDescription id={`${id}-hint`}>
-                    Pilih saran yang ada atau ketik kategori baru.
-                  </FieldDescription>
-                  <FieldMessage id={`${id}-error`} field={field} />
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="penanggungJawab">
-            {(field) => {
-              const id = "finance-pic";
-              const invalid = isFieldInvalid(field);
-
-              return (
-                <Field data-invalid={invalid}>
-                  <FieldLabel id={`${id}-label`} htmlFor={id}>
-                    Penanggung jawab
-                  </FieldLabel>
-                  <Input
-                    id={id}
-                    list={`${id}-options`}
-                    value={field.state.value}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    onBlur={field.handleBlur}
-                    aria-invalid={invalid || undefined}
-                    aria-describedby={describedBy(field, id, true)}
-                  />
-                  <datalist id={`${id}-options`}>
-                    {suggestions.penanggungJawab.map((name) => (
-                      <option key={name} value={name} />
-                    ))}
-                  </datalist>
-                  <FieldDescription id={`${id}-hint`}>
-                    Pilih saran yang ada atau ketik nama baru.
-                  </FieldDescription>
-                  <FieldMessage id={`${id}-error`} field={field} />
-                </Field>
-              );
-            }}
-          </form.Field>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-3">
-          <form.Field name="arusKas">
-            {(field) => {
-              const id = "finance-arus-kas";
-              const invalid = isFieldInvalid(field);
-
-              return (
-                <Field data-invalid={invalid}>
-                  <FieldLabel id={`${id}-label`} htmlFor={id}>
-                    Arus kas
-                  </FieldLabel>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={(value) =>
-                      field.handleChange(value as "Debit" | "Kredit")
-                    }
-                  >
-                    <SelectTrigger
-                      id={id}
-                      aria-label="Arus kas"
-                      aria-labelledby={`${id}-label`}
-                      aria-invalid={invalid || undefined}
-                      aria-describedby={describedBy(field, id)}
-                      onBlur={field.handleBlur}
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Debit">Debit</SelectItem>
-                      <SelectItem value="Kredit">Kredit</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FieldMessage id={`${id}-error`} field={field} />
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="mataUang">
-            {(field) => {
-              const id = "finance-mata-uang";
-              const invalid = isFieldInvalid(field);
-
-              return (
-                <Field data-invalid={invalid}>
-                  <FieldLabel id={`${id}-label`} htmlFor={id}>
-                    Mata uang
-                  </FieldLabel>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={(value) =>
-                      field.handleChange(value as "IDR" | "TRY")
-                    }
-                  >
-                    <SelectTrigger
-                      id={id}
-                      aria-label="Mata uang"
-                      aria-labelledby={`${id}-label`}
-                      aria-invalid={invalid || undefined}
-                      aria-describedby={describedBy(field, id)}
-                      onBlur={field.handleBlur}
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="IDR">IDR</SelectItem>
-                      <SelectItem value="TRY">TRY</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FieldMessage id={`${id}-error`} field={field} />
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Subscribe selector={(state) => state.values.mataUang}>
-            {(mataUang) => (
-              <form.Field
-                name={mataUang === "TRY" ? "nominalTry" : "nominalIdr"}
-              >
-                {(field) => {
-                  const id = "finance-nominal";
-                  const invalid = isFieldInvalid(field);
-
-                  return (
-                    <Field data-invalid={invalid}>
-                      <FieldLabel id={`${id}-label`} htmlFor={id}>
-                        Nominal ({mataUang})
-                      </FieldLabel>
-                      <Input
-                        id={id}
-                        type="number"
-                        min={0}
-                        step="0.01"
-                        inputMode="decimal"
-                        value={field.state.value ?? ""}
-                        onChange={(event) =>
-                          field.handleChange(
-                            event.target.value === ""
-                              ? undefined
-                              : Number(event.target.value),
-                          )
-                        }
-                        onBlur={field.handleBlur}
-                        aria-invalid={invalid || undefined}
-                        aria-describedby={describedBy(field, id, true)}
-                      />
-                      <FieldDescription id={`${id}-hint`}>
-                        Isi sesuai mata uang yang dipilih.
-                      </FieldDescription>
-                      <FieldMessage id={`${id}-error`} field={field} />
-                    </Field>
-                  );
-                }}
-              </form.Field>
-            )}
-          </form.Subscribe>
-        </div>
-
-        <form.Field name="rekeningPenampung">
-          {(field) => {
-            const id = "finance-rekening";
-            const invalid = isFieldInvalid(field);
-
-            return (
-              <Field data-invalid={invalid}>
-                <FieldLabel id={`${id}-label`} htmlFor={id}>
-                  Rekening penampung
-                </FieldLabel>
-                <Input
-                  id={id}
-                  list={`${id}-options`}
-                  value={field.state.value}
-                  onChange={(event) => field.handleChange(event.target.value)}
-                  onBlur={field.handleBlur}
-                  aria-invalid={invalid || undefined}
-                  aria-describedby={describedBy(field, id, true)}
-                />
-                <datalist id={`${id}-options`}>
-                  {suggestions.rekeningPenampung.map((rekening) => (
-                    <option key={rekening} value={rekening} />
-                  ))}
-                </datalist>
-                <FieldDescription id={`${id}-hint`}>
-                  Pilih saran yang ada atau ketik rekening baru.
-                </FieldDescription>
-                <FieldMessage id={`${id}-error`} field={field} />
-              </Field>
-            );
-          }}
-        </form.Field>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        <FormSection
-          index="03"
-          title="Pihak & dokumen"
-          description="Data pihak terkait dan bukti transaksi (opsional)."
-        />
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <form.Field name="penerima">
-            {(field) => {
-              const id = "finance-penerima";
-              const invalid = isFieldInvalid(field);
-
-              return (
-                <Field data-invalid={invalid}>
-                  <FieldLabel id={`${id}-label`} htmlFor={id}>
-                    Penerima
-                  </FieldLabel>
-                  <Input
-                    id={id}
-                    value={field.state.value ?? ""}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    onBlur={field.handleBlur}
-                    aria-invalid={invalid || undefined}
-                    aria-describedby={describedBy(field, id)}
-                  />
-                  <FieldMessage id={`${id}-error`} field={field} />
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="pengirim">
-            {(field) => {
-              const id = "finance-pengirim";
-              const invalid = isFieldInvalid(field);
-
-              return (
-                <Field data-invalid={invalid}>
-                  <FieldLabel id={`${id}-label`} htmlFor={id}>
-                    Pengirim
-                  </FieldLabel>
-                  <Input
-                    id={id}
-                    value={field.state.value ?? ""}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    onBlur={field.handleBlur}
-                    aria-invalid={invalid || undefined}
-                    aria-describedby={describedBy(field, id)}
-                  />
-                  <FieldMessage id={`${id}-error`} field={field} />
-                </Field>
-              );
-            }}
-          </form.Field>
-        </div>
-
-        <form.Field name="tautanDokumen">
-          {(field) => {
-            const id = "finance-dokumen";
-            const invalid = isFieldInvalid(field);
-
-            return (
-              <Field data-invalid={invalid}>
-                <FieldLabel id={`${id}-label`} htmlFor={id}>
-                  Tautan dokumen
-                </FieldLabel>
-                <Input
-                  id={id}
-                  type="url"
-                  placeholder="https://drive.google.com/…"
-                  value={field.state.value ?? ""}
-                  onChange={(event) => field.handleChange(event.target.value)}
-                  onBlur={field.handleBlur}
-                  aria-invalid={invalid || undefined}
-                  aria-describedby={describedBy(field, id, true)}
-                />
-                <FieldDescription id={`${id}-hint`}>
-                  Gunakan tautan http(s), misalnya Google Drive.
-                </FieldDescription>
-                <FieldMessage id={`${id}-error`} field={field} />
-              </Field>
-            );
-          }}
-        </form.Field>
-      </div>
+          return (
+            <Field data-invalid={invalid}>
+              <FieldLabel id={`${id}-label`} htmlFor={id}>
+                Tautan dokumen
+              </FieldLabel>
+              <Input
+                id={id}
+                type="url"
+                placeholder="https://drive.google.com/…"
+                value={field.state.value ?? ""}
+                onChange={(event) => field.handleChange(event.target.value)}
+                onBlur={field.handleBlur}
+                aria-invalid={invalid || undefined}
+                aria-describedby={describedBy(field, id)}
+              />
+              <FieldMessage id={`${id}-error`} field={field} />
+            </Field>
+          );
+        }}
+      </form.Field>
 
       {serverError ? (
         <Field data-invalid>
@@ -595,7 +534,7 @@ export function FinanceTransactionForm({
         </Field>
       ) : null}
 
-      <div className="flex justify-end gap-2 pt-2">
+      <div className="sticky bottom-0 z-10 flex justify-end gap-2 border-t border-border bg-popover pt-3 pb-1">
         <Button type="button" variant="outline" onClick={onCancel}>
           Batal
         </Button>
