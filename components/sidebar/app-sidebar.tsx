@@ -37,7 +37,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <Link href="/dashboard" className="flex items-center gap-2">
+              <Link href="/home" className="flex items-center gap-2">
                 <Image
                   src="/logo-ppi-webp.webp"
                   alt="Logo PPI Bartin"
@@ -87,7 +87,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               icon: IconWallet,
               items: [
                 { title: "Ringkasan Keuangan", url: "/dashboard/finance" },
-                { title: "Laporan Dasar", url: "/dashboard/finance#laporan-dasar" },
+                {
+                  title: "Laporan Dasar",
+                  url: "/dashboard/finance#laporan-dasar",
+                },
                 {
                   title: "Penyerapan Anggaran",
                   url: "/dashboard/finance#penyerapan-anggaran",
