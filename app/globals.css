@@ -632,14 +632,14 @@
     color: var(--text-primary) !important;
   }
 
-  button[data-slot="button"][class*="bg-transparent"] {
+  button[data-slot="button"][class*="bg-transparent"]:not([class*="text-danger"]) {
     background-color: transparent !important;
     border-color: transparent !important;
     color: var(--text-secondary) !important;
   }
 
-  button[data-slot="button"][class*="bg-transparent"]:hover,
-  button[data-slot="button"][class*="bg-transparent"][data-pressed] {
+  button[data-slot="button"][class*="bg-transparent"]:not([class*="text-danger"]):hover,
+  button[data-slot="button"][class*="bg-transparent"]:not([class*="text-danger"])[data-pressed] {
     background-color: var(--surface-hover) !important;
     color: var(--text-primary) !important;
   }
