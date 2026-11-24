@@ -195,6 +195,8 @@ Field urutan dan perilaku:
 
 Validasi client memakai schema yang sama dengan server (`@tanstack/react-form` + `components/ui/field`). Edit mode mengunci `rowNumber` (tidak bisa diubah user).
 
+Seragamkan tampilan form dengan komposisi shadcn `Field` (detail: `docs/finance-form-shadcn-plan.md`): `FieldLabel` punya `id`/`htmlFor`, setiap kontrol punya `id` + `aria-invalid` + `aria-describedby`, `FieldError` punya `id`, `FieldDescription` dipakai untuk petunjuk, error server memakai `FieldError`, dan field dikelompokkan dalam 3 section bernomor. `datalist` pada Kategori/PIC/Rekening dipertahankan sebagai sumber autocomplete native agar user tetap bisa memasukkan nilai baru; tampilan tetap shadcn `Input`. Toolbar dan filter Wajib Kas sudah memakai shadcn `Input`/`Select`.
+
 ### UI/UX — Konfirmasi hapus
 
 `AlertDialog` menampilkan:

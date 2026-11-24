@@ -154,7 +154,7 @@ features/
 │   │   ├── finance-columns.tsx         # Definisi kolom TanStack Table
 │   │   ├── finance-transaction-card.tsx# Kartu detail transaksi di dalam dialog
 │   │   ├── finance-tokens.tsx          # Badge arus/MU, token rekening, badge dokumen
-│   │   ├── finance-transaction-form.tsx# Form tambah/edit
+│   │   ├── finance-transaction-form.tsx# Form tambah/edit (shadcn Field + a11y)
 │   │   ├── finance-action-dialog.tsx   # Dialog tambah/edit
 │   │   ├── finance-delete-dialog.tsx   # Konfirmasi hapus nilai baris
 │   │   └── finance-empty-state.tsx     # Empty state + CTA

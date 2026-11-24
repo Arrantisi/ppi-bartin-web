@@ -119,6 +119,7 @@ export function FinanceWajibKas({
             className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-text-disabled"
           />
           <Input
+            type="search"
             aria-label="Cari nama anggota"
             placeholder="Cari nama anggota..."
             value={search}
@@ -127,7 +128,7 @@ export function FinanceWajibKas({
           />
         </div>
         <Select value={angkatan} onValueChange={setAngkatan}>
-          <SelectTrigger aria-label="Filter angkatan" className="w-[170px]">
+          <SelectTrigger size="sm" aria-label="Filter angkatan" className="w-[170px]">
             <SelectValue placeholder="Semua angkatan" />
           </SelectTrigger>
           <SelectContent>
@@ -143,7 +144,7 @@ export function FinanceWajibKas({
           value={status}
           onValueChange={(value) => setStatus(value as TStatusFilter)}
         >
-          <SelectTrigger aria-label="Filter status kas" className="w-[170px]">
+          <SelectTrigger size="sm" aria-label="Filter status kas" className="w-[170px]">
             <SelectValue placeholder="Semua status" />
           </SelectTrigger>
           <SelectContent>
