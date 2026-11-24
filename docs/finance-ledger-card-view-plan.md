@@ -1,10 +1,10 @@
-> status: done — diimplementasikan 24 Nov 2026. Toggle Tabel/Kartu, urutan tanggal terbaru, dan badge dokumen aktif di Buku Besar. `pnpm exec vitest run` (36 test), `pnpm lint`, dan `pnpm build` lolos.
+> status: done — diimplementasikan 24 Nov 2026. Baris tabel membuka dialog kartu detail; toggle/grid kartu dihapus; urutan terbaru dan badge dokumen tetap aktif. `pnpm exec vitest run` (36 test), `pnpm lint`, dan `pnpm build` lolos.
 
-# Buku Besar — Kartu Transaksi, Urutan Terbaru, Badge Dokumen — Plan
+# Buku Besar — Detail Kartu dari Baris Tabel — Plan
 
 ## Overview
 
-Tab **Buku Besar** saat ini hanya menampilkan tabel dengan urutan mengikuti baris sheet (terlama di atas). Fitur ini menambahkan toggle **Tabel / Kartu** agar bendahara bisa memilih tampilan ringkas atau kartu per transaksi, mengurutkan transaksi dari **tanggal terbaru** (tie-break nomor baris terbesar), dan mengganti ikon tautan dokumen dengan **badge outline "Ada nota" / "Tanpa nota"**. Sumber data tetap Google Sheets; tidak ada penulisan baru selain CRUD yang sudah ada.
+Tab **Buku Besar** tetap menampilkan tabel transaksi. Koreksi dari implementasi sebelumnya: tidak ada toggle Tabel/Kartu dan tidak ada grid kartu. Ketika **baris tabel diklik** (atau ditekan Enter/Space lewat keyboard), muncul **dialog berisi kartu detail transaksi**. Urutan tetap diurutkan dari **tanggal terbaru** (tie-break nomor baris terbesar), dan kolom Dokumen memakai **badge outline "Ada nota" / "Tanpa nota"**. Sumber data tetap Google Sheets; tidak ada penulisan baru selain CRUD yang sudah ada.
 
 ## Database Model (Prisma)
 
@@ -20,16 +20,14 @@ Tidak ada server action baru. Role check `BENDAHARA`/`ADMIN` dan validasi Zod ti
 
 ## Client Components
 
-File baru di `features/finance/components/`:
+File yang dipakai/diubah:
 
-- `finance-tokens.tsx` — komponen tampilan bersama: `FinanceArusBadge`, `FinanceMataUangBadge`, `FinanceRekeningToken`, `FinanceDokumenBadge`. Dipakai ulang oleh tabel dan kartu supaya tidak ada duplikasi pemetaan ikon.
-- `finance-transaction-card.tsx` — satu kartu transaksi (content-led): nomor + tanggal, badge arus/mata uang, keterangan, nominal mono, rekening, dokumen, serta tombol Edit/Hapus bila `canWrite`.
+- `finance-data-table.tsx` — hapus state toggle & grid kartu; sorting tanggal descending + `rowNumber` descending; state `detailTransaction`; baris bisa diklik/ditekan untuk membuka dialog; pagination tetap sama.
+- `finance-transaction-card.tsx` — dipakai sebagai isi dialog detail (bukan grid). Tombol Edit/Hapus di kartu menutup dialog lalu meneruskan ke callback induk.
+- `finance-tokens.tsx` — token bersama: `FinanceArusBadge`, `FinanceMataUangBadge`, `FinanceRekeningToken`, `FinanceDokumenBadge`.
+- `finance-columns.tsx` — sel arus, mata uang, rekening, dan dokumen memakai token bersama; tombol aksi dan tautan dokumen menghentikan propagasi klik agar tidak membuka dialog detail.
 
-File yang diubah:
-
-- `finance-data-table.tsx` — state `view: "tabel" | "kartu"`, segmented control dengan `aria-pressed`, sorting `tanggal` descending + `rowNumber` descending, pagination dipakai bersama kedua view.
-- `finance-columns.tsx` — sel arus, mata uang, rekening, dan dokumen memakai komponen token bersama.
-- `components/skeletons/finance-skeleton.tsx` — tidak diubah (toggle berada di dalam panel yang sudah termuat).
+Komponen dialog memakai `components/ui/dialog.tsx` yang sudah ada, tanpa dependency baru.
 
 ## Routes
 
@@ -40,25 +38,26 @@ File yang diubah:
 
 ## Security
 
-- Tombol Edit/Hapus pada kartu mengikuti `canWrite` yang sama dengan tabel; server action tetap memverifikasi role.
+- Tombol Edit/Hapus pada kartu detail mengikuti `canWrite` yang sama dengan tabel; server action tetap memverifikasi role.
 - `tautanDokumen` tetap dibuka di tab baru dengan `rel="noopener noreferrer"`.
 - Badge "Tanpa nota" tidak membocorkan URL; badge "Ada nota" hanya menampilkan tautan yang sudah tervalidasi sebagai http(s) oleh parser.
 
 ## Design Tokens
 
-- Kartu: `rounded-2xl border border-border bg-surface`, hover `bg-surface-hover`, tanpa shadow.
-- Badge dokumen: `Badge variant="outline"` — "Ada nota" memakai `IconFileInvoice` + `IconExternalLink`, "Tanpa nota" memakai `IconFileOff`; teks netral (`text-text-primary` / `text-text-disabled`).
+- Dialog memakai `DialogContent className="sm:max-w-xl"`, latar `bg-popover`, tanpa perubahan token global.
+- Kartu detail: `rounded-2xl border border-border bg-surface p-4`, tanpa shadow.
+- Badge dokumen: `Badge variant="outline"` — "Ada nota" memakai `IconFileInvoice` + `IconExternalLink`, "Tanpa nota" memakai `IconFileOff`; teks netral.
 - Badge arus tetap memakai `--success`/`--danger` pada ikon saja, sesuai `design-guideline.md`.
 - Nomor/tanggal/nominal: `--font-mono`. Spacing grid 8px (`gap-3`, `gap-4`, `p-4`, `pt-4`).
-- Segmented control: dua `Button` dengan `aria-pressed`, aktif memakai `variant="secondary"`, nonaktif `variant="ghost"`.
 
 ## Testing Checklist
 
-- [x] Happy path: toggle **Tabel / Kartu** berfungsi; state tidak mengubah data atau filter.
-- [x] Urutan: transaksi tanggal terbaru muncul paling atas di kedua view; tanggal sama diurutkan dari `rowNumber` terbesar.
-- [x] Pagination: halaman kartu memakai pageIndex/pageSize yang sama dengan tabel; reset saat filter menyusut.
-- [x] Badge dokumen: transaksi dengan nota menampilkan "Ada nota" dan tautan bisa diklik; tanpa nota menampilkan "Tanpa nota".
-- [x] Role: anggota biasa tidak melihat tombol Edit/Hapus di kartu; `BENDAHARA`/`ADMIN` melihatnya.
-- [x] Empty state: filter tanpa hasil tetap menampilkan pesan di kedua view.
-- [x] Aksibilitas: `aria-pressed` benar, ikon `aria-hidden`, tautan dokumen punya `aria-label`.
+- [x] Happy path: mengklik baris membuka dialog; kartu menampilkan detail transaksi yang sama dengan baris tersebut.
+- [x] Keyboard: baris bisa difokuskan, Enter/Space membuka dialog; Escape menutup dialog.
+- [x] Klik tombol Edit/Hapus di baris **tidak** membuka dialog detail.
+- [x] Klik badge "Ada nota" di baris **tidak** membuka dialog detail, tautan tetap terbuka di tab baru.
+- [x] Tombol Edit/Hapus di dalam kartu detail menutup dialog lalu membuka dialog/form yang sesuai.
+- [x] Urutan: transaksi tanggal terbaru muncul paling atas; tanggal sama diurutkan dari `rowNumber` terbesar.
+- [x] Pagination tetap berfungsi; filter tanpa hasil menampilkan pesan kosong.
+- [x] Role: anggota biasa tidak melihat tombol Edit/Hapus di kartu detail; `BENDAHARA`/`ADMIN` melihatnya.
 - [x] Verifikasi wajib: `pnpm exec vitest run`, `pnpm lint`, `pnpm build` lolos.

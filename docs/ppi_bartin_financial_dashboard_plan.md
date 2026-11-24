@@ -229,9 +229,9 @@ Daftar file di `features/finance/`:
 - `components/finance-summary-cards.tsx` — blok A bagian 2: Pendapatan, Pengeluaran, Total Saldo per mata uang.
 - `components/finance-budget-table.tsx` — blok B: tabel penyerapan anggaran per lembaga (IDR) dengan indikator persentase teks.
 - `components/finance-wajib-kas.tsx` — blok D: ringkasan total/lunas/tunggakan, filter angkatan + status + nama, tabel 12 bulan per anggota.
-- `components/finance-data-table.tsx` — toggle Tabel/Kartu, urutan tanggal terbaru lebih dulu, pagination, dan filter.
+- `components/finance-data-table.tsx` — tabel dengan klik baris → dialog detail, urutan tanggal terbaru lebih dulu, pagination, dan filter.
 - `components/finance-columns.tsx` — definisi kolom tabel (termasuk kolom aksi edit/hapus untuk bendahara/admin).
-- `components/finance-transaction-card.tsx` + `components/finance-tokens.tsx` — tampilan kartu per transaksi dan token badge/ikon bersama.
+- `components/finance-transaction-card.tsx` + `components/finance-tokens.tsx` — kartu detail di dialog dan token badge/ikon bersama.
 - `components/finance-transaction-form.tsx` — form tambah/edit dengan `@tanstack/react-form` + `components/ui/field`.
 - `components/finance-action-dialog.tsx` — dialog/drawer untuk form tambah & edit (admin).
 - `components/finance-delete-dialog.tsx` — konfirmasi hapus via `AlertDialog`, bukan `confirm()` native.

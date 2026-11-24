@@ -115,7 +115,10 @@ export function getFinanceColumns({
                   variant="ghost"
                   size="icon-sm"
                   aria-label={`Edit transaksi ${row.original.no}`}
-                  onClick={() => onEdit(row.original)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onEdit(row.original);
+                  }}
                 >
                   <IconPencil aria-hidden />
                 </Button>
@@ -123,7 +126,10 @@ export function getFinanceColumns({
                   variant="ghost"
                   size="icon-sm"
                   aria-label={`Hapus transaksi ${row.original.no}`}
-                  onClick={() => onDelete(row.original)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onDelete(row.original);
+                  }}
                 >
                   <IconTrash aria-hidden className="text-danger" />
                 </Button>

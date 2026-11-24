@@ -110,9 +110,9 @@ features/finance/
     ├── finance-budget-table.tsx          # blok B: penyerapan anggaran
     ├── finance-wajib-kas.tsx             # blok D: rekap + tabel status kas + filter
     ├── finance-toolbar.tsx               # search + filter + tombol Tambah
-    ├── finance-data-table.tsx            # toggle Tabel/Kartu + urutan terbaru + pagination
+    ├── finance-data-table.tsx            # tabel + klik baris → dialog detail + urutan terbaru + pagination
     ├── finance-columns.tsx               # definisi kolom @tanstack/react-table
-    ├── finance-transaction-card.tsx      # kartu satu transaksi (tampilan Kartu)
+    ├── finance-transaction-card.tsx      # kartu detail transaksi di dalam dialog
     ├── finance-tokens.tsx                # badge arus/MU, token rekening, badge dokumen
     ├── finance-transaction-form.tsx      # form tambah/edit
     ├── finance-action-dialog.tsx         # Dialog tambah/edit

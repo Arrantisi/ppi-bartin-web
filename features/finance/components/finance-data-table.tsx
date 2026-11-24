@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconLayoutGrid,
-  IconTable,
-} from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import {
   flexRender,
   getCoreRowModel,
@@ -15,6 +10,13 @@ import {
 import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -35,15 +37,14 @@ type TFinanceDataTableProps = {
   onDelete: (transaction: TFinanceTransaction) => void;
 };
 
-type TFinanceView = "tabel" | "kartu";
-
 export function FinanceDataTable({
   data,
   canWrite,
   onEdit,
   onDelete,
 }: TFinanceDataTableProps) {
-  const [view, setView] = useState<TFinanceView>("tabel");
+  const [detailTransaction, setDetailTransaction] =
+    useState<TFinanceTransaction | null>(null);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -89,104 +90,82 @@ export function FinanceDataTable({
     }
   }, [pageCount, pagination.pageIndex]);
 
+  const closeDetail = () => setDetailTransaction(null);
+
+  const editFromDetail = (transaction: TFinanceTransaction) => {
+    closeDetail();
+    onEdit(transaction);
+  };
+
+  const deleteFromDetail = (transaction: TFinanceTransaction) => {
+    closeDetail();
+    onDelete(transaction);
+  };
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="footnote text-text-secondary">
-          Urutan: transaksi terbaru lebih dulu
-        </p>
-        <div
-          role="group"
-          aria-label="Tampilan transaksi"
-          className="flex items-center gap-1 rounded-xl border border-border p-1"
-        >
-          <Button
-            size="sm"
-            variant={view === "tabel" ? "secondary" : "ghost"}
-            aria-pressed={view === "tabel"}
-            onClick={() => setView("tabel")}
-          >
-            <IconTable aria-hidden />
-            Tabel
-          </Button>
-          <Button
-            size="sm"
-            variant={view === "kartu" ? "secondary" : "ghost"}
-            aria-pressed={view === "kartu"}
-            onClick={() => setView("kartu")}
-          >
-            <IconLayoutGrid aria-hidden />
-            Kartu
-          </Button>
-        </div>
-      </div>
+      <p className="footnote text-text-secondary">
+        Urutan: transaksi terbaru lebih dulu · klik baris untuk melihat detail
+      </p>
 
-      {view === "tabel" ? (
-        <div className="rounded-2xl border border-border">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
+      <div className="rounded-2xl border border-border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {rows.length ? (
+              rows.map((row) => (
+                <TableRow
+                  key={`${row.original.rowNumber}-${row.original.no}`}
+                  tabIndex={0}
+                  aria-label={`Lihat detail transaksi ${row.original.no}`}
+                  className="cursor-pointer hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-ring"
+                  onClick={() => setDetailTransaction(row.original)}
+                  onKeyDown={(event) => {
+                    if (event.target !== event.currentTarget) return;
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setDetailTransaction(row.original);
+                    }
+                  }}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
                   ))}
                 </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {rows.length ? (
-                rows.map((row) => (
-                  <TableRow
-                    key={`${row.original.rowNumber}-${row.original.no}`}
-                    className="hover:bg-surface-hover"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center text-text-disabled"
-                  >
-                    Tidak ada transaksi yang cocok dengan filter.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      ) : rows.length ? (
-        <div className="grid gap-4 lg:grid-cols-2">
-          {rows.map((row) => (
-            <FinanceTransactionCard
-              key={`${row.original.rowNumber}-${row.original.no}`}
-              transaction={row.original}
-              canWrite={canWrite}
-              onEdit={onEdit}
-              onDelete={onDelete}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="rounded-2xl border border-border p-8 text-center text-text-disabled">
-          Tidak ada transaksi yang cocok dengan filter.
-        </div>
-      )}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-text-disabled"
+                >
+                  Tidak ada transaksi yang cocok dengan filter.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       <div className="flex items-center justify-between gap-3">
         <p className="footnote text-text-secondary">
@@ -216,6 +195,30 @@ export function FinanceDataTable({
           </Button>
         </div>
       </div>
+
+      <Dialog
+        open={detailTransaction !== null}
+        onOpenChange={(open) => {
+          if (!open) closeDetail();
+        }}
+      >
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Detail transaksi</DialogTitle>
+            <DialogDescription>
+              Data dibaca dari tab BUKU BESAR KEUANGAN.
+            </DialogDescription>
+          </DialogHeader>
+          {detailTransaction ? (
+            <FinanceTransactionCard
+              transaction={detailTransaction}
+              canWrite={canWrite}
+              onEdit={editFromDetail}
+              onDelete={deleteFromDetail}
+            />
+          ) : null}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -150,9 +150,9 @@ features/
 │   │   ├── finance-budget-table.tsx    # Blok B: penyerapan anggaran per lembaga
 │   │   ├── finance-wajib-kas.tsx       # Blok D: rekap + tabel status kas anggota (filter)
 │   │   ├── finance-toolbar.tsx         # Search + filter + tombol Tambah
-│   │   ├── finance-data-table.tsx      # Toggle Tabel/Kartu + urutan terbaru + pagination
+│   │   ├── finance-data-table.tsx      # Tabel + klik baris → dialog detail + urutan terbaru + pagination
 │   │   ├── finance-columns.tsx         # Definisi kolom TanStack Table
-│   │   ├── finance-transaction-card.tsx# Kartu satu transaksi (tampilan Kartu)
+│   │   ├── finance-transaction-card.tsx# Kartu detail transaksi di dalam dialog
 │   │   ├── finance-tokens.tsx          # Badge arus/MU, token rekening, badge dokumen
 │   │   ├── finance-transaction-form.tsx# Form tambah/edit
 │   │   ├── finance-action-dialog.tsx   # Dialog tambah/edit

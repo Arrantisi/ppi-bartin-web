@@ -113,6 +113,7 @@ export function FinanceDokumenBadge({
       rel="noopener noreferrer"
       aria-label={`Buka dokumen transaksi ${transactionNo}`}
       className="rounded-3xl focus-visible:outline-2 focus-visible:outline-ring"
+      onClick={(event) => event.stopPropagation()}
     >
       <Badge
         variant="outline"
