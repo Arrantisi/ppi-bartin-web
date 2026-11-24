@@ -5,11 +5,12 @@ import {
   IconInfoCircle,
   IconRefresh,
 } from "@tabler/icons-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FinanceSkeleton } from "@/components/skeletons/finance-skeleton";
 import { useCurrentUserRole } from "@/hooks/use-current-role";
 import {
@@ -63,6 +64,19 @@ const CLOSED_ACTION: TActionState = {
   transaction: null,
 };
 
+type TFinanceTab = "ringkasan" | "anggaran" | "buku-besar" | "wajib-kas";
+
+const TAB_HASH: Record<TFinanceTab, string> = {
+  ringkasan: "#laporan-dasar",
+  anggaran: "#penyerapan-anggaran",
+  "buku-besar": "#buku-besar",
+  "wajib-kas": "#wajib-kas",
+};
+
+const HASH_TAB = Object.fromEntries(
+  Object.entries(TAB_HASH).map(([tab, hash]) => [hash, tab as TFinanceTab]),
+) as Record<string, TFinanceTab>;
+
 export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
   const financeQuery = useFinance();
   const roleQuery = useCurrentUserRole();
@@ -74,6 +88,34 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
   const [action, setAction] = useState<TActionState>(CLOSED_ACTION);
   const [deleteTarget, setDeleteTarget] =
     useState<TFinanceTransaction | null>(null);
+  const [activeTab, setActiveTab] = useState<TFinanceTab>("ringkasan");
+
+  // Anchor dari sidebar /dashboard memilih tab yang bersesuaian.
+  useEffect(() => {
+    const syncTabFromHash = () => {
+      const tab = HASH_TAB[window.location.hash];
+      if (tab) setActiveTab(tab);
+    };
+    syncTabFromHash();
+    window.addEventListener("hashchange", syncTabFromHash);
+    return () => window.removeEventListener("hashchange", syncTabFromHash);
+  }, []);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash || HASH_TAB[hash] !== activeTab) return;
+    document.getElementById(hash.slice(1))?.scrollIntoView({ block: "start" });
+  }, [activeTab]);
+
+  const handleTabChange = useCallback((value: string) => {
+    const tab = value in TAB_HASH ? (value as TFinanceTab) : "ringkasan";
+    setActiveTab(tab);
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}${window.location.search}${TAB_HASH[tab]}`,
+    );
+  }, []);
 
   const isDemo = financeQuery.data?.kpiSource === "dummy";
   const kpiSource = financeQuery.data?.kpiSource;
@@ -257,83 +299,125 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
       ) : isInitialLoading ? (
         <FinanceSkeleton />
       ) : (
-        <>
-          <FinanceReportSection
-            id="laporan-dasar"
-            number="A"
-            title="Laporan Dasar"
-            description="Saldo dana dan arus kas per mata uang"
+        <Tabs
+          value={activeTab}
+          onValueChange={handleTabChange}
+          className="w-full"
+        >
+          <TabsList
+            variant="line"
+            className="w-full justify-start gap-0 overflow-x-auto border-b border-border"
           >
-            {report ? (
-              <FinanceFundCards funds={report.funds} legend={report.legend} />
-            ) : (
-              <p className="footnote text-text-secondary">
-                Ringkasan dana belum tersedia dari tab DASHBOARD; arus kas di
-                bawah dihitung dari buku besar.
-              </p>
-            )}
-            <FinanceSummaryCards
-              totals={financeQuery.data?.totals ?? EMPTY_TOTALS}
-            />
-          </FinanceReportSection>
+            <TabsTrigger
+              value="ringkasan"
+              className="rounded-none after:bg-text-primary data-[variant=line]:data-active:after:opacity-100"
+            >
+              Ringkasan
+            </TabsTrigger>
+            <TabsTrigger
+              value="anggaran"
+              className="rounded-none after:bg-text-primary data-[variant=line]:data-active:after:opacity-100"
+            >
+              Anggaran
+            </TabsTrigger>
+            <TabsTrigger
+              value="buku-besar"
+              className="rounded-none after:bg-text-primary data-[variant=line]:data-active:after:opacity-100"
+            >
+              Buku Besar
+            </TabsTrigger>
+            <TabsTrigger
+              value="wajib-kas"
+              className="rounded-none after:bg-text-primary data-[variant=line]:data-active:after:opacity-100"
+            >
+              Wajib Kas
+            </TabsTrigger>
+          </TabsList>
 
-          <FinanceReportSection
-            id="penyerapan-anggaran"
-            number="B"
-            title="Laporan Penyerapan Anggaran"
-            description="Pagu, realisasi, dan sisa anggaran per lembaga"
-          >
-            {report && report.budget.length > 0 ? (
-              <FinanceBudgetTable items={report.budget} />
-            ) : (
-              <p className="footnote text-text-secondary">
-                Data penyerapan anggaran belum tersedia di tab DASHBOARD.
-              </p>
-            )}
-          </FinanceReportSection>
+          <TabsContent value="ringkasan" className="pt-6">
+            <FinanceReportSection
+              id="laporan-dasar"
+              number="A"
+              title="Laporan Dasar"
+              description="Saldo dana dan arus kas per mata uang"
+            >
+              {report ? (
+                <FinanceFundCards funds={report.funds} legend={report.legend} />
+              ) : (
+                <p className="footnote text-text-secondary">
+                  Ringkasan dana belum tersedia dari tab DASHBOARD; arus kas di
+                  bawah dihitung dari buku besar.
+                </p>
+              )}
+              <FinanceSummaryCards
+                totals={financeQuery.data?.totals ?? EMPTY_TOTALS}
+              />
+            </FinanceReportSection>
+          </TabsContent>
 
-          <FinanceReportSection
-            id="buku-besar"
-            number="C"
-            title="Buku Besar Keuangan"
-            description="Riwayat transaksi dari sheet bendahara"
-          >
-            <FinanceToolbar
-              filters={filters}
-              onFiltersChange={setFilters}
-              categories={suggestions.categories}
-              canWrite={canWrite}
-              canRefresh={!isDemo}
-              isFetching={financeQuery.isFetching}
-              onRefresh={() => void financeQuery.refetch()}
-              onAdd={handleAdd}
-            />
+          <TabsContent value="anggaran" className="pt-6">
+            <FinanceReportSection
+              id="penyerapan-anggaran"
+              number="B"
+              title="Laporan Penyerapan Anggaran"
+              description="Pagu, realisasi, dan sisa anggaran per lembaga"
+            >
+              {report && report.budget.length > 0 ? (
+                <FinanceBudgetTable items={report.budget} />
+              ) : (
+                <p className="footnote text-text-secondary">
+                  Data penyerapan anggaran belum tersedia di tab DASHBOARD.
+                </p>
+              )}
+            </FinanceReportSection>
+          </TabsContent>
 
-            {transactions.length === 0 ? (
-              <FinanceEmptyState
+          <TabsContent value="buku-besar" className="pt-6">
+            <FinanceReportSection
+              id="buku-besar"
+              number="C"
+              title="Buku Besar Keuangan"
+              description="Riwayat transaksi dari sheet bendahara"
+            >
+              <FinanceToolbar
+                filters={filters}
+                onFiltersChange={setFilters}
+                categories={suggestions.categories}
                 canWrite={canWrite}
-                sheetUrl={sheetUrl}
+                canRefresh={!isDemo}
+                isFetching={financeQuery.isFetching}
+                onRefresh={() => void financeQuery.refetch()}
                 onAdd={handleAdd}
               />
-            ) : (
-              <FinanceDataTable
-                data={filteredTransactions}
-                canWrite={canWrite}
-                onEdit={handleEdit}
-                onDelete={setDeleteTarget}
-              />
-            )}
-          </FinanceReportSection>
 
-          <FinanceReportSection
-            id="wajib-kas"
-            number="D"
-            title="Wajib Kas PPI Bartın"
-            description="Siapa yang sudah dan belum membayar kas per bulan"
-          >
-            <FinanceWajibKas report={financeQuery.data?.wajibKas ?? null} />
-          </FinanceReportSection>
-        </>
+              {transactions.length === 0 ? (
+                <FinanceEmptyState
+                  canWrite={canWrite}
+                  sheetUrl={sheetUrl}
+                  onAdd={handleAdd}
+                />
+              ) : (
+                <FinanceDataTable
+                  data={filteredTransactions}
+                  canWrite={canWrite}
+                  onEdit={handleEdit}
+                  onDelete={setDeleteTarget}
+                />
+              )}
+            </FinanceReportSection>
+          </TabsContent>
+
+          <TabsContent value="wajib-kas" className="pt-6">
+            <FinanceReportSection
+              id="wajib-kas"
+              number="D"
+              title="Wajib Kas PPI Bartın"
+              description="Siapa yang sudah dan belum membayar kas per bulan"
+            >
+              <FinanceWajibKas report={financeQuery.data?.wajibKas ?? null} />
+            </FinanceReportSection>
+          </TabsContent>
+        </Tabs>
       )}
 
       <FinanceActionDialog

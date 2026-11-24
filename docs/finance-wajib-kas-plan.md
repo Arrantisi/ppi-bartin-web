@@ -1,4 +1,4 @@
-> status: done — diimplementasikan 24 Nov 2026. Parser `WAJIB KAS` terverifikasi langsung pada sheet asli: 6 blok, 203 anggota angkatan 2020–2025, 75 lunas, 128 tunggakan. Collapse berada di sidebar dashboard, bukan di halaman finance. `pnpm exec vitest run` (36 test), `pnpm lint`, dan `pnpm build` lolos.
+> status: done — diimplementasikan 24 Nov 2026. Parser `WAJIB KAS` terverifikasi langsung pada sheet asli: 6 blok, 203 anggota angkatan 2020–2025, 75 lunas, 128 tunggakan. Collapse berada di sidebar dashboard; halaman finance memakai 4 tab agar data tidak numpuk (`docs/finance-tabs-plan.md`). `pnpm exec vitest run` (36 test), `pnpm lint`, dan `pnpm build` lolos.
 
 # Data Wajib Kas & Sidebar Collapsible — Plan
 
@@ -6,7 +6,7 @@
 
 Menampilkan tab `WAJIB KAS` dari spreadsheet DKE asli ke halaman `/home/finance`, sehingga seluruh anggota PPI Bartın bisa melihat siapa yang sudah dan belum membayar kas per bulan. Google Sheets tetap menjadi source of truth; tidak ada tabel Prisma baru.
 
-Bersamaan dengan itu, halaman keuangan menampung 4 blok (A saldo dana & arus kas, B penyerapan anggaran, C buku besar, D wajib kas) yang **selalu terlihat**. Sesuai koreksi 24 Nov 2026, collapse dipindah ke **sidebar dashboard** (`NavMain` → submenu "Keuangan"), bukan ke blok halaman. Tiap blok punya anchor (`#laporan-dasar`, `#penyerapan-anggaran`, `#buku-besar`, `#wajib-kas`) yang jadi target submenu sidebar.
+Bersamaan dengan itu, halaman keuangan menampung 4 blok (A saldo dana & arus kas, B penyerapan anggaran, C buku besar, D wajib kas). Sesuai koreksi 24 Nov 2026, collapse dipindah ke **sidebar dashboard** (`NavMain` → submenu "Keuangan"), bukan ke blok halaman. Koreksi lanjutan: agar `/home/finance` tidak numpuk, keempat blok ditampilkan sebagai **4 tab** (`Ringkasan`, `Anggaran`, `Buku Besar`, `Wajib Kas`) — lihat `docs/finance-tabs-plan.md`. Anchor (`#laporan-dasar`, `#penyerapan-anggaran`, `#buku-besar`, `#wajib-kas`) kini membuka tab yang bersesuaian.
 
 Keputusan produk 24 Nov 2026:
 - Bendahara **cukup memakai `/home/finance`** yang sudah memberi izin tulis. Layout `/dashboard` tidak dilonggarkan; halaman admin lain tetap `ADMIN`-only.
@@ -47,10 +47,10 @@ Validasi server: `parseWajibKasReport` hanya membaca dan menormalisasi nilai; ti
 
 File baru/diubah di `features/finance/components/`:
 
-- `finance-report-section.tsx` — pembagi blok bernomor A/B/C/D yang selalu terbuka, dengan `id` anchor untuk submenu sidebar.
+- `finance-report-section.tsx` — pembagi blok bernomor A/B/C/D di dalam tiap panel tab, dengan `id` anchor untuk submenu sidebar.
 - `finance-wajib-kas.tsx` — ringkasan total/lunas/tunggakan, filter angkatan + status + pencarian nama, tabel 12 bulan dengan centang/dash serta teks status. Key tiap kartu blok memakai angkatan + index karena `penanggungJawab` bisa sama di beberapa angkatan.
-- `finance-dashboard.tsx` — memakai `FinanceReportSection` A/B/C/D dan meneruskan `financeQuery.data?.wajibKas`.
-- `components/skeletons/finance-skeleton.tsx` — skeleton untuk keempat blok yang selalu tampil.
+- `finance-dashboard.tsx` — memakai `components/ui/tabs.tsx` untuk 4 tab, `FinanceReportSection` A/B/C/D di dalamnya, dan meneruskan `financeQuery.data?.wajibKas`.
+- `components/skeletons/finance-skeleton.tsx` — skeleton bilah tab + satu panel aktif.
 
 Perubahan di luar fitur:
 
@@ -65,7 +65,7 @@ Perubahan di luar fitur:
 | --- | ----- | ------ |
 | /home/finance | semua anggota yang login & profil lengkap; lihat semua data, tulis hanya `BENDAHARA`/`ADMIN` | `HomeLayoutComponent` |
 | /dashboard/finance | `ADMIN` saja (tidak diubah) | `AdminManagementShell` |
-| /dashboard/finance#laporan-dasar · #penyerapan-anggaran · #buku-besar · #wajib-kas | `ADMIN` saja; target submenu sidebar | `AdminManagementShell` |
+| /home/finance#wajib-kas · /dashboard/finance#laporan-dasar · #penyerapan-anggaran · #buku-besar · #wajib-kas | sesuai halaman; hash memilih tab | layout masing-masing |
 
 ## Security
 
@@ -87,7 +87,7 @@ Perubahan di luar fitur:
 
 ## Testing Checklist
 
-- [ ] Happy path: `/home/finance` menampilkan keempat blok A/B/C/D; blok D menampilkan rekap + tabel wajib kas dengan data asli.
+- [ ] Happy path: `/home/finance` menampilkan 4 tab; tab `Wajib Kas` menampilkan rekap + tabel wajib kas dengan data asli.
 - [x] Parser `WAJIB KAS`: 6 blok terbaca, 203 anggota angkatan 2020–2025, 75 lunas, 128 tunggakan; bulan `TRUE/FALSE` dan `TUNGGAKAN` sesuai sheet asli.
 - [ ] Filter status "Tunggakan" hanya menampilkan anggota dengan tunggakan > 0; filter angkatan dan pencarian nama berfungsi.
 - [ ] Unauthorized access → pengguna belum login diarahkan `/login`; profil belum lengkap diarahkan `/complete-profile`.

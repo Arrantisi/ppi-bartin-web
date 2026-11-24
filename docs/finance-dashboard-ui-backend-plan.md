@@ -1,6 +1,6 @@
 # Financial Dashboard UI/UX & Backend — Plan
 
-> status: done (kode selesai); read path produksi terverifikasi dengan service account baru. Sejak 24 Nov 2026 env mengarah ke sheet DKE asli, layout sheet dipetakan ulang, dan service account terverifikasi sebagai Editor. UI mengikuti sheet asli penuh dalam empat blok A/B/C/D yang selalu terlihat; collapse ada di sidebar dashboard (submenu "Keuangan"). Parser `DASHBOARD` dan `WAJIB KAS` terverifikasi pada data asli. Uji CRUD penuh di sheet asli masih menunggu baris uji dari bendahara.
+> status: done (kode selesai); read path produksi terverifikasi dengan service account baru. Sejak 24 Nov 2026 env mengarah ke sheet DKE asli, layout sheet dipetakan ulang, dan service account terverifikasi sebagai Editor. UI mengikuti sheet asli penuh dalam empat blok A/B/C/D yang kini disajikan sebagai 4 tab agar tidak numpuk; collapse ada di sidebar dashboard (submenu "Keuangan"). Lihat `docs/finance-tabs-plan.md`. Parser `DASHBOARD` dan `WAJIB KAS` terverifikasi pada data asli. Uji CRUD penuh di sheet asli masih menunggu baris uji dari bendahara.
 
 ## Overview
 
@@ -143,17 +143,18 @@ Shared pendukung:
 │ * legenda definisi dana lembaga / darurat / abadi             │
 ├───────────────────────────────────────────────────────────────┤
 ├───────────────────────────────────────────────────────────────┤
-│ B. LAPORAN PENYERAPAN ANGGARAN (#penyerapan-anggaran)         │
+│ [Ringkasan] [Anggaran] [Buku Besar] [Wajib Kas]  ← tab        │
 ├───────────────────────────────────────────────────────────────┤
-│ C. BUKU BESAR KEUANGAN (#buku-besar)                          │
-├───────────────────────────────────────────────────────────────┤
-│ D. WAJIB KAS PPI BARTIN (#wajib-kas)                          │
-│ rekap Total/Lunas/Tunggakan + filter + tabel                  │
+│ Panel aktif saja yang dirender:                               │
+│  Ringkasan       → A (#laporan-dasar)                         │
+│  Anggaran        → B (#penyerapan-anggaran)                   │
+│  Buku Besar      → C (#buku-besar)                            │
+│  Wajib Kas       → D (#wajib-kas) + rekap/filter/tabel        │
 └───────────────────────────────────────────────────────────────┘
 ```
 
 - Desktop: dua grid kartu (dana dan arus kas) masing-masing 3 kolom; mobile: 1 kolom, toolbar wraps, tabel keuangan dan anggaran horizontal scroll.
-- Blok A/B/C/D memakai penanda bernomor + garis bawah tipis, mengikuti konvensi sheet bendahara. Semua blok selalu tampil; collapse berada di sidebar `/dashboard` (`NavMain` → submenu "Keuangan", memakai `components/ui/collapsible.tsx` dengan `aria-expanded`/`aria-controls`) dan submenunya menuju anchor tiap blok.
+- Blok A/B/C/D memakai penanda bernomor + garis bawah tipis, mengikuti konvensi sheet bendahara, tetapi ditempatkan di dalam panel `components/ui/tabs.tsx` (variant `line`). Hanya satu panel aktif. Collapse berada di sidebar `/dashboard` (`NavMain` → submenu "Keuangan", memakai `components/ui/collapsible.tsx` dengan `aria-expanded`/`aria-controls`); submenunya menuju anchor yang otomatis memilih tab.
 - Panel D menampilkan ringkasan total/lunas/tunggakan, filter angkatan + status + nama, serta tabel 12 bulan dengan ikon centang/dash **dan** teks status (tidak bergantung warna saja).
 - Setiap metrik menampilkan pasangan IDR/TRY dalam satu kartu; tidak ada konversi kurs.
 - Angka memakai `--font-mono`; label memakai `--font-sans`.
@@ -263,7 +264,7 @@ Route `GET` mengembalikan `TFinanceSnapshot` langsung, bukan `TServerPrompt`. He
 - [x] Parser `DASHBOARD` terverifikasi pada data asli: 3 saldo dana, 3 metrik arus kas, 3 legenda, dan 14 baris penyerapan anggaran.
 - [x] Parser `WAJIB KAS` terverifikasi pada data asli: 6 blok angkatan 2020–2025, 203 anggota, 75 lunas, 128 tunggakan.
 - [x] Keputusan akses: bendahara cukup di `/home/finance`; `/dashboard` tetap `ADMIN`-only. Detail kas terlihat semua anggota.
-- [ ] Happy path read: blok A (6 kartu metrik = 3 dana + 3 arus kas), B, C, D tampil sekaligus; submenu sidebar "Keuangan" collapse/expand dan menuju anchor blok; angka KPI sesuai sel `DASHBOARD`, bukan hitungan fallback.
+- [ ] Happy path read: 4 tab tersedia, tab `Ringkasan` aktif (6 kartu metrik = 3 dana + 3 arus kas); memilih tab / submenu sidebar "Keuangan" menampilkan panel terkait; angka KPI sesuai sel `DASHBOARD`, bukan hitungan fallback.
 - [ ] Happy path create: tambah transaksi TRY → hanya kolom I terisi di `BUKU BESAR KEUANGAN`; kolom J kosong; kolom B (NO) tetap dari rumus.
 - [ ] Happy path create IDR: tambah transaksi IDR → hanya kolom J terisi; kolom I kosong.
 - [ ] Happy path update: edit baris 8 → hanya baris 8 berubah; baris 9 tetap.
@@ -283,5 +284,5 @@ Route `GET` mengembalikan `TFinanceSnapshot` langsung, bukan `TServerPrompt`. He
 - [ ] Mode dummy dimatikan (`"false"`): dashboard kembali ke data Google Sheets / error state.
 - [x] Data sheet asli memuat transaksi tanpa kategori; opsi filter kategori disanitasi supaya tidak ada `Select.Item value=""` (error Runtime Radix Select).
 - [x] Verifikasi wajib: `pnpm exec vitest run` (36 test), `pnpm lint`, lalu `pnpm build` lolos setelah perubahan layout penuh + WAJIB KAS.
-- [ ] Smoke UI produksi: `/home/finance` menampilkan keempat blok; sidebar `/dashboard` punya submenu "Keuangan" yang bisa collapse; blok D menampilkan 203 anggota dari sheet asli dengan badge "KPI dari DASHBOARD".
+- [ ] Smoke UI produksi: `/home/finance` menampilkan 4 tab dengan tab `Ringkasan` aktif; tab `Wajib Kas` menampilkan 203 anggota dari sheet asli dengan badge "KPI dari DASHBOARD"; sidebar `/dashboard` punya submenu "Keuangan" yang bisa collapse dan membuka tab terkait.
 - [ ] Smoke produksi: `pnpm build && PORT=3111 pnpm start`, `curl /home/finance` tidak 500.

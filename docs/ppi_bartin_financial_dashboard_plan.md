@@ -1,6 +1,6 @@
 # Financial Dashboard — Plan
 
-> status: done untuk implementasi; sejak 24 Nov 2026 `GOOGLE_SHEET_ID` dan `NEXT_PUBLIC_FINANCE_SHEET_URL` sudah mengarah ke spreadsheet DKE asli. Layout sheet dipelajari ulang dan service account terverifikasi sebagai **Editor** (probe `values.clear` pada sel kosong berhasil). UI sekarang mengikuti sheet asli penuh: blok A saldo dana + arus kas, B penyerapan anggaran, C buku besar, dan D wajib kas. Keempat blok selalu terlihat; collapse dipindah ke sidebar dashboard (submenu "Keuangan") dengan anchor ke tiap blok. Parser `DASHBOARD` dan `WAJIB KAS` sudah diverifikasi langsung terhadap data asli. Sisa checklist verifikasi CRUD produksi masih berjalan.
+> status: done untuk implementasi; sejak 24 Nov 2026 `GOOGLE_SHEET_ID` dan `NEXT_PUBLIC_FINANCE_SHEET_URL` sudah mengarah ke spreadsheet DKE asli. Layout sheet dipelajari ulang dan service account terverifikasi sebagai **Editor** (probe `values.clear` pada sel kosong berhasil). UI sekarang mengikuti sheet asli penuh: blok A saldo dana + arus kas, B penyerapan anggaran, C buku besar, dan D wajib kas. Collapse ada di sidebar dashboard (submenu "Keuangan"); di halaman keuangan keempat blok disajikan sebagai 4 tab agar tidak numpuk — lihat `docs/finance-tabs-plan.md`. Anchor tiap blok membuka tab yang bersesuaian. Parser `DASHBOARD` dan `WAJIB KAS` sudah diverifikasi langsung terhadap data asli. Sisa checklist verifikasi CRUD produksi masih berjalan.
 
 ## Overview
 
@@ -33,7 +33,7 @@ Stack: Next.js App Router, TypeScript, `googleapis`, TanStack Query, Shadcn UI, 
   - [x] `NEXT_PUBLIC_FINANCE_SHEET_URL` juga mengarah ke sheet asli, sehingga tombol Phase 1 tidak lagi membuka dummy.
   - [x] Env produksi sudah diset user ke DKE asli; tidak ada langkah "kembalikan ke sheet asli" yang tersisa.
 - **Phase 3 — Backend (persiapan dimulai):** `pnpm add googleapis`; helper `lib/google-sheets.ts`; env didaftarkan di `lib/env/index.ts` **dan** `.env.example`; Zod schema di `schemas/finance.ts`; tipe di `types/finance.ts`; parser di `utils/finance-parser.ts` + unit test; server action + route handler `GET`.
-- **Phase 4 — Frontend:** dashboard di `features/finance/`, hook `hooks/use-finance.ts`, `useQuery` dengan `refetchInterval: 5000` hanya saat tab aktif dan cache server ~30 detik untuk menjaga kuota Google Sheets API; `useMutation` + `invalidateQueries` untuk tulisan dari web. Layout final mengikuti sheet asli dalam empat blok bernomor: A `Laporan Dasar`, B `Laporan Penyerapan Anggaran`, C `Buku Besar Keuangan`, D `Wajib Kas PPI Bartın`. Semua blok tampil sekaligus; collapse ada di sidebar dashboard (`NavMain` → submenu "Keuangan") dan tiap submenu menuju anchor blok.
+- **Phase 4 — Frontend:** dashboard di `features/finance/`, hook `hooks/use-finance.ts`, `useQuery` dengan `refetchInterval: 5000` hanya saat tab aktif dan cache server ~30 detik untuk menjaga kuota Google Sheets API; `useMutation` + `invalidateQueries` untuk tulisan dari web. Layout final mengikuti sheet asli dalam empat blok bernomor: A `Laporan Dasar`, B `Laporan Penyerapan Anggaran`, C `Buku Besar Keuangan`, D `Wajib Kas PPI Bartın`. Keempat blok menjadi 4 tab (`Ringkasan`, `Anggaran`, `Buku Besar`, `Wajib Kas`) agar halaman tidak numpuk; collapse ada di sidebar dashboard (`NavMain` → submenu "Keuangan") dan tiap submenu menuju anchor yang membuka tab terkait.
 - **Phase 5 — Testing & migrasi:** uji sinkronisasi dua arah, deploy + verifikasi env produksi, lalu tombol Phase 1 diganti navigasi ke `/home/finance`.
 
 ### Kontrak Google Sheets (sumber: bendahara)
@@ -223,7 +223,7 @@ Daftar file di `features/finance/`:
 
 - `finance-page.tsx` — wrapper halaman (server component ringan) yang memakai `HomeLayoutComponent`.
 - `components/finance-dashboard.tsx` — orkestrasi `useQuery` polling, empat blok laporan A/B/C/D, dan aksi admin.
-- `components/finance-report-section.tsx` — pembagi blok bernomor A/B/C/D yang selalu terbuka, dengan `id` anchor untuk submenu sidebar.
+- `components/finance-report-section.tsx` — pembagi blok bernomor A/B/C/D di dalam panel tab, dengan `id` anchor untuk submenu sidebar.
 - `components/finance-metric-card.tsx` — kartu satu metrik dengan pasangan nilai IDR/TRY; dipakai ulang oleh dana dan arus kas.
 - `components/finance-fund-cards.tsx` — blok A bagian 1: Saldo Dana Lembaga/Darurat/Abadi + legenda.
 - `components/finance-summary-cards.tsx` — blok A bagian 2: Pendapatan, Pengeluaran, Total Saldo per mata uang.
@@ -278,7 +278,7 @@ Setelah Phase 5, tombol di landing page diganti `Link` ke `/home/finance`.
 - [x] **Parser:** 3 baris asli bendahara (baris 8–10) terbaca menjadi 3 transaksi; `₺450.00` → `450`, `₺1.500,00` → `1500`, `Rp10,242,331` → `10242331`, `3/15/2026` → `2026-03-15`, serial `46096` → `2026-03-15`, `=HYPERLINK(...)` → URL `https`.
 - [x] **Read produksi:** helper `getFinanceValues()` + parser membaca 193 transaksi dari sheet asli dengan kredensial baru.
 - [x] **Parser DASHBOARD asli:** 3 saldo dana, 3 metrik arus kas, 3 legenda, dan 14 baris anggaran terbaca langsung dari sheet; contoh `E10 = 3.685.969`, `S17 = 10.653.258,78`, `S19 = 16.590,77`.
-- [x] **Tampilan empat blok:** A (saldo dana + arus kas), B (penyerapan anggaran), C (buku besar), D (wajib kas) tampil berurutan dan selalu terlihat; sidebar dashboard menyediakan submenu collapse ke anchor tiap blok; badge header menampilkan sumber KPI "KPI dari DASHBOARD".
+- [x] **Tampilan empat blok sebagai tab:** A (saldo dana + arus kas) → `Ringkasan`, B → `Anggaran`, C → `Buku Besar`, D → `Wajib Kas`; hanya satu panel aktif. Sidebar dashboard menyediakan submenu collapse yang membuka tab terkait; badge header menampilkan sumber KPI "KPI dari DASHBOARD".
 - [x] **Parser WAJIB KAS asli:** 6 blok, 203 anggota angkatan 2020–2025, 75 lunas dan 128 tunggakan terbaca langsung dari sheet; blok diurutkan berdasarkan angkatan.
 - [x] **Akses & privasi:** detail nama/status kas sengaja terlihat semua anggota; bendahara tetap memakai `/home/finance` untuk menulis, layout `/dashboard` tidak diubah.
 - [x] **Kategori kosong dari sheet asli:** 2 transaksi tanpa `kategori` tidak lagi menghasilkan `Select.Item value=""`; opsi filter dan datalist dibersihkan di `finance-dashboard.tsx` dan `finance-toolbar.tsx`.
