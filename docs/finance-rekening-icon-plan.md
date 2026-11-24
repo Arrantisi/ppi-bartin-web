@@ -22,7 +22,7 @@ Tidak ada server action baru.
 
 Daftar file yang akan dibuat di `features/finance/`:
 
-- Tidak ada file baru. Ubah `features/finance/components/finance-columns.tsx` pada kolom `rekeningPenampung`.
+- Awalnya direncanakan mengubah `finance-columns.tsx` saja. Implementasi akhir memindahkan token ke `features/finance/components/finance-tokens.tsx` agar bisa dipakai ulang oleh tampilan kartu Buku Besar (`docs/finance-ledger-card-view-plan.md`).
 - Aturan pemetaan (murni, lokal di file yang sama): `rupiah|idr` → `IconBuildingBank` + kode `IDR`; `lira|try` → `IconCurrencyLira` + kode `TRY`; `fundriser|fundraiser|dana` → `IconPigMoney` + kode `DANA`; selain itu → `IconWallet` + kode `REK.`.
 - `title`/{@link aria-label} tetap memakai nilai lengkap dari sheet; label yang terpotong tidak menghilangkan informasi.
 
