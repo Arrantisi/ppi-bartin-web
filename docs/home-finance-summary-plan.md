@@ -1,4 +1,4 @@
-> status: done — koreksi lanjutan 24 Nov 2026: tombol "Lihat Laporan Keuangan" di `/home` sekarang menuju internal `/home/finance`; tombol ke spreadsheet Google Sheets asli dipindah ke header `/home/finance`. `pnpm exec vitest run` (36 test), `pnpm lint`, dan `pnpm build` lolos.
+> status: done — penambahan 24 Nov 2026: setiap `SummaryBlock` mendapat ikon tanda tanya dengan tooltip penjelasan singkat memakai shadcn `Tooltip`/Radix. `pnpm exec vitest run` (36 test), `pnpm lint`, dan `pnpm build` lolos.
 
 # Ringkasan DKE di Halaman Home — Plan
 
@@ -11,6 +11,8 @@ Data diambil sekali di server dengan `getFinanceSnapshot()` (sudah `React.cache(
 CTA kartu di `/home` sengaja diarahkan ke dashboard internal `/home/finance` agar pengguna masuk ke tampilan empat tab. Tombol yang membuka spreadsheet Google Sheets asli tetap tersedia, tetapi ditempatkan di header `/home/finance` (detail: `docs/finance-dashboard-ui-backend-plan.md`).
 
 Koreksi runtime: beberapa baris buku besar memiliki nilai `tanggal` yang tidak bisa dikonversi ke `Date` valid, sehingga `date-fns/format` melempar `RangeError: Invalid time value` di `TransactionRow`. Karena blok transaksi memang tidak diperlukan di beranda, komponen dan sorting-nya dihapus total. Format tanggal di footer juga dijaga agar tidak pernah menerima `Invalid Date`.
+
+Setiap judul kartu kini memiliki tombol tanda tanya kecil. Tooltip menjelaskan sumber data dan cara angka dihitung tanpa membuat kartu jadi penuh: saldo dana dari `DASHBOARD`, arus kas dari buku besar, rekap `WAJIB KAS`, dan agregat penyerapan anggaran. Tooltip hanya membuka penjelasan, tidak menambah data atau tautan baru.
 
 ## Database Model (Prisma)
 
@@ -27,17 +29,18 @@ Tidak ada server action baru dan tidak ada penulisan ke sheet.
 ## Client Components
 
 - `features/home/finance-shortcut.tsx` — server component `async`; memanggil `getFinanceSnapshot()` dalam `try/catch`, merender `FinanceSummary` bila data tersedia, dan fallback netral bila gagal. CTA header memakai shadcn `Button` + `next/link` ke `/home/finance` (tanpa `target="_blank"`); import `env` dan `FinanceSheetLink` tidak dipakai lagi di file ini.
-- `features/home/finance-summary.tsx` (baru, server-only) — menerima `TFinanceSnapshot`, merender empat kartu ringkas:
+- `features/home/finance-summary.tsx` (baru, server-only) — menerima `TFinanceSnapshot`, merender empat kartu ringkas. `SummaryBlock` menerima prop `hint` dan merender `FinanceInfoHint` di samping judul:
   1. **Saldo dana** dari `report.funds` (label + IDR, plus TRY bila > 0).
   2. **Arus kas** dari `snapshot.totals` (**bukan** `report.totals` yang statis): pemasukan/pengeluaran/saldo IDR dan TRY, ikon arus memakai `--success`/`--danger`.
   3. **Wajib Kas** dari `wajibKas.summary`: total / lunas / tunggakan.
   4. **Penyerapan anggaran** dari `report.budget`: agregat pagu/realisasi/sisa + persentase realisasi.
   - Tidak merender `snapshot.transactions` sama sekali. Footer meta memakai helper `formatUpdatedAt` yang mengembalikan `"-"` bila `updatedAt` bukan tanggal valid.
+- `features/home/finance-info-hint.tsx` (baru, `"use client"`) — pembungkus `Tooltip` + `TooltipTrigger asChild` + `TooltipContent` dari `components/ui/tooltip.tsx`; tombol `IconHelp` dengan `aria-label="Penjelasan <judul>"`, bisa dibuka via hover maupun focus keyboard.
 - `features/home/content.tsx` — membungkus `FinanceShortcut` dengan `Suspense` agar acara/berita tetap tampil saat data finance dimuat.
 - `components/skeletons/finance-home-skeleton.tsx` (baru) — skeleton kecil berbentuk kartu shortcut, bukan `FinanceSkeleton` penuh.
 - `components/shared/finance-sheet-link.tsx` — tidak diubah; sekarang dipakai sebagai CTA sheet asli di header `features/finance/components/finance-dashboard.tsx`, bukan lagi di `/home`.
 
-Komponen baru tidak memakai `"use client"`. Ikon memakai `@tabler/icons-react` dengan `aria-hidden`; angka memakai `--font-mono` melalui `font-mono`; formatter memakai `formatFinanceAmount` dari `utils/finance-parser.ts`.
+Semua komponen baru server-only **kecuali** `finance-info-hint.tsx`, yang sengaja menjadi satu-satunya client boundary agar interaksi tooltip tidak mengubah `FinanceSummary`. Ikon memakai `@tabler/icons-react` dengan `aria-hidden`; angka memakai `--font-mono` melalui `font-mono`; formatter memakai `formatFinanceAmount` dari `utils/finance-parser.ts`.
 
 ## Routes
 
@@ -62,6 +65,7 @@ Tidak ada route atau `force-dynamic` baru. `(protected)/layout.tsx` tetap menjad
 - Mode dummy memakai `--warning` pada badge outline.
 - Font: sans untuk label, `font-mono` untuk angka dan tanggal; ukuran `subheadline` / `body` / `footnote`.
 - Progress realisasi anggaran memakai latar `bg-surface-hover` dan isi `bg-primary` (monokron), bukan warna semantik.
+- Tooltip memakai `components/ui/tooltip.tsx` apa adanya (`bg-foreground text-background`, `text-xs text-balance`, `max-w-64`); pemicu berupa tombol ikon `text-text-disabled` → `hover:text-text-secondary`, fokus memakai `focus-visible:ring-ring`. Tanpa latar/warna semantik baru.
 
 ## Testing Checklist
 
@@ -76,5 +80,7 @@ Tidak ada route atau `force-dynamic` baru. `(protected)/layout.tsx` tetap menjad
 - [x] Suspense skeleton tampil saat data finance masih dimuat; acara/berita tetap terender.
 - [x] CTA "Lihat Laporan Keuangan" di `/home` menuju `/home/finance` (navigasi internal, bukan tab baru).
 - [x] Tombol sheet asli tersedia di header `/home/finance` dan membuka Google Sheets di tab baru.
+- [x] Tooltip tanda tanya muncul di keempat judul kartu saat hover dan saat tombol mendapat fokus keyboard; teks penjelasan singkat dan sesuai sumber datanya.
+- [x] Tombol tooltip punya `aria-label`, bisa dijangkau via Tab, dan Escape menutup tooltip tanpa mengubah data.
 - [x] Aksesibilitas: ikon `aria-hidden`, angka bisa dibaca, status tidak hanya mengandalkan warna.
 - [x] Verifikasi wajib: `pnpm exec vitest run`, `pnpm lint`, `pnpm build` lolos.

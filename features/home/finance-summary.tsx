@@ -15,14 +15,17 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { TFinanceSnapshot } from "@/types/finance";
 import { formatFinanceAmount } from "@/utils/finance-parser";
+import { FinanceInfoHint } from "./finance-info-hint";
 
 function SummaryBlock({
   title,
   icon,
+  hint,
   children,
 }: {
   title: string;
   icon: ReactNode;
+  hint: string;
   children: ReactNode;
 }) {
   return (
@@ -30,6 +33,7 @@ function SummaryBlock({
       <h3 className="flex items-center gap-2 text-sm font-medium text-text-primary">
         {icon}
         {title}
+        <FinanceInfoHint label={title}>{hint}</FinanceInfoHint>
       </h3>
       {children}
     </section>
@@ -124,7 +128,10 @@ export function FinanceSummary({ snapshot }: { snapshot: TFinanceSnapshot }) {
       <div className="grid gap-3 lg:grid-cols-4">
         <SummaryBlock
           title="Saldo dana"
-          icon={<IconWallet aria-hidden className="size-4 text-text-secondary" />}
+          icon={
+            <IconWallet aria-hidden className="size-4 text-text-secondary" />
+          }
+          hint="Saldo lembaga, darurat, dan abadi sesuai tab DASHBOARD bendahara. Nilai IDR dan TRY ditampilkan apa adanya, tanpa konversi."
         >
           {funds.length ? (
             <ul className="flex flex-col gap-2">
@@ -157,6 +164,7 @@ export function FinanceSummary({ snapshot }: { snapshot: TFinanceSnapshot }) {
               className="size-4 text-text-secondary"
             />
           }
+          hint="Pemasukan dikurangi pengeluaran, dihitung dari buku besar. Sel DASHBOARD bersifat statis sehingga tidak dipakai untuk angka ini."
         >
           <div className="flex flex-col gap-2">
             <CashRow
@@ -184,7 +192,10 @@ export function FinanceSummary({ snapshot }: { snapshot: TFinanceSnapshot }) {
 
         <SummaryBlock
           title="Wajib kas"
-          icon={<IconUsers aria-hidden className="size-4 text-text-secondary" />}
+          icon={
+            <IconUsers aria-hidden className="size-4 text-text-secondary" />
+          }
+          hint="Rekap anggota yang lunas dan masih tunggakan dari tab WAJIB KAS. Nama anggota sengaja tidak ditampilkan di beranda."
         >
           {kas ? (
             <div className="grid grid-cols-3 gap-2">
@@ -192,7 +203,10 @@ export function FinanceSummary({ snapshot }: { snapshot: TFinanceSnapshot }) {
                 label="Anggota"
                 value={kas.total}
                 icon={
-                  <IconUsers aria-hidden className="size-3 text-text-secondary" />
+                  <IconUsers
+                    aria-hidden
+                    className="size-3 text-text-secondary"
+                  />
                 }
               />
               <KasStat
@@ -209,10 +223,7 @@ export function FinanceSummary({ snapshot }: { snapshot: TFinanceSnapshot }) {
                 label="Tunggakan"
                 value={kas.tunggakan}
                 icon={
-                  <IconAlertCircle
-                    aria-hidden
-                    className="size-3 text-danger"
-                  />
+                  <IconAlertCircle aria-hidden className="size-3 text-danger" />
                 }
               />
             </div>
@@ -228,6 +239,7 @@ export function FinanceSummary({ snapshot }: { snapshot: TFinanceSnapshot }) {
           icon={
             <IconChartBar aria-hidden className="size-4 text-text-secondary" />
           }
+          hint="Total pagu, realisasi, dan sisa dari laporan penyerapan anggaran; persentase dihitung dari agregat ketiga angka tersebut."
         >
           {budget.length ? (
             <div className="flex flex-col gap-2">
