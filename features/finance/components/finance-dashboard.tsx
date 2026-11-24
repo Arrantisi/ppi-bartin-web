@@ -8,6 +8,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { FinanceSheetLink } from "@/components/shared/finance-sheet-link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -231,6 +232,7 @@ export function FinanceDashboard({ sheetUrl }: { sheetUrl?: string }) {
           )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <FinanceSheetLink href={sheetUrl} className="h-9 shrink-0 px-4" />
           {!isDemo && financeQuery.isFetching && !isInitialLoading && (
             <span className="footnote text-text-secondary">Memperbarui…</span>
           )}

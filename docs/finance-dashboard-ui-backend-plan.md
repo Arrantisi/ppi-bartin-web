@@ -126,6 +126,7 @@ Shared pendukung:
 - `hooks/use-current-role.ts` — cek role untuk menampilkan/menyembunyikan tombol CRUD (jika belum ada, dibuat di root `hooks/`).
 - `types/finance.ts`, `schemas/finance.ts`, `utils/finance-parser.ts` — sudah dibuat.
 - `components/skeletons/finance-skeleton.tsx` — skeleton kartu + baris tabel.
+- `components/shared/finance-sheet-link.tsx` — CTA ke spreadsheet Google Sheets asli di header `/home/finance` (`target="_blank"`, `rel="noopener noreferrer"`); CTA di `/home` kini menuju internal dashboard.
 - `app/api/finance/route.ts` — route `GET`.
 
 ### UI/UX — Layout halaman
@@ -133,7 +134,7 @@ Shared pendukung:
 ```
 /home/finance
 ┌───────────────────────────────────────────────────────────────┐
-│ DASHBOARD KEUANGAN PPI BARTIN               [KPI DASHBOARD]   │
+│ DASHBOARD KEUANGAN PPI BARTIN  [LIHAT LAPORAN] [KPI DASHBOARD]│
 │ DEPARTEMEN KEUANGAN DAN EKONOMI - KABINET SUARASA             │
 │ PERIODE 2026 - 2027                                           │
 │ Sumber data: DKE - DATA KEUANGAN KESELURUHAN PPI BARTIN      │
@@ -156,6 +157,7 @@ Shared pendukung:
 └───────────────────────────────────────────────────────────────┘
 ```
 
+- Header kanan memuat tombol `FinanceSheetLink` "Lihat Laporan Keuangan" yang membuka sheet DKE asli di tab baru (dari `sheetUrl`/`env.NEXT_PUBLIC_FINANCE_SHEET_URL`). Tombol dengan label sama di kartu `/home` kini menuju `/home/finance`, jadi sheet asli hanya dibuka dari halaman finance.
 - Desktop: dua grid kartu (dana dan arus kas) masing-masing 3 kolom; mobile: 1 kolom, toolbar wraps, tabel keuangan dan anggaran horizontal scroll.
 - Blok A/B/C/D memakai penanda bernomor + garis bawah tipis, mengikuti konvensi sheet bendahara, tetapi ditempatkan di dalam panel `components/ui/tabs.tsx` (variant `line`). Hanya satu panel aktif. Collapse berada di sidebar `/dashboard` (`NavMain` → submenu "Keuangan", memakai `components/ui/collapsible.tsx` dengan `aria-expanded`/`aria-controls`); submenunya menuju anchor yang otomatis memilih tab.
 - Panel D menampilkan ringkasan total/lunas/tunggakan, filter angkatan + status + nama, serta tabel 12 bulan dengan ikon centang/dash **dan** teks status (tidak bergantung warna saja).
@@ -288,6 +290,7 @@ Route `GET` mengembalikan `TFinanceSnapshot` langsung, bukan `TServerPrompt`. He
 - [ ] Mode dummy: semua server action mutasi ditolak tanpa memanggil Google API.
 - [ ] Mode dummy dimatikan (`"false"`): dashboard kembali ke data Google Sheets / error state.
 - [x] Data sheet asli memuat transaksi tanpa kategori; opsi filter kategori disanitasi supaya tidak ada `Select.Item value=""` (error Runtime Radix Select).
+- [x] CTA sheet asli tersedia di header `/home/finance`, membuka `NEXT_PUBLIC_FINANCE_SHEET_URL` di tab baru; fallback disabled bila env kosong.
 - [x] Verifikasi wajib: `pnpm exec vitest run` (36 test), `pnpm lint`, lalu `pnpm build` lolos setelah perubahan layout penuh + WAJIB KAS.
 - [ ] Smoke UI produksi: `/home/finance` menampilkan 4 tab dengan tab `Ringkasan` aktif; tab `Wajib Kas` menampilkan 203 anggota dari sheet asli dengan badge "KPI dari buku besar"; sidebar `/dashboard` punya submenu "Keuangan" yang bisa collapse dan membuka tab terkait.
 - [ ] Smoke produksi: `pnpm build && PORT=3111 pnpm start`, `curl /home/finance` tidak 500.

@@ -1,13 +1,11 @@
-import { IconChartBar } from "@tabler/icons-react";
+import { IconArrowRight, IconChartBar } from "@tabler/icons-react";
+import Link from "next/link";
 
-import { FinanceSheetLink } from "@/components/shared/finance-sheet-link";
-import { env } from "@/lib/env";
+import { Button } from "@/components/ui/button";
 import { getFinanceSnapshot } from "@/server/data/finance";
 import { FinanceSummary } from "./finance-summary";
 
 export async function FinanceShortcut() {
-  const financeSheetUrl = env.NEXT_PUBLIC_FINANCE_SHEET_URL;
-
   let snapshot: Awaited<ReturnType<typeof getFinanceSnapshot>> | null = null;
   try {
     snapshot = await getFinanceSnapshot();
@@ -31,10 +29,13 @@ export async function FinanceShortcut() {
             </p>
           </div>
         </div>
-        <FinanceSheetLink
-          href={financeSheetUrl}
+        <Button
+          render={<Link href="/home/finance" />}
           className="h-9 shrink-0 px-4"
-        />
+        >
+          Lihat Laporan Keuangan
+          <IconArrowRight aria-hidden />
+        </Button>
       </div>
 
       {snapshot ? (

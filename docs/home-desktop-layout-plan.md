@@ -44,7 +44,7 @@ Tidak ada server action baru. Semua data masih berasal dari query yang sudah ada
 | `components/layout/home-layout.tsx` | Lepas `SidebarProvider`/`SidebarInset`; render `NavMainEvent` sekali + `motion.main` dengan container konten desktop `max-w-6xl` (topbar sendiri full width). |
 | `features/home/header.tsx` | Berubah jadi hero greeting card (nama, sapaan, tanggal, akses cepat). Avatar & notifikasi dipindah ke topbar. |
 | `features/home/content.tsx` | Grid 12 kolom di `lg`: keuangan full, acara ~7, berita ~5. |
-| `features/home/finance-shortcut.tsx` | Disesuaikan jadi kartu ringkas di grid. |
+| `features/home/finance-shortcut.tsx` | Kartu ringkas di grid; CTA "Lihat Laporan Keuangan" menuju internal `/home/finance` (sheet asli dibuka dari header halaman finance). |
 | `features/home/events/acara-mendatang.tsx` | Section header seragam dengan ikon + link panah. |
 | `features/home/news/berita-terbaru.tsx` | Section header seragam, buang padding mobile lama. |
 | `features/home/events/render-event.tsx` | Carousel menyesuaikan kolom (1 slide per kolom di desktop). |

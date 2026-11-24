@@ -1,4 +1,4 @@
-> status: done — koreksi 24 Nov 2026: blok "Transaksi terbaru" dihapus sesuai permintaan (juga menghilangkan `RangeError: Invalid time value` dari tanggal transaksi sheet), format tanggal footer diamankan bila `updatedAt` tidak valid. `pnpm exec vitest run` (36 test), `pnpm lint`, dan `pnpm build` lolos.
+> status: done — koreksi lanjutan 24 Nov 2026: tombol "Lihat Laporan Keuangan" di `/home` sekarang menuju internal `/home/finance`; tombol ke spreadsheet Google Sheets asli dipindah ke header `/home/finance`. `pnpm exec vitest run` (36 test), `pnpm lint`, dan `pnpm build` lolos.
 
 # Ringkasan DKE di Halaman Home — Plan
 
@@ -7,6 +7,8 @@
 Kartu **Transparansi Keuangan** di `/home` saat ini hanya berisi judul, satu kalimat, dan tautan eksternal ke Google Sheet. Pengguna harus membuka sheet atau `/home/finance` untuk melihat angka. Fitur ini menggabungkan ringkasan DKE langsung ke kartu shortcut yang sudah ada: saldo dana + arus kas, rekap Wajib Kas, dan penyerapan anggaran. **Transaksi terbaru sengaja tidak ditampilkan di `/home`** — rincian tetap di `/home/finance` dan sheet bendahara. Tidak ada section baru terpisah, tidak ada tabel Prisma baru, dan Google Sheets tetap single source of truth.
 
 Data diambil sekali di server dengan `getFinanceSnapshot()` (sudah `React.cache()` dan auth) lalu diteruskan ke komponen presentasional server-only. Tidak ada polling di `/home`; polling 5 detik tetap hanya di `/home/finance`.
+
+CTA kartu di `/home` sengaja diarahkan ke dashboard internal `/home/finance` agar pengguna masuk ke tampilan empat tab. Tombol yang membuka spreadsheet Google Sheets asli tetap tersedia, tetapi ditempatkan di header `/home/finance` (detail: `docs/finance-dashboard-ui-backend-plan.md`).
 
 Koreksi runtime: beberapa baris buku besar memiliki nilai `tanggal` yang tidak bisa dikonversi ke `Date` valid, sehingga `date-fns/format` melempar `RangeError: Invalid time value` di `TransactionRow`. Karena blok transaksi memang tidak diperlukan di beranda, komponen dan sorting-nya dihapus total. Format tanggal di footer juga dijaga agar tidak pernah menerima `Invalid Date`.
 
@@ -24,7 +26,7 @@ Tidak ada server action baru dan tidak ada penulisan ke sheet.
 
 ## Client Components
 
-- `features/home/finance-shortcut.tsx` — diubah jadi server component `async`; memanggil `getFinanceSnapshot()` dalam `try/catch`, merender `FinanceSummary` bila data tersedia, dan fallback netral + `FinanceSheetLink` bila gagal. Header kartu dan CTA existing dipertahankan.
+- `features/home/finance-shortcut.tsx` — server component `async`; memanggil `getFinanceSnapshot()` dalam `try/catch`, merender `FinanceSummary` bila data tersedia, dan fallback netral bila gagal. CTA header memakai shadcn `Button` + `next/link` ke `/home/finance` (tanpa `target="_blank"`); import `env` dan `FinanceSheetLink` tidak dipakai lagi di file ini.
 - `features/home/finance-summary.tsx` (baru, server-only) — menerima `TFinanceSnapshot`, merender empat kartu ringkas:
   1. **Saldo dana** dari `report.funds` (label + IDR, plus TRY bila > 0).
   2. **Arus kas** dari `snapshot.totals` (**bukan** `report.totals` yang statis): pemasukan/pengeluaran/saldo IDR dan TRY, ikon arus memakai `--success`/`--danger`.
@@ -33,7 +35,7 @@ Tidak ada server action baru dan tidak ada penulisan ke sheet.
   - Tidak merender `snapshot.transactions` sama sekali. Footer meta memakai helper `formatUpdatedAt` yang mengembalikan `"-"` bila `updatedAt` bukan tanggal valid.
 - `features/home/content.tsx` — membungkus `FinanceShortcut` dengan `Suspense` agar acara/berita tetap tampil saat data finance dimuat.
 - `components/skeletons/finance-home-skeleton.tsx` (baru) — skeleton kecil berbentuk kartu shortcut, bukan `FinanceSkeleton` penuh.
-- `components/shared/finance-sheet-link.tsx` — tidak diubah; tetap dipakai sebagai CTA laporan lengkap.
+- `components/shared/finance-sheet-link.tsx` — tidak diubah; sekarang dipakai sebagai CTA sheet asli di header `features/finance/components/finance-dashboard.tsx`, bukan lagi di `/home`.
 
 Komponen baru tidak memakai `"use client"`. Ikon memakai `@tabler/icons-react` dengan `aria-hidden`; angka memakai `--font-mono` melalui `font-mono`; formatter memakai `formatFinanceAmount` dari `utils/finance-parser.ts`.
 
@@ -51,7 +53,7 @@ Tidak ada route atau `force-dynamic` baru. `(protected)/layout.tsx` tetap menjad
 - `getFinanceSnapshot()` memanggil `studentAccount()`; bila session hilang, komponen menampilkan fallback netral dan tidak membocorkan pesan error mentah.
 - Data organisasi boleh dilihat semua anggota login, tetapi **yang ditampilkan di home sengaja dibatasi**: tidak ada `nama` anggota Wajib Kas, `penerima`, `pengirim`, `penanggungJawab`, `rekeningPenampung`, `tautanDokumen`, `rowNumber`, atau rincian `unit` anggaran. Detail tetap di `/home/finance`.
 - Badge "Data contoh" wajib tampil bila `kpiSource === "dummy"`.
-- Tautan sheet tetap `target="_blank"` dengan `rel="noopener noreferrer"`.
+- Tautan sheet asli tetap `target="_blank"` dengan `rel="noopener noreferrer"`, tetapi kini hanya ada di `/home/finance`; CTA `/home` adalah navigasi internal.
 
 ## Design Tokens
 
@@ -72,6 +74,7 @@ Tidak ada route atau `force-dynamic` baru. `(protected)/layout.tsx` tetap menjad
 - [x] Badge "Data contoh" muncul when `FINANCE_USE_DUMMY_DATA=true`.
 - [x] Google Sheets gagal → fallback netral "Ringkasan belum tersedia" + CTA, halaman home tidak 500.
 - [x] Suspense skeleton tampil saat data finance masih dimuat; acara/berita tetap terender.
-- [x] Tautan laporan eksternal tetap membuka tab baru dan CTA tidak berubah.
+- [x] CTA "Lihat Laporan Keuangan" di `/home` menuju `/home/finance` (navigasi internal, bukan tab baru).
+- [x] Tombol sheet asli tersedia di header `/home/finance` dan membuka Google Sheets di tab baru.
 - [x] Aksesibilitas: ikon `aria-hidden`, angka bisa dibaca, status tidak hanya mengandalkan warna.
 - [x] Verifikasi wajib: `pnpm exec vitest run`, `pnpm lint`, `pnpm build` lolos.
