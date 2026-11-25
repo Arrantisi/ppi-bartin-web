@@ -6,6 +6,7 @@ import CardEvent from "@/components/cards/card-event";
 import {
   Carousel,
   CarouselContent,
+  CarouselDots,
   CarouselItem,
 } from "@/components/ui/carousel";
 import { DataKosong } from "@/components/data-kosong";
@@ -16,13 +17,7 @@ export const RenderAcara = () => {
   if (isLoading) {
     return (
       <div className="w-full overflow-hidden">
-        <div className="flex gap-3 overflow-hidden">
-          {Array.from({ length: 2 }).map((_, idx) => (
-            <div key={idx} className="min-w-[92%] md:min-w-[calc(50%-6px)]">
-              <SkeletonCardAcara />
-            </div>
-          ))}
-        </div>
+        <SkeletonCardAcara />
       </div>
     );
   }
@@ -34,23 +29,21 @@ export const RenderAcara = () => {
   return (
     <Carousel
       autoplay
-      autoplayDelay={10000}
+      autoplayDelay={5000}
       opts={{
         align: "start",
-        loop: false,
+        loop: true,
       }}
       className="w-full"
     >
       <CarouselContent className="-ml-3">
         {data.slice(0, 3).map((event) => (
-          <CarouselItem
-            key={event.slug}
-            className="basis-[92%] md:basis-1/2 pl-3"
-          >
+          <CarouselItem key={event.slug} className="basis-full pl-3">
             <CardEvent {...event} />
           </CarouselItem>
         ))}
       </CarouselContent>
+      <CarouselDots />
     </Carousel>
   );
 };

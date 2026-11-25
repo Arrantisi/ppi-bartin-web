@@ -10,6 +10,12 @@ export const env = createEnv({
 		GOOGLE_CLIENT_ID: z.string().min(1),
 		GOOGLE_CLIENT_SECRET: z.string().min(1),
 		UPLOADTHING_TOKEN: z.string().min(1),
+		// Phase 3: opsional agar build lolos sebelum Service Account dibuat admin.
+		GOOGLE_SHEET_ID: z.string().min(1).optional(),
+		GOOGLE_CLIENT_EMAIL: z.string().min(1).optional(),
+		GOOGLE_PRIVATE_KEY: z.string().min(1).optional(),
+		// Preview UI tanpa Google API. Tidak boleh diaktifkan di produksi.
+		FINANCE_USE_DUMMY_DATA: z.enum(["true", "false"]).optional(),
 	},
 	client: {
 		NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
@@ -30,6 +36,10 @@ export const env = createEnv({
 		NEXT_PUBLIC_FINANCE_SHEET_URL:
 			process.env.NEXT_PUBLIC_FINANCE_SHEET_URL,
 		UPLOADTHING_TOKEN: process.env.UPLOADTHING_TOKEN,
+		GOOGLE_SHEET_ID: process.env.GOOGLE_SHEET_ID,
+		GOOGLE_CLIENT_EMAIL: process.env.GOOGLE_CLIENT_EMAIL,
+		GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY,
+		FINANCE_USE_DUMMY_DATA: process.env.FINANCE_USE_DUMMY_DATA,
 	},
 	emptyStringAsUndefined: true,
 });

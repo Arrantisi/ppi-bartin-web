@@ -1,41 +1,28 @@
 import { getNews } from "@/server/data/news";
 import { safeDb } from "@/lib/db/safe";
-import { FrameNews } from "@/components/cards/card-news";
 import { DataKosong } from "@/components/data-kosong";
+import { ContentPageHeader } from "@/components/shared/content-page-header";
+import { NewsEditorial } from "@/components/shared/news-editorial";
 
 export const revalidate = 60;
 
 export default async function PublicNewsPage() {
   const news = await safeDb(() => getNews(), [], "berita list");
-
-  if (!news || news.length === 0) {
-    return (
-      <div className="mx-auto max-w-6xl px-4 py-8 md:py-12 space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight text-text-primary">Berita</h1>
-          <p className="text-muted-foreground">
-            Artikel dan berita terbaru tentang PPI Bartin.
-          </p>
-        </div>
-        <DataKosong href="/login" catagory="Berita" />
-      </div>
-    );
-  }
+  const items = news.slice(0, 10);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 md:py-12 space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-text-primary">Berita</h1>
-        <p className="text-muted-foreground">
-          Artikel dan berita terbaru tentang PPI Bartin.
-        </p>
-      </div>
+    <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-12">
+      <ContentPageHeader
+        eyebrow="PPI Bartın"
+        title="Berita"
+        description="Artikel dan berita terbaru tentang PPI Bartın."
+      />
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
-        {news.map((item) => (
-          <FrameNews key={item.slug} {...item} hrefBase="/berita" />
-        ))}
-      </div>
+      {items.length === 0 ? (
+        <DataKosong href="/login" catagory="Berita" />
+      ) : (
+        <NewsEditorial items={items} hrefBase="/berita" />
+      )}
     </div>
   );
 }

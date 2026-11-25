@@ -1,0 +1,261 @@
+import type {
+  TFinanceDashboardReport,
+  TFinanceSnapshot,
+  TFinanceTransaction,
+  TWajibKasMember,
+  TWajibKasReport,
+} from "@/types/finance";
+import { computeFinanceTotals } from "../../utils/finance-parser";
+
+/**
+ * Data contoh untuk preview UI sebelum Google Sheets dikonfigurasi.
+ * File ini hanya dipakai oleh server/data/finance.ts dan TIDAK pernah ditulis ke Sheets.
+ */
+const DUMMY_TRANSACTIONS: TFinanceTransaction[] = [
+  {
+    rowNumber: 7,
+    no: 1,
+    tanggal: "2026-03-15",
+    bulanPelaporan: "Maret",
+    keterangan: "Penerimaan Dana Hibah dari PPI Turki",
+    kategori: "Sponsorship",
+    arusKas: "Debit",
+    mataUang: "TRY",
+    nominalTry: 490,
+    nominalIdr: 0,
+    metodeTransaksi: "Transfer",
+    penanggungJawab: "Ahmad Yasin",
+    rekeningPenampung: "Bank BNI - TRY",
+    penerima: "",
+    pengirim: "",
+    tautanDokumen: "https://example.com/dokumen-hibah",
+  },
+  {
+    rowNumber: 8,
+    no: 2,
+    tanggal: "2026-03-18",
+    bulanPelaporan: "Maret",
+    keterangan: "Dana SUKA anggota",
+    kategori: "Dana SUKA",
+    arusKas: "Debit",
+    mataUang: "IDR",
+    nominalTry: 0,
+    nominalIdr: 10_242_331,
+    metodeTransaksi: "Transfer",
+    penanggungJawab: "Bendahara PPI Bartın",
+    rekeningPenampung: "BCA - 1234567890",
+    penerima: "",
+    pengirim: "",
+    tautanDokumen: "",
+  },
+  {
+    rowNumber: 9,
+    no: 3,
+    tanggal: "2026-03-22",
+    bulanPelaporan: "Maret",
+    keterangan: "Pembayaran sewa kantor",
+    kategori: "Operasional",
+    arusKas: "Kredit",
+    mataUang: "TRY",
+    nominalTry: 250.5,
+    nominalIdr: 0,
+    metodeTransaksi: "Cash",
+    penanggungJawab: "Ahmad Yasin",
+    rekeningPenampung: "Kas TRY",
+    penerima: "",
+    pengirim: "Pemilik Kantor",
+    tautanDokumen: "",
+  },
+  {
+    rowNumber: 10,
+    no: 4,
+    tanggal: "2026-04-02",
+    bulanPelaporan: "April",
+    keterangan: "Iuran anggota bulan April",
+    kategori: "Iuran",
+    arusKas: "Debit",
+    mataUang: "IDR",
+    nominalTry: 0,
+    nominalIdr: 3_500_000,
+    metodeTransaksi: "Transfer",
+    penanggungJawab: "Bendahara PPI Bartın",
+    rekeningPenampung: "BCA - 1234567890",
+    penerima: "",
+    pengirim: "",
+    tautanDokumen: "",
+  },
+  {
+    rowNumber: 11,
+    no: 5,
+    tanggal: "2026-04-05",
+    bulanPelaporan: "April",
+    keterangan: "Pembelian ATK sekretariat",
+    kategori: "Operasional",
+    arusKas: "Kredit",
+    mataUang: "IDR",
+    nominalTry: 0,
+    nominalIdr: 475_000,
+    metodeTransaksi: "Cash",
+    penanggungJawab: "Sekretaris PPI Bartın",
+    rekeningPenampung: "Kas IDR",
+    penerima: "Toko Alat Tulis",
+    pengirim: "",
+    tautanDokumen: "",
+  },
+  {
+    rowNumber: 12,
+    no: 6,
+    tanggal: "2026-04-11",
+    bulanPelaporan: "April",
+    keterangan: "Donasi kemanusiaan",
+    kategori: "Donasi",
+    arusKas: "Debit",
+    mataUang: "TRY",
+    nominalTry: 1500,
+    nominalIdr: 0,
+    metodeTransaksi: "Transfer",
+    penanggungJawab: "Ahmad Yasin",
+    rekeningPenampung: "Bank BNI - TRY",
+    penerima: "",
+    pengirim: "PPI Bartın",
+    tautanDokumen: "",
+  },
+  {
+    rowNumber: 13,
+    no: 7,
+    tanggal: "2026-04-14",
+    bulanPelaporan: "April",
+    keterangan: "Biaya administrasi bank",
+    kategori: "Operasional",
+    arusKas: "Kredit",
+    mataUang: "TRY",
+    nominalTry: 12.75,
+    nominalIdr: 0,
+    metodeTransaksi: "Transfer",
+    penanggungJawab: "Bendahara PPI Bartın",
+    rekeningPenampung: "Bank BNI - TRY",
+    penerima: "Bank BNI",
+    pengirim: "",
+    tautanDokumen: "",
+  },
+  {
+    rowNumber: 14,
+    no: 8,
+    tanggal: "2026-04-20",
+    bulanPelaporan: "April",
+    keterangan: "Hibah kampus untuk kegiatan",
+    kategori: "Sponsorship",
+    arusKas: "Debit",
+    mataUang: "IDR",
+    nominalTry: 0,
+    nominalIdr: 7_500_000,
+    metodeTransaksi: "Transfer",
+    penanggungJawab: "Ketua PPI Bartın",
+    rekeningPenampung: "BCA - 1234567890",
+    penerima: "Universitas Bartın",
+    pengirim: "",
+    tautanDokumen: "https://example.com/dokumen-hibah-kampus",
+  },
+];
+
+/** Ringkasan contoh supaya mode pratinjau menampilkan layout yang sama dengan sheet asli. */
+const DUMMY_REPORT: TFinanceDashboardReport = {
+  title: "DASHBOARD KEUANGAN PPI BARTIN",
+  department: "DEPARTEMEN KEUANGAN DAN EKONOMI - KABINET SUARASA",
+  period: "PERIODE 2026 - 2027",
+  funds: [
+    { key: "lembaga", label: "Saldo Dana Lembaga", marker: "*", idr: 3_685_969, try: 0 },
+    { key: "darurat", label: "Saldo Dana Darurat", marker: "**", idr: 1_100_697, try: 0 },
+    { key: "abadi", label: "Saldo Dana Abadi", marker: "***", idr: 555_348, try: 0 },
+  ],
+  legend: [
+    {
+      marker: "*",
+      description:
+        "Dana yang dialokasikan untuk menunjang kegiatan dan fungsi lembaga dalam PPI Bartin.",
+    },
+    {
+      marker: "**",
+      description:
+        "Dana untuk kondisi tak terduga (force majeure), seperti bantuan mendesak anggota PPI Bartin.",
+    },
+    {
+      marker: "***",
+      description:
+        "Jaring pengaman agar PPI Bartin memiliki jaminan awal kas di periode mendatang.",
+    },
+  ],
+  totals: computeFinanceTotals(DUMMY_TRANSACTIONS),
+  budget: [
+    { no: 1, lembaga: "Badan Pengurus Harian", unit: "Presidium", pagu: 1_940_000, realisasi: 250_000, sisa: 1_690_000 },
+    { no: 2, lembaga: "Departemen Sekretaris", unit: "", pagu: 1_280_000, realisasi: 941_358, sisa: 338_642 },
+    { no: 3, lembaga: "Departemen Keuangan dan Ekonomi", unit: "", pagu: 21_030_000, realisasi: 261_000, sisa: 20_769_000 },
+    { no: 4, lembaga: "Departenmen Akademik Pelajar", unit: "", pagu: 2_148_000, realisasi: 0, sisa: 2_148_000 },
+    { no: 5, lembaga: "Departemen Agama", unit: "", pagu: 3_520_000, realisasi: 560_000, sisa: 2_960_000 },
+  ],
+};
+
+const DUMMY_MONTHS = [
+  "FEB",
+  "MAR",
+  "APR",
+  "MEI",
+  "JUN",
+  "JUL",
+  "AGU",
+  "SEP",
+  "OKT",
+  "NOV",
+  "DES",
+  "JAN",
+] as const;
+
+const dummyKasMember = (
+  no: number,
+  angkatan: number,
+  nama: string,
+  paidThrough: number,
+): TWajibKasMember => ({
+  no,
+  angkatan,
+  nama,
+  months: DUMMY_MONTHS.map((label, index) => ({
+    label,
+    paid: index < paidThrough,
+  })),
+  tunggakan: DUMMY_MONTHS.length - paidThrough,
+  status: paidThrough === DUMMY_MONTHS.length ? "lunas" : "tunggakan",
+});
+
+/** Contoh ringkas supaya pratinjau menampilkan panel WAJIB KAS yang sama dengan sheet asli. */
+const DUMMY_WAJIB_KAS: TWajibKasReport = {
+  title: "DATA WAJIB KAS PPI BARTIN",
+  department: "DEPARTEMEN KEUANGAN DAN EKONOMI - KABINET SUARASA",
+  period: "PERIODE 2026 - 2027",
+  blocks: [
+    {
+      penanggungJawab: "Dinda Mahel Ihelga",
+      members: [
+        dummyKasMember(1, 2020, "Auliya Imtihani Muyasaroh Jatmiko", 12),
+        dummyKasMember(2, 2020, "Alfatul Sarah Utari Putri", 8),
+      ],
+    },
+    {
+      penanggungJawab: "Clara Devi Prasetya Putri",
+      members: [
+        dummyKasMember(1, 2021, "Abdillah Harta Pramulia", 0),
+        dummyKasMember(2, 2021, "Achmad Miftachul Ulum", 6),
+      ],
+    },
+  ],
+  summary: { total: 4, lunas: 1, tunggakan: 3 },
+};
+
+export const getDummyFinanceSnapshot = (): TFinanceSnapshot => ({
+  transactions: DUMMY_TRANSACTIONS,
+  totals: DUMMY_REPORT.totals,
+  report: DUMMY_REPORT,
+  wajibKas: DUMMY_WAJIB_KAS,
+  kpiSource: "dummy",
+  updatedAt: new Date().toISOString(),
+});

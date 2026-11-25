@@ -233,4 +233,5 @@ enum Role {
   USER
   ADMIN
   PENGURUS
+  BENDAHARA
 }

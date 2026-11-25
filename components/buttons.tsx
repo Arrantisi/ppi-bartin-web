@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import { Spinner } from "./ui/spinner";
 import {
   IconArrowLeft,
@@ -138,12 +138,16 @@ export const ButtonCreate = ({
 }: {
   catagory: "berita" | "acara";
 }) => {
+  const label = catagory === "berita" ? "Buat berita" : "Buat acara";
+
   return (
     <Link
       href={`/home/${catagory}/create`}
-      className={"rounded-full border border-border bg-primary p-1.5 text-primary-foreground"}
+      className={cn(buttonVariants({ size: "sm" }))}
+      aria-label={label}
     >
-      <IconPlus />
+      <IconPlus aria-hidden />
+      <span className="hidden sm:inline">{label}</span>
     </Link>
   );
 };

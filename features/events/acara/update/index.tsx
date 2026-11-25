@@ -3,9 +3,14 @@
 import { LoaderOneDemo } from "@/components/loader";
 import { UpdateEventContent } from "./content";
 import { useEventBySlug } from "@/hooks/use-events";
-import { ButtonHeaderField } from "@/components/buttons";
 
-export const UpdateEventComponent = ({ slug }: { slug: string }) => {
+export const UpdateEventComponent = ({
+  slug,
+  backHref = "/home/acara",
+}: {
+  slug: string;
+  backHref?: string;
+}) => {
   const { data, isLoading } = useEventBySlug({ slug });
 
   if (isLoading) {
@@ -17,9 +22,6 @@ export const UpdateEventComponent = ({ slug }: { slug: string }) => {
   }
 
   return (
-    <div>
-      <ButtonHeaderField href="/home/acara" label="Edit Acara" />
-      <UpdateEventContent slug={slug} data={data} />
-    </div>
+    <UpdateEventContent slug={slug} data={data} backHref={backHref} />
   );
 };

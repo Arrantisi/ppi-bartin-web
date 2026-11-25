@@ -4,6 +4,37 @@
 
 News/Berita feature untuk PPI Bartin web. Users bisa membuat, melihat, memperbarui, dan menghapus berita. Berita memiliki kategori, thumbnail, ringkasan, dan konten rich text. Tersedia di halaman publik (`/berita`) dan halaman protected (`/home/berita`) dengan fitur CRUD.
 
+## Changelog
+
+### 2026-11-22 — Redesign halaman detail berita
+
+- `features/news/news-detail/index.tsx`: nav dobel dihapus, diganti breadcrumb ringan; hierarki eyebrow → judul → byline + share/aksi → hero `aspect-[16/9]` → artikel → CTA publik → berita terkait.
+- `features/news/news-detail/related-news.tsx`: komponen baru, 3 kartu berita terkait dari `useNews()` (kategori sama, fallback berita lain).
+- `components/shared/navigation/nav-main-event.tsx`: header topbar jadi transparan tanpa blur; blur tetap di kapsul menu utama.
+- Berlaku juga untuk `/home/berita/[slug]` karena komponen detailnya dipakai bersama.
+- Detail: `docs/news-detail-redesign-plan.md`.
+
+### 2026-11-22 — Pencarian & pagination daftar berita
+
+- `features/news/berita-catagory.tsx`: placeholder pill di samping `ButtonCreate` diganti `ContentSearch`; tab kategori jadi controlled dan halaman direset saat kategori berubah.
+- `components/shared/content-search.tsx`, `components/shared/content-pagination.tsx`, `hooks/use-client-list.ts`: komponen & hook baru untuk pencarian, empty state hasil cari, dan navigasi halaman client-side.
+- Daftar tidak lagi dibatasi 10 berita total — 10 per halaman, semua bisa diakses lewat pagination.
+- CTA empty state diperbaiki ke `/home/berita/create` (sebelumnya `/home/news/create`).
+- Detail: `docs/news-event-search-pagination-plan.md`.
+
+### 2026-11-21 — Batas 10 berita per tampilan
+
+- `features/news/berita-catagory.tsx`: hasil filter tiap tab (termasuk "all") dibatasi `slice(0, 10)` sebelum dirender.
+- `app/(public)/berita/page.tsx`: daftar publik juga dibatasi 10 berita terbaru.
+- Beranda (`features/home/news/render-news.tsx`) tetap menampilkan 6 pratinjau.
+
+### 2026-11-21 — Pewarnaan label kategori (token only)
+
+- `utils/news-category.ts`: `getNewsCategoryTone()` memetakan kategori ke nada `urgent`/`accent`/`info`/`success`/`neutral`, lengkap dengan kelas teks dan titik berbasis CSS token.
+- `components/cards/card-news.tsx` & `features/news/news-detail/index.tsx`: label kategori kini punya titik warna + teks berwarna (warna bukan satu-satunya penanda).
+- `features/news/berita-catagory.tsx`: tab aktif memakai `accent/10` + border `accent/30`, tiap tab punya titik nada kategori.
+- Unit test: `__tests__/news-category.test.ts`.
+
 ---
 
 ## Database Model (Prisma)
@@ -120,6 +151,8 @@ export type TcreateNewsSchema = z.infer<typeof createNewsSchema>;
 | `components/cards/card-news.tsx` | `FrameNews` — card with thumbnail, category badge, title, date |
 | `components/sections/news-section.tsx` | `NewsSection` — landing page section |
 | `components/skeletons/news-catagory-skeleton.tsx` | `NewsCaratogorySkeleton` — loading state |
+| `components/shared/content-search.tsx` | `ContentSearch`, `ContentSearchEmpty` — input pencarian + empty state hasil cari |
+| `components/shared/content-pagination.tsx` | `ContentPagination` — navigasi halaman daftar |
 
 ### Upload
 
@@ -149,6 +182,7 @@ export type TcreateNewsSchema = z.infer<typeof createNewsSchema>;
 | File | Exports |
 |------|---------|
 | `hooks/use-news.ts` | `useNews()`, `useNewsBySlug({ slug })` — TanStack React Query hooks |
+| `hooks/use-client-list.ts` | `useClientList({ items, getSearchText, pageSize })` — filter + pagination client-side |
 
 ---
 
@@ -173,3 +207,10 @@ Same as design-guideline.md (CSS variables, Inter font, 8px grid).
 - [ ] Environment filter — admin sees all envs, user sees production only
 - [ ] Empty state → DataKosong component
 - [ ] Loading state → skeleton
+- [ ] Pencarian judul/kategori berita menyaring daftar & reset ke halaman 1
+- [ ] Pagination prev/next + nomor berfungsi, disable di batas
+- [ ] Ganti tab kategori mengembalikan halaman ke 1
+- [ ] Empty state hasil pencarian muncul dengan tombol "Hapus pencarian"
+- [ ] Detail: tidak ada nav dobel, breadcrumb kembali ke daftar yang sesuai
+- [ ] Detail: hero image tidak distort, artikel sanitized, share & aksi penulis berfungsi
+- [ ] Detail: 3 berita terkait tampil tanpa menyertakan artikel saat ini

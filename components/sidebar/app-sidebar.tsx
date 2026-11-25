@@ -13,7 +13,17 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { IconInnerShadowTop, IconSettings } from "@tabler/icons-react";
+import Image from "next/image";
+
+import {
+  IconCalendarEvent,
+  IconLayoutDashboard,
+  IconNews,
+  IconSettings,
+  IconTicket,
+  IconUsers,
+  IconWallet,
+} from "@tabler/icons-react";
 import NavUser from "./nav-user";
 import Link from "next/link";
 
@@ -27,9 +37,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <Link href="/">
-                <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold">PPI Bartin</span>
+              <Link href="/home" className="flex items-center gap-2">
+                <Image
+                  src="/logo-ppi-webp.webp"
+                  alt="Logo PPI Bartin"
+                  width={200}
+                  height={200}
+                  className="size-7"
+                />
+                <span className="text-base font-semibold">PPI Bartın</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -38,6 +54,51 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain
           items={[
+            {
+              title: "Dashboard",
+              url: "/dashboard",
+              icon: IconLayoutDashboard,
+            },
+            {
+              title: "Kelola Pengguna",
+              url: "/dashboard/users",
+              icon: IconUsers,
+            },
+            {
+              title: "Pesan Masuk",
+              url: "/dashboard/tickets",
+              icon: IconTicket,
+            },
+            {
+              title: "Kelola Acara",
+              url: "/dashboard/events",
+              matchPrefixes: ["/dashboard/acara"],
+              icon: IconCalendarEvent,
+            },
+            {
+              title: "Kelola Berita",
+              url: "/dashboard/news",
+              matchPrefixes: ["/dashboard/berita"],
+              icon: IconNews,
+            },
+            {
+              title: "Keuangan",
+              url: "/dashboard/finance",
+              icon: IconWallet,
+              items: [
+                { title: "Ringkasan Keuangan", url: "/dashboard/finance" },
+                {
+                  title: "Laporan Dasar",
+                  url: "/dashboard/finance#laporan-dasar",
+                },
+                {
+                  title: "Penyerapan Anggaran",
+                  url: "/dashboard/finance#penyerapan-anggaran",
+                },
+                { title: "Buku Besar", url: "/dashboard/finance#buku-besar" },
+                { title: "Wajib Kas", url: "/dashboard/finance#wajib-kas" },
+              ],
+            },
             {
               title: "Settings",
               url: "/dashboard/settings",

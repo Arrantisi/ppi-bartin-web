@@ -53,7 +53,13 @@ const catagoryLabel: Record<string, string> = {
   saran: "Kritik & Saran",
 };
 
-export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
+export const AdminTicketDetail = ({
+  ticketId,
+  basePath = "/home/profile/customer-service/list",
+}: {
+  ticketId: string;
+  basePath?: string;
+}) => {
   const { data, isLoading } = useTicketById(ticketId);
   const updateStatus = useUpdateTicketStatus();
   const { mutateAsync: removeTicket, isPending: isDeleting } = useDeleteTicket();
@@ -72,7 +78,7 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <IconMessage className="size-12 text-text-disabled mb-4" />
         <p className="text-text-secondary text-sm">Tiket tidak ditemukan</p>
-        <Button variant="ghost" onClick={() => router.push("/home/profile/customer-service/list")} className="mt-4">
+        <Button variant="ghost" onClick={() => router.push(basePath)} className="mt-4">
           Kembali
         </Button>
       </div>
@@ -95,7 +101,7 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
     const res = await removeTicket(ticket.id);
     if (res.success) {
       toast.success(res.message);
-      router.push("/home/profile/customer-service/list");
+      router.push(basePath);
     }
   };
 
@@ -103,7 +109,7 @@ export const AdminTicketDetail = ({ ticketId }: { ticketId: string }) => {
     <div>
       <button
         type="button"
-        onClick={() => router.push("/home/profile/customer-service/list")}
+        onClick={() => router.push(basePath)}
         className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-text-primary transition-colors mb-6"
       >
         <IconArrowNarrowLeft className="size-4" />

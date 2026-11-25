@@ -1,47 +1,80 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useMemo } from "react";
+import Link from "next/link";
+import { IconCalendarPlus, IconNews } from "@tabler/icons-react";
+
+import { buttonVariants } from "@/components/ui/button";
 import { useProfileUser } from "@/hooks/use-users";
-import { IconBell } from "@tabler/icons-react";
+
+const greeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Selamat Pagi";
+  if (hour < 15) return "Selamat Siang";
+  if (hour < 18) return "Selamat Sore";
+  return "Selamat Malam";
+};
 
 const ProfileHome = () => {
   const { data: session } = useProfileUser();
   const displayName = session?.name || session?.username || "Pengguna";
-
-  const greeting = () => {
-    const h = new Date().getHours();
-    if (h < 12) return "Selamat Pagi";
-    if (h < 15) return "Selamat Siang";
-    if (h < 18) return "Selamat Sore";
-    return "Selamat Malam";
-  };
+  const today = useMemo(
+    () =>
+      new Intl.DateTimeFormat("id-ID", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(new Date()),
+    [],
+  );
 
   return (
-    <div className="flex items-center justify-between gap-3 py-3">
-      <div className="flex min-w-0 items-center gap-3">
-        <Avatar className="size-10 shrink-0">
-          <AvatarImage src={session?.image || ""} />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-        <div className="flex min-w-0 flex-col gap-px">
-          <h3 className="text-[0.9375rem] font-semibold tracking-[-0.01em] text-text-primary capitalize">
-            Halo, {displayName}
-          </h3>
-          <h1 className="text-[0.8125rem] font-normal text-text-disabled">
+    <section className="relative overflow-hidden rounded-3xl border border-border bg-accent-subtle p-6 md:p-8">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-16 -top-20 size-64 rounded-full border border-border/60"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-28 right-24 size-80 rounded-full border border-border/40"
+      />
+
+      <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="min-w-0 space-y-2">
+          <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.08em] text-accent">
             {greeting()}
+          </p>
+          <h1 className="title-satu text-text-primary capitalize">
+            Halo, {displayName}
           </h1>
+          <p
+            suppressHydrationWarning
+            className="body text-text-secondary first-letter:capitalize"
+          >
+            {today}
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/home/acara/create"
+            className={buttonVariants({ size: "sm", variant: "outline" })}
+          >
+            <IconCalendarPlus aria-hidden />
+            Lihat acara
+          </Link>
+          <Link
+            href="/home/berita"
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+          >
+            <IconNews aria-hidden />
+            Lihat Berita
+          </Link>
         </div>
       </div>
-      <button
-        type="button"
-        aria-label="Notifikasi"
-        className="flex size-11 shrink-0 items-center justify-center rounded-full text-text-disabled transition-colors hover:bg-surface-hover hover:text-text-primary"
-      >
-        <IconBell className="size-5" />
-      </button>
-    </div>
+    </section>
   );
 };
 
 export default ProfileHome;
-

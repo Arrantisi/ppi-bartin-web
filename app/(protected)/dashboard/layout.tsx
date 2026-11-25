@@ -1,5 +1,8 @@
+import { redirect } from "next/navigation";
+
 import { DashboardTitle } from "@/components/dashboard/dashboard-title";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import { getCurrentUserRole } from "@/server/actions/account";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -38,7 +41,10 @@ export const metadata: Metadata = {
   },
 };
 
-const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
+  const role = await getCurrentUserRole();
+  if (role !== "ADMIN") redirect("/home");
+
   return (
     <SidebarProvider>
       <AppSidebar variant="floating" />
@@ -67,7 +73,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             </Breadcrumb>
           </div>
         </header>
-        <div className="h-screen m-3">{children}</div>
+        <div className="h-screen m-3 min-w-0">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
